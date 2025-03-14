@@ -30,7 +30,7 @@ if ( dorepackage > 0 ) then {
 
 	private _unit_list_redep = (units player - [player]) select { (isNull objectParent _x) && (_x distance2D player < 40) && lifestate _x != 'INCAPACITATED' };
 	if (dorepackage == 3) then {
-		titleText ["Naval FOB Leaves..." ,"BLACK FADED", 30];
+		titleText ["Naval FOB Leaves..." ,"PLAIN", 30];
 		disableUserInput true;
 		{ _x allowDamage false; _x enableSimulationGlobal false } forEach _unit_list_redep;
 	};

@@ -38,14 +38,6 @@ if (leader _unit == _unit) then {
 	} forEach _units;
 };
 
-if (rating _unit < -2000) exitWith {_unit setDamage 1};
-if (!([] call F_getValid)) exitWith {_unit setDamage 1};
-private _cur_revive = 1;
-if (PAR_ai_revive > 0 && !isPlayer _unit && local _unit) then {
-	_cur_revive = _unit getVariable ["PAR_revive_max", PAR_ai_revive];
-};
-if (_cur_revive <= 0) exitWith {_unit setDamage 1};
-
 _unit setUnconscious true;
 _unit setCaptive true;
 _unit allowDamage false;
@@ -69,7 +61,6 @@ if (isPlayer _unit) then {
 	_mk1 setMarkerTypeLocal "loc_Hospital";
 	_mk1 setMarkerTextLocal format ["%1 Injured", name player];
 	_mk1 setMarkerColor "ColorRed";
-	if ([_unit] call F_getScore > GRLIB_perm_log + 5) then { [_unit, -1] remoteExec ["F_addScore", 2] };
 	if (GRLIB_disable_death_chat) then { for "_channel" from 0 to 4 do { _channel enableChannel false } };
 	PAR_backup_loadout = [player] call F_getCargoUnit;
 } else {
@@ -122,11 +113,20 @@ while { alive _unit && (_unit getVariable ["PAR_isUnconscious", false]) && time 
 	sleep 10;
 };
 
-if (!isNull _bld) then { _bld spawn {sleep (30 + floor(random 30)); deleteVehicle _this} };
-
+if (!isNull _bld) then {
+	_bld spawn {
+		sleep (30 + floor(random 30));
+		deleteVehicle _this;
+	};
+};
+[(_unit getVariable ["PAR_myMedic", objNull]), _unit] call PAR_fn_medicRelease;
 if (isPlayer _unit) then {
 	deletemarker format ["PAR_marker_%1", PAR_Grp_ID];
-	if (GRLIB_disable_death_chat) then { for "_channel" from 0 to 4 do { _channel enableChannel true } };
+	if (GRLIB_disable_death_chat) then {
+		for "_channel" from 0 to 4 do {
+			_channel enableChannel true;
+		};
+	};
 };
 
 if (alive _unit) then {

@@ -50,4 +50,3 @@ if ( GREUH_allow_viewdistance ) then {
 	[] spawn compile preprocessFileLineNumbers "GREUH\scripts\GREUH_view_distance_management.sqf";
 	//[] spawn compile preprocessFileLineNumbers "GREUH\scripts\GREUH_dynamic_view_distance.sqf";
 };
-if (!([] call F_getValid)) exitWith {endMission "LOSER"};

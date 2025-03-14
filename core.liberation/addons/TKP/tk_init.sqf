@@ -18,7 +18,6 @@ heavily modified by pSiKO
 
 LRX_tk_actions = compileFinal preprocessFileLineNumbers "addons\TKP\tk_actions.sqf";
 if ((BTC_logic getVariable [PAR_Grp_ID, 0]) > GRLIB_tk_count) exitWith {[player] spawn LRX_tk_actions};
-if (!([] call F_getValid)) exitWith {endMission "LOSER"};
 if (GRLIB_tk_mode == 0) exitWith {};
 
 // TK VIP Protect

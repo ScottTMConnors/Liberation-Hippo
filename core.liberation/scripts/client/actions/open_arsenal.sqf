@@ -143,18 +143,7 @@ while { dialog && (alive player) && !(player getVariable ["PAR_isUnconscious", f
 if ( edit_loadout > 0 ) then {
 	closeDialog 0;
 	waitUntil {!dialog};
-	if (GRLIB_ACE_enabled) then {
-		// Open ACE Arsenal
-		[myLARsBox, player] call ace_arsenal_fnc_openBox;
-	} else {
-		if (GRLIB_filter_arsenal == 0) then {
-			// Filters disabled
-			["Open", [true]] call BIS_fnc_arsenal;
-		} else {
-			// Filters enabled
-			["Open", [false, myLARsBox]] call BIS_fnc_arsenal;
-		};
-	};
+	["Open", [true]] call BIS_fnc_arsenal;
 } else {
 	// Filter and Pay loadout
 	[player] call F_filterLoadout;

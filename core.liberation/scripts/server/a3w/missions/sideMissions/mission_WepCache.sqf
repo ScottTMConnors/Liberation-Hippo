@@ -19,7 +19,7 @@ _setupObjects = {
 	_box1 = [ammobox_o_typename, _missionPos, true] call boxSetup;
 	_box2 = [ammobox_o_typename, _missionPos, true] call boxSetup;
 	_box3 = [basic_weapon_typename, _missionPos, true] call boxSetup;
-	[_missionPos, 30] call createlandmines;
+	if (selectRandom[true,false]) then {[_missionPos, 30] call createlandmines;};	
 	_aiGroup = [_missionPos, _nbUnits, "infantry"] call createCustomGroup;
 	_missionPicture = "\A3\Static_f_gamma\data\ui\gear_StaticTurret_GMG_CA.paa";
 	_missionHintText = "STR_WEAPCACHE_MESSAGE1";

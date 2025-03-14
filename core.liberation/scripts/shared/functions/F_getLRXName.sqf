@@ -8,6 +8,12 @@ if (typeName _class == "STRING") then {
 	_text = getText (configFile >> "cfgVehicles" >> _class >> "displayName");
 	if (_text == "") then {
 		_text = getText (configFile >> "CfgWeapons" >> _class >> "displayName");
+	} else {
+		if (!(_class isKindOf "Man")) then {
+			_countCrew = [_class, false] call BIS_fnc_crewCount;
+			_countCargo = ([_class, true] call BIS_fnc_crewCount) - _countCrew;
+			_text = _text + format [" (%1|%2)", str _countCrew, str _countCargo];
+		};
 	};
 	if (_text == "") then {
 		_text = getText (configFile >> "CfgMagazines" >> _class >> "displayName");

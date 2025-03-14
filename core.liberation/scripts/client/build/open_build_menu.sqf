@@ -74,7 +74,7 @@ private _is_linked = {
 ctrlEnable [120, false];
 ctrlEnable [121, false];
 
-while { dialog && alive player && (dobuild == 0 || buildtype == 1 || buildtype == 8)} do {
+while { dialog && {alive player && {(dobuild == 0 || buildtype == 1 || buildtype == 8)}}} do {
 	if (_old_buildtype != buildtype) then { build_refresh = true };
 
 	if (build_refresh) then {
@@ -152,58 +152,55 @@ while { dialog && alive player && (dobuild == 0 || buildtype == 1 || buildtype =
 				_affordable = false;
 			};
 
-			if ( buildtype == 1 ) then {
-				if (_build_class in MFR_Dogs_classname + ["Alsatian_Random_F","Fin_random_F"] ) then {
-					if (!(isNil {player getVariable ["my_dog", nil]})) then {
+			switch (buildtype) do {
+				case 1: {
+					if (_build_class in MFR_Dogs_classname + ["Alsatian_Random_F","Fin_random_F"] ) then {
+						if (!(isNil {player getVariable ["my_dog", nil]})) exitWith {
+							_affordable = false;
+						};
+					} else {
+						if (!(player getVariable ["GRLIB_squad_context_loaded", false])) exitWith {
+							_affordable = false;
+						};					
+					};
+				};
+				case 6 : {
+					if (_build_class == Warehouse_typename) then {
+						if ([player, "WAREHOUSE", GRLIB_fob_range, false] call F_check_near) then {
+							_affordable = false;
+						};
+					};
+				};
+				case 7 : {
+					if (_build_class == mobile_respawn) then {
+						if (([PAR_Grp_ID] call F_getMobileRespawnsPlayer) select 1) exitWith {
+							_affordable = false;
+						};
+					};
+					if (_build_class == playerbox_typename && _has_box) exitWith {
 						_affordable = false;
 					};
-				} else {
-					if (count PAR_AI_bros >= ([_score] call F_getRank) select 1) then {
+					if (_build_class in respawn_vehicles && GRLIB_allow_redeploy == 0) exitWith {
 						_affordable = false;
 					};
-					if (!(player getVariable ["GRLIB_squad_context_loaded", false])) then {
+					if (_build_class == FOB_boat_typename && GRLIB_naval_type == 0) exitWith {
 						_affordable = false;
+					};
+				};
+				case 8 : {
+					if (!(isNil {player getVariable ["my_squad", nil]})) then {
+						_affordable = false;
+					};
+				};
+				default {
+					if ( buildtype in [3,4,5] ) then {
+						if (!(([_build_class] call _is_linked) select 1)) then {
+							_affordable = false;
+						};
 					};
 				};
 			};
 
-			if ( buildtype == 6 ) then {
-			};
-
-			if ( buildtype == 7 ) then {
-				if (_build_class == mobile_respawn) then {
-					if (GRLIB_max_respawn_reached) then {
-						_affordable = false;
-					};
-					if (GRLIB_allow_redeploy == 0) then {
-						_affordable = false;
-					};
-				};
-				if (_build_class == playerbox_typename && _has_box) then {
-					_affordable = false;
-				};
-				if (_build_class in respawn_vehicles && GRLIB_allow_redeploy == 0) then {
-					_affordable = false;
-				};
-				if (_build_class == FOB_boat_typename && GRLIB_naval_type == 0) then {
-					_affordable = false;
-				};
-				if (_build_class == Warehouse_typename && _near_warehouse) then {
-					_affordable = false;
-				};
-			};
-
-			if ( buildtype == 8 ) then {
-				if (!(isNil {player getVariable ["my_squad", nil]})) then {
-					_affordable = false;
-				};
-			};
-
-			if ( buildtype in [3,4,5] ) then {
-				if (!(([_build_class] call _is_linked) select 1)) then {
-					_affordable = false;
-				};
-			};
 
 			if ( _affordable ) then {
 				(_display displayCtrl (110)) lnbSetColor  [[((lnbSize 110) select 0) - 1, 0], [1,1,1,1]];
@@ -223,35 +220,37 @@ while { dialog && alive player && (dobuild == 0 || buildtype == 1 || buildtype =
 	_selected_item = lbCurSel 110;
 	_affordable = (lnbData [110, [_selected_item, 0]] == "true");
 
-	if (_selected_item != -1 && _selected_item != _old_selected_item) then {
+	if (_selected_item != -1 && {_selected_item != _old_selected_item}) then {
 		_old_selected_item = _selected_item;
 
-		if (dobuild == 0 && (_selected_item < (count _build_list))) then {
+		if (dobuild == 0 && {(_selected_item < (count _build_list))}) then {
 			_build_item = _build_list select _selected_item;
 			_build_class = _build_item select  0;
-			_picture = "";
-
-			if ( buildtype == 1 ) then {
-				if (_build_class in ["Alsatian_Random_F","Fin_random_F"] ) then {
-					_picture = getMissionPath "res\preview\dog1_preview.jpg";
-					if (_build_class == "Fin_random_F") then { _picture = getMissionPath "res\preview\dog2_preview.jpg"; };
-				};
-			};
-
 			_linked = false;
 			_linked_unlocked = true;
 			_base_link = "";
-			if ( buildtype in [3,4,5] ) then {
-				_linked_state = [_build_class] call _is_linked;
-				_linked = _linked_state select 0;
-				_linked_unlocked = _linked_state select 1;
-				_base_link = _linked_state select 2;
-			};
+			_picture = "";
+			_picture = getText (configFile >> "CfgVehicles" >> _build_class >> "editorPreview");
+			switch (buildtype) do {
+				case 1: {
+					if (_build_class in ["Alsatian_Random_F","Fin_random_F"] ) then {
+						_picture = getMissionPath "res\preview\dog1_preview.jpg";
+						if (_build_class == "Fin_random_F") then { _picture = getMissionPath "res\preview\dog2_preview.jpg"; };
+					};
+				};
+				case 8 : {
+					_picture = getMissionPath "res\preview\blufor_squad.jpg";
+				};
+				default {
+					if ( buildtype in [3,4,5] ) then {
+						_linked_state = [_build_class] call _is_linked;
+						_linked = _linked_state select 0;
+						_linked_unlocked = _linked_state select 1;
+						_base_link = _linked_state select 2;
+					} else {
 
-			if ( buildtype == 8 ) then {
-				_picture = getMissionPath "res\preview\blufor_squad.jpg";
-			} else {
-				if (_picture == "") then { _picture = getText (configFile >> "CfgVehicles" >> _build_class >> "editorPreview") };
+					};
+				};
 			};
 			if (_picture == "") then { _picture = getMissionPath "res\preview\no_image.jpg" };
 			(_display displayCtrl (162)) ctrlSetText _picture;
@@ -259,18 +258,11 @@ while { dialog && alive player && (dobuild == 0 || buildtype == 1 || buildtype =
 	};
 
 	_affordable_crew = _affordable;
-	private _unitcap = { alive _x && (_x distance2D lhd) >= 200 } count (units GRLIB_side_friendly);
-	if (_unitcap >= GRLIB_blufor_cap) then {
-		_affordable_crew = false;
-		if (buildtype == 1 || buildtype == 8) then {
-			_affordable = false;
-		};
-	};
 
 	ctrlSetText [131, format ["%1 : %2/%3", localize "STR_MANPOWER", resources_infantry, infantry_cap] ];
 	ctrlSetText [132, format ["%1 : %2", localize "STR_AMMO", (player getVariable ["GREUH_ammo_count",0])] ];
 	ctrlSetText [133, format ["%1 : %2", localize "STR_FUEL", (player getVariable ["GREUH_fuel_count",0])] ];
-	ctrlSetText [134, format ["%1 : %2/%3", localize "STR_UNITCAP", _unitcap, GRLIB_blufor_cap] ];
+	//ctrlSetText [134, format ["%1 : %2/%3", localize "STR_UNITCAP", _unitcap, GRLIB_blufor_cap] ];
 
 	_link_color = "#0040e0";
 	_link_str = localize "STR_VEHICLE_UNLOCKED";

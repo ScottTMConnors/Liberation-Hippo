@@ -7,13 +7,12 @@ disableUserInput false;
 
 if ( !([] call is_admin) && GRLIB_param_open_params == 1) then {
 	waitUntil {
-		titleText ["... Waiting for LRX Configuration ...", "BLACK FADED", 100];
+		titleText ["... Waiting for LRX Configuration ...", "PLAIN", 100];
 		uIsleep 2;
-		titleText ["... Please Wait ...", "BLACK FADED", 100];
+		titleText ["... Please Wait ...", "PLAIN", 100];
 		uIsleep 2;
 		GRLIB_param_open_params == 0;
 	};
-	titleText ["", "BLACK FADED", 100];
 };
 if !([] call is_admin) exitWith { disableUserInput true };
 

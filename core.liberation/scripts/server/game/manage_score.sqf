@@ -25,7 +25,7 @@ while { true } do {
 				_uid = getPlayerUID _x;
 				_new_rank = ([_cur] call F_getRank) select 0;
 
-				if (_cur <= GRLIB_perm_ban || !([] call F_getValid)) exitWith {
+				if (_cur <= GRLIB_perm_ban) exitWith {
 					BTC_logic setVariable [_uid, 99, true];
 					[_x] remoteExec ["LRX_tk_actions", owner _x];
 					diag_log format ["--- LRX TK: BAN for player %1 - UID: %2", name _x,  _uid];

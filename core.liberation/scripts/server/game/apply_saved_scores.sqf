@@ -1,5 +1,4 @@
 waitUntil {sleep 1; !isNil "GRLIB_player_scores"};
-if (!([] call F_getValid)) exitWith {};
 
 private [ "_nextplayer", "_nextplayer_uid", "_newscores", "_knownplayers", "_playerindex", "_score", "_ammo", "_fuel" ];
 

@@ -13,7 +13,7 @@ while { hasInterface } do {
 		if (_time_left <= 0) then {
 			disableUserInput true;
 			private _msg = "You are idle for too long, good bye!";
-			titleText [_msg, "BLACK FADED", 100];
+			titleText [_msg, "PLAIN", 100];
 			uisleep 10;
 			disableUserInput false;
 			disableUserInput true;

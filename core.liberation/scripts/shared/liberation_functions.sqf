@@ -63,7 +63,6 @@ F_getPathRoadFilter = compileFinal preprocessFileLineNumbers "scripts\shared\fun
 F_getTemplateFile = compileFinal preprocessFileLineNumbers "scripts\shared\functions\F_getTemplateFile.sqf";
 F_getUnitPositionId = compileFinal preprocessFileLineNumbers "scripts\shared\functions\F_getUnitPositionId.sqf";
 F_getUnitsCount = compileFinal preprocessFileLineNumbers "scripts\shared\functions\F_getUnitsCount.sqf";
-F_getValid = compileFinal preprocessFileLineNumbers "scripts\shared\functions\F_getValid.sqf";
 F_getVehicleAmmoDef = compileFinal preprocessFileLineNumbers "scripts\shared\functions\F_getVehicleAmmoDef.sqf";
 F_getVehicleDamage = compileFinal preprocessFileLineNumbers "scripts\shared\functions\F_getVehicleDamage.sqf";
 F_notice_hof = compileFinal preprocessFileLineNumbers "scripts\shared\functions\F_notice_hof.sqf";

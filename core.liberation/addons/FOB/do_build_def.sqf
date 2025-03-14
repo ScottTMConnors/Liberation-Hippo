@@ -64,32 +64,39 @@ while { dialog && alive player } do {
 };
 
 if (build_action == 0) exitWith {};
-
 private _count_objects = count _objects_to_build;
 if (_count_objects == 0) exitWith {};
 if (!([parseNumber _defense_price] call F_pay)) exitWith {};
+enableDynamicSimulationSystem true;
 
 build_confirmed = 1;
 private _msg = format ["%1 Build %2 (%3 objects) on FOB %4 ", name player, _defense_name, _count_objects, ([_fob_pos] call F_getFobName)];
 [gamelogic, _msg] remoteExec ["globalChat", 0];
-_msg = format ["Defense Template: %1\nCreated by: %2\nThanks to him !!", _defense_name, _template_creator];
-[_msg] remoteExec ["hint", 0];
-
 // Build defense in FOB direction
 private ["_nextclass", "_nextobject", "_nextpos", "_nextdir"];
+gamelogic globalChat "Construction in progress";
+[player, "Land_Carrier_01_blast_deflector_up_sound"] remoteExec ["sound_range_remote_call", 2];
 _fob_pos set [2, 0];
 {
-    if (_forEachIndex % 20 == 0) then {
-        [player, "Land_Carrier_01_blast_deflector_up_sound"] remoteExec ["sound_range_remote_call", 2];
-        gamelogic globalChat format ["Construction in progress, %1 objects left...", (_count_objects - _forEachIndex)];
-    };
 	_nextclass = (_x select 0);
 	_nextpos = (_x select 1);
 	_nextdir = (_x select 2) + _fob_dir;
     _nextpos = _fob_pos vectorAdd ([_nextpos, -_fob_dir] call BIS_fnc_rotateVector2D);
 
-    if (!surfaceIsWater _nextpos && !isOnRoad _nextpos && _nextclass in fob_defenses_classnames) then {
-        _nextobject = _nextclass createVehicle _nextpos;
+    if (!surfaceIsWater _nextpos && !isOnRoad _nextpos) then {
+        _nextObject = objNull;
+        if (_nextclass in lib_simpleObjects) then {
+            _nextobject = createSimpleObject [_nextclass, _nextpos, false];
+            _nextobject enableSimulationGlobal false;
+        } else {
+            _nextobject = _nextclass createVehicle _nextpos;
+            if (_nextclass in lib_unsim) then {
+                _nextobject enableSimulationGlobal false;
+            } else {
+                _nextobject enableDynamicSimulation true;
+            };
+        };
+        
         _nextobject allowDamage false;
         _nextobject setPosATL _nextpos;
         if (_nextobject in GRLIB_FOB_Defense_Sea_level) then { 
@@ -97,7 +104,6 @@ _fob_pos set [2, 0];
         } else {
             _nextobject setVectorDirAndUp [[-cos _nextdir, sin _nextdir, 0] vectorCrossProduct surfaceNormal _nextpos, surfaceNormal _nextpos];
         };
-        sleep 0.1;
     };
     if !(_nextclass in fob_defenses_classnames) then { diag_log format ["Defense Template: %1 - Rejected item: %2", _defense_name, _nextclass] };
 } foreach _objects_to_build;

@@ -1,4 +1,4 @@
-// A custom Arsenal for Liberation RX by pSiKO
+// A custom Arsenal for Liberation RX by 
 // from: https://github.com/LarrowZurb/BlacklistArsenal
 
 // How it's supposed to work:

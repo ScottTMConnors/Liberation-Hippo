@@ -150,22 +150,12 @@ camUseNVG false;
 closeDialog 0;
 (findDisplay 5201) displayRemoveEventHandler ["KeyDown", _noesckey];
 if (!alive player) exitWith {};
-
 private _sleep = 2;
 if (GRLIB_deployment_cinematic) then { _sleep = 7 };
 cinematic_camera_started = false;
-titleText ["","BLACK IN", 5];
 
 if (deploy == 1) then {
 	player setVariable ["GRLIB_action_inuse", true, true];
-
-	// choosen loadout
-	if ( _loadoutchoice > 0 ) then {
-		GRLIB_backup_loadout = getUnitLoadout player;
-		[player, [profileNamespace, _loadouts_data select (_loadoutchoice - 1)]] call bis_fnc_loadInventory;
-		[player] call F_filterLoadout;
-		[player] call F_payLoadout;
-	};
 
 	// Redeploy
 	_spawn_str = (_choiceslist select _idxchoice) select 0;
@@ -199,6 +189,18 @@ if (player distance2D (markerPos GRLIB_respawn_marker) < GRLIB_capture_size) the
 	player setPosATL ((getPosATL lhd) vectorAdd [floor(random 5), floor(random 5), 1]);
 };
 
+sleep 1;
+
+if (!isNil "GRLIB_respawn_loadout") then {
+	player setUnitLoadout GRLIB_respawn_loadout;
+};
+
+sleep 2;
+
+if (!isNil "GRLIB_respawn_loadout") then {
+	player setUnitLoadout GRLIB_respawn_loadout;
+};
+
 sleep _sleep;
 player setVariable ["GRLIB_action_inuse", false, true];
-GRLIB_player_spawned = ([] call F_getValid);
+GRLIB_player_spawned = true;

@@ -7,7 +7,7 @@ Author:
 Last modified:
 
 	10/12/2014 ArmA 1.36 by Quiksilver
-	01/10/2023 LRX - pSiko
+	01/10/2023 LRX - pSiKO
 
 Description:
 

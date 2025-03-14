@@ -24,7 +24,7 @@ _setupObjects = {
 	_vehicle setHitPointDamage ["HitEngine", 1, false];
 	_smoke = GRLIB_sar_fire createVehicle (getPos _vehicle);
 	_smoke attachTo [_vehicle, [0, 1.5, 0]];
-	[_missionPos, 30] call createlandmines;
+	if (selectRandom[true,false]) then {[_missionPos, 30] call createlandmines;};
 	_aiGroup = [_missionPos, _nbUnits, "infantry"] call createCustomGroup;
 	_missionPicture = getText (configOf _vehicle >> "picture");
 	_vehicleName = getText (configOf _vehicle >> "displayName");
