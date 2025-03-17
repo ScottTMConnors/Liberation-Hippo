@@ -31,20 +31,6 @@ while {true} do {
 				};
 			};
 
-			// AI stop doing shit !
-			private _not_leader = !(leader (group player) == player);
-			if (([player] call PAR_is_wounded) && _not_leader) then {
-				if (_unit distance2D player <= 500) then {
-					unassignVehicle _unit;
-					[_unit] orderGetIn false;
-					if !(isNull objectParent _unit) then {
-						if !("turret" in (assignedVehicleRole _unit)) then {
-							[_unit, false] spawn F_ejectUnit;
-						};
-					};
-				};
-			};
-
 			// AI revive
 			if (PAR_AI_reviveMax > 0) then {
 				// Auto heal units

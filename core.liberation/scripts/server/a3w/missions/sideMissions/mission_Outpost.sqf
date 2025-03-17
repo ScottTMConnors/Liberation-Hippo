@@ -22,7 +22,7 @@ _setupObjects = {
 	_grp_defenders = _base_output select 2;
 	_grp_sentry = _base_output select 3;
 	_aiGroup = _grp_defenders;
-	[_missionPos, 30] call createlandmines;
+	if (selectRandom[true,false]) then {[_missionPos, 30] call createlandmines;};
 	_missionHintText = ["STR_OUTPOST_MESSAGE1", sideMissionColor];
 
 	private _grp_prisonners = createGroup [GRLIB_side_civilian, true];

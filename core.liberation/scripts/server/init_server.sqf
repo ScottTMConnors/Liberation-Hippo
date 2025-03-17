@@ -38,8 +38,8 @@ addMissionEventHandler ["OnUserAdminStateChanged", {
 [
  true,
  [
-  [GRLIB_side_friendly, 0.52, 0.36, 0.81, 0.64 ],
-  [GRLIB_side_enemy,    0.52, 0.36, 0.81, 0.64 ]
+  [GRLIB_side_friendly, 0.52, 0.36, 1, 1 ],
+  [GRLIB_side_enemy,    0, 0, 0.81, 0.64 ]
  ]
 ] call BIS_fnc_EXP_camp_dynamicAISkill;
 
@@ -133,6 +133,11 @@ fob_init = compileFinal preprocessFileLineNumbers "scripts\server\base\fob_init.
 fob_init_data = compileFinal preprocessFileLineNumbers "scripts\server\base\fob_init_data.sqf";
 fob_init_officer = compileFinal preprocessFileLineNumbers "scripts\server\base\fob_init_officer.sqf";
 
+occupyhouse = compileFinal preprocessFileLineNumbers "scripts\server\zen_OccupyHouse.sqf";
+
+// Patrol
+send_paratroopers = compileFinal preprocessFileLineNumbers "scripts\server\patrols\send_paratroopers.sqf";
+
 // Secondary objectives
 fob_hunting = compileFinal preprocessFileLineNumbers "scripts\server\secondary\fob_hunting.sqf";
 convoy_hijack = compileFinal preprocessFileLineNumbers "scripts\server\secondary\convoy_hijack.sqf";
@@ -164,8 +169,6 @@ createCustomGroup = compileFinal preprocessFileLineNumbers "scripts\server\a3w\s
 
 // Warehouse
 warehouse_update = compileFinal preprocessFileLineNumbers "scripts\server\game\warehouse_update.sqf";
-
-if (!([] call F_getValid)) exitWith {};
 
 [] call load_game_mp;
 if (abort_loading) exitWith {
@@ -215,3 +218,4 @@ sleep 1;
 GRLIB_init_server = true;
 publicVariable "GRLIB_init_server";
 diag_log "--- Server Init stop ---";
+systemChat "-------- Server loaded --------";

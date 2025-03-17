@@ -29,35 +29,17 @@ if (!GRLIB_hide_opfor) then {
 private _sector_count = -1;
 private _dist = 0;
 sleep 1;
-
+_activeSector = "";
 while { GRLIB_endgame == 0 } do {
 	waitUntil {sleep 1; GRLIB_MapOpen && (count blufor_sectors + count GRLIB_all_fobs) != _sector_count};
-
-	if (GRLIB_hide_opfor && count opfor_sectors > 3) then {
-		{
-			_sector_pos = markerPos _x;
-			_dist = [_sector_pos, false] call F_getNearestBluforObjective select 1;
-			if (_dist <= GRLIB_radiotower_size) then {
-				_x setMarkerColorLocal GRLIB_color_enemy;
-				_x setMarkerTypeLocal ([_x] call _getMarkerType);
-			} else {
-				_x setMarkerTypeLocal "Empty";
-			};
-		} foreach opfor_sectors;
-		{
-			_x setMarkerColorLocal GRLIB_color_friendly;
-			_x setMarkerTypeLocal ([_x] call _getMarkerType);
-		} foreach blufor_sectors;
-	} else {
-		{
-			_x setMarkerColorLocal GRLIB_color_enemy;
-			_x setMarkerTypeLocal ([_x] call _getMarkerType);
-		} foreach opfor_sectors;
-		{
-			_x setMarkerColorLocal GRLIB_color_friendly;
-			_x setMarkerTypeLocal ([_x] call _getMarkerType);
-		} foreach blufor_sectors;
-	};
+	{
+		_x setMarkerColorLocal GRLIB_color_enemy;
+		_x setMarkerTypeLocal ([_x] call _getMarkerType);
+	} foreach opfor_sectors;
+	{
+		_x setMarkerColorLocal GRLIB_color_friendly;
+		_x setMarkerTypeLocal ([_x] call _getMarkerType);
+	} foreach blufor_sectors;
 
 	{
 		_nextmarker = _x;
@@ -66,7 +48,13 @@ while { GRLIB_endgame == 0 } do {
 			if ( _x == (_nextmarker select 1) ) exitWith { (_nextmarker select 0) setMarkerColorLocal GRLIB_color_friendly; };
 		} foreach blufor_sectors;
 	} foreach _vehicle_unlock_markers;
-
+	
+	if (!isNil "active_sectors") then {
+		{
+			_x setMarkerTypeLocal "mil_objective";
+			_x setMarkerColorLocal "ColorYellow";
+		} forEach active_sectors;
+	};
 	_sector_count = (count blufor_sectors + count GRLIB_all_fobs);
 	sleep 4;
 };

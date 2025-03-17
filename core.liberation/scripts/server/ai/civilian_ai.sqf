@@ -219,6 +219,7 @@ while {alive _unit && _continue} do {
 				_unit switchMove "ainvpknlmstpslaywrfldnon_medicother";
 				_unit playMoveNow "ainvpknlmstpslaywrfldnon_medicother";
 				sleep 3;
+				if !(alive _unit && _unit distance2D _target <= 7) exitWith {};
 				if (_target isKindOf "AllVehicles") then {
 					_hit_index = selectRandom ["HitBody", "HitEngine", "HitFuel", "HitLFWheel", "HitLBWheel", "HitRFWheel", "HitRBWheel"];
 					_target setHitPointDamage [_hit_index, 1];

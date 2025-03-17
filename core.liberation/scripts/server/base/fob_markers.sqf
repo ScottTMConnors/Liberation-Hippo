@@ -1,15 +1,20 @@
+private [ "_marker", "_idx", "_respawn_trucks", "_markers_mobilespawns", "_vehicle" ];
+private _markers = [];
+private _markers_mobilespawns = [];
+private _markers_def = [];
+
 waitUntil {sleep 1; !isNil "GRLIB_init_server"};
 waitUntil {sleep 1; !isNil "GRLIB_all_fobs"};
 
-private _markers = [];
-private _markers_def = [];
 GRLIB_redraw_marker_fob = false;
-
-sleep 2;
 while { true } do {
-	if (count GRLIB_all_fobs > 0 && (count _markers != count GRLIB_all_fobs || GRLIB_redraw_marker_fob)) then {
+	waitUntil {sleep 3; GRLIB_MapOpen };
+	if ( count _markers != count GRLIB_all_fobs || GRLIB_redraw_marker_fob) then {
+		GRLIB_redraw_marker_fob = false;
 		{ deleteMarker _x } foreach _markers;
 		_markers = [];
+		fobMarks = [];
+		fobSects = [];
 		{
 			_fobpos = _x;
 			_near_outpost = (_fobpos in GRLIB_all_outposts);
@@ -27,7 +32,10 @@ while { true } do {
 			};
 			_marker setMarkerPos _fobpos;
 			_markers pushback _marker;
+			fobSects pushBack _marker;
+			fobMarks pushBack [_fobpos,_marker];
 		} forEach GRLIB_all_fobs;
+		call calc_sec_sel;
 	};
 
 	// Def marker

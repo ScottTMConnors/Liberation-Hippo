@@ -133,7 +133,7 @@ _setupObjects = {
 	[_grp_civ2, _missionPos] spawn add_civ_waypoints;
 
 	//----- spawn mines ---------------------------------
-	[_missionPos, 30] call createlandmines;
+	if (selectRandom[true,false]) then {[_missionPos, 30] call createlandmines;};
 
 	//_missionPicture = getText (configFile >> "CfgVehicles" >> "Land_i_Barracks_V1_F" >> "picture");
 	_missionHintText = ["STR_SEARCH_INTEL_MESSAGE1", count _intels]; ;

@@ -13,9 +13,9 @@ private _ammo_collected = player getVariable ["GREUH_ammo_count",0];
 [_score] call set_rank;
 
 // first time notice
-if (_score == 0) then {
-	createDialog "liberation_notice";
-};
+// if (_score == 0) then {
+// 	createDialog "liberation_notice";
+// };
 
 // disable UAVs
 [player] call F_correctUAVT;

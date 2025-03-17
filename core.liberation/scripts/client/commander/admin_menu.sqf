@@ -299,7 +299,7 @@ while { alive player && dialog } do {
 			_admin_msg = format ["Admin (%1) import the save game (%2)", name player, GRLIB_save_key];
 			[_admin_msg] remoteExec ["diag_log", 2];
 			closeDialog 0;
-			titleText ["Restarting now..." ,"BLACK FADED", 100];
+			titleText ["Restarting now..." ,"PLAIN", 100];
 			disableUserInput true;
 			[(parseSimpleArray input_save), {
 				GRLIB_server_stopped = true;
