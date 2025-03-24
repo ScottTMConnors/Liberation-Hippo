@@ -9,41 +9,37 @@ private _extra_bounty = opfor_air + [
 	"B_AFV_Wheeled_01_cannon_F"
 ];
 
-private _heavy_blu = [];
-{_heavy_blu pushBack ( _x select 0 )} foreach heavy_vehicles;
-
-_bounty = 10;
-_bonus = 2;
+_bounty = 100;
+_bonus = 20;
 
 if ( _vehicle isKindOf "Ship_F" ) then {
-	_bounty = 15;
-	_bonus = 2;
+	_bounty = 500;
+	_bonus = 20;
 };
 
 if ( _vehicle isKindOf "Wheeled_APC_F" ) then {
-	_bounty = 20;
-	_bonus = 3;
+	_bounty = 500;
+	_bonus = 30;
 };
 
 if ( _vehicle isKindOf "Tank" ) then {
-	_bounty = 30;
-	_bonus = 4;
+	_bounty = 1000;
+	_bonus = 40;
 };
 
 if ( _vehicle isKindOf "Air" ) then {
-	_bounty = 35;
-	_bonus = 4;
+	_bounty = 1000;
+	_bonus = 40;
 };
 
 if (typeOf _vehicle in _extra_bounty) then {
-	_bounty = _bounty + 25;
-	_bonus = _bonus + 2;
+	_bounty = _bounty + 250;
+	_bonus = _bonus + 10;
 };
 
-if (typeOf _vehicle in _heavy_blu) then {
-	_bonus = 0;
-};
+_bonus = _bonus + floor random 30;
 
-_bounty = _bounty + floor random 6;
+_bounty = _bounty + floor random 60;
+
 
 [_bounty, _bonus];

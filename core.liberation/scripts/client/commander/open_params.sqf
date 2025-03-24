@@ -7,13 +7,12 @@ disableUserInput false;
 
 if ( !([] call is_admin) && GRLIB_param_open_params == 1) then {
 	waitUntil {
-		titleText [localize "STR_WAITING_FOR_LRX_CONFIG", "BLACK FADED", 100];
+		titleText ["... Waiting for LRX Configuration ...", "PLAIN", 100];
 		uIsleep 2;
-		titleText [localize "STR_PLEASE_WAIT", "BLACK FADED", 100];
+		titleText ["... Please Wait ...", "PLAIN", 100];
 		uIsleep 2;
 		GRLIB_param_open_params == 0;
 	};
-	titleText ["", "BLACK FADED", 100];
 };
 if !([] call is_admin) exitWith { disableUserInput true };
 
@@ -23,7 +22,7 @@ createDialog "liberation_params";
 waitUntil { dialog };
 
 private _display = findDisplay 5119;
-private _noesckey = _display displayAddEventHandler ["KeyDown", "if ((_this select 1) == 1) then { true }"];
+//private _noesckey = _display displayAddEventHandler ["KeyDown", "if ((_this select 1) == 1) then { true }"];
 
 private _control = _display ctrlCreate ["RscText", (100 + 0), _display displayCtrl 9969];
 _control ctrlSetPosition [0,  (0 * 0.025) * safezoneH, 0.3 * safeZoneW, 0.025  * safezoneH];
@@ -118,9 +117,9 @@ if (save_changes == 1) then {
 
 	waitUntil { sleep 0.5; GRLIB_param_open_params == 0 };
 	if !(isNil "GRLIB_init_server") then {
-		[localize "STR_MISSION_RESTART_REQUIRED",localize "STR_LRX_SETTINGS_TITLE",true] call BIS_fnc_guiMessage;
+		["Mission need to be restarted, to take effect.", "LRX Settings", true] call BIS_fnc_guiMessage;
 	};
 };
 
 disableUserInput true;
-_display displayRemoveEventHandler ["KeyDown", _noesckey];
+//_display displayRemoveEventHandler ["KeyDown", _noesckey];

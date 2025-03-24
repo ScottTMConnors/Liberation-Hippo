@@ -30,7 +30,7 @@ _setupObjects = {
 	{ _x setVariable ["R3F_LOG_disabled", true, true] } forEach _vehicles;
 
 	// spawn some enemies
-	[_missionPos, 30] call createlandmines;
+	//[_missionPos, 30] call createlandmines;
 	[_missionLocation, 150, floor (random 6)] spawn ied_trap_manager;
 	_managed_units = ["militia", 6, _missionPos] call F_spawnBuildingSquad;
 	{ _x setVariable ["GRLIB_mission_AI", false, true] } forEach _managed_units;

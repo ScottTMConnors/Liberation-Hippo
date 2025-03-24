@@ -122,11 +122,8 @@ if (_side == GRLIB_side_civilian) then {
 		if (!_hasFuel) then { _vehicle setFuel 1 };
 	}];
 	_vehicle addEventHandler ["HandleDamage", { _this call damage_manager_civilian }];
+	[_vehicle, "unlock", "public"] call F_vehicleLock;
 	_vehicle setVariable ["GRLIB_vehicle_owner", "public", true];
-	_vehicle lockCargo true;
-	_vehicle lockDriver true;
-	{ _vehicle lockTurret [_x, true] } forEach (allTurrets _vehicle);
-	_vehicle setVehicleLock "LOCKED";
 };
 
 if (_side == GRLIB_side_friendly) then {
