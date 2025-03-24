@@ -7,13 +7,12 @@ disableUserInput false;
 
 if ( !([] call is_admin) && GRLIB_param_open_params == 1) then {
 	waitUntil {
-		titleText ["... Waiting for LRX Configuration ...", "BLACK FADED", 100];
+		titleText ["... Waiting for LRX Configuration ...", "PLAIN", 100];
 		uIsleep 2;
-		titleText ["... Please Wait ...", "BLACK FADED", 100];
+		titleText ["... Please Wait ...", "PLAIN", 100];
 		uIsleep 2;
 		GRLIB_param_open_params == 0;
 	};
-	titleText ["", "BLACK FADED", 100];
 };
 if !([] call is_admin) exitWith { disableUserInput true };
 
@@ -23,7 +22,7 @@ createDialog "liberation_params";
 waitUntil { dialog };
 
 private _display = findDisplay 5119;
-private _noesckey = _display displayAddEventHandler ["KeyDown", "if ((_this select 1) == 1) then { true }"];
+//private _noesckey = _display displayAddEventHandler ["KeyDown", "if ((_this select 1) == 1) then { true }"];
 
 _control = _display ctrlCreate ["RscText", (100 + 0), _display displayCtrl 9969];
 _control ctrlSetPosition [0,  (0 * 0.025) * safezoneH, 0.3 * safeZoneW, 0.025  * safezoneH];
@@ -137,4 +136,4 @@ if (save_changes == 1) then {
 };
 
 disableUserInput true;
-_display displayRemoveEventHandler ["KeyDown", _noesckey];
+//_display displayRemoveEventHandler ["KeyDown", _noesckey];

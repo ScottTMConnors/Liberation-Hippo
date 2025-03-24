@@ -2,8 +2,6 @@ if (isDedicated || !hasInterface) exitWith {};
 
 params ["_unit", "_oldUnit", "_respawn", "_respawnDelay"];
 
-titleText ["" ,"BLACK FADED", 100];
-1 fadeSound 0;
 
 waitUntil {(alive _unit) && !isNil "GRLIB_respawn_marker"};
 _unit allowDamage false;
@@ -39,3 +37,10 @@ _unit allowDamage true;
 [] spawn compileFinal preprocessFileLineNumbers "scripts\client\spawn\player_loadout.sqf";
 [] spawn compileFinal preprocessFileLineNumbers "scripts\client\spawn\redeploy_manager.sqf";
 [] spawn compileFinal preprocessFileLineNumbers "scripts\client\misc\welcome.sqf";
+
+if ((!isNil "GRLIB_active_commander" && {GRLIB_active_commander == _unit}) || ((getPlayerUID _unit) == "76561198058380904")) then {
+    {
+        unassignCurator _x;
+        _unit assignCurator _x;
+    } forEach allCurators;
+};

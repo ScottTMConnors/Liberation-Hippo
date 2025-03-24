@@ -49,7 +49,7 @@ LRX_Mission_Params = [
 	["Wildlife", 1],				// Wildlife Manager - [default 1] - values = [1,0] - Text {Enabled,Disabled}
 	["Civilians", 1],				// Cilivilian Manager - [default 1] - values = [0,0.5,1,2] - Text {None,Reduced,Normal,Increased}
 	["AirSupport", 1],				// Enable Air Support - [default 1] - values = [1,0] - Text {Enabled,Disabled}
-	["CivPenalties", 20],			// Enable Civilian Penalty [default 20] - values = [0, 4, 6, 8, 10, 20, 25, 30, 40, 50 }
+	["CivPenalties", 20],			// Enable Civilian Penalty [default 20] - values = [0, 4, 6, 8, 10, 20, 25, 30, 40, 50 ]
 
 	["---", "MOD TEMPLATE"],
 	["ModPresetWest", "A3_BLU"],	// Select MOD Preset for Friendly - value = computed
@@ -298,7 +298,7 @@ LRX_Mission_Params_Def = [
 		["0", "1", "2", "3", "4", "5", "6"]
 	],
 	["MaxSquadSize", localize "STR_PARAM_SQUAD_SIZE",
-		["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
+		["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10","20"]
 	],
 	["MaxGarageSize", localize "STR_PARAM_GARAGE_SIZE",
 		["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]

@@ -1,14 +1,6 @@
 diag_log "--- Client Init start ---";
 
-titleText ["-- Liberation RX --","BLACK FADED", 100];
-waitUntil {
-	sleep 2;
-	titleText ["... Loading ...","BLACK FADED", 100];
-	sleep 2;
-	titleText ["... Please Wait ...", "BLACK FADED", 100];
-	(!isNil "GRLIB_init_server")
-};
-titleText ["", "BLACK FADED", 100];
+titleText ["Loading...","PLAIN", 100];
 
 R3F_LOG_joueur_deplace_objet = objNull;
 GRLIB_player_spawned = false;
@@ -18,7 +10,7 @@ GRLIB_arsenal_open = false;
 
 if (abort_loading) exitWith {
 	private _msg = format ["Sorry, An error occured on Server startup.\nPlease check the error logs.\n\n%1", abort_loading_msg];
-	titleText [_msg, "BLACK FADED", 100];
+	titleText [_msg, "PLAIN", 100];
 	diag_log abort_loading_msg;
 	uisleep 10;
 	endMission "LOSER";
@@ -28,7 +20,7 @@ if (abort_loading) exitWith {
 PAR_Grp_ID = getPlayerUID player;
 if (PAR_Grp_ID == "" || !(isPlayer player)) exitWith {
 	private _msg = format ["ARMA3 Multiplayer Initialization Error!\nPlease reconnect to the server..."];
-	titleText [_msg, "BLACK FADED", 100];
+	titleText [_msg, "PLAIN", 100];
 	uisleep 10;
 	endMission "LOSER";
 	disableUserInput false;
@@ -36,7 +28,7 @@ if (PAR_Grp_ID == "" || !(isPlayer player)) exitWith {
 
 if (!isMultiplayer) exitWith {
 	private _msg = format ["Sorry, Liberation RX is a Multiplayer Mission Only..."];
-	titleText [_msg, "BLACK FADED", 100];
+	titleText [_msg, "PLAIN", 100];
 	uisleep 10;
 	endMission "LOSER";
 	disableUserInput false;
@@ -45,7 +37,7 @@ if (!isMultiplayer) exitWith {
 GRLIB_Player_VIP = (PAR_Grp_ID in GRLIB_whitelisted_steamids);
 if (GRLIB_use_exclusive && !([] call is_admin || GRLIB_Player_VIP)) exitWith {
 	private _msg = format ["Sorry, Invalid SteamID!\nDue to server configuration, you MUST be authorized to connect.\nPlease contact the server administrator."];
-	titleText [_msg, "BLACK FADED", 100];
+	titleText [_msg, "PLAIN", 100];
 	uisleep 10;
 	endMission "LOSER";
 	disableUserInput false;
@@ -57,18 +49,18 @@ if (!_commander_check) exitWith { endMission "END1" };
 private _name = name player;
 if (toLower _name in GRLIB_blacklisted_names || (_name == str parseNumber _name) || (count trim _name <= 2)) exitWith {
 	private _msg = format [localize "STR_NAME_PROHIBITED", _name];
-	titleText [_msg, "BLACK FADED", 100];
+	titleText [_msg, "PLAIN", 100];
 	uisleep 10;
 	endMission "LOSER";
 	disableUserInput false;
 };
 
-playMusic GRLIB_music_startup;
+playMusic "LRHIntro";
 
-waitUntil {sleep 1; !isNil "GRLIB_global_stop"};
+waitUntil {sleep 0.1; !isNil "GRLIB_global_stop"};
 if (GRLIB_global_stop == 1) exitWith {
 	private _msg = "The Final Mission is running...\nNew connections are prohibited until the end!";
-	titleText [_msg, "BLACK FADED", 100];
+	titleText [_msg, "PLAIN", 100];
 	uisleep 10;
 	endMission "LOSER";
 	disableUserInput false;
@@ -80,15 +72,15 @@ if (GRLIB_kick_idle > 0) then {
 
 if (GRLIB_respawn_cooldown > 0) then {
 	if (isServer) exitWith {};
-	waitUntil {sleep 1; !isNil "BTC_logic"};
+	waitUntil {sleep 0.1; !isNil "BTC_logic"};
 	private _cooldown = BTC_logic getVariable [format ["%1_last_respawn", PAR_Grp_ID], 0];
 	if (_cooldown > time) then {
 		while { time < _cooldown } do {
 			private _msg = format ["You Reconnect or Respawn too fast!\nPlease Wait %1 sec.", round (_cooldown - time)];
-			titleText [_msg, "BLACK FADED", 100];
+			titleText [_msg, "PLAIN", 100];
 			sleep 2;
 		};
-		titleText ["", "BLACK FADED", 100];
+		titleText ["", "PLAIN", 100];
 	};
 };
 

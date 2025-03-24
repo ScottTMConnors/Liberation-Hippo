@@ -25,7 +25,8 @@ _setupObjects = {
 	_box2 = [ammobox_b_typename, _missionPos, true] call boxSetup;
 	_box3 = [basic_weapon_typename, _missionPos, true] call boxSetup;
 
-	[_missionPos, 30] call createlandmines;
+	
+	if (selectRandom[true,false]) then {[_missionPos, 30] call createlandmines;};
 	_aiGroup = [getPos _vehicle, _nbUnits, "infantry"] call createCustomGroup;
 
 	_missionPicture = "\A3\Air_F\Heli_Light_02\Data\UI\Heli_Light_02_CA.paa";

@@ -44,7 +44,7 @@ if ( GRLIB_endgame >= 1 || GRLIB_global_stop == 1 ) then {
 		_fobpos = _x;
 		_nextbuildings = _fobpos nearObjects (GRLIB_fob_range * 2) select {
 			( getObjectType _x >= 8 ) &&
-			( !isSimpleObject _x ) &&
+			//( !isSimpleObject _x ) &&
 			( alive _x) && !(isObjectHidden _x) &&
 			( tolower (typeof _x) in GRLIB_classnames_to_save ) &&
 			( speed vehicle _x < 5 ) &&
@@ -73,6 +73,7 @@ if ( GRLIB_endgame >= 1 || GRLIB_global_stop == 1 ) then {
 		private _nextdir = [vectorDir _x, vectorUp _x];
 		private _hascrew = false;
 		private _owner = "";
+		private _isSimple = isSimpleObject _x;
 
 		if ( tolower _nextclass in GRLIB_classnames_to_save_blu ) then {
 			if (side group _x != GRLIB_side_enemy) then {
