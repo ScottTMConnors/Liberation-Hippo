@@ -33,7 +33,7 @@ ctrlDelete _final_text;
 
 // Mission failed
 if (sector_timer <= 0) then {
-	private _noesckey = (findDisplay 5651) displayAddEventHandler ["KeyDown", "if ((_this select 1) == 1) then { true }"];
+	//private _noesckey = (findDisplay 5651) displayAddEventHandler ["KeyDown", "if ((_this select 1) == 1) then { true }"];
 	disableUserInput true;
 	player allowDamage false;
 	closeDialog 0;
@@ -123,7 +123,7 @@ if (sector_timer <= 0) then {
 	disableUserInput false;
 	disableUserInput true;
 	disableUserInput false;
-	(findDisplay 5651) displayRemoveEventHandler ["KeyDown", _noesckey];
+	//(findDisplay 5651) displayRemoveEventHandler ["KeyDown", _noesckey];
 	endMission "LOSER";
 	"colorCorrections" ppEffectEnable false; // disable effect
 	"filmGrain" ppEffectEnable false; // disable effect

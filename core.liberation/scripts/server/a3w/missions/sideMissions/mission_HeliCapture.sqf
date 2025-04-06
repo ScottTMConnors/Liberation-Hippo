@@ -33,7 +33,7 @@ _setupObjects = {
 	sleep 2;
 	_vehicle allowDamage true;
 
-	[_missionPos, 30] call createlandmines;
+	if (selectRandom[true,false]) then {[_missionPos, 30] call createlandmines;};
 	_aiGroup = [_missionPos, _nbUnits, "infantry"] call createCustomGroup;
 	_missionPicture = getText (configOf _vehicle >> "picture");
 	_vehicleName = getText (configOf _vehicle >> "displayName");

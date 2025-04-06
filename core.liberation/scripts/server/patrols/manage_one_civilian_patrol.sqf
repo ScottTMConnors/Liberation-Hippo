@@ -61,12 +61,10 @@ if (count _usable_sectors > 0) then {
 			(time > _unit_ttl)
 		)
 	};
-
-	// Cleanup
 	waitUntil { sleep 30; (GRLIB_global_stop == 1 || (diag_fps < 10) || [_unit_pos, GRLIB_sector_size, GRLIB_side_friendly] call F_getUnitsCount == 0) };
-	[_civ_veh] call clean_vehicle;
+	// Cleanup
 	{ deleteVehicle _x } forEach (units _civ_grp);
-	deleteGroup _civ_grp;
+	deleteGroup _civ_grp;		
 };
 
 GRLIB_civilians_current = GRLIB_civilians_current - 1;

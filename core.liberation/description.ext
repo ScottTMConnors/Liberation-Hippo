@@ -13,7 +13,7 @@ onLoadMission = $STR_MISSION_DESCRIPTION;
 overviewText = $STR_MISSION_DESCRIPTION;
 overviewPicture = "res\liberation.paa";
 loadScreen = "res\liberation.paa";
-onLoadIntro = "Welcome on the Liberaton RX planet.";
+onLoadIntro = "Welcome on the Liberaton RH planet.";
 
 respawn = 3;
 respawnButton = 0;
@@ -71,6 +71,19 @@ class CfgDebriefing {
 		subtitle = "";
 		description = $STR_COMMANDER_NOT_AUTHORIZED;
 		pictureBackground = "";
+	};
+};
+
+class CfgMusic
+{
+	tracks[] = {};
+	class LRHIntro
+	{
+		// display name
+		name	= "LRH Theme";
+
+		// filename, volume, pitch
+		sound[]	= { "\music\LRHTheme.ogg", db + 10, 1.0 };
 	};
 };
 
