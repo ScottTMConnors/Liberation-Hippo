@@ -1,5 +1,6 @@
-params ["_wnded","_medic"];
+params ["_wnded", "_medic"];
 
+_medic setHitPointDamage ["hitLegs", 0];
 _medic allowDamage false;
 _medic setCaptive true;
 _medic setHitPointDamage ["hitLegs",0];
@@ -9,21 +10,28 @@ private _grpmedic = createGroup [GRLIB_side_civilian, true];
 _grpmedic setBehaviourStrong "AWARE";
 
 unassignVehicle _medic;
-if (!isnull objectParent _medic) then {
+if (!isNull objectParent _medic) then {
 	doGetOut _medic;
 	sleep 3;
 };
 _medic stop true;
+
+_medic enableAI "FSM";
+_medic enableAI "PATH";
+
 sleep 1;
-{_medic disableAI _x} forEach ["TARGET","AUTOTARGET","AUTOCOMBAT","SUPPRESSION"];
+{
+	_medic disableAI _x
+} forEach ["TARGET", "AUTOTARGET", "AUTOCOMBAT", "SUPPRESSION"];
+
 _medic setUnitPos "UP";
 _medic setSpeedMode "FULL";
 _medic allowFleeing 0;
 _medic allowDamage true;
 _medic stop false;
 
-private _dist = (_medic distance2D _wnded);
-if ( _dist <= 6 ) then {
+private _dist = (_wnded distance2D _medic);
+if (_dist <= 8) then {
 	[_wnded, _medic] spawn PAR_fn_sortie
 } else {
 	if (_dist < 35) then {

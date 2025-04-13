@@ -38,8 +38,8 @@ addMissionEventHandler ["OnUserAdminStateChanged", {
 [
  true,
  [
-  [GRLIB_side_friendly, 0.52, 0.36, 0.81, 0.64 ],
-  [GRLIB_side_enemy,    0.52, 0.36, 0.81, 0.64 ]
+  [GRLIB_side_friendly, 1, 1, 1, 1 ],
+  [GRLIB_side_enemy,    0, 0, 0, 0]
  ]
 ] call BIS_fnc_EXP_camp_dynamicAISkill;
 
@@ -169,8 +169,6 @@ createCustomGroup = compileFinal preprocessFileLineNumbers "scripts\server\a3w\s
 // Warehouse
 warehouse_update = compileFinal preprocessFileLineNumbers "scripts\server\game\warehouse_update.sqf";
 
-if (!([] call F_getValid)) exitWith {};
-
 [] call load_game_mp;
 if (abort_loading) exitWith {
 	GRLIB_init_server = false;
@@ -219,3 +217,4 @@ sleep 1;
 GRLIB_init_server = true;
 publicVariable "GRLIB_init_server";
 diag_log "--- Server Init stop ---";
+systemChat "-------- Server loaded --------";

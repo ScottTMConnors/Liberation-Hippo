@@ -67,4 +67,4 @@ sleep 2;
 _wnded stop false;
 _wnded setVariable ["PAR_heal", nil];
 _medic setVariable ["PAR_heal", nil];
-[_medic, _wnded] doFollow (leader group player);
+//[_medic, _wnded] doFollow (leader group player);
