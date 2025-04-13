@@ -29,8 +29,8 @@ private _iscommander = false;
 if ([player] call F_getCommander) then { _iscommander = true };
 
 ctrlSetText [1011, format ["%1 - %2", _title, _rank]];
-ctrlShow [ 108, _iscommandant ];
-ctrlShow [ 1085, _iscommandant ];
+ctrlShow [ 108, true ];
+ctrlShow [ 1085, true ];
 if (count squads == 0) then {
 	ctrlShow [ 108, false ];
 	ctrlShow [ 1085, false ];

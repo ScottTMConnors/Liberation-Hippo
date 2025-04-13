@@ -21,7 +21,7 @@ createDialog "liberation_deploy";
 waitUntil { dialog };
 titleText ["","BLACK IN", 5];
 ((findDisplay 5201) displayCtrl 201) ctrlAddEventHandler ["mouseButtonDblClick", { deploy = 1; }];
-private _noesckey = (findDisplay 5201) displayAddEventHandler ["KeyDown", "if ((_this select 1) == 1) then { true }"];
+//private _noesckey = (findDisplay 5201) displayAddEventHandler ["KeyDown", "if ((_this select 1) == 1) then { true }"];
 disableUserInput false;
 disableUserInput true;
 disableUserInput false;
@@ -145,14 +145,12 @@ camDestroy respawn_camera;
 deleteVehicle respawn_object;
 camUseNVG false;
 "spawn_marker" setMarkerPosLocal markers_reset;
-(findDisplay 5201) displayRemoveEventHandler ["KeyDown", _noesckey];
 closeDialog 0;
+//(findDisplay 5201) displayRemoveEventHandler ["KeyDown", _noesckey];
 if (!alive player) exitWith {};
-
 private _sleep = 2;
 if (GRLIB_deployment_cinematic) then { _sleep = 7 };
 cinematic_camera_started = false;
-titleText ["","BLACK IN", 5];
 
 if (deploy == 1) then {
 	player setVariable ["GRLIB_action_inuse", true, true];

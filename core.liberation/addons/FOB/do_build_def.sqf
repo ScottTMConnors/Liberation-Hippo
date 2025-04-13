@@ -68,6 +68,7 @@ if (build_action == 0) exitWith {};
 private _count_objects = count _objects_to_build;
 if (_count_objects == 0) exitWith {};
 if (!([parseNumber _defense_price] call F_pay)) exitWith {};
+enableDynamicSimulationSystem true;
 
 build_confirmed = 1;
 private _msg = format [localize "STR_FOB_BUILD_STATUS", name player, _defense_name, _count_objects, ([_fob_pos] call F_getFobName)];
@@ -88,8 +89,20 @@ _fob_pos set [2, 0];
 	_nextdir = (_x select 2) + _fob_dir;
     _nextpos = _fob_pos vectorAdd ([_nextpos, -_fob_dir] call BIS_fnc_rotateVector2D);
 
-    if (!surfaceIsWater _nextpos && !isOnRoad _nextpos && _nextclass in fob_defenses_classnames) then {
-        _nextobject = _nextclass createVehicle _nextpos;
+    if (!surfaceIsWater _nextpos && !isOnRoad _nextpos) then {
+        _nextObject = objNull;
+        if (_nextclass in lib_simpleObjects) then {
+            _nextobject = createSimpleObject [_nextclass, _nextpos, false];
+            _nextobject enableSimulationGlobal false;
+        } else {
+            _nextobject = _nextclass createVehicle _nextpos;
+            if (_nextclass in lib_unsim) then {
+                _nextobject enableSimulationGlobal false;
+            } else {
+                _nextobject enableDynamicSimulation true;
+            };
+        };
+        
         _nextobject allowDamage false;
         _nextobject setPosATL _nextpos;
         if (_nextobject in GRLIB_FOB_Defense_Sea_level) then { 
