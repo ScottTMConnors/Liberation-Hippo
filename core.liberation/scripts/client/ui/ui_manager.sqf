@@ -19,8 +19,15 @@ waituntil {sleep 1; !isNil "resources_infantry"};
 waituntil {sleep 1; !isNil "infantry_cap"};
 waitUntil {sleep 1; !isNil "sector_timer"};
 
-if (isNil "cinematic_camera_started") then { cinematic_camera_started = false };
-if (isNil "halojumping") then { halojumping = false };
+if ( isNil "cinematic_camera_started" ) then { cinematic_camera_started = false };
+if ( isNil "halojumping" ) then { halojumping = false };
+
+
+
+player setUnitTrait ["Medic", true];
+player setUnitTrait ["engineer", true];
+player setUnitTrait ["explosiveSpecialist", true];
+player setUnitTrait ["UAVHacker", true];
 
 if (GRLIB_Commander_mode) then {
 	0 spawn {

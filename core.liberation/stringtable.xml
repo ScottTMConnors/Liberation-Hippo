@@ -2,10 +2,10 @@
 <Project name="Liberation">
 	<Package name="Liberation">
 		<Key ID="STR_MISSION_TITLE">
-			<Original>-= Liberation RX =-</Original>
+			<Original>Liberation HIPPO</Original>
 		</Key>
 		<Key ID="STR_MISSION_AUTHOR">
-			<Original>[AKH] pSiKO</Original>
+			<Original>[AKH] pSiKO Edited By: TheHungryHippo</Original>
 		</Key>
 		<Key ID="STR_MISSION_VERSION">
 			<Original>v2.7</Original>
@@ -14163,14 +14163,10 @@
 
 		<!-- mission_BaronRouge.sqf -->
 		<Key ID="STR_BARON_ROUGE">
-			<Original>Baron Rouge</Original>
-			<Chinesesimp>红男爵</Chinesesimp>
-			<Chinese>紅男爵</Chinese>
+			<Original>Enemy Jet</Original>
 		</Key>
 		<Key ID="STR_BARON_ROUGE_MESSAGE1">
-			<Original>An ACE pilot named &lt;t color='%2'&gt;Baron Rouge&lt;/t&gt; is patrolling the island. Intercept it and clear the sky!</Original>
-			<Chinesesimp>一名呼号为&lt;t color='%2'&gt;红男爵&lt;/t&gt;的王牌飞行员正在岛上巡逻。干掉他！！</Chinesesimp>
-			<Chinese>一名呼號為&lt;t color='%2'&gt;紅男爵&lt;/t&gt;的ACE王牌飛行員正在島上巡邏。幹掉他！！</Chinese>
+			<Original>An enemy fast mover is patrolling the island. Intercept it and clear the sky!</Original>
 		</Key>
 		<Key ID="STR_BARON_ROUGE_MESSAGE2">
 			<Original>Congratulation TopGun, The sky is clear again, the enemy aircraft was taken out!</Original>

@@ -265,7 +265,232 @@ respawn_vehicles = [
 	huron_typename
 ] + respawn_vehicles_west;
 
-// *** CLASSNAME LIST ***
+// *** BUILDINGS ***
+buildings = [
+	[FOB_sign,0,0,0,GRLIB_perm_hidden],
+	[Warehouse_typename,0,0,0,GRLIB_perm_inf]
+];
+if (isNil "buildings_west_overide") then {
+	buildings append buildings_default + buildings_west;
+} else {
+	buildings append buildings_west;
+};
+
+buildings append [
+	[land_cutter_typename,0,0,0,GRLIB_perm_inf]
+];
+
+_baselv = [
+	["B_T_Quadbike_01_F",1,5,1,0],
+	["B_T_Boat_Transport_01_F",1,25,1,0],
+	["C_Boat_Transport_02_F",2,25,2,GRLIB_perm_log],
+	["C_Boat_Transport_02_F",2,25,2,GRLIB_perm_log],
+	["I_Boat_Armed_01_minigun_F",5,30,5,GRLIB_perm_log],
+	["B_T_Boat_Armed_01_minigun_F",5,30,5,GRLIB_perm_log],
+	["B_SDV_01_F",5,30,5,GRLIB_perm_log],
+	["I_SDV_01_F",5,30,5,GRLIB_perm_log],
+	["C_Scooter_Transport_01_F",1,5,1,0],
+	["SUV_01_base_black_F",1,10,1,0],
+	["B_G_Offroad_01_F",1,10,5,0],
+	["I_Pickup_rf",1,15,5,0],
+	["B_G_Offroad_01_armed_F",1,50,5,GRLIB_perm_inf],
+	["I_G_Offroad_01_armed_F",1,50,5,GRLIB_perm_inf],
+	["I_Pickup_hmg_rf",1,60,5,GRLIB_perm_inf],
+	["C_SUV_01_F",1,10,3,GRLIB_perm_inf],
+	["C_Van_01_transport_F",1,15,5,0],
+	["B_T_MRAP_01_F",2,55,12,0],
+	["B_T_MRAP_01_hmg_F",5,100,12,GRLIB_perm_inf],
+	["B_T_MRAP_01_gmg_F",5,125,12,GRLIB_perm_log],
+	["EF_B_MRAP_01_FSV_MJTF_Wdl",5,300,12,GRLIB_perm_log],
+	["EF_B_MRAP_01_LAAD_MJTF_Wdl",5,300,12,GRLIB_perm_log],
+	["EF_B_MRAP_01_AT_MJTF_Wdl",5,300,12,GRLIB_perm_log],
+	["I_MRAP_03_F",2,45,12,0],
+	["I_MRAP_03_hmg_F",5,100,12,GRLIB_perm_inf],
+	["I_MRAP_03_gmg_F",5,125,12,GRLIB_perm_log],
+	["B_T_Truck_01_transport_F",5,30,15,GRLIB_perm_log],
+	["B_T_Truck_01_covered_F",5,30,15,GRLIB_perm_tank],
+	["I_Truck_02_transport_F",5,30,15,GRLIB_perm_log],
+	["I_Truck_02_covered_F",5,30,15,GRLIB_perm_log],
+	["B_T_LSV_01_unarmed_F",2,25,10,GRLIB_perm_inf],
+	["B_T_LSV_01_armed_F",5,100,10,GRLIB_perm_log],
+	["B_T_LSV_01_AT_F",5,125,10,GRLIB_perm_log],
+	["B_T_UGV_01_olive_F",5,10,5,GRLIB_perm_inf],
+	["B_T_UGV_01_rcws_olive_F",5,250,5,GRLIB_perm_tank],
+	["I_LT_01_cannon_F",2,200,12,GRLIB_perm_log],
+	["I_LT_01_AT_F",2,200,12,GRLIB_perm_tank],
+	["I_LT_01_AA_F",2,200,12,GRLIB_perm_air],
+	["I_LSV_01_unarmed_F",2,35,10,GRLIB_perm_inf],
+	["I_LSV_01_armed_F",5,100,10,GRLIB_perm_log],
+	["I_UGV_01_F",5,10,5,GRLIB_perm_inf],
+	["I_UGV_01_rcws_F",5,250,5,GRLIB_perm_log],
+	["C_Boat_Transport_02_F",2,25,2,GRLIB_perm_log],
+	["O_T_Boat_Armed_01_hmg_F",5,30,5,GRLIB_perm_log],
+	["O_T_SDV_01_F",5,30,5,GRLIB_perm_log],
+	["O_T_G_Offroad_01_F",1,10,1,0],
+	["O_G_Offroad_01_armed_F",1,50,1,GRLIB_perm_inf],
+	["O_T_MRAP_02_ghex_F",2,45,2,0],
+	["O_T_MRAP_02_hmg_ghex_F",5,100,2,GRLIB_perm_inf],
+	["O_T_MRAP_02_gmg_ghex_F",5,125,2,GRLIB_perm_log],
+	["O_T_Truck_02_F",5,10,5,GRLIB_perm_inf],
+	["O_T_Truck_02_transport_F",5,10,5,GRLIB_perm_inf],
+	["O_T_Truck_03_transport_ghex_F",5,50,5,GRLIB_perm_log],
+	["O_T_Truck_03_covered_ghex_F",5,50,5,GRLIB_perm_log],
+	["I_LT_01_cannon_F",2,200,2,GRLIB_perm_log],
+	["O_T_LSV_02_unarmed_F",2,25,2,0],
+	["O_T_LSV_02_armed_F",5,100,2,GRLIB_perm_inf],
+	["O_T_UGV_01_F",5,10,5,GRLIB_perm_inf],
+	["O_T_UGV_01_rcws_F",5,250,5,GRLIB_perm_log]
+];
+_basehv = [
+	["B_T_APC_Tracked_01_rcws_F",10,500,20,GRLIB_perm_log],
+	["B_T_APC_Wheeled_01_cannon_F",10,500,20,GRLIB_perm_log],
+	["B_T_APC_Wheeled_01_atgm_lxWS",10,550,20,GRLIB_perm_log],
+	["B_T_APC_Tracked_01_AA_F",10,500,20,GRLIB_perm_tank],
+	["B_T_MBT_01_cannon_F",15,1000,35,GRLIB_perm_tank],
+	["B_T_MBT_01_TUSK_F",15,1500,35,GRLIB_perm_air],
+	["B_T_AFV_Wheeled_01_cannon_F",15,500,35,GRLIB_perm_log],
+	["B_T_AFV_Wheeled_01_up_cannon_F",15,550,35,GRLIB_perm_log],
+	["EF_B_AAV9_MJTF_Wdl",15,700,35,GRLIB_perm_log],
+	["EF_B_AAV9_50mm_MJTF_Wdl",15,750,35,GRLIB_perm_log],
+	["B_T_MBT_01_arty_F",15,3500,30,GRLIB_perm_max],
+	["B_T_MBT_01_mlrs_F",15,3700,30,GRLIB_perm_max],
+	["I_E_APC_tracked_03_cannon_F",10,500,20,GRLIB_perm_log],
+	["I_APC_Wheeled_03_cannon_F",10,500,20,GRLIB_perm_tank],
+	["I_APC_tracked_03_cannon_F",10,500,20,GRLIB_perm_tank],
+	["I_MBT_01_cannon_F",15,1000,25,GRLIB_perm_tank],
+	["I_MBT_03_cannon_F",15,3500,25,GRLIB_perm_max],
+	["I_Truck_02_MRL_F",15,4000,25,GRLIB_perm_max],
+	["O_T_APC_Wheeled_02_rcws_v2_ghex_F",10,400,10,GRLIB_perm_log],
+	["O_T_APC_Tracked_02_cannon_ghex_F",10,800,10,GRLIB_perm_log],
+	["O_T_APC_Tracked_02_30mm_lxWS",10,850,10,GRLIB_perm_log],
+	["O_T_APC_Tracked_02_AA_ghex_F",10,1500,10,GRLIB_perm_tank],
+	["O_T_MBT_02_cannon_ghex_F",15,1500,15,GRLIB_perm_tank],
+	["O_T_MBT_02_railgun_ghex_F",15,1800,15,GRLIB_perm_air],	
+	["O_T_MBT_04_cannon_F",15,2500,15,GRLIB_perm_air],
+	["O_T_MBT_04_command_F",15,2500,15,GRLIB_perm_air],
+	["O_T_MBT_02_arty_F",15,4000,15,GRLIB_perm_max],
+	["I_E_Truck_02_MRL_F",15,4500,15,GRLIB_perm_max]
+];
+
+if (isClass (configFile >> "CfgVehicles" >> "qav_abramsx")) then {
+	_basehv pushBack ["qav_abramsx",15,1500,35,GRLIB_perm_air];
+	_basehv pushBack ["qav_abramsx_tusk",15,1700,35,GRLIB_perm_air];
+	_basehv pushBack ["qav_abramsx_templar",15,1700,35,GRLIB_perm_air];
+	_basehv pushBack ["qav_abramsx_zeus",15,1700,35,GRLIB_perm_air];
+};
+
+_baseav = [
+	["B_UAV_01_F",1,10,5,GRLIB_perm_log],
+	["B_UAV_06_F",1,30,5,GRLIB_perm_tank],
+	["B_UAV_02_dynamicLoadout_F",5,1000,5,GRLIB_perm_air],
+	["B_T_UAV_03_dynamicLoadout_F",5,1500,10,GRLIB_perm_max],
+	["C_Plane_Civil_01_F",1,50,5,GRLIB_perm_air],
+	["B_Heli_Light_01_F",1,50,15,GRLIB_perm_log],
+	["B_Heli_Light_01_dynamicLoadout_F",1,150,15,GRLIB_perm_tank],
+	["B_Heli_Transport_03_F",10,1700,35,GRLIB_perm_air],
+	["B_Heli_Transport_01_F",10,2000,35,GRLIB_perm_tank],
+	["B_T_VTOL_01_infantry_F",10,1300,40,GRLIB_perm_air],
+	["B_T_VTOL_01_vehicle_F",10,1400,40,GRLIB_perm_air],
+	["B_T_VTOL_01_armed_F",20,2500,40,GRLIB_perm_max],
+	["B_Heli_Attack_01_dynamicLoadout_F",10,2250,30,GRLIB_perm_air],
+	["EF_B_AH99J_MJTF_Wdl",10,2500,30,GRLIB_perm_air],
+	["B_Plane_CAS_01_dynamicLoadout_F",20,3000,50,GRLIB_perm_max],
+	["B_Plane_Fighter_01_F",20,4500,50,GRLIB_perm_max],
+	["B_Plane_Fighter_01_Stealth_F",20,2000,50,GRLIB_perm_max],
+	["I_UAV_01_F",1,10,5,GRLIB_perm_log],
+	["I_UAV_06_F",1,30,5,GRLIB_perm_tank],
+	["I_UAV_02_dynamicLoadout_F",5,1000,5,GRLIB_perm_air],
+	["I_T_UAV_03_dynamicLoadout_F",5,1500,10,GRLIB_perm_max],
+	["I_UAV_05_F",5,2000,15,GRLIB_perm_max],
+	["I_Heli_light_03_unarmed_F",1,50,15,GRLIB_perm_tank],
+	["I_Heli_EC_02_RF",1,175,15,GRLIB_perm_tank],
+	["I_Heli_light_03_dynamicLoadout_F",1,150,15,GRLIB_perm_air],
+	["I_E_Heli_light_03_dynamicLoadout_F",1,150,15,GRLIB_perm_tank],	
+	["I_Plane_Fighter_03_dynamicLoadout_F", 10,3500,50,GRLIB_perm_max],
+	["I_Plane_Fighter_03_Cluster_F",20,3000,50,GRLIB_perm_max],
+	["I_Plane_Fighter_04_F",20,4500,50,GRLIB_perm_max],
+	["I_Plane_Fighter_04_Cluster_F",20,4500,50,GRLIB_perm_max],
+	["O_T_UAV_01_F",1,10,5,GRLIB_perm_log],
+	["O_T_UAV_06_F",1,30,5,GRLIB_perm_tank],
+	["O_T_UAV_02_dynamicLoadout_F",5,1000,5,GRLIB_perm_air],
+	["O_T_T_UAV_04_CAS_F",5,1500,10,GRLIB_perm_max],
+	["O_Heli_Light_02_unarmed_F",1,250,5,GRLIB_perm_tank],
+	["O_T_Heli_Transport_04_F",3,500,10,GRLIB_perm_air],
+	["O_Heli_Light_02_dynamicLoadout_F",5,1000,10,GRLIB_perm_air],
+	["O_Heli_Attack_02_dynamicLoadout_F",10,2000,20,GRLIB_perm_air],
+	["O_T_VTOL_02_infantry_dynamicLoadout_F", 10,2500,20,GRLIB_perm_max],
+	["O_T_Plane_CAS_02_dynamicLoadout_F",20,4000,40,GRLIB_perm_max],
+	["O_Plane_Fighter_02_F",20,4500,40,GRLIB_perm_max],
+	["B_UAV_RC40_HE_RF",1,100,5,GRLIB_perm_tank]
+];
+_basesta = [
+	["B_HMG_01_F",0,10,0,GRLIB_perm_inf],
+	["B_HMG_01_high_F",0,10,0,GRLIB_perm_log],
+	["B_GMG_01_F",0,20,0,GRLIB_perm_inf],
+	["B_GMG_01_high_F",0,20,0,GRLIB_perm_log],
+	["B_T_static_AA_F",0,150,0,GRLIB_perm_tank],
+	["B_T_static_AT_F",0,150,0,GRLIB_perm_tank],
+	["B_Mortar_01_F",0,500,0,GRLIB_perm_tank],
+	["B_SAM_System_01_F",10,1500,0,GRLIB_perm_air],
+	["B_SAM_System_02_F",10,1500,0,GRLIB_perm_air],
+	["B_AAA_System_01_F",10,1500,0,GRLIB_perm_max],
+	["I_UGV_02_Demining_F",0,5,0,GRLIB_perm_inf],
+	["I_Static_Designator_01_F",0,5,0,GRLIB_perm_inf],
+	["I_HMG_01_F",0,10,0,GRLIB_perm_log],
+	["I_HMG_01_high_F",0,10,0,GRLIB_perm_tank],
+	["I_GMG_01_F",0,20,0,GRLIB_perm_log],
+	["I_GMG_01_high_F",0,20,0,GRLIB_perm_tank],
+	["I_static_AA_F",0,50,0,GRLIB_perm_air],
+	["I_static_AT_F",0,50,0,GRLIB_perm_air],
+	["I_Mortar_01_F",0,500,0,GRLIB_perm_max],
+	["I_E_SAM_System_03_F",10,800,0,GRLIB_perm_max],
+	["EF_LPD_Turret_1_MJTF_Wdl",0,200,0,GRLIB_perm_log],
+	["EF_B_CommandoMortar_MJTF_Wdl",0,200,0,GRLIB_perm_log]
+];
+_basesup = [
+	["B_G_Offroad_01_repair_F",5,150,5,GRLIB_perm_inf],
+	["B_G_Van_01_fuel_F",5,130,40,GRLIB_perm_inf],
+	["B_T_APC_Tracked_01_CRV_F",5,2000,10,GRLIB_perm_log],
+	["I_G_Offroad_01_repair_F",5,15,5,GRLIB_perm_inf],
+	["I_G_Van_01_fuel_F",5,15,20,GRLIB_perm_inf],
+	["O_T_UGV_02_Demining_F",0,5,0,GRLIB_perm_inf],
+	["O_T_Static_Designator_01_F",0,5,0,GRLIB_perm_inf],
+	["O_T_HMG_01_F",0,10,0,GRLIB_perm_log],
+	["O_HMG_01_high_F",0,10,0,GRLIB_perm_tank],
+	["O_T_GMG_01_F",0,20,0,GRLIB_perm_log],
+	["O_GMG_01_high_F",0,20,0,GRLIB_perm_tank],
+	["O_static_AA_F",0,50,0,GRLIB_perm_air],
+	["O_static_AT_F",0,50,0,GRLIB_perm_air],
+	["O_Mortar_01_F",0,500,0,GRLIB_perm_max],
+	["B_SAM_System_01_F",10,1500,0,GRLIB_perm_tank],
+	["B_AAA_System_01_F",10,1500,0,GRLIB_perm_air],
+	["O_T_SAM_System_04_F",10,1500,0,GRLIB_perm_max]
+];
+
+_baseboat = [
+	"EF_B_CombatBoat_AT_MJTF_Wdl",
+	"EF_B_CombatBoat_HMG_MJTF_Wdl",
+	"EF_B_LCC_MJTF_Wdl",
+	"EF_B_LCC_SideLoad_MJTF_Wdl"
+];
+
+_classes = [[heavy_vehicles,_basehv],[light_vehicles,_baselv],[air_vehicles,_baseav],[static_vehicles,_basesta],[support_vehicles,_basesup]];
+{
+	_classnames = _x#0;
+	_base = _x#1;
+	{
+		_array = _x;
+		_vehicle = _array#0;
+		_valid = true;
+		{
+			if (_x#0 isEqualTo _vehicle) exitWith {_valid=false};
+		} forEach _classnames;
+		if (_valid) then {
+			_classnames pushBack _array;
+		};
+	} forEach _base;
+} forEach _classes;
+
 all_hostile_classnames = [];
 { all_hostile_classnames pushBackUnique (_x select 0) } foreach opfor_recyclable;
 
@@ -292,7 +517,7 @@ if ( isNil "civilian_boats" ) then {
 		"C_Rubberboat"
 	];
 };
-boats_names = [FOB_boat_typename, FOB_carrier] + civilian_boats + opfor_boats + boats_west;
+boats_names = [FOB_boat_typename, FOB_carrier] + civilian_boats + opfor_boats + boats_west + _baseboat;
 
 // *** LRX - A3W Side Mission ***
 if ( isNil "a3w_guard_squad" ) then {

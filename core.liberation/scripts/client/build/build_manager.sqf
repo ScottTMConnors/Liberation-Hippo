@@ -398,7 +398,7 @@ while { true } do {
 				private _unit_list_redep = (units player - [player]) select { (_x distance2D player < 40) && lifestate _x != 'INCAPACITATED' };
 				if (_classname == FOB_carrier) then {
 					private _fob_text = ((["NavalFobType"] call lrx_getParamData) select 1) select (["NavalFobType"] call lrx_getParamValue);
-					titleText [format ["Naval FOB (%1) Incoming...", _fob_text] ,"BLACK FADED", 30];
+					titleText [format ["Naval FOB (%1) Incoming...", _fob_text] ,"PLAIN", 30];
 					{ _x allowDamage false } forEach _unit_list_redep;
 					disableUserInput true;
 				};

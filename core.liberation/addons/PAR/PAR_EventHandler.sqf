@@ -182,10 +182,7 @@ if (_unit == player) then {
 	// Player respawn EH
 	player addEventHandler ["Respawn", { _this spawn PAR_Player_Init }];
 
-	// Player Handle Damage EH
-	if (PAR_revive != 0) then {
-		player addEventHandler ["HandleDamage", { _this call PAR_HandleDamage_EH }];
-	};
+	player addEventHandler ["HandleDamage", { _this call PAR_HandleDamage_EH }];
 } else {
 	// AI killed EH
 	_unit addEventHandler ["Killed", { _this spawn PAR_fn_death }];

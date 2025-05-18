@@ -12,7 +12,7 @@ private _release_medic = {
 	};
 
 	if !([_medic] call PAR_is_wounded) then {
-		_medic doFollow leader _medic;
+		//_medic doFollow leader _medic;
 		_medic setSpeedMode (speedMode group player);
 		_medic setCaptive false;
 	};

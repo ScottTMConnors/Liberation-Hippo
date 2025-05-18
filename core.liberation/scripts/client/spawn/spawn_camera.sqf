@@ -41,27 +41,27 @@ waitUntil { sleep 0.5; (isNil {uinamespace getvariable ["BIS_InfoText", nil]}) }
 if ( GRLIB_deployment_cinematic && !_mobile_respawn) then {
 
 	_spawn_camera camSetRelPos _endpos1;
-	_spawn_camera camcommit 1.75;
+	_spawn_camera camcommit 0.5;
 	waitUntil { camCommitted _spawn_camera };
 
 	_spawn_camera camSetRelPos _startpos2;
-	_spawn_camera camcommit 0.25;
+	_spawn_camera camcommit 0.1;
 	waitUntil { camCommitted _spawn_camera };
 
 	_spawn_camera camSetRelPos _endpos2;
-	_spawn_camera camcommit 1.75;
+	_spawn_camera camcommit 0.5;
 	waitUntil { camCommitted _spawn_camera };
 
 	_spawn_camera camSetRelPos _startpos3;
-	_spawn_camera camcommit 0.25;
+	_spawn_camera camcommit 0.1;
 	waitUntil { camCommitted _spawn_camera };
 
 	_spawn_camera camSetRelPos _endpos3;
-	_spawn_camera camcommit 1.75;
+	_spawn_camera camcommit 0.5;
 	waitUntil { camCommitted _spawn_camera };
 
 	_spawn_camera camSetRelPos [0,0.4,1.75];
-	_spawn_camera camcommit 1;
+	_spawn_camera camcommit 0.5;
 	waitUntil { camCommitted _spawn_camera };
 
 	_spawn_camera cameraEffect ["Terminate","back"];

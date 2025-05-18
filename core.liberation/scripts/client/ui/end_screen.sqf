@@ -8,8 +8,8 @@ disableUserInput true;
 player allowDamage false;
 closeDialog 0;
 if (lifestate player == "INCAPACITATED") then {
-	"colorCorrections" ppEffectEnable false;
-	"filmGrain" ppEffectEnable false;
+	// "colorCorrections" ppEffectEnable false;
+	// "filmGrain" ppEffectEnable false;
 };
 
 ["<t size = '3'>" + localize "STR_VICTORY_TITLE" + "</t>", 0, 0, 15, 0, 0, 90] spawn BIS_fnc_dynamicText;

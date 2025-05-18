@@ -1,23 +1,27 @@
-diag_log "--- Liberation RX by pSiKO ---";
+_pos = ([] call BIS_fnc_randomPos);
+_pos set [2,random 100];
+gull = "seagull" camCreate _pos;
+gull cameraEffect ["Internal","FRONT"];
+gull camCommand "manual on";
+gull camCommand "airborne";
+
+diag_log "--- Liberation HIPPO ---";
 if ((isServer || isDedicated) && !isNil "GRLIB_init_server") exitWith { diag_log "--- LRX Error: Mission restart too fast!" };
 
-disableUserInput true;
-titleText ["","BLACK FADED", 100];
-0 fadeSound 0;
-sleep 5;
 if (!isServer && isMultiplayer && count (entities "HeadlessClient_F") > 0) then {
-	titleText ["Waiting for Headless client....","BLACK FADED", 100];
+	titleText ["Waiting for Headless client....","PLAIN", 100];
 	sleep 10;
 };
 
 diag_log "--- Init start ---";
-titleText ["-- Liberation RX --","BLACK FADED", 100];
-
 [] call compileFinal preprocessFileLineNumbers "build_info.sqf";
 diag_log format ["LRX version %1 - build version: %2 build date: %3", localize "STR_MISSION_VERSION", GRLIB_build_version, GRLIB_build_date]; 
 
 profileNamespace setVariable ["BIS_SupportDevelopment", nil];
 enableSaving [false, false];
+
+lib_simpleObjects = ["Land_BagFence_Short_F","Land_CampingChair_V1_F","Land_Razorwire_F","Land_DieselGroundPowerUnit_01_F","Land_Shed_Small_F","Land_CampingTable_F","Land_ClutterCutter_large_F","Land_ConcreteKerb_01_8m_v2_F","PortableHelipadLight_01_green_F","Land_fs_feed_F","Land_HelipadSquare_F","Land_ConcreteKerb_01_4m_v2_F","Land_RepairDepot_01_civ_F","Land_Workbench_01_F","Land_Pallet_MilBoxes_F","Land_ConcreteHedgehog_01_F"];
+lib_unsim = ["Land_CncWall4_F","Land_PillboxBunker_01_big_F"];
 disableMapIndicators [false,true,false,false];
 setGroupIconsVisible [false,false];
 

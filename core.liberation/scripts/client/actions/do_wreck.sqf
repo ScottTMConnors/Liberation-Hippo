@@ -11,16 +11,11 @@ _vehicle setVariable ["wreck_in_use", true, true];
 // Stop running
 AR_active = false;
 
-private _valuable_veh = [];
-{ _valuable_veh pushBack ( _x select 0 ) } foreach opfor_recyclable;
-
 private _bounty = 0;
 private _bonus = 0;
-if (typeOf _vehicle in _valuable_veh) then {
-	_res = [_vehicle] call F_getBounty;
-	_bounty = _res select 0;
-	_bonus = _res select 1;
-};
+_res = [_vehicle] call F_getBounty;
+_bounty = _res select 0;
+_bonus = _res select 1;
 
 disableUserInput true;
 player setDir (player getDir _vehicle);

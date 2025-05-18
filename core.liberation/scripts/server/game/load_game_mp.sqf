@@ -189,7 +189,8 @@ if (!isNil "_lrx_liberation_savegame") then {
 			};
 		};
 	} foreach buildings_to_load;
-
+	_simpleObjects = ["Land_ClutterCutter_large_F","Land_ConcreteKerb_01_8m_v2_F","PortableHelipadLight_01_green_F","Land_fs_feed_F","Land_HelipadSquare_F","Land_ConcreteKerb_01_4m_v2_F","Land_RepairDepot_01_civ_F","Land_Workbench_01_F","Land_Pallet_MilBoxes_F","Land_ConcreteHedgehog_01_F"];
+	_unsim = ["Land_CncWall4_F"];
 	// Buildings
 	{
 		_nextclass = _x select 0;
@@ -320,7 +321,17 @@ if (!isNil "_lrx_liberation_savegame") then {
 			_owner = _x select 4;
 		};
 
-		_nextbuilding = createVehicle [_nextclass, zeropos, [], 0, "CAN_COLLIDE"];
+		_nextbuilding = objNull;
+        if (_nextclass in lib_simpleObjects) then {
+            _nextbuilding = createSimpleObject [_nextclass, zeropos, false];
+            _nextbuilding enableSimulationGlobal false;
+        } else {
+            _nextbuilding = createVehicle [_nextclass, zeropos, [], 0, "CAN_COLLIDE"];
+            if (_nextclass in lib_unsim) then {
+                _nextbuilding enableSimulationGlobal false;
+            };
+        };
+		
 		_nextbuilding allowDamage false;
 		_nextbuilding addMPEventHandler ["MPKilled", {_this spawn kill_manager}];
 		_nextbuilding setVectorDirAndUp [_nextdir select 0, _nextdir select 1];
@@ -487,5 +498,7 @@ publicVariable "GRLIB_mobile_respawn";
 publicVariable "GRLIB_vehicle_to_military_base_links";
 publicVariable "GRLIB_player_scores";
 publicVariable "GRLIB_sector_defense";
+save_is_loaded = true;
+publicVariable "save_is_loaded";
 publicVariable "sector_attack_in_progress";
 publicVariable "fob_attack_in_progress";

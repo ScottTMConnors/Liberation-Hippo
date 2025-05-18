@@ -56,9 +56,7 @@ if (_liberated_sector in (sectors_capture + sectors_bigtown)) then {
 private _text = format ["Reward Received: %1 Ammo and %2 Fuel", _rwd_ammo, _rwd_fuel];
 {
 	if (_x distance2D (markerpos _liberated_sector) < GRLIB_sector_size ) then {
-		if (_liberated_sector in (sectors_capture + sectors_bigtown) && (call is_night)) then {
-			[markerPos _liberated_sector, 15] remoteExec ["remote_call_fireworks", owner _x];
-		};
+		[markerPos _liberated_sector, 15] remoteExec ["remote_call_fireworks", owner _x];
 		[_x, _rwd_ammo, _rwd_fuel] call ammo_add_remote_call;
 		if (_rwd_rep > 0) then { [_x, _rwd_rep] call F_addReput };
 		[gamelogic, _text] remoteExec ["globalChat", owner _x];

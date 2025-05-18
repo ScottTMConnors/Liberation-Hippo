@@ -21,7 +21,7 @@ createDialog "liberation_deploy";
 waitUntil { dialog };
 titleText ["","BLACK IN", 5];
 ((findDisplay 5201) displayCtrl 201) ctrlAddEventHandler ["mouseButtonDblClick", { deploy = 1; }];
-private _noesckey = (findDisplay 5201) displayAddEventHandler ["KeyDown", "if ((_this select 1) == 1) then { true }"];
+//private _noesckey = (findDisplay 5201) displayAddEventHandler ["KeyDown", "if ((_this select 1) == 1) then { true }"];
 disableUserInput false;
 disableUserInput true;
 disableUserInput false;
@@ -82,6 +82,14 @@ for "_idx" from 0 to ((count _mobile_respawn_list) -1) do {
 	_vehicle = _mobile_respawn_list select _idx;
 	_player = (_vehicle getVariable ["GRLIB_vehicle_owner", ""]) call BIS_fnc_getUnitByUID;
 	_choiceslist append [[format ["%1 - %2 #%3", [_vehicle] call F_getLRXName, [_player] call get_player_name, _idx], getPos _vehicle, _vehicle]];
+};
+
+_graveBox = player getVariable ["PAR_grave_box", objNull];
+if (!(isNull _graveBox) && alive _graveBox) then {
+	_pos = getPos _graveBox;
+	if (_pos distance2D zeropos > 300) then {
+		_choiceslist append [["Last Death Position", _pos, _graveBox]];
+	};
 };
 
 lbClear 201;
@@ -145,14 +153,12 @@ camDestroy respawn_camera;
 deleteVehicle respawn_object;
 camUseNVG false;
 "spawn_marker" setMarkerPosLocal markers_reset;
-(findDisplay 5201) displayRemoveEventHandler ["KeyDown", _noesckey];
 closeDialog 0;
+//(findDisplay 5201) displayRemoveEventHandler ["KeyDown", _noesckey];
 if (!alive player) exitWith {};
-
 private _sleep = 2;
 if (GRLIB_deployment_cinematic) then { _sleep = 7 };
 cinematic_camera_started = false;
-titleText ["","BLACK IN", 5];
 
 if (deploy == 1) then {
 	player setVariable ["GRLIB_action_inuse", true, true];
