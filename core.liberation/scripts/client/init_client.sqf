@@ -312,7 +312,7 @@ if (GRLIB_Commander_mode) then {
 		params ["_units", "_pos"];
 		private _caller = _thisArgs select 0;
 		_isCommander = [_caller] call F_getCommander;
-		if ((time - GRLIB_Com_lastClicked) > 3 && {(GRLIB_Commander_VoteEnabled || _isCommander) && active_sectors isEqualTo [] && !(GRLIB_AvailAttackSectors isEqualTo [])}) then {
+		if ((time - GRLIB_Com_lastClicked) > 3 && {(GRLIB_Commander_VoteEnabled || _isCommander) && active_sectors isEqualTo [] && !(isNil "GRLIB_AvailAttackSectors") && {(!(GRLIB_AvailAttackSectors isEqualTo []))}}) then {
 			GRLIB_Com_lastClicked = time;
 			_closestSector = "";
 			_closestDistance = 9999;

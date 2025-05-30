@@ -270,6 +270,9 @@ GRLIB_sector_spawning = false;
 publicVariable "GRLIB_sector_spawning";
 if (GRLIB_Commander_mode) then {
 	// Commander mode
+	// Init list of available sectors, shared by client and server
+	GRLIB_AvailAttackSectors = [];
+	publicVariable "GRLIB_AvailAttackSectors";
 	GRLIB_connectMarkers = createHashMap;
 	GRLIB_connCalculating = false;
 	GRLIB_Sector_Votes = createHashMap;

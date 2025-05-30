@@ -1,7 +1,7 @@
 if !(GRLIB_Commander_mode) exitWith {};
 
 waitUntil {sleep 1; !isNil "GRLIB_init_server"};
-waitUntil {sleep (random [1,1,2]); !GRLIB_connCalculating};
+if (GRLIB_connCalculating) exitWith {};
 GRLIB_connCalculating = true;
 _roundPos = {
     params ["_x", "_y"];
@@ -18,9 +18,21 @@ _fobMarks = GRLIB_fobSects apply {
     [(getMarkerPos _x) call _roundPos, _x];
 };
 _sectors_positions append _fobMarks;
+
+if (_sectors_positions isEqualTo []) exitWith {
+    GRLIB_connCalculating = false;
+    diag_log "LRX - Commander mode: No sectors found, aborting sector connection calculation.";
+};
+
 _sectors_positions sort true;
 
 _fsects = blufor_sectors + GRLIB_fobSects;
+
+if (_fsects isEqualTo []) exitWith {
+    GRLIB_connCalculating = false;
+    diag_log "LRX - Commander mode: No friendly sectors found, aborting sector connection calculation.";
+};
+
 _newConnections = createHashMap;
 
 _AvailAttackSectors = [];
@@ -56,9 +68,18 @@ _tolerance = 0.01;
     } forEach _sectors_positions;
 } forEach _sectors_positions;
 
-// Only broadcast a smaller list (Will always be smaller than opfor_sectors list for example)
-GRLIB_AvailAttackSectors = [] + _AvailAttackSectors;
-publicVariable "GRLIB_AvailAttackSectors";
+if (!(_AvailAttackSectors isEqualTo [])) then {
+    // Only broadcast a smaller list (Will always be smaller than opfor_sectors list for example)
+    GRLIB_AvailAttackSectors = [] + _AvailAttackSectors;
+    publicVariable "GRLIB_AvailAttackSectors";
+    diag_log "LRX - Commander mode: No available attack sectors found";
+};
+
+if (_newConnections isEqualTo []) exitWith {
+    GRLIB_connCalculating = false;
+    diag_log "LRX - Commander mode: No new connections found, aborting sector connection calculation.";
+};
+
 _connectMarkers = +GRLIB_connectMarkers;
 {
     _pos = _x;
