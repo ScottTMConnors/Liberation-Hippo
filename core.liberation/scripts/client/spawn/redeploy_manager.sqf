@@ -75,7 +75,7 @@ for "_idx" from 0 to (count GRLIB_all_fobs - 1) do {
 	};
 };
 
-private _mobile_respawn_list = [] call F_getMobileRespawns;
+private _mobile_respawn_list = [getPlayerUID player] call F_getMobileRespawns;
 _mobile_respawn_list = ([_mobile_respawn_list, [player], {_input0 distance2D _x}, 'ASCEND'] call BIS_fnc_sortBy);
 private ["_vehicle", "_player"];
 for "_idx" from 0 to ((count _mobile_respawn_list) -1) do {
@@ -87,8 +87,8 @@ for "_idx" from 0 to ((count _mobile_respawn_list) -1) do {
 _graveBox = player getVariable ["PAR_grave_box", objNull];
 if (!(isNull _graveBox) && alive _graveBox) then {
 	_pos = getPos _graveBox;
-	if (_pos distance2D zeropos > 300) then {
-		_choiceslist append [["Last Death Position", _pos, _graveBox]];
+	if ((_pos distance2D [0,0,0]) > 300) then {
+		_choiceslist append [["Last Death Position", [_pos] call F_findSafePlace, _graveBox]];
 	};
 };
 
