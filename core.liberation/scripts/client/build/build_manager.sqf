@@ -186,7 +186,7 @@ while { true } do {
 		if (_classname == FOB_carrier) then {
 			_ghost_name = "VR_3DSelector_01_default_F";
 		};
-		_vehicle = _ghost_name createVehicleLocal _ghost_spot;
+		_vehicle = createSimpleObject [_ghost_name, _ghost_spot, true];
 		_vehicle allowdamage false;
 		_vehicle enableSimulation false;
 		_vehicle setVehicleLock "LOCKED";
@@ -235,6 +235,11 @@ while { true } do {
 				};
 			};
 		};
+		_stat = (_className in (static_vehicles apply {_x#0}));
+		if (_className in (blufor_trenches apply {_x#0}) && !_stat) then {
+			build_rotation = 180;
+		};
+
 		if (!repeatbuild) then { build_distance = 3 max _dist };
 
 		// Improved retexture for preview
@@ -434,33 +439,15 @@ while { true } do {
 			};
 
 			// Trench
-			if (_buildtype == GRLIB_TrenchBuildType) exitWith {
-				private _vehicle = createVehicle [_classname, zeropos, [], 0, "CAN_COLLIDE"];
-				_vehicle enableSimulationGlobal false;
-				_vehicle setVectorDirAndUp [_veh_dir, _veh_vup];
-				disableUserInput true;
-				player setDir (player getDir _veh_pos);
-				private _zStart = -1;
-				private _zEnd = round (_veh_pos select 2);
-				private _steps = 15;
-				private _stepHeight = (_zEnd - _zStart) / _steps;
-				for "_i" from 0 to _steps do {
-					if (_i % 3 == 0) then {
-						playSound3D [getMissionPath "res\dig02.ogg", player, false, getPosASL player, 5, 1, 250];
-						//player playMoveNow "AinvPknlMstpSlayWrflDnon_medicOther";
-						player playMoveNow "AinvPknlMstpSnonWnonDnon_medicUp0";
-					};
-					_newZ = _zStart + (_stepHeight * _i);
-					_vehicle setPosATL [_veh_pos select 0, _veh_pos select 1, _newZ];
-					sleep 1;
+			if (_buildtype == GRLIB_TrenchBuildType) exitWith {				
+				_vehicle = objNull;
+				if (_stat) then {
+					_vehicle = createVehicle [_classname, _veh_pos, [], 0, "NONE"];
+				} else {
+					_vehicle = createSimpleObject [_classname, _veh_pos, false];
 				};
-				sleep 1;
-				disableUserInput false;
-				disableUserInput true;
-				disableUserInput false;
-				if (lifeState player == 'INCAPACITATED') exitWith { deleteVehicle _vehicle };
+				_vehicle setVectorDirAndUp [_veh_dir, _veh_vup];
 				_vehicle setPosATL _veh_pos;
-				_vehicle enableSimulationGlobal true;
 				_vehicle setVariable ["GRLIB_counter_TTL", round(time + 600), true];
 				_vehicle setVariable ["R3F_LOG_disabled", true, true];
 				GRLIB_current_trenches = GRLIB_current_trenches + 1;

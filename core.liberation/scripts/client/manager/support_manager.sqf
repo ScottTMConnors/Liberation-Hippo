@@ -148,7 +148,7 @@ while { true } do {
 						_timer = _vehicle getVariable ["GREUH_rearm_timer", 0];
 						if (_timer <= time) then {
 							_max_ammo = 3;
-							_cooldown = 5 * 60;
+							_cooldown = 20;
 							[_reammo_cost] call F_pay;
 							_vehicle setVehicleAmmo 1;
 							if (_is_arty) then { _cooldown = _cooldown * 1.5 };
@@ -175,7 +175,7 @@ while { true } do {
 						_timer = _vehicle getVariable ["GREUH_repair_timer", 0];
 						if (_timer <= time) then {
 							_vehicle setDamage 0;
-							_vehicle setVariable ["GREUH_repair_timer", round (time + (5*60))];  // min cooldown
+							_vehicle setVariable ["GREUH_repair_timer", round (time + (20))];  // min cooldown
 							_screenmsg = format ["%1\n%2 - %3", _vehicle_name, localize "STR_REPAIRING", "100%"];
 							titleText [_screenmsg, "PLAIN DOWN"];
 							hintSilent _screenmsg;
@@ -198,7 +198,7 @@ while { true } do {
 						_timer = _vehicle getVariable ["GREUH_refuel_timer", 0];
 						if (_timer <= time) then {
 							_vehicle setFuel 1;
-							_vehicle setVariable ["GREUH_refuel_timer", round (time + (5*60))];  // min cooldown
+							_vehicle setVariable ["GREUH_refuel_timer", round (time + (20))];  // min cooldown
 							_screenmsg = format ["%1\n%2 - %3", _vehicle_name, localize "STR_REFUELING", "100%"];
 							titleText [_screenmsg, "PLAIN DOWN"];
 							hintSilent _screenmsg;
