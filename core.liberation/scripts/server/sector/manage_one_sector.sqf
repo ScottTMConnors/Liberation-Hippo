@@ -387,7 +387,7 @@ while {true} do {
 	_ratio = (count _enemy_left / _startingCount) * 100;
 	_sector setMarkerText format ["%2 - %1%%", _ratio, _sectorName];
 	_nearRadioTower = ([_sector_pos, GRLIB_side_enemy] call F_getNearestTower != "");
-	if (_ratio <= 10 && !_nearRadioTower) exitWith { // Victory
+	if (_ratio <= 10) exitWith { // Victory
 		_sector setMarkerText _sectorName;
 		diag_log format ["Sector %1 mission succeeded.", _sector];
 		[_task,"SUCCEEDED"] call BIS_fnc_taskSetState;
@@ -396,7 +396,7 @@ while {true} do {
 		} else {
 			[_sector] remoteExec ["sector_liberated_remote_call", 2];
 		};
-				{
+		{
 			if (_max_prisonners > 0) then {
 				if ((floor random 100) <= GRLIB_surrender_chance) then {
 					[_x] spawn prisoner_ai;

@@ -10,6 +10,7 @@
         sleep 10;
     };
 };
+
 sleep 5;
 waitUntil {sleep 1; !(isNil "GRLIB_fobSects") && !(isNil "active_sectors")};
 SpawnSquad = {
@@ -27,7 +28,7 @@ SpawnSquad = {
 	} else {
 		_spawnSector = selectRandom GRLIB_fobSects;
 		_attackSector = selectRandom active_sectors;
-		_squad = blufor_squad_mix;
+		_squad = marines;
 	};
 	_pos = [getMarkerPos _spawnSector] call getRandomPos;
 	_grp = [_pos, _squad, _side, "infantry"] call F_libSpawnUnits;
@@ -39,7 +40,7 @@ SpawnSquad = {
 SpawnDefenders = {
 	params ["_pos"];
 	_side = GRLIB_side_friendly;
-	_squad = (selectRandom squads)#0;
+	_squad = marines;
 	waitUntil {sleep (random 4); !(GRLIB_fobSects isEqualTo [])};
 	_pos = [(_pos#0), (_pos#1)] getPos [100 * sqrt random 1, random 360];
 	_grp = [_pos, _squad, _side, "infantry"] call F_libSpawnUnits;
@@ -63,7 +64,7 @@ getRandomPos = {
 GRLIB_FobDefenders = createHashMap;
 
 squadManager = {
-	params ["_group", "_attackPos", "_isEnemy"];
+	params ["_group", "_destPos", "_isEnemy"];
 	_units = units _group;
 	while {true} do {
 		_aliveUnits = _units select {alive _x};
@@ -76,12 +77,11 @@ squadManager = {
 				_sleep = random [120,240,480];
 			};
 			sleep (_sleep);
-			[_isEnemy, _attackPos] spawn SpawnSquad;
+			[_isEnemy, _destPos] spawn SpawnSquad;
 		};
-		_attackPos = _attackPos getPos [(floor random 100), floor random 360];
+		_attackPos = _destPos getPos [(floor random 90), floor random 360];
 		_group move _attackPos;
-		_group setCombatMode "RED";
-		_group setBehaviour "COMBAT";
+		_group setSpeedMode "FULL";
 		sleep 20;
 	};
 };

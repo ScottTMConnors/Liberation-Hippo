@@ -783,6 +783,37 @@ GRLIB_recycleable_info = (light_vehicles + heavy_vehicles + air_vehicles + stati
 // AIR DROP
 [] call compileFinal preprocessFileLineNumbers format ["scripts\shared\default_airdrop_classnames.sqf"];
 
+marines = [
+	"EF_B_Marine_SL_Wdl",
+	"EF_B_Marine_TL_Wdl",
+	"B_HeavyGunner_F",
+	"B_HeavyGunner_F",
+	"B_CTRG_Soldier_M_tna_F",
+	"B_CTRG_Soldier_M_tna_F",
+	"EF_B_Marine_LAT2_Wdl",
+	"EF_B_Marine_AR_Wdl",
+	"EF_B_Marine_Medic_Wdl",
+	"EF_B_Marine_AA_Wdl",
+	"EF_B_Marine_AR_Wdl",
+	"EF_B_Marine_GL_Wdl",
+	"EF_B_Marine_GL_Wdl"
+];
+
+_customSquads = [
+	[marines,25,600,0,GRLIB_perm_max]
+];
+
+squads append _customSquads;
+
+squads_names = [
+	localize "STR_LIGHT_RIFLE_SQUAD",
+	localize "STR_RIFLE_SQUAD",
+	localize "STR_AT_SQUAD",
+	localize "STR_AA_SQUAD",
+	localize "STR_MIXED_SQUAD",
+	"Marines"
+];
+
 // Filter Mods
 diag_log "--- LRX: Check Classnames ---";
 infantry_units = [ infantry_units ] call F_filterMods;
@@ -869,13 +900,7 @@ opfor_squad_8_airkillers = [
 	opfor_aa
 ];
 
-squads_names = [
-	localize "STR_LIGHT_RIFLE_SQUAD",
-	localize "STR_RIFLE_SQUAD",
-	localize "STR_AT_SQUAD",
-	localize "STR_AA_SQUAD",
-	localize "STR_MIXED_SQUAD"
-];
+
 
 opfor_infantry = [opfor_sentry,opfor_rifleman,opfor_grenadier,opfor_squad_leader,opfor_team_leader,opfor_marksman,opfor_machinegunner,opfor_heavygunner,opfor_medic,opfor_rpg,opfor_at,opfor_aa,opfor_officer,opfor_sharpshooter,opfor_sniper,opfor_engineer];
 GRLIB_rank_level = ["PRIVATE", "CORPORAL", "SERGEANT", "LIEUTENANT", "CAPTAIN", "MAJOR", "COLONEL"];
