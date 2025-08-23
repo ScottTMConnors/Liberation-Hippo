@@ -12,14 +12,10 @@ if (!_on_road) then { _object_type append ["ROAD", "MAIN ROAD", "TRACK", "TRAIL"
 private _radius = 0;
 private _spawn_pos = [];
 while { _radius < _max_radius } do {
-    _spawn_pos = [(_start_pos select 0), (_start_pos select 1)] getPos [_radius, floor random 360];
-    if (
-        count (_spawn_pos isFlatEmpty [-1, -1, 0.5, 10, _water_mode, false]) != 0 &&
-        count (nearestObjects [_spawn_pos, ["LandVehicle", "CAManBase"], 7]) == 0 &&
-        count (nearestObjects [_spawn_pos, ["House_F"], 12]) == 0 &&
-        count (nearestObjects [_spawn_pos, _big_building, 30]) == 0 &&
-        count (nearestTerrainObjects [_spawn_pos, _object_type, 7]) == 0
-    ) exitWith {};
+    _spawn_pos = [(_start_pos select 0), (_start_pos select 1)] getPos [_radius * sqrt random 1, random 360];	
+    if ((!((_spawn_pos isFlatEmpty [-1, -1, 0.5, 10, _water_mode, false]) isEqualTo []))
+		&& ((_spawn_pos nearEntities 10) isEqualTo [])
+		&& ((nearestTerrainObjects [_spawn_pos, ["Tree", "Building", "House", "ROCK", "WALL", "POWER LINES", "FENCE", "HIDE", "FUELSTATION", "CHURCH", "WATERTOWER", "TRANSMITTER", "SHIPWRECK", "TOURISM", "HIDE"], 10]) isEqualTo [])) exitWith {};
     _radius = _radius + 0.5;
     sleep 0.01;
 };

@@ -185,7 +185,6 @@ sleep 1;
 
 // Start intro
 startgame = 0;
-playMusic GRLIB_music_startup;
 [] execVM "scripts\client\ui\intro.sqf";
 
 // LRX Addons

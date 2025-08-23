@@ -10,6 +10,7 @@
         sleep 10;
     };
 };
+sleep 5;
 waitUntil {sleep 1; !(isNil "GRLIB_fobSects") && !(isNil "active_sectors")};
 SpawnSquad = {
 	params ["_isEnemy"];
@@ -26,7 +27,7 @@ SpawnSquad = {
 	} else {
 		_spawnSector = selectRandom GRLIB_fobSects;
 		_attackSector = selectRandom active_sectors;
-		_squad = (selectRandom squads)#0;
+		_squad = blufor_squad_mix;
 	};
 	_pos = [getMarkerPos _spawnSector] call getRandomPos;
 	_grp = [_pos, _squad, _side, "infantry"] call F_libSpawnUnits;
@@ -40,7 +41,7 @@ SpawnDefenders = {
 	_side = GRLIB_side_friendly;
 	_squad = (selectRandom squads)#0;
 	waitUntil {sleep (random 4); !(GRLIB_fobSects isEqualTo [])};
-	_pos = [_pos] call getRandomPos;
+	_pos = [(_pos#0), (_pos#1)] getPos [100 * sqrt random 1, random 360];
 	_grp = [_pos, _squad, _side, "infantry"] call F_libSpawnUnits;
 	_grp;
 };
@@ -50,9 +51,9 @@ getRandomPos = {
 	_spawnLoc = [];
 	_r = 100;
 	while {true} do {
-		_spawnLoc = [(_pos#0), (_pos#1)] getPos [100 * sqrt random 1, random 360];
+		_spawnLoc = [(_pos#0), (_pos#1)] getPos [_r * sqrt random 1, random 360];
 		if ((!(_spawnLoc isFlatEmpty [3, -1, 0.2, 2, 0, false] isEqualTo []))
-		&& ((_spawnLoc nearEntities random [3, 5, 20]) isEqualTo [])
+		&& ((_spawnLoc nearEntities 50) isEqualTo [])
 		&& (nearestTerrainObjects [_spawnLoc, ["Tree", "Building", "House", "ROCK", "WALL", "POWER LINES", "FENCE", "HIDE", "FUELSTATION", "CHURCH", "WATERTOWER", "TRANSMITTER", "SHIPWRECK", "TOURISM", "HIDE"], 3]) isEqualTo []) exitWith {};
 		_r = _r + 10;
 	};
@@ -70,7 +71,11 @@ squadManager = {
 			{
 				deleteVehicle _x;
 			} forEach _units;
-			sleep (random [30,60,90]);
+			_sleep = random [30,60,90];
+			if (_isEnemy) then {
+				_sleep = random [120,240,480];
+			};
+			sleep (_sleep);
 			[_isEnemy, _attackPos] spawn SpawnSquad;
 		};
 		_attackPos = _attackPos getPos [(floor random 100), floor random 360];
@@ -81,7 +86,7 @@ squadManager = {
 	};
 };
 
-_friendlyAttackers = 1;
+_friendlyAttackers = 2;
 _enemyAttackers = 2;
 _friendlyDefenders = true;
 

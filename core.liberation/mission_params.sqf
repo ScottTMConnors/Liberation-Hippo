@@ -1368,7 +1368,7 @@ _Mission_Params = [
         ]]
     ]],
     [GRLIB_PARAM_CommanderModeEnabled, createHashMapFromArray [
-        [GRLIB_PARAM_ValueKey, 0],
+        [GRLIB_PARAM_ValueKey, 1],
         [GRLIB_PARAM_NameKey, localize "STR_COMMANDER_MODE"],
         [GRLIB_PARAM_OptionLabelKey, [localize "STR_PARAMS_DISABLED", localize "STR_PARAMS_ENABLED"]],
         [GRLIB_PARAM_OptionValuesKey, [0,1]],

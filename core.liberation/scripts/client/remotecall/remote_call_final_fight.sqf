@@ -110,10 +110,10 @@ if (sector_timer <= 0) then {
 	//waitUntil { camCommitted _spawn_camera };
 
 	playSoundUI ["\a3\Music_F_Oldman\music\radio\rock\Track_R_11.ogg", 1];
-	titleText [localize "STR_MISSION3_FAILED" ,"BLACK", 3];
+	titleText [localize "STR_MISSION3_FAILED" ,"PLAIN", 3];
 	waitUntil { camCommitted _spawn_camera };
 	sleep 5;
-	titleText [localize "STR_TITLE_THANKS_RX", "BLACK", 3];
+	titleText [localize "STR_TITLE_THANKS_RX", "PLAIN", 3];
 	sleep 5;
 	_spawn_camera cameraEffect ["Terminate","back"];
 	camDestroy _spawn_camera;

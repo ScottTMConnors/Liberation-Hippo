@@ -48,8 +48,12 @@ private ["_unit", "_ai_rank", "_pos", "_backpack"];
 		_unit setPitch 1;
 		_ai_rank = selectRandom (GRLIB_rank_level select [0, _max_rank]);
 		_unit setUnitRank _ai_rank;
-		_unit setSkill (0.5 + (GRLIB_rank_level find _ai_rank) * 0.05);
-
+		if (_side == GRLIB_side_friendly) then {
+			_unit setSkill 1;
+		} else {
+			_unit setSkill 0;
+		};
+		
 		if (_type == "divers") then {
 			_pos set [2, -6];
 			_unit setPosASL _pos;

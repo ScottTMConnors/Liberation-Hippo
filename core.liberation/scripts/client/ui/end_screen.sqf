@@ -144,7 +144,7 @@ uiSleep _line_delay;
 uiSleep _line_delay;
 [ 695, localize "STR_STATS_29" ] call write_credit_line;
 
-titleText [localize "STR_VICTORY_TITLE" ,"BLACK", 5];
+titleText [localize "STR_VICTORY_TITLE" ,"PLAIN", 5];
 waitUntil { !dialog };
 cinematic_camera_started = false;
 endMission "END";
