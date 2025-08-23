@@ -29,11 +29,9 @@ lbClear 110;
 {
     _text = (_x select 0);
     _defense_price = (_x select 2);
-    if (GRLIB_player_score >= GRLIB_perm_max || _defense_price < 100) then {
-        if (count _text > 25) then { _text = _text select [0,25] };
-        lnbAddRow [110, [_text, str _defense_price]];
-        lnbSetPicture  [110, [((lnbSize 110) select 0) - 1, 0], _icon];
-    };
+    if (count _text > 25) then { _text = _text select [0,25] };
+    lnbAddRow [110, [_text, str _defense_price]];
+    lnbSetPicture  [110, [((lnbSize 110) select 0) - 1, 0], _icon];
 } foreach GRLIB_FOB_Defense;
 lbSetCurSel [110, -1];
 
@@ -68,6 +66,7 @@ if (build_action == 0) exitWith {};
 private _count_objects = count _objects_to_build;
 if (_count_objects == 0) exitWith {};
 if (!([parseNumber _defense_price] call F_pay)) exitWith {};
+enableDynamicSimulationSystem true;
 
 build_confirmed = 1;
 private _msg = format [localize "STR_FOB_BUILD_STATUS", name player, _defense_name, _count_objects, ([_fob_pos] call F_getFobName)];
@@ -88,8 +87,20 @@ _fob_pos set [2, 0];
 	_nextdir = (_x select 2) + _fob_dir;
     _nextpos = _fob_pos vectorAdd ([_nextpos, -_fob_dir] call BIS_fnc_rotateVector2D);
 
-    if (!surfaceIsWater _nextpos && !isOnRoad _nextpos && _nextclass in fob_defenses_classnames) then {
-        _nextobject = _nextclass createVehicle _nextpos;
+    if (!surfaceIsWater _nextpos && !isOnRoad _nextpos) then {
+        _nextObject = objNull;
+        if (_nextclass in lib_simpleObjects) then {
+            _nextobject = createSimpleObject [_nextclass, _nextpos, false];
+            _nextobject enableSimulationGlobal false;
+        } else {
+            _nextobject = _nextclass createVehicle _nextpos;
+            if (_nextclass in lib_unsim) then {
+                _nextobject enableSimulationGlobal false;
+            } else {
+                _nextobject enableDynamicSimulation true;
+            };
+        };
+        
         _nextobject allowDamage false;
         _nextobject setPosATL _nextpos;
         if (_nextobject in GRLIB_FOB_Defense_Sea_level) then { 
@@ -97,7 +108,6 @@ _fob_pos set [2, 0];
         } else {
             _nextobject setVectorDirAndUp [[-cos _nextdir, sin _nextdir, 0] vectorCrossProduct surfaceNormal _nextpos, surfaceNormal _nextpos];
         };
-        sleep 0.1;
     };
     if !(_nextclass in fob_defenses_classnames) then { diag_log format [localize "STR_FOB_DEFENSE_TEMPLATE_REJECTED", _defense_name, _nextclass] };
 } foreach _objects_to_build;

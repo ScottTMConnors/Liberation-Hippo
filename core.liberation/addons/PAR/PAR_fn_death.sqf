@@ -1,6 +1,7 @@
 params ["_unit"];
 
 [(_unit getVariable ['PAR_myMedic', objNull]), _unit] call PAR_fn_medicRelease;
+_unit setVariable ["PAR_wounded", false, true];
 
 removeAllActions _unit;
 if (_unit == player) then {
@@ -58,7 +59,6 @@ if (_unit == player) then {
 	if (GRLIB_respawn_cooldown > 0) then {
 		player setVariable ["GRLIB_last_respawn", round (time + GRLIB_respawn_cooldown)];
 	};
-	titleText ["" ,"BLACK FADED", 100];
 } else {
 	PAR_AI_bros = PAR_AI_bros - [_unit];
 	gamelogic globalChat (format [localize "STR_PAR_DE_01", name _unit]);

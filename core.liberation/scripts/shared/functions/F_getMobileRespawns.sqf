@@ -24,6 +24,7 @@ if (_uid != "") then {
 		_mobile_respawn_list = _personal_mobile_respawn;
 		GRLIB_max_respawn_reached = false;
 	};
+	_mobile_respawn_list append (vehicles select { alive _x && _x getVariable ["GRLIB_vehicle_owner", ""] == _uid });
 };
 
 _mobile_respawn_list;
