@@ -2,19 +2,19 @@
 <Project name="Liberation">
 	<Package name="Liberation">
 		<Key ID="STR_MISSION_TITLE">
-			<Original>Liberation HIPPO</Original>
+			<Original>Hippos Conquest</Original>
 		</Key>
 		<Key ID="STR_MISSION_AUTHOR">
-			<Original>[AKH] pSiKO Edited By: TheHungryHippo</Original>
+			<Original>TheHungryHippo</Original>
 		</Key>
 		<Key ID="STR_MISSION_VERSION">
-			<Original>v2.7</Original>
+			<Original>69420</Original>
 			<Chinesesimp>2.7版本</Chinesesimp>
 			<Chinese>2.7版本</Chinese>
 			<Japanese>バージョン2.7</Japanese>
 		</Key>
 		<Key ID="STR_MISSION_MOTD">
-			<Original>It should not be too easy...</Original>
+			<Original>dafuq nigga?</Original>
 			<Russian>Это не должно быть слишком просто...</Russian>
 			<French>Ça doit pas être trop facile...</French>
 			<Chinesesimp>经历漫漫的战斗历程才终能获得解放</Chinesesimp>
@@ -23,7 +23,7 @@
 			<Czech>Nemělo by to být příliš snadné...</Czech>
 		</Key>
 		<Key ID="STR_MISSION_DESCRIPTION">
-			<Original>With the power of Freedom and Democracy you shall liberate this country from the OPFOR oppression.</Original>
+			<Original>Yo yo ... my nigga, lets fuck these niggas up nigga!!!!!</Original>
 			<French>Avec le pouvoir de la Liberté et de la Démocratie votre mission est de libérer ce pays de l'oppression de l'OPFOR.</French>
 			<German>Befreie das Land von der OPFOR-Unterdrückung mit der Kraft von Freiheit und Demokratie</German>
 			<Spanish>Con el poder de la Libertad y la Democracia, debes liberar al país de la opresión del OPFOR</Spanish>
@@ -1978,7 +1978,7 @@
 			<Czech>Snížená – 1,5krát větší výdrž</Czech>
 		</Key>
 		<Key ID="STR_PARAMS_PAR_REVIVE">
-			<Original>pSiKO AI Revive</Original>
+			<Original>AI Revive</Original>
 		</Key>
 		<Key ID="STR_PARAMS_PAR_AI_REVIVE">
 			<Original>PAR: Limit AI Revive</Original>
@@ -15844,7 +15844,7 @@
 	<!-- pSiKO AI Revive -->
 	<Package name="LRX_PAR">
 		<Key ID="STR_PAR_AI_REVIVE_INITIALIZED">
-			<Original>-------- pSiKo AI Revive Initialized --------</Original>
+			<Original>-------- AI Revive Initialized --------</Original>
 			<French>-------- pSiKo Réanimation IA initialisée --------</French>
 			<German>-------- pSiKo KI-Wiederbelebung initialisiert --------</German>
 			<Spanish>-------- pSiKo Reanimación de IA iniciada --------</Spanish>

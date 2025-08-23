@@ -320,7 +320,7 @@ private _attackStages = [
 	[75, false],
 	[50, false],
 	[35, false],
-	[25, false]
+	[20, false]
 ];
 
 private _stageAttack = {
@@ -373,8 +373,8 @@ _sector setMarkerText format ["%1 - Loaded!", _sectorName];
 sleep 10;
 GRLIB_sector_spawning = false;
 publicVariable "GRLIB_sector_spawning";
+_startingCount = count ((_sector_pos nearEntities ["CAManBase", _local_capture_size * 1.2]) select { (side _x == GRLIB_side_enemy) && !(_x getVariable ["GRLIB_mission_AI", false]) });
 
-private ["_sector_ownership"];
 while {true} do {
 	if (!(_sector in active_sectors)) exitWith { // Aborted
 		diag_log format ["Sector %1 mission aborted.", _sector];
@@ -382,14 +382,12 @@ while {true} do {
 		sleep 30;
 		[_task, true, true] call BIS_fnc_deleteTask;
 	};
-	_sector_ownership = [_sector_pos, _local_capture_size] call F_sectorOwnership;
-	if (_sector in sectors_tower) then {
-		private _towers = { (alive _x) && (_x getVariable ['GRLIB_Radio_Tower', false]) } count (nearestObjects [_sector_pos, [Radio_tower], 20]);
-		if (_towers > 0) then { _sector_ownership = GRLIB_side_enemy };
-	};
-	private _ratio = 100 - round (([_sector, _local_capture_size] call F_getForceRatio) * 100);
+	
+	private _enemy_left = (_sector_pos nearEntities ["CAManBase", _local_capture_size * 1.2]) select { (side _x == GRLIB_side_enemy) && !(_x getVariable ["GRLIB_mission_AI", false]) };
+	_ratio = (count _enemy_left / _startingCount) * 100;
 	_sector setMarkerText format ["%2 - %1%%", _ratio, _sectorName];
-	if (_sector_ownership == GRLIB_side_friendly) exitWith { // Victory
+	_nearRadioTower = ([_sector_pos, GRLIB_side_enemy] call F_getNearestTower != "");
+	if (_ratio <= 10 && !_nearRadioTower) exitWith { // Victory
 		_sector setMarkerText _sectorName;
 		diag_log format ["Sector %1 mission succeeded.", _sector];
 		[_task,"SUCCEEDED"] call BIS_fnc_taskSetState;
@@ -398,8 +396,7 @@ while {true} do {
 		} else {
 			[_sector] remoteExec ["sector_liberated_remote_call", 2];
 		};
-		private _enemy_left = (_sector_pos nearEntities ["CAManBase", _local_capture_size * 1.2]) select { (side _x == GRLIB_side_enemy) && !(_x getVariable ["GRLIB_mission_AI", false]) };
-		{
+				{
 			if (_max_prisonners > 0) then {
 				if ((floor random 100) <= GRLIB_surrender_chance) then {
 					[_x] spawn prisoner_ai;
@@ -458,11 +455,13 @@ while {true} do {
 		} forEach _active_players;
 	};
 
-	_nearRadioTower = ([_sector_pos, GRLIB_side_enemy] call F_getNearestTower != "");
+	
 	if (_nearRadioTower) then { // Sector Defense
 		{
 			_stage = _forEachIndex + 1;
-			if ((_x select 0) >= _ratio && !(_x select 1)) then {
+			_thresHold = _x select 0;
+			_alreadyAttacked = _x select 1;
+			if (_ratio <= _thresHold && !_alreadyAttacked) then {
 				_x set [1, true];
 				[_stage, _sector_pos] spawn _stageAttack;
 				sleep 5;
