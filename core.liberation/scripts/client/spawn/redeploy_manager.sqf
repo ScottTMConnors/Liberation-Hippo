@@ -18,7 +18,6 @@ createDialog "liberation_deploy";
 waitUntil { dialog };
 titleText ["","BLACK IN", 5];
 ((findDisplay 5201) displayCtrl 201) ctrlAddEventHandler ["mouseButtonDblClick", { deploy = 1; }];
-private _noesckey = (findDisplay 5201) displayAddEventHandler ["KeyDown", "if ((_this select 1) == 1) then { true }"];
 disableUserInput false;
 disableUserInput true;
 disableUserInput false;
@@ -88,6 +87,12 @@ for "_idx" from 0 to ((count _mobile_respawn) -1) do {
 	_choiceslist append [[format ["%1 - %2 #%3", [_vehicle] call F_getLRXName, _name, _idx], getPos _vehicle, _vehicle]];
 };
 
+private _grave = player getVariable ["PAR_grave_box", objNull];
+if (!isNull _grave && {alive _grave} && {(getPosATL _grave) distance2D [0,0,0] > 300}) then {
+    private _safe = [getPosATL _grave, 2, 0, 100] call F_findSafePlace;
+    if !(_safe isEqualTo []) then {_choiceslist pushBack ["Last Death Position", _safe, objNull, true]};
+};
+
 lbClear 201;
 {
 	lbAdd [201, (_x select 0)];
@@ -149,7 +154,6 @@ camDestroy respawn_camera;
 deleteVehicle respawn_object;
 camUseNVG false;
 "spawn_marker" setMarkerPosLocal markers_reset;
-(findDisplay 5201) displayRemoveEventHandler ["KeyDown", _noesckey];
 closeDialog 0;
 if (!alive player) exitWith {};
 
@@ -208,7 +212,7 @@ if (deploy == 1) then {
 		_nb_unit = count _list_redep;
 		if (isNil "_spawn_str") then {_spawn_str = "Somewhere."};
 		[_spawn_str, _mobile] spawn spawn_camera;
-		[_destpos, _destdist, _mobile, _list_redep] call do_redeploy;
+		[_destpos, _destdist, _mobile, _list_redep, count (_choiceslist select _idxchoice) > 3] call do_redeploy;
 	};
 };
 

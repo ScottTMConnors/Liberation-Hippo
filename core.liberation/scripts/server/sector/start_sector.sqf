@@ -1,7 +1,7 @@
 params ["_sector"];
 if (GRLIB_Commander_mode) then {
     GRLIB_AvailAttackSectors = [];
-    active_sectors_hc = [];  // no HC fallback set
+    if (active_sectors isEqualTo []) then {active_sectors_hc = []};
     publicVariable "GRLIB_AvailAttackSectors";
 };
 

@@ -133,3 +133,13 @@ is_recyclable = compileFinal preprocessFileLineNumbers "scripts\shared\functions
 lrx_getParamData = compileFinal preprocessFileLineNumbers "scripts\shared\functions\F_getParamData.sqf";
 lrx_getParamValue = compileFinal preprocessFileLineNumbers "scripts\shared\functions\F_getParamValue.sqf";
 reammo_ai = compileFinal preprocessFileLineNumbers "scripts\shared\functions\F_reammo_ai.sqf";
+
+HPC_fnc_applyEasyAI = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_applyEasyAI.sqf";
+HPC_fnc_startBattle = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_startBattle.sqf";
+HPC_fnc_rewardPlayer = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_rewardPlayer.sqf";
+HPC_fnc_createBuilding = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_createBuilding.sqf";
+HPC_fnc_saveOrders = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_saveOrders.sqf";
+HPC_fnc_restoreOrders = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_restoreOrders.sqf";
+HPC_fnc_catalogType = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_catalogType.sqf";
+HPC_fnc_catalogInit = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_catalogInit.sqf";
+HPC_fnc_catalogFilters = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_catalogFilters.sqf";

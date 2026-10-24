@@ -36,3 +36,5 @@ if (isNil {player getVariable "GREUH_stuff_price"}) then {
 
 sleep 1;
 GRLIB_backup_loadout = getUnitLoadout player;
+
+{ player setUnitTrait [_x, true] } forEach ["Medic","Engineer","ExplosiveSpecialist","UAVHacker"];

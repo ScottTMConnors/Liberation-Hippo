@@ -7,7 +7,7 @@ params [
 ];
 
 private _public = false;
-private _vehicle = createVehicle [_classname, _veh_pos, [], 0, "CAN_COLLIDE"];
+private _vehicle = [_classname, _veh_pos] call HPC_fnc_createBuilding;
 _vehicle setVectorDirAndUp [_veh_dir, _veh_vup];
 _vehicle setPosATL _veh_pos;
 

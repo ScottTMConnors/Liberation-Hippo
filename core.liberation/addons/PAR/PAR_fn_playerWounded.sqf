@@ -37,7 +37,12 @@ if (_unit in units player) then {
 if (!isNil "_my_dog") then { _my_dog setVariable ["do_find", player] };
 
 // PAR AI Revive Call
+_unit setVariable ["HPC_woundReady", false];
 [_unit] spawn PAR_fn_unconscious;
+if (!GRLIB_ACE_medical_enabled) then {
+    private _deadline = diag_tickTime + 10;
+    waitUntil {sleep 0.05; !alive _unit || {_unit getVariable ["HPC_woundReady", false]} || diag_tickTime > _deadline};
+};
 [] call PAR_fn_revive_ui;
 
 // Player got revived

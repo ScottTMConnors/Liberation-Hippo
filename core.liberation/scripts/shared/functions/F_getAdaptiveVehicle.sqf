@@ -3,6 +3,10 @@ private _vehicle_light = (opfor_vehicles_low_intensity - opfor_troup_transports_
 private _vehicle_apc = _vehicle_heavy select { ([_x, ["Wheeled_APC_F", "APC_Tracked_01_base_F", "APC_Tracked_02_base_F", "APC_Tracked_03_base_F"]] call F_itemIsInClass) };
 private _vehicle_tank = (_vehicle_heavy select { _x isKindOf "Tank" }) - _vehicle_apc;
 
+if !(missionNamespace getVariable ["HPC_VehicleProgression", false]) exitWith {
+    selectRandom (_vehicle_light + _vehicle_apc + _vehicle_heavy + _vehicle_tank)
+};
+
 private _vehicle_pool = _vehicle_light - _vehicle_apc;
 if ( combat_readiness > 15 ) then { _vehicle_pool = _vehicle_light };
 if ( combat_readiness > 35 ) then { _vehicle_pool = _vehicle_light + _vehicle_apc };

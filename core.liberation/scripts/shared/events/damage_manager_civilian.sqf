@@ -10,6 +10,8 @@ if (!isNull _instigator) then {
 	};
 };
 
+if !(missionNamespace getVariable ["HPC_CivilianProtection", false]) exitWith { _damage };
+
 private _newDamage = 0;
 if (side _killer == GRLIB_side_friendly) then {
 	private _vehicle = objectParent _killer;

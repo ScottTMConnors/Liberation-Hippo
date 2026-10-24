@@ -1,0 +1,13 @@
+params ["_class"];
+private _cfg = configFile >> "CfgVehicles" >> _class;
+if (_class isKindOf "CAManBase") exitWith {"Infantry"};
+if (_class isKindOf "StaticWeapon") exitWith {"Static weapons"};
+if (getNumber (_cfg >> "isUav") > 0) exitWith {"Drones"};
+if (_class isKindOf "Helicopter") exitWith {"Helicopters"};
+if (_class isKindOf "Plane") exitWith {"Planes"};
+if (_class isKindOf "Ship") exitWith {"Boats"};
+if (_class isKindOf "Wheeled_APC_F" || _class isKindOf "APC_Tracked_01_base_F" || _class isKindOf "APC_Tracked_02_base_F" || _class isKindOf "APC_Tracked_03_base_F") exitWith {"APCs"};
+if (_class isKindOf "Tank") exitWith {"Tanks"};
+if (_class isKindOf "Truck_F") exitWith {"Trucks"};
+if (_class isKindOf "LandVehicle") exitWith {"Cars"};
+"Other";

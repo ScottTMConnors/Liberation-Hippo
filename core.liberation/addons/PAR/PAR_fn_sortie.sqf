@@ -37,9 +37,7 @@ if (PAR_revive == 2) then {
 	_medic removeItem "FirstAidKit";
 };
 
-if (PAR_ai_revive_max > 0 && !isPlayer _wnded && local _wnded) then {
-	[_wnded] spawn PAR_revive_dec;
-};
+
 
 if ([_medic] call PAR_is_medic) then {
 	_wnded setDamage 0;
@@ -70,7 +68,7 @@ if (_wnded == player) then {
 	};
 } else {
 	_wnded setSpeedMode (speedMode group _wnded);
-	_wnded doFollow _wnded;
+
 };
 
 _wnded setVariable ["PAR_isUnconscious", false, true];

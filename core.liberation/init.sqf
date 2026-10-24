@@ -1,4 +1,4 @@
-diag_log "--- Liberation RX by pSiKO ---";
+diag_log "--- Hippos Conquest by TheHungryHippo; based on Liberation RX ---";
 
 // Multiplayer only
 if (!isMultiplayer) exitWith {
@@ -26,7 +26,9 @@ titleText ["-- Liberation RX --","BLACK FADED", 100];
 
 profileNamespace setVariable ["BIS_SupportDevelopment", nil];
 enableSaving [false, false];
-disableMapIndicators [true,true,false,false];
+lib_simpleObjects = ["Land_BagFence_Short_F","Land_CampingChair_V1_F","Land_Razorwire_F","Land_DieselGroundPowerUnit_01_F","Land_Shed_Small_F","Land_CampingTable_F","Land_ClutterCutter_large_F","Land_ConcreteKerb_01_8m_v2_F","PortableHelipadLight_01_green_F","Land_fs_feed_F","Land_HelipadSquare_F","Land_ConcreteKerb_01_4m_v2_F","Land_RepairDepot_01_civ_F","Land_Workbench_01_F","Land_Pallet_MilBoxes_F","Land_ConcreteHedgehog_01_F"];
+lib_unsim = ["Land_CncWall4_F","Land_PillboxBunker_01_big_F"];
+disableMapIndicators [false,true,false,false];
 setGroupIconsVisible [false,false];
 
 abort_loading = false;

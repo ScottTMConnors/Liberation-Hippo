@@ -17,6 +17,10 @@ _path = format ["mod_template\%1\classnames_west.sqf", GRLIB_mod_west];
 _ret = [_path] call F_getTemplateFile;
 if (!_ret) exitWith { abort_loading = true };
 
+HPC_factionLightVehicles = +light_vehicles;
+HPC_factionHeavyVehicles = +heavy_vehicles;
+[] call HPC_fnc_catalogInit;
+
 diag_log "--- LRX: Check West Classnames ---";
 private _blufor_vehicles = [];
 { _blufor_vehicles pushBackUnique (_x select 0) } forEach (infantry_units_west + light_vehicles + heavy_vehicles + air_vehicles + static_vehicles + support_vehicles_west + buildings_west);

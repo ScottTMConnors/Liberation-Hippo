@@ -167,7 +167,7 @@ GRLIB_PARAM_OptionDescriptionKey = "OptionDescriptions";
 
 _Mission_Params = [
     [GRLIB_PARAM_introductionKey, createHashMapFromArray [
-        [GRLIB_PARAM_ValueKey, 1],
+        [GRLIB_PARAM_ValueKey, 0],
         [GRLIB_PARAM_NameKey, localize "STR_PARAMS_INTRO"],
         [GRLIB_PARAM_OptionLabelKey, [localize "STR_PARAMS_DISABLED", localize "STR_PARAMS_ENABLED"]],
         [GRLIB_PARAM_OptionValuesKey, [0, 1]],
@@ -985,7 +985,7 @@ _Mission_Params = [
         ]]
     ]],
     [GRLIB_PARAM_Thermic, createHashMapFromArray [
-        [GRLIB_PARAM_ValueKey, 1],
+        [GRLIB_PARAM_ValueKey, 2],
         [GRLIB_PARAM_NameKey, localize "STR_THERMAL"],
         [GRLIB_PARAM_OptionLabelKey, [localize "STR_PARAMS_DISABLED", "Only at night", localize "STR_PARAMS_ENABLED"]],
         [GRLIB_PARAM_OptionValuesKey, [0,1,2]],
@@ -1196,7 +1196,7 @@ _Mission_Params = [
         ]]
     ]],
     [GRLIB_PARAM_ArtyMaxShot, createHashMapFromArray [
-        [GRLIB_PARAM_ValueKey, 15],
+        [GRLIB_PARAM_ValueKey, 0],
         [GRLIB_PARAM_NameKey, localize "STR_PARAMS_MAX_SHOT"],
         [GRLIB_PARAM_OptionLabelKey, [
             localize "STR_PARAMS_DISABLED","10 shots","15 shots","20 shots","25 shots","30 shots","40 shots"
@@ -1445,7 +1445,7 @@ _Mission_Params = [
         ]]
     ]],
     [GRLIB_PARAM_CommanderModeEnabled, createHashMapFromArray [
-        [GRLIB_PARAM_ValueKey, 0],
+        [GRLIB_PARAM_ValueKey, 1],
         [GRLIB_PARAM_NameKey, localize "STR_COMMANDER_MODE"],
         [GRLIB_PARAM_OptionLabelKey, [localize "STR_PARAMS_DISABLED", localize "STR_PARAMS_ENABLED"]],
         [GRLIB_PARAM_OptionValuesKey, [0,1]],
@@ -1526,6 +1526,8 @@ _Mission_Params = [
 ];
 
 // ParamsValidator
+_Mission_Params append ([] call compileFinal preprocessFileLineNumbers "scripts\shared\hippo_params.sqf");
+
 try {
     if (isNil "_Mission_Params") then {
         diag_log "--- LRX: Missing parameters ---";

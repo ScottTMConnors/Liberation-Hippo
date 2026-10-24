@@ -1,14 +1,7 @@
 params ["_unit"];
 
 if (GRLIB_ACE_medical_enabled) exitWith {};
-if (rating _unit < -2000) exitWith {_unit setDamage 1};
-if (!([] call F_getValid)) exitWith {_unit setDamage 1};
-
-private _cur_revive = 1;
-if (PAR_ai_revive_max > 0 && !isPlayer _unit && local _unit) then {
-	_cur_revive = ([_unit] call PAR_revive_cur);
-};
-if (_cur_revive <= 0) exitWith {_unit setDamage 1};
+[_unit] call HPC_fnc_saveOrders;
 
 _unit allowDamage false;
 _unit setUnconscious true;
@@ -18,7 +11,6 @@ _unit setVariable ["PAR_BleedOutTimer", round(time + PAR_bleedout), true];
 _unit setVariable ["PAR_isDragged", 0, true];
 
 if (_unit == player) then {
-	if ([_unit] call F_getScore > GRLIB_perm_log + 5) then { [_unit, -1] remoteExec ["F_addScore", 2] };
 	if (GRLIB_disable_death_chat) then { for "_channel" from 0 to 4 do { _channel enableChannel false } };
 	PAR_backup_loadout = [_unit] call F_getCargoUnit;
 } else {
@@ -26,6 +18,8 @@ if (_unit == player) then {
 	[_unit] call PAR_deathSound;
 };
 [_unit, _unit] call PAR_fn_medicRelease;
+// The low-effects UI no longer has a cinematic delay to hide initialization.
+_unit setVariable ["HPC_woundReady", true];
 
 waitUntil { sleep 0.1; isNull objectParent _unit };
 sleep 3;
@@ -39,7 +33,7 @@ while { alive _unit && ([_unit] call PAR_is_wounded) && time <= (_unit getVariab
 	_unit setOxygenRemaining 1;
 	private _unit_list = ([_unit] call PAR_protected_units) select { !([_x] call PAR_is_wounded) };
 	if (count _unit_list > 0) then {
-		if (isNil {_unit getVariable "PAR_myMedic"}) then {
+		if (!isPlayer _unit && isNil {_unit getVariable "PAR_myMedic"}) then {
 			if (_unit in units player) then {
 				if (_unit getSlotItemName 611 != "") then {
 					_unit sideChat (localize "STR_PAR_UC_01");
@@ -66,7 +60,8 @@ if (_unit == player) then {
 };
 
 // Bad end
-if (time > _unit getVariable ["PAR_BleedOutTimer", 0]) exitWith {
+if (!alive _unit || time > _unit getVariable ["PAR_BleedOutTimer", 0]) exitWith {
+	[_unit] call HPC_fnc_restoreOrders;
 	[(_unit getVariable ["PAR_myMedic", objNull]), _unit] call PAR_fn_medicRelease;
 	_unit setDamage 1;
 };
@@ -81,9 +76,11 @@ if (_unit == player) then {
 } else {
 	_unit setVariable ["GRLIB_can_speak", true, true];
 	_unit setSpeedMode (speedMode group player);
-	_unit doFollow player;
+
 };
 
 sleep 10;   //time to recover
 _unit setCaptive false;
 _unit allowDamage true;
+
+[_unit] call HPC_fnc_restoreOrders;

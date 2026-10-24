@@ -151,7 +151,7 @@ PAR_fn_fixPos = {
 
 PAR_is_medic = {
 	params ["_unit"];
-	(getNumber (configOf _unit >> "attendant") == 1);
+	(_unit getUnitTrait "Medic" || getNumber (configOf _unit >> "attendant") == 1);
 };
 
 PAR_has_medikit = {

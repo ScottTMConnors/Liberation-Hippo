@@ -44,3 +44,14 @@ RPT_fnc_CompoVehicle = compileFinal preprocessFileLineNumbers "addons\VAM\fn_com
 RPT_fnc_TextureVehicle = compileFinal preprocessFileLineNumbers "addons\VAM\fn_textureVehicle.sqf";
 fnc_VAM_common_camo = compileFinal preprocessFileLineNumbers "addons\VAM\vehicles\fnc_VAM_common_camo.sqf";
 fnc_VAM_common_comp = compileFinal preprocessFileLineNumbers "addons\VAM\vehicles\fnc_VAM_common_comp.sqf";
+
+// Apply on each machine only to AI owned by that machine, including headless clients.
+[] spawn {
+    waitUntil { sleep 1; !isNil "HPC_EasyAI" && !isNil "GRLIB_init_server" };
+    private _previous = false;
+    while {true} do {
+        if (HPC_EasyAI || _previous) then {{ [_x] call HPC_fnc_applyEasyAI } forEach allUnits};
+        _previous = HPC_EasyAI;
+        sleep 5;
+    };
+};

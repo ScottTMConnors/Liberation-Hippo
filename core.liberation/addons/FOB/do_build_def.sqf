@@ -24,7 +24,7 @@ lbClear 110;
 {
     _text = (_x select 0);
     _defense_price = (_x select 2);
-    if (GRLIB_player_score >= GRLIB_perm_max || _defense_price < 100) then {
+    if (true) then {
         if (count _text > 25) then { _text = _text select [0,25] };
         lnbAddRow [110, [_text, str _defense_price]];
         lnbSetPicture  [110, [((lnbSize 110) select 0) - 1, 0], _icon];
@@ -90,7 +90,7 @@ _fob_pos set [2, 0];
         if ([] call is_admin) then { gamelogic globalChat _msg };
     } else {
         _building_count = _building_count + 1;
-        _nextobject = _nextclass createVehicle _nextpos;
+        _nextobject = [_nextclass, _nextpos] call HPC_fnc_createBuilding;
         _nextobject setVariable ["R3F_LOG_disabled", true, true];
         _nextobject allowDamage false;
         _nextobject setPosATL _nextpos;

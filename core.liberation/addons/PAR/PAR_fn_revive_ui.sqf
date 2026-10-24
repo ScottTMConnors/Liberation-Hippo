@@ -10,38 +10,23 @@ if (GRLIB_respawn_cooldown > 0) then {
 	};
 };
 
-//--- Skull
-private _pos = positionCameraToWorld [0,0,-0.2];
-private _destpos = [getpos player select 0, getpos player select 1, (getpos player select 2) + 150];
-private _cam = "camera" camCreate _pos;
+// Hippo orbit camera. The worker ends when this UI closes.
+private _cam = "camera" camCreate (getPosATL player vectorAdd [0,0,50]);
 _cam cameraEffect ["internal", "BACK"];
-_cam camSetFOV 1.0;
 showCinemaBorder false;
-if ( call is_night ) then { camUseNVG true } else { camUseNVG false };
-//_cam camSetTarget player; 		//follow player
-_cam camSetTarget getpos player;	//static view
-
-createDialog "par_deathscreen";
-waitUntil { sleep 0.1; dialog };
-
-[player] call PAR_deathSound;
-uiSleep 3.5;
-
-titleText ["" ,"BLACK IN", 3];
-
-"filmGrain" ppEffectAdjust [0.3, 2, 4, 0.5, 0.5, true];
-"filmGrain" ppEffectCommit 0;
-"filmGrain" ppEffectEnable true;
-
-"colorCorrections" ppEffectAdjust [1, 1.6, -0.35, [1, 1, 1, 0], [1, 1, 1, 0], [0.75, 0.25, 0, 1.0]];
-"colorCorrections" ppEffectCommit 0;
-"colorCorrections" ppEffectEnable true;
-
-_cam camCommit 0;
-_cam camSetPos _destpos;
-_cam camCommit 900;
-uiSleep 2;
-closeDialog 0;
+private _orbit = [_cam] spawn {
+    params ["_camera"];
+    private _angle = random 360;
+    while {!isNull _camera && alive player && ([player] call PAR_is_wounded)} do {
+        _angle = _angle - 4;
+        private _pos = player getPos [50, _angle];
+        _pos set [2, (getPosATL player select 2) + 50];
+        _camera camSetTarget player;
+        _camera camSetPos _pos;
+        _camera camCommit 1;
+        sleep 1;
+    };
+};
 
 //--- Countdown
 private _mk1 = createMarkerLocal [format ["PAR_marker_%1", PAR_Grp_ID], getPosATL player];
@@ -52,10 +37,9 @@ _mk1 setMarkerColor "ColorRed";
 createDialog "par_respawn";
 waitUntil { sleep 0.1; dialog };
 private _display = findDisplay 5566;
-private _noesckey = _display displayAddEventHandler ["KeyDown", "if ((_this select 1) == 1) then { true }"];
 
 (_display displayCtrl 677) ctrlEnable false; 	//disable restart button
-(_display displayCtrl 679) ctrlEnable false; 	//disable recall button
+(_display displayCtrl 679) ctrlEnable !(player getVariable ["HPC_medicCallBusy", false]);
 
 disableUserInput false;
 disableUserInput true;
@@ -102,13 +86,9 @@ while { alive player && ([player] call PAR_is_wounded) && _bleedout_timer > 0 } 
 		(_display displayCtrl 677) ctrlEnable true;
 	};
 
-	if (_ticks == _respawn_button_delay * 2) then {
-		(_display displayCtrl 679) ctrlEnable true;
-	};
 
-	if (_ticks % 10 == 0) then {
-		[10000] call BIS_fnc_bloodEffect;
-	};
+
+
 
 	if (_ticks % 50 == 0) then {
 		(_display displayCtrl 676) ctrlSetStructuredText parseText format["<t size='0.8' align='center'>Tips:<br/>%1</t>", selectRandom GRLIB_TipsText];
@@ -125,6 +105,7 @@ deletemarker _mk1;
 "colorCorrections" ppEffectCommit 2;
 "colorCorrections" ppEffectEnable false;
 "filmGrain" ppEffectEnable false;
+terminate _orbit;
 _cam cameraEffect ["Terminate", "BACK"];
 camDestroy _cam;
 camUseNVG false;

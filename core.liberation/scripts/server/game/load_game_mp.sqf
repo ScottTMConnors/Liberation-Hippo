@@ -214,7 +214,7 @@ if (!isNil "_lrx_liberation_savegame") then {
 		_nextr3f = false;
 		if (!isNil {_x select 3}) then { _nextr3f = true };
 
-		_nextbuilding = createVehicle [_nextclass, zeropos, [], 100, "CAN_COLLIDE"];
+		_nextbuilding = [_nextclass, zeropos] call HPC_fnc_createBuilding;
 		_nextbuilding allowDamage false;
 		_nextbuilding setVectorDirAndUp [_nextdir select 0, _nextdir select 1];
 		_nextbuilding setPosWorld _nextpos;
@@ -263,7 +263,7 @@ if (!isNil "_lrx_liberation_savegame") then {
 			_owner = _x select 4;
 		};
 
-		_nextbuilding = createVehicle [_nextclass, zeropos, [], 100, "CAN_COLLIDE"];
+		_nextbuilding = [_nextclass, zeropos] call HPC_fnc_createBuilding;
 		_nextbuilding allowDamage false;
 		_nextbuilding addMPEventHandler ["MPKilled", {_this spawn kill_manager}];
 		_nextbuilding setVectorDirAndUp [_nextdir select 0, _nextdir select 1];
@@ -359,7 +359,7 @@ if (!isNil "_lrx_liberation_savegame") then {
 			_owner = _x select 4;
 		};
 
-		_nextbuilding = createVehicle [_nextclass, zeropos, [], 100, "CAN_COLLIDE"];
+		_nextbuilding = [_nextclass, zeropos] call HPC_fnc_createBuilding;
 		_nextbuilding allowDamage false;
 		_nextbuilding addMPEventHandler ["MPKilled", {_this spawn kill_manager}];
 		_nextbuilding setVectorDirAndUp [_nextdir select 0, _nextdir select 1];

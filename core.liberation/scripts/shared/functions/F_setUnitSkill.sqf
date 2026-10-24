@@ -35,3 +35,5 @@ _unit setSkill ["aimingShake",    ([_rank, 0.0] call _calc_skill)];
 _unit setSkill ["spotTime",       ([_rank, 0.0] call _calc_skill)];
 _unit setSkill ["commanding",     1];
 _unit setSkill ["general",        1];
+
+[_unit] call HPC_fnc_applyEasyAI;

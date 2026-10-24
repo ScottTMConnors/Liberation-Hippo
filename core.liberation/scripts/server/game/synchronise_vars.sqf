@@ -2,7 +2,7 @@ waitUntil {sleep 1; !isNil "GRLIB_init_server"};
 
 private _blufor_sectors = [];
 
-active_sectors = [];
+if (isNil "active_sectors") then {active_sectors = []};
 publicVariable "active_sectors";
 
 sector_timer = 0;

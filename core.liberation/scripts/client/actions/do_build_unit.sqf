@@ -14,6 +14,7 @@ _unit enableIRLasers true;
 _unit enableGunLights "Auto";
 _unit setUnitRank "PRIVATE";
 _unit setSkill 0.6;
+[_unit] call HPC_fnc_applyEasyAI;
 
 if (GRLIB_force_english) then { _unit setSpeaker (format ["Male0%1ENG", round (1 + floor random 9)]) };
 

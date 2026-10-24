@@ -1,8 +1,8 @@
-params ["_classname"];
+params ["_classname", ["_squadName", "Squad"]];
 
 private _pos = getPosATL player;
 private _grp = createGroup [GRLIB_side_friendly, true];
-_grp setGroupIdGlobal [format ["%1 %2", squads_names select buildindex, groupId _grp]];
+_grp setGroupIdGlobal [format ["%1 %2", _squadName, groupId _grp]];
 
 private ["_unitrank", "_unit", "_class_overide"];
 {
@@ -16,6 +16,7 @@ private ["_unitrank", "_unit", "_class_overide"];
 	[_unit] call F_fixModUnit;
 	_unit setUnitRank _unitrank;
 	_unit setSkill 0.65;
+[_unit] call HPC_fnc_applyEasyAI;
 	_unit enableIRLasers true;
 	_unit enableGunLights "Auto";
 	if (GRLIB_force_english) then { _unit setSpeaker (format ["Male0%1ENG", round (1 + floor random 9)]) };

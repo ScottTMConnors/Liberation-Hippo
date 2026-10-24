@@ -177,20 +177,15 @@ if (isServer) then {
 
 				if (_unit_side == GRLIB_side_enemy) exitWith {
 					stats_opfor_soldiers_killed = stats_opfor_soldiers_killed + 1;
-					if (isplayer _killer) then {
-						stats_opfor_killed_by_players = stats_opfor_killed_by_players + 1;
-						_killer = (getPlayerUID _killer) call BIS_fnc_getUnitByUID;
-						[_killer, 1] call F_addScore;
-					};
-					private _ai_score = _killer getVariable ["PAR_AI_score", nil];
-					if (!isNil "_ai_score") then {
-						_killer setVariable ["PAR_AI_score", (_ai_score - 1), true];
-						_leader = leader group _killer;
-						_vehicle = objectParent _killer;
-						if (!isNull _vehicle && objectParent _leader == _vehicle && isPlayer _leader && (driver _vehicle == _leader || commander _vehicle == _leader)) then {
-							[_leader, 1] call F_addScore;
-						};
-					};
+                    private _rewardPlayer = [_killer] call HPC_fnc_rewardPlayer;
+                    if (!isNull _rewardPlayer) then {
+                        stats_opfor_killed_by_players = stats_opfor_killed_by_players + 1;
+                        [_rewardPlayer, 1] call F_addScore;
+                    };
+                    private _ai_score = _killer getVariable ["PAR_AI_score", nil];
+                    if (!isNil "_ai_score") then {
+                        _killer setVariable ["PAR_AI_score", (_ai_score - 1), true];
+                    };
 					if (floor random 2 == 0) then {
 						private _deathsound = format ["A3\sounds_f\characters\human-sfx\P%1\hit_max_%2.wss", selectRandom ["03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18"], selectRandom [1,2,3]];
 						[_deathsound, _unit, false, getPosASL _unit, 5, 1, 300] call F_playSound;
@@ -247,21 +242,22 @@ if (isServer) then {
 		if (_unit_class == mobile_respawn) exitWith { [_unit, "del"] call mobile_respawn_remote_call };
 		if (_unit_class in respawn_vehicles) then {	[_unit, "del"] call mobile_respawn_remote_call };
 
-		if (isPlayer _killer) then {
-			_owner_id = getPlayerUID _killer;
+		private _rewardPlayer = [_killer] call HPC_fnc_rewardPlayer;
+		if (!isNull _rewardPlayer) then {
+			_owner_id = getPlayerUID _rewardPlayer;
 			if (!(_unit getVariable ["GRLIB_vehicle_owner", ""] in ["", "public", "server", _owner_id])) then {
 				_penalty = 50;
-				_msg = format ["Penalty of %1 to %2 for killing a Friendly vehicle !!", _penalty, name _killer];
+				_msg = format ["Penalty of %1 to %2 for killing a Friendly vehicle !!", _penalty, name _rewardPlayer];
 				[gamelogic, _msg] remoteExec ["globalChat", 0];
-				[_killer, -_penalty] call F_addScore;
+				[_rewardPlayer, -_penalty] call F_addScore;
 			};
 
 			if (_unit_class in all_hostile_classnames) then {
 				_bounty = [_unit] call F_getBounty;
 				if (((_bounty select 0) + (_bounty select 1)) > 0) then {
-					[_unit_class, _bounty, _killer] remoteExec ["remote_call_ammo_bounty", 0];
-					[_killer, (_bounty select 0), 0] call ammo_add_remote_call;
-					[_killer, (_bounty select 1)] call F_addScore;
+					[_unit_class, _bounty, _rewardPlayer] remoteExec ["remote_call_ammo_bounty", 0];
+					[_rewardPlayer, (_bounty select 0), 0] call ammo_add_remote_call;
+					[_rewardPlayer, (_bounty select 1)] call F_addScore;
 					stats_opfor_vehicles_killed_by_players = stats_opfor_vehicles_killed_by_players + 1;
 				};
 			};

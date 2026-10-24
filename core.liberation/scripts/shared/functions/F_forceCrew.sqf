@@ -12,6 +12,9 @@ private _grp =_side createVehicleCrew _vehicle;
 sleep 0.5;
 private _crew = crew _vehicle;
 if (count _crew == 0) exitWith { diag_log format ["--- LRX can't create crew for vehicle %1", _vehicle_class]; grpNull };
+if (_vehicle_class isKindOf "Air" || _vehicle_class in (uavs_vehicles + list_static_weapons + static_vehicles_AI)) then {
+    {[_x] call HPC_fnc_applyEasyAI} forEach _crew;
+};
 
 // Drone / UAV / Aircraft / Statics
 if (_vehicle_class in (uavs_vehicles + list_static_weapons)) exitWith { _grp };
@@ -25,6 +28,7 @@ private ["_unit", "_path"];
 	if (_mission_ai) then { _unit setVariable ["GRLIB_mission_AI", true, true] };
 	_unit addMPEventHandler ["MPKilled", { _this spawn kill_manager }];
 	_unit setSkill 0.65;
+	[_unit] call HPC_fnc_applyEasyAI;
 	_unit allowFleeing 0;
 
 	// Side

@@ -36,10 +36,7 @@ while {true} do {
 			// AI Rating
 			if (rating _unit <= 3000) then { _unit addRating 7500 };
 
-			// AI stop doing shit !
-			if (([player] call PAR_is_wounded) && (leader (group player) != player) && isNil {_unit getVariable "PAR_busy"}) then {
-				doStop _unit;
-			};
+
 		};
 
 		// AI revive
@@ -50,45 +47,7 @@ while {true} do {
 			private _no_enemy = (([_unit, GRLIB_capture_size, GRLIB_side_enemy, 1] call F_getUnitsCount) == 0);
 			if (_no_enemy && _is_medic && _has_medikit) then { [_unit] call PAR_fn_heal };
 
-			// AI medical status
-			private _msg = "";
-			private _cur_revive = ([_unit] call PAR_revive_cur);
-			private _timer = _unit getVariable ["PAR_revive_msg_timer", 0];
-			private _history = _unit getVariable ["PAR_revive_history", []];
-			if (count _history > 0) then {
-				private _first = _history select 0;
-				if (time >= _first) then {
-					_history deleteAt 0;
-					_unit setVariable ["PAR_revive_history", _history];
-					_msg = format [localize "STR_PAR_REVIVE_RESTORED", name _unit, _cur_revive];
-					_timer = 0;
-				} else {
-					private _near_medical = (count (nearestObjects [_unit, [medic_heal_typename, a3w_heal_tent], 12]) > 0);
-					if (_near_medical) then {
-						_history set [0, (_first - 60)];
-						_unit setVariable ["PAR_revive_history", _history];
-						if (_unit distance2D player < 30) then {
-							_msg = format [localize "STR_PAR_HEALING_FASTER", name _unit];
-							_timer = 0;
-						};
-					};
-				};
-			};
 
-			if (_msg == "") then {
-				if (_cur_revive <= 3) then {
-					_msg = format [localize "STR_PAR_NEED_MEDICAL_SUPPORT", name _unit];
-					_timer = 0;
-				};
-				if (_cur_revive == 0) then {
-					_msg = format [localize "STR_PAR_CRITICAL_NO_REVIVE", name _unit];
-					_timer = 0;
-				};
-			};
-			if (time > _timer && _msg != "") then {
-				[_unit, _msg] call PAR_fn_globalchat;
-				_unit setVariable ["PAR_revive_msg_timer", round (time + (3 * 60))];
-			};
 		};
 		sleep 0.2;
 	} forEach _unit_list;

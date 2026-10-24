@@ -86,3 +86,15 @@ GRLIB_Commander_VoteEnabled = (GRLIB_Commander_VoteEnabled == 1);
 
 // Overide sector radius
 if (GRLIB_sector_radius != 0) then { GRLIB_sector_size = GRLIB_sector_radius };
+
+HPC_EasyAI = (["HippoEasyAI"] call lrx_getParamValue) == 1;
+HPC_AIWarfare = (["HippoAIWarfare"] call lrx_getParamValue) == 1;
+HPC_NearbyBattles = (["HippoNearbyBattles"] call lrx_getParamValue) == 1;
+HPC_SecondChance = (["HippoSecondChance"] call lrx_getParamValue) == 1;
+HPC_VehicleProgression = (["HippoVehicleProgression"] call lrx_getParamValue) == 1;
+HPC_CivilianProtection = (["HippoCivilianProtection"] call lrx_getParamValue) == 1;
+HPC_AllFactions = (["HippoAllFactions"] call lrx_getParamValue) == 1;
+HPC_RepairSeconds = ["HippoRepairSeconds"] call lrx_getParamValue;
+HPC_RefuelSeconds = ["HippoRefuelSeconds"] call lrx_getParamValue;
+HPC_RearmSeconds = ["HippoRearmSeconds"] call lrx_getParamValue;
+HPC_ArtyRearmSeconds = ["HippoArtyRearmSeconds"] call lrx_getParamValue;

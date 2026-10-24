@@ -10,7 +10,7 @@ class liberation_build {
 	"BuildTransportVehicleImage","BuildCombatVehicleImage","BuildAerialImage","ManpowerImageShadow","AmmoImageShadow","FuelImageShadow",
 	"BuildDefenceImage","BuildSupportImage","BuildSquadImage","BuildBuildingImage","ListBG","ManpowerImage","AmmoImage","FuelImage",
 	"BuildList","BuildButton","LabelManpower","LabelAmmo","LabelFuel","LabelCap","BuildMannedButton","PageLabel",
-	"BuildPreview", "LinkedSector"
+    "BuildPreview", "LinkedSector", "CatalogSearchLabel", "CatalogSearch", "CatalogFaction", "CatalogType"
 	};
 
 	objects[] = {};
@@ -212,12 +212,53 @@ class liberation_build {
 		y = (0.32 * safezoneH + safezoneY) + 0.005;
 	};
 
+    class CatalogSearchLabel : StdText {
+        idc = 1700;
+        x = 0.35 * safezoneW + safezoneX;
+        y = 0.35 * safezoneH + safezoneY;
+        w = 0.045 * safezoneW;
+        h = 0.023 * safezoneH;
+        sizeEx = 0.017 * safezoneH;
+        text = "Search";
+    };
+    class CatalogSearch : StdText {
+        idc = 1701;
+        type = CT_EDIT;
+        style = ST_LEFT;
+        x = 0.397 * safezoneW + safezoneX;
+        y = 0.35 * safezoneH + safezoneY;
+        w = 0.253 * safezoneW;
+        h = 0.023 * safezoneH;
+        text = "";
+        tooltip = "Search names or classnames";
+        colorBackground[] = {0,0,0,0.8};
+        colorDisabled[] = {0.4,0.4,0.4,1};
+        colorSelection[] = {0.2,0.6,0.2,1};
+        autocomplete = "";
+        sizeEx = 0.019 * safezoneH;
+    };
+    class CatalogFaction : StdCombo {
+        idc = 1702;
+        x = 0.35 * safezoneW + safezoneX;
+        y = 0.375 * safezoneH + safezoneY;
+        w = 0.195 * safezoneW;
+        h = 0.023 * safezoneH;
+        sizeEx = 0.017 * safezoneH;
+        tooltip = "Filter faction";
+    };
+    class CatalogType : CatalogFaction {
+        idc = 1703;
+        x = 0.55 * safezoneW + safezoneX;
+        w = 0.10 * safezoneW;
+        tooltip = "Filter vehicle type";
+    };
+
 	class BuildList : StdListNBox {
 		idc = 110;
 		x = 0.35 * safezoneW + safezoneX;
 		w = 0.3 * safezoneW;
-		y = 0.35 * safezoneH + safezoneY;
-		h = (0.345 * safezoneH) - (2 * BORDERSIZE);
+		y = 0.40 * safezoneH + safezoneY;
+		h = (0.295 * safezoneH) - (2 * BORDERSIZE);
 		columns[] = {0, 0.65, 0.75, 0.85};
 		onLBSelChanged="";
 		shadow = 2;
@@ -230,8 +271,8 @@ class liberation_build {
 		colorBackground[] = COLOR_GREEN;
 		x = 0.35 * safezoneW + safezoneX;
 		w = 0.3 * safezoneW;
-		y = 0.35 * safezoneH + safezoneY;
-		h = (0.35 * safezoneH) - (2 * BORDERSIZE);
+		y = 0.40 * safezoneH + safezoneY;
+		h = (0.30 * safezoneH) - (2 * BORDERSIZE);
 	};
 	class LabelResource : StdText{
 		x = (0.35 * safezoneW + safezoneX);

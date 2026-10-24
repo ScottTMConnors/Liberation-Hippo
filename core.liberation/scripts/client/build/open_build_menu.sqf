@@ -1,3 +1,4 @@
+disableSerialization;
 params ["_target", "_caller", "_actionId", "_trench"];
 private [
 	"_build_list", "_config_list", "_entrytext", "_icon", "_affordable", "_affordable_crew",
@@ -35,8 +36,8 @@ private _iscommandant = false;
 if (_rank in ["Colonel", "Super Colonel"]) then { _iscommandant = true };
 
 ctrlSetText [1011, format ["%1 - %2", _title, _rank]];
-ctrlShow [ 108, _iscommandant ];
-ctrlShow [ 1085, _iscommandant ];
+ctrlShow [ 108, true ];
+ctrlShow [ 1085, true ];
 if (count squads == 0) then {
 	ctrlShow [ 108, false ];
 	ctrlShow [ 1085, false ];
@@ -82,16 +83,24 @@ private _is_linked = {
 	[_linked, _linked_unlocked, _base_link];
 };
 
+private _oldFilters = [];
+HPC_buildSelection = [];
+
 ctrlEnable [120, false];
 ctrlEnable [121, false];
 
 while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryBuildType, GRLIB_SquadBuildType])} do {
 	if (_old_buildtype != buildtype) then { build_refresh = true };
+    private _filters = [ctrlText (_display displayCtrl 1701), lbCurSel (_display displayCtrl 1702), lbCurSel (_display displayCtrl 1703)];
+    if !(_filters isEqualTo _oldFilters) then {build_refresh = true; _oldFilters = _filters};
 
 	if (build_refresh) then {
 		build_refresh = false;
 		lbClear 110;
 		_build_list = [];
+        HPC_buildSelection = [];
+        _selected_item = -1;
+        _old_selected_item = -1;
 		private _msg = "";
 
 		if (!_squad_leader && buildtype in [GRLIB_InfantryBuildType,GRLIB_SquadBuildType]) then {
@@ -106,6 +115,7 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
 
 		if (_msg == "") then {
 			_config_list = (build_lists select buildtype);
+			_config_list = [_display, _config_list, buildtype] call HPC_fnc_catalogFilters;
 			if (count _config_list == 0) exitWith {	_msg = "       No Vehicle Available." };
 			{
 				if (buildtype == GRLIB_SquadBuildType ) then {
@@ -114,7 +124,7 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
 					if ( _score >= (_x select 4) && (_x select 4) < GRLIB_perm_hidden) then { _build_list pushback _x };
 				};
 			} forEach _config_list;
-			if (count _build_list == 0) then { _msg = "       Score too low!" };
+			if (count _build_list == 0) then { _msg = "       No matching available items." };
 		};
 
 		if (_msg != "") then {
@@ -127,7 +137,7 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
 		_old_selected_item = -1;
 		_row = 0;
 		ctrlSetText [ 151, _buildpages select (buildtype - 1) ];
-		if (count _build_list == 0) exitWith {};
+		if (count _build_list == 0) then {ctrlEnable [120, false]; ctrlEnable [121, false]};
 
 		{
 			_build_class = _x select 0;
@@ -161,11 +171,8 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
 					};
 				};
 			} else {
-				if ( ((lnbSize  110) select 0) <= count squads_names ) then {
-					_squadname = squads_names select ((lnbSize  110) select 0);
-				} else {
-					_squadname = "";
-				};
+                private _squadIndex = squads find _x;
+                _squadname = _x param [5, squads_names param [_squadIndex, "Squad"]];
 				_row = (_display displayCtrl (110)) lnbAddRow  [_squadname, format [ "%1" ,_x select 1], format [ "%1" ,_x select 2], format [ "%1" ,_x select 3]];
 				_icon = "\a3\Ui_F_Curator\Data\Displays\RscDisplayCurator\modeGroups_ca.paa";
 				lnbSetPicture  [110, [((lnbSize 110) select 0) - 1, 0],_icon];
@@ -253,7 +260,7 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
 			};
 			(_display displayCtrl (110)) lnbSetData  [[_row, 0], str _affordable];
 		} foreach _build_list;
-		lbSetCurSel [110, buildtypeSel];
+		lbSetCurSel [110, if (count _build_list > 0) then {buildtypeSel min (count _build_list - 1)} else {-1}];
 	};
 
 	_selected_item = lbCurSel 110;
@@ -307,7 +314,7 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
 	};
 
 	_affordable_crew = _affordable;
-	private _unitcap = { alive _x && (_x distance2D lhd) >= 200 } count (units GRLIB_side_friendly);
+	private _unitcap = { alive _x && (_x distance2D lhd) >= 200 } count (units player);
 	if (_unitcap >= GRLIB_blufor_cap) then {
 		_affordable_crew = false;
 		if (buildtype == GRLIB_InfantryBuildType || buildtype == GRLIB_SquadBuildType) then {
@@ -329,10 +336,15 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
 		(_display displayCtrl (161)) ctrlSetStructuredText parseText "";
 	};
 
-	buildindex = _selected_item;
-	ctrlEnable [120, _affordable && _linked_unlocked && dobuild == 0];
+    buildindex = _selected_item;
+    HPC_buildSelection = [];
+    if (_selected_item >= 0 && _selected_item < count _build_list) then {
+        private _chosen = +(_build_list select _selected_item);
+        HPC_buildSelection = [buildtype, _chosen];
+    };
+	ctrlEnable [120, _affordable && _linked_unlocked && dobuild == 0 && count HPC_buildSelection == 2];
 	ctrlShow [121, GRLIB_player_commander && buildtype in [GRLIB_TransportVehicleBuildType,GRLIB_CombatVehicleBuildType,GRLIB_AerialBuildType,GRLIB_DefenceBuildType]];
-	ctrlEnable [121, _affordable_crew && _linked_unlocked && dobuild == 0];
+	ctrlEnable [121, _affordable_crew && _linked_unlocked && dobuild == 0 && count HPC_buildSelection == 2];
 	sleep 0.2;
 };
 

@@ -139,7 +139,10 @@ while {true} do {
 		default {
 			_score = [player] call F_getScore;
 			_build_list = (build_lists select _buildtype) select { _score >= (_x select 4) };
-			_build = _build_list select _buildindex;
+            _build = _build_list param [_buildindex, []];
+            if (count (missionNamespace getVariable ["HPC_buildSelection", []]) == 2 && {HPC_buildSelection select 0 == _buildtype}) then {
+                _build = +(HPC_buildSelection select 1);
+            };
 			_classname = _build select 0;
 			_price = _build select 2;
 			_price_fuel = _build select 3;
@@ -181,7 +184,7 @@ while {true} do {
 
 	if (_buildtype == GRLIB_SquadBuildType) then {
 		if !([_price] call F_pay) exitWith {};
-		[_classname] call do_build_squad;
+		[_classname, _build param [5, squads_names param [squads find _build, "Squad"]]] call do_build_squad;
 	};
 
 	// GRLIB_TransportVehicleBuildType, GRLIB_CombatVehicleBuildType, GRLIB_AerialBuildType, GRLIB_DefenceBuildType, GRLIB_BuildingBuildType, GRLIB_TrenchBuildType, GRLIB_SupportBuildType, GRLIB_BuildTypeDirect,99,98,97
@@ -222,12 +225,14 @@ while {true} do {
 		// Create ghost vehicle
 		_ghost_spot = (markerPos "ghost_spot") vectorAdd [0, 0, build_altitude];
 		_ghost_name = _classname;
-		_vehicle = _ghost_name createVehicleLocal _ghost_spot;
+		_vehicle = createSimpleObject [_ghost_name, ATLToASL _ghost_spot, true];
 		_vehicle allowdamage false;
 		_vehicle enableSimulation false;
 		_vehicle setVehicleLock "LOCKED";
 		_vehicle setVariable ["R3F_LOG_disabled", true];
 		[_vehicle] call F_clearCargo;
+
+		if (_classname in (blufor_trenches apply {_x select 0}) && {!(_classname isKindOf "StaticWeapon")}) then {build_rotation = 180};
 
 		// Customize by classname
 		[_classname] call build_customize;

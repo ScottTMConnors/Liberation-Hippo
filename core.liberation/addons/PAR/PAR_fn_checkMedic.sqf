@@ -8,7 +8,7 @@ private _check_sortie = {
 	params ["_wnded", "_medic"];
 	if (isNil {_wnded getVariable "PAR_myMedic"}) exitWith { false };
 	private _ret = false;
-	if (_wnded distance2D _medic <= 6) then {
+	if (_wnded distance2D _medic <= 8) then {
 		if (surfaceIsWater (getPos _wnded)) then {
 			_medic setPosASL (getPosASL _wnded);
 		} else {
@@ -16,7 +16,8 @@ private _check_sortie = {
 				_medic doMove (getPosATL _wnded);
 				sleep 3;
 			};
-			waitUntil {sleep 0.5; round (speed vehicle _medic) == 0};
+			private _deadline = time + 15;
+			waitUntil {sleep 0.5; !alive _medic || !alive _wnded || time >= _deadline || round (speed vehicle _medic) == 0};
 		};
 		_ret = true;
 	};
@@ -25,7 +26,7 @@ private _check_sortie = {
 
 private _healed = false;
 private _ticks = 0;
-while { ([_wnded] call PAR_is_wounded) && _fail <= 6 } do {
+while { alive _wnded && alive _medic && ([_wnded] call PAR_is_wounded) && !([_medic] call PAR_is_wounded) && (_wnded getVariable ["PAR_myMedic", objNull]) == _medic && _fail <= 12 } do {
 	_msg = "";
 	_dist = round (_wnded distance2D _medic);
 	// systemchat format ["dbg: wnded 2D dist : %1 dist speed %2 fail %3", _wnded distance2D _medic, round (speed vehicle _medic), _fail];
@@ -59,7 +60,7 @@ while { ([_wnded] call PAR_is_wounded) && _fail <= 6 } do {
 			_medic doMove _relpos;
 		};
 
-		if (_fail > 5) then {
+		if (_fail > 5 && (_fail < 8 || _dist > 25)) then {
 			_medic allowDamage false;
 			_newpos = _medic getPos [3, _medic getDir _wnded];
 			_newpos = _newpos vectorAdd [0, 0, 3];
@@ -68,6 +69,10 @@ while { ([_wnded] call PAR_is_wounded) && _fail <= 6 } do {
 			_medic allowDamage true;
 		};
 
+        if (_fail > 8 && _dist < 25) then {
+            private _safe = [getPosATL _wnded, 1, 0, 25] call F_findSafePlace;
+            if !(_safe isEqualTo []) then {_medic setPosATL _safe};
+        };
 		_msg = format [localize "STR_PAR_CM_01", name _wnded, name _medic, _dist, _fail];
 		sleep 3;
 	} else {

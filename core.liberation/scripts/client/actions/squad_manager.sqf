@@ -24,7 +24,7 @@ while {true} do {
 				//get out vehicle
 				private _list = (units _my_squad) select {
 					private _vehicle = objectParent _x;
-					!isNull _vehicle && { !(_vehicle isKindOf "ParachuteBase") }
+					!isNull _vehicle && { !(_vehicle isKindOf "ParachuteBase") } && { !(_x in [driver _vehicle, commander _vehicle, gunner _vehicle]) }
 				};
 				if (count _list > 0) then {
 					player sideChat format ["%1 get out vehicle!", _my_squad];

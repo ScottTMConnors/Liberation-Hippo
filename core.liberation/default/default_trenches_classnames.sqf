@@ -13,3 +13,21 @@ blufor_trenches = [
     ["Land_Trench_01_forest_F",0,80,0,GRLIB_perm_tank],
     ["Land_Trench_01_grass_F",0,80,0,GRLIB_perm_tank]
 ];
+
+blufor_trenches append [
+["Land_BagFence_01_round_green_F",0,5,0,0],
+["Land_BagFence_01_short_green_F",0,5,0,0],
+["Land_BagFence_01_long_green_F",0,10,0,GRLIB_perm_inf],
+["Land_BagFence_01_corner_green_F",0,5,0,GRLIB_perm_log],
+["Land_HBarrier_01_big_tower_green_F",0,100,0,GRLIB_perm_inf],
+["Land_HBarrier_01_tower_green_F",0,100,0,GRLIB_perm_inf],
+["Land_HBarrier_01_wall_6_green_F",0,100,0,GRLIB_perm_inf],
+["Land_HBarrier_01_wall_corner_green_F",0,100,0,GRLIB_perm_inf],
+["B_HMG_01_high_F",0,10,0,GRLIB_perm_log],
+["B_GMG_01_high_F",0,20,0,GRLIB_perm_log],
+["EF_LPD_Turret_1_MJTF_Wdl",0,200,0,GRLIB_perm_log],
+["EF_B_CommandoMortar_MJTF_Wdl",0,200,0,GRLIB_perm_log],
+["B_T_static_AA_F",0,150,0,GRLIB_perm_tank],
+["B_T_static_AT_F",0,150,0,GRLIB_perm_tank]
+];
+blufor_trenches = blufor_trenches select {isClass (configFile >> "CfgVehicles" >> (_x select 0))};

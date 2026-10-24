@@ -5,9 +5,9 @@ private _ammo_collected = player getVariable ["GREUH_ammo_count", 0];
 private _timer = 0;
 private _screenmsg = "";
 
-private _fuel_cooldown = 5 * 60;
-private _ammo_cooldown = 8 * 60;
-private _repair_cooldown = 5 * 60;
+private _fuel_cooldown = HPC_RefuelSeconds;
+private _ammo_cooldown = if (getNumber (configOf _vehicle >> "artilleryScanner") > 0) then {HPC_ArtyRearmSeconds} else {HPC_RearmSeconds};
+private _repair_cooldown = HPC_RepairSeconds;
 
 // Repair
 if (_type == 1) then {

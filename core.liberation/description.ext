@@ -13,7 +13,7 @@ onLoadMission = $STR_MISSION_DESCRIPTION;
 overviewText = $STR_MISSION_DESCRIPTION;
 overviewPicture = "res\liberation.paa";
 loadScreen = "res\liberation.paa";
-onLoadIntro = "Welcome on the Liberaton RX planet.";
+onLoadIntro = "Welcome to Hippos Conquest.";
 
 respawn = 3;
 respawnButton = 0;
@@ -105,3 +105,8 @@ class CfgCommands {
 #include "addons\VAM\VAM_GUI_controls.hpp"
 #include "addons\VAM\VAM_GUI_classes.hpp"
 #include "addons\TXU\txu_controls.hpp"
+
+class CfgMusic {
+    tracks[] = {};
+    class LRHIntro { name = "LRH Theme"; sound[] = {"music\LRHTheme.ogg", db + 10, 1.0}; };
+};

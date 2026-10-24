@@ -26,4 +26,14 @@ private _player_mobile_respawn = [];
 	if (count _p1 > 0) then { _player_mobile_respawn append _p1 };
 } foreach (AllPlayers - (entities "HeadlessClient_F"));
 
-(_server_mobile_respawn + _player_mobile_respawn);
+private _result = _server_mobile_respawn + _player_mobile_respawn;
+if (hasInterface && !isNull player) then {
+    private _uid = getPlayerUID player;
+    private _grave = player getVariable ["PAR_grave_box", objNull];
+    {
+        if (_x != _grave && alive _x && !(isObjectHidden _x) && {_x getVariable ["GRLIB_vehicle_owner", ""] == _uid} &&
+            {speed _x < 5} && {getPosATL _x select 2 < 5} && {!surfaceIsWater getPosATL _x} &&
+            {isNull attachedTo _x}) then {_result pushBackUnique _x};
+    } forEach vehicles;
+};
+_result;

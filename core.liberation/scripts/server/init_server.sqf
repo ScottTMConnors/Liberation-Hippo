@@ -159,6 +159,9 @@ if (abort_loading) exitWith {
 [] execVM "scripts\server\offloading\offload_calculation.sqf";
 [] execVM "scripts\server\offloading\offload_manager.sqf";
 
+active_sectors = [];
+active_sectors_hc = [];
+publicVariable "active_sectors";
 GRLIB_sector_spawning = false;
 publicVariable "GRLIB_sector_spawning";
 
@@ -184,3 +187,5 @@ waituntil { sleep 1; !isNil "GRLIB_marker_init" };
 GRLIB_init_server = true;
 publicVariable "GRLIB_init_server";
 diag_log "--- Server Init stop ---";
+
+if (GRLIB_Commander_mode && HPC_AIWarfare) then { [] execVM "scripts\server\game\defenderattackersystem.sqf" };

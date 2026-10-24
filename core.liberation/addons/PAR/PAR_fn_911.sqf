@@ -18,6 +18,9 @@ if (!isnull objectParent _medic) then {
 	doGetOut _medic;
 	sleep 3;
 };
+_medic setVariable ["HPC_medicAI", [_medic checkAIFeature "PATH", _medic checkAIFeature "FSM"]];
+_medic enableAI "PATH";
+_medic enableAI "FSM";
 _medic stop true;
 unassignVehicle _medic;
 [_medic] orderGetIn false;
@@ -32,7 +35,7 @@ _medic allowDamage true;
 _medic stop false;
 
 private _dist = (_medic distance2D _wnded);
-if ( _dist <= 6 ) then {
+if ( _dist <= 8 ) then {
 	[_wnded, _medic] spawn PAR_fn_sortie
 } else {
 	if (_dist < 35) then {

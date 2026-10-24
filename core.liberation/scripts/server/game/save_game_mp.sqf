@@ -70,6 +70,15 @@ if (GRLIB_endgame >= 1 || GRLIB_global_stop == 1) then {
 		_all_buildings = _all_buildings + _nextbuildings;
 	} foreach GRLIB_all_fobs;
 
+    {
+        private _object = _x;
+        if (_object getVariable ["HPC_persistSimple", false] && {!(isObjectHidden _object)} && {typeOf _object in GRLIB_classnames_to_save} &&
+            {GRLIB_all_fobs findIf {_object distance2D _x < GRLIB_fob_range * 2} >= 0}) then {
+            _all_buildings pushBackUnique _object;
+        };
+    } forEach (allSimpleObjects lib_simpleObjects);
+    _all_buildings = _all_buildings arrayIntersect _all_buildings;
+
 	// Filter low score Player
 	private _player_scores = [];
 	private _keep_score_id = ["Default"];

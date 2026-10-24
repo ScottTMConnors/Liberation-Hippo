@@ -137,7 +137,7 @@ if (_unit == player) then {
 			private _veh_unit = objectParent _unit;
 			if (time > (_unit getVariable ["GRLIB_isProtected", 0]) && _damage > 0) then {
 				private _lucky = _unit getVariable ["GRLIB_isLucky", (floor random 3)];
-				if (isNull _veh_unit && _damage >= 1 && _damage <= 2 && _lucky == 0) then {
+				if (isNull _veh_unit && _damage >= 1 && _damage <= 2 && _lucky == 0 && (missionNamespace getVariable ["HPC_SecondChance", false])) then {
 					_unit setVariable ["GRLIB_isProtected", round(time + 3)];
 					[_unit] spawn F_unitSemiWounded;
 					_damage = 0.85;
@@ -267,7 +267,7 @@ if (_unit == player) then {
 			private _veh_unit = objectParent _unit;
 			if (time > (_unit getVariable ["GRLIB_isProtected", 0]) && _damage > 0) then {
 				private _lucky = _unit getVariable ["GRLIB_isLucky", (floor random 3)];
-				if (isNull _veh_unit && _damage >= 1 && _damage <= 2 && _lucky == 0) then {
+				if (isNull _veh_unit && _damage >= 1 && _damage <= 2 && _lucky == 0 && (missionNamespace getVariable ["HPC_SecondChance", false])) then {
 					_unit setVariable ["GRLIB_isProtected", round(time + 3)];
 					[_unit] spawn F_unitSemiWounded;
 					_damage = 0.85;

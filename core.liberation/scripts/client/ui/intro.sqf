@@ -1,4 +1,4 @@
-playMusic GRLIB_music_startup;
+playMusic "LRHIntro";
 sleep 1;
 
 titleText ["", "BLACK FADED", 100];

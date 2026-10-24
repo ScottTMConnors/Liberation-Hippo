@@ -42,7 +42,7 @@ if (isNull objectParent _unit && !([_unit] call PAR_is_wounded) && behaviour _un
 				if (_unit distance2D _wnded > 6 || ([_wnded] call PAR_is_wounded) || ([_unit] call PAR_is_wounded)) exitWith {};
 				_wnded setDamage 0;
 			};
-			_unit doFollow (leader group _unit);
+			// Preserve the unit's existing orders after healing.
 		};
 	};
 };

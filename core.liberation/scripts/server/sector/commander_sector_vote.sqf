@@ -6,6 +6,9 @@ private _msg = "";
 
 while {true} do {
     waitUntil {sleep 3; ((GRLIB_IsVoteInProgress && GRLIB_Commander_VoteEnabled) || GRLIB_Commander_AutoStart) && count active_sectors == 0 && count GRLIB_AvailAttackSectors > 0};
+    // Auto-start also owns a voting/preparation window. A commander selection
+    // can still cancel it by clearing this flag before the timer expires.
+    GRLIB_IsVoteInProgress = true;
     if (GRLIB_Commander_VoteEnabled) then {
         _msg = format ["Voting for the next sector has begun, you have %1 seconds to vote!", GRLIB_Commander_VoteTime];
         [[GRLIB_side_friendly, "HQ"], _msg] remoteExec ["sideChat", 0];
@@ -59,7 +62,7 @@ while {true} do {
         _winningSector = selectRandom _tiedSectors;
         _msg = format ["The invasion will proceed to %1!", markerText _winningSector];
         [[GRLIB_side_friendly, "HQ"], _msg] remoteExec ["sideChat", 0];
-        [_winningSector] call start_sector;
+        [_winningSector] call HPC_fnc_startBattle;
     };
 
     GRLIB_IsVoteInProgress = false;

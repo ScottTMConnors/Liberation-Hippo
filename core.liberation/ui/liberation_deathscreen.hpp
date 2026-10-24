@@ -67,7 +67,7 @@ class par_respawn {
 	idd = 5566;
 	movingEnable = false;
 	controlsBackground[] = {};
-	controls[] = {"PAR_BleedoutBar","DetectionFrame","PAR_Respawn","PAR_ReviveLabel","PAR_WoundedLabel","PAR_LRX_Tips"};
+	controls[] = {"PAR_BleedoutBar","DetectionFrame","PAR_Respawn","PAR_RecallMedic","PAR_ReviveLabel","PAR_WoundedLabel","PAR_LRX_Tips"};
 	objects[] = {};
 	class RscButton {
 		idc = -1;
@@ -117,7 +117,7 @@ class par_respawn {
 		y = 0.80 * safezoneH + safezoneY;
 		w = 0.1 * safezoneW;
 		h = 0.04 * safezoneH;
-		text = "Recall Medic";
+		text = "Call Medic";
 		action = "[] spawn PAR_fn_medicRecall";
 		colorDisabled[] = { 1, 1, 1, 1 };
 	};

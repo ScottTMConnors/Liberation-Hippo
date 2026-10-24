@@ -2,16 +2,16 @@
 <Project name="Liberation">
 	<Package name="Liberation">
 		<Key ID="STR_MISSION_TITLE">
-			<Original>-= Liberation RX =-</Original>
+			<Original>Hippos Conquest</Original>
 		</Key>
 		<Key ID="STR_MISSION_AUTHOR">
-			<Original>[AKH] pSiKO</Original>
+			<Original>TheHungryHippo</Original>
 		</Key>
 		<Key ID="STR_MISSION_VERSION">
-			<Original>v2.9</Original>
+			<Original>1.1.0</Original>
 		</Key>
 		<Key ID="STR_MISSION_MOTD">
-			<Original>It should not be too easy...</Original>
+			<Original>Build your force. Take the island.</Original>
 			<Russian>Это не должно быть слишком просто...</Russian>
 			<French>Ça doit pas être trop facile...</French>
 			<Chinesesimp>经历漫漫的战斗历程才终能获得解放</Chinesesimp>
@@ -20,7 +20,7 @@
 			<Czech>Nemělo by to být příliš snadné...</Czech>
 		</Key>
 		<Key ID="STR_MISSION_DESCRIPTION">
-			<Original>With the power of Freedom and Democracy you shall liberate this country from the OPFOR oppression.</Original>
+			<Original>Hippos Conquest, a Liberation RX fork maintained by TheHungryHippo. Build, command and liberate with configurable AI warfare.</Original>
 			<French>Avec le pouvoir de la Liberté et de la Démocratie votre mission est de libérer ce pays de l'oppression de l'OPFOR.</French>
 			<German>Befreie das Land von der OPFOR-Unterdrückung mit der Kraft von Freiheit und Demokratie</German>
 			<Spanish>Con el poder de la Libertad y la Democracia, debes liberar al país de la opresión del OPFOR</Spanish>
@@ -2382,7 +2382,7 @@
 			<Czech>pěší čety</Czech>
 		</Key>
 		<Key ID="STR_BUILD9">
-			<Original>Trench / Sand Wall</Original>
+			<Original>Fortification / Sand Wall</Original>
 			<French>Tranchée / Mur de Sable</French>
 		</Key>
 		<Key ID="STR_ACTIVE_SECTORS">
@@ -13294,12 +13294,12 @@
 
 		<!-- mission_BaronRouge.sqf -->
 		<Key ID="STR_BARON_ROUGE">
-			<Original>Baron Rouge</Original>
+			<Original>Enemy Jet</Original>
 			<Chinesesimp>红男爵</Chinesesimp>
 			<Chinese>紅男爵</Chinese>
 		</Key>
 		<Key ID="STR_BARON_ROUGE_MESSAGE1">
-			<Original>An ACE pilot named &lt;t color='%2'&gt;Baron Rouge&lt;/t&gt; is patrolling the island. Intercept it and clear the sky!</Original>
+			<Original>An enemy fast mover is patrolling the island. Intercept it and clear the sky!</Original>
 			<Chinesesimp>一名呼号为&lt;t color='%2'&gt;红男爵&lt;/t&gt;的王牌飞行员正在岛上巡逻。干掉他！！</Chinesesimp>
 			<Chinese>一名呼號為&lt;t color='%2'&gt;紅男爵&lt;/t&gt;的ACE王牌飛行員正在島上巡邏。幹掉他！！</Chinese>
 		</Key>

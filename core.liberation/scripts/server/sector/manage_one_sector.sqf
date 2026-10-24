@@ -348,7 +348,7 @@ private _attackStages = [
 	[75, false],
 	[50, false],
 	[35, false],
-	[25, false]
+	[20, false]
 ];
 
 private _stageAttack = {
@@ -411,7 +411,12 @@ _sector setMarkerText format ["%1", _sectorName];
 GRLIB_sector_spawning = false;
 publicVariable "GRLIB_sector_spawning";
 
-private ["_sector_ownership"];
+// Count living sector enemies consistently, including later reinforcements.
+private _countEnemies = {
+    { alive _x && side group _x == GRLIB_side_enemy && !(_x getVariable ["GRLIB_mission_AI", false]) }
+        count (_sector_pos nearEntities ["CAManBase", _local_capture_size * 1.2]);
+};
+private _startingCount = call _countEnemies;
 while {true} do {
 	if (!(_sector in active_sectors)) exitWith { // Aborted
 		diag_log format ["Sector %1 mission aborted.", _sector];
@@ -423,13 +428,11 @@ while {true} do {
 			[_task, true, true] call BIS_fnc_deleteTask;
 		};
 	};
-	_sector_ownership = [_sector_pos, _local_capture_size] call F_sectorOwnership;
-	if (_sector in sectors_tower) then {
-		private _tower = [_sector_pos] call F_getNearestRadioTower;
-		if (!isNil "_tower") then { _sector_ownership = GRLIB_side_enemy };
-	};
-	//_sector setMarkerText format ["%2 - %1%%", _ratio, _sectorName];
-	if (_sector_ownership == GRLIB_side_friendly) exitWith { // Victory
+    private _remaining = call _countEnemies;
+    // An initially empty, successfully loaded sector is cleared; no division by zero.
+    private _ratio = if (_startingCount == 0) then { if (_remaining == 0) then {0} else {100} } else {100 * _remaining / _startingCount};
+    _sector setMarkerText format ["%1 - %2%%", _sectorName, round _ratio];
+    if (_ratio <= 10) exitWith { // Victory
 		diag_log format ["Sector %1 mission succeeded.", _sector];
 		_sector setMarkerText _sectorName;
 		[_task,"SUCCEEDED"] call BIS_fnc_taskSetState;
@@ -500,7 +503,7 @@ while {true} do {
 
 	// Sector Defense
 	if (_nearRadioTower) then {
-		private _ratio = 100 - round (([_sector, _local_capture_size] call F_getForceRatio) * 100);
+
 		{
 			_stage = _forEachIndex + 1;
 			if ((_x select 0) >= _ratio && !(_x select 1)) then {
