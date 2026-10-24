@@ -72,4 +72,4 @@ GRLIB_all_fobs = _oldFobs;
 deleteVehicle _unit;
 deleteGroup _group;
 if (HPC_testScenario) then {call compile preprocessFileLineNumbers "hippo_tests\scenario.sqf"};
-["RUN_DONE|7"] call _emit;
+[format ["RUN_DONE|%1", if (HPC_testScenario) then {10} else {7}]] call _emit;

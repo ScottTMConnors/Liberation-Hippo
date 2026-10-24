@@ -150,14 +150,16 @@ def main():
     starts=re.findall(re.escape(prefix)+r'CASE_START\|([^|"\r\n]+)',rpt)
     dones=re.findall(re.escape(prefix)+r'CASE_DONE\|([^|"\r\n]+)',rpt)
     errors,known_issues=classify_errors(rpt)
-    exact=sorted(starts)==sorted(cases) and sorted(dones)==sorted(cases) and sorted(a[0] for a in assertions)==sorted(cases) and rpt.count(prefix+'RUN_START|')==1 and rpt.count(prefix+'RUN_DONE|')==1
+    totals=re.findall(re.escape(prefix)+r'RUN_DONE\|(\d+)',rpt)
+    exact=sorted(starts)==sorted(cases) and sorted(dones)==sorted(cases) and sorted(a[0] for a in assertions)==sorted(cases) and rpt.count(prefix+'RUN_START|')==1 and totals==[str(len(cases))]
     client_results={}
     for role,(_,folder,_) in clients.items():
         content=logs(folder); tag=f'HPC_TEST|{run_id}|{role}|'
         checks=re.findall(re.escape(tag)+r'ASSERT\|([^|"\r\n]+)\|(PASS|FAIL)',content)
         role_starts=re.findall(re.escape(tag)+r'CASE_START\|([^|"\r\n]+)',content)
         role_dones=re.findall(re.escape(tag)+r'CASE_DONE\|([^|"\r\n]+)',content)
-        role_exact=sorted(c[0] for c in checks)==sorted(client_cases) and sorted(role_starts)==sorted(client_cases) and sorted(role_dones)==sorted(client_cases) and content.count(tag+'RUN_START|')==1 and content.count(tag+'RUN_DONE|')==1
+        role_totals=re.findall(re.escape(tag)+r'RUN_DONE\|(\d+)',content)
+        role_exact=sorted(c[0] for c in checks)==sorted(client_cases) and sorted(role_starts)==sorted(client_cases) and sorted(role_dones)==sorted(client_cases) and content.count(tag+'RUN_START|')==1 and role_totals==[str(len(client_cases))]
         role_errors,role_known=classify_errors(content)
         known_issues.extend(role_known)
         client_results[role]={'exact_inventory':role_exact,'assertions':checks,'errors':role_errors}

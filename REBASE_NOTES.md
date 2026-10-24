@@ -62,7 +62,9 @@ sample recorded about 45 server simulation FPS while the local rendering clients
 were running; this is a bounded workload observation, not a comparative benchmark.
 Warfare units and vehicles returned to zero after stopping the feature. Recovery
 retained 14 other mission/client units. The separate default-catalog lifecycle run
-also passed. XML and Git whitespace checks passed.
+also passed. A further default-catalog server run,
+`20261024T215904-default-smoke`, passed all ten checks with strict completion-total
+validation. XML and Git whitespace checks passed.
 
 The harness was exercised with a known pass and deliberate assertion, syntax,
 runtime, missing-completion, and protocol failures. Earlier failed runs are
@@ -90,3 +92,12 @@ includes credits/license, records hashes, and installs the same PBO in Arma's
 Host a normal non-dedicated multiplayer game, choose **Malden 2035**, then
 **Hippos Conquest**. New options appear in the mission's existing settings menu;
 they take effect on mission restart. See [credits](CREDITS.md) for fork attribution.
+
+The release from runtime commit `9cbad25b` was installed and launched through the
+actual Quick Play → Host Server menu, selected on Malden 2035, joined and deployed
+into normal first-person gameplay. The installed bytes match the release SHA256
+`121e30a403ce7e9bec6692fbd114c8ee5f5e6237ca864c92fd1dfc67314a6acf`.
+Its non-dedicated host startup completed without script/config errors or the
+empty-dedicated-server issues listed above. Evidence is under
+`mybuild/host_smoke/20261024-175545/`. Later validation-tool changes do not change
+the runtime source in that release.
