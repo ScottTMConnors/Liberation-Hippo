@@ -1,5 +1,6 @@
 class AI_Logistic {
   	idd = 2307;
+    onLoad = "_this call compile preprocessFileLineNumbers 'scripts/client/misc/HPC_scaleDialog.sqf';";
 	name = "AI_Logistic";
 	movingEnable = false;
 	enableSimulation = true;

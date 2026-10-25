@@ -1,5 +1,6 @@
 class liberation_endscreen {
 	idd = 5651;
+    onLoad = "_this call compile preprocessFileLineNumbers 'scripts\client\misc\HPC_scaleDialog.sqf';";
 	movingEnable = false;
 	controls[] = { "Title", "SubTitle", "SubSubTitle", "Line1", "Line2", "Line3", "Line4", "Line5", "Line6"  };
 	objects[] = {};	

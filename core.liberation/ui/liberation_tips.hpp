@@ -1,5 +1,6 @@
 class liberation_tips {
 	idd = 5137;
+    onLoad = "_this call compile preprocessFileLineNumbers 'scripts\client\misc\HPC_scaleDialog.sqf';";
 	movingEnable = false;
 	controlsBackground[] = {};
 

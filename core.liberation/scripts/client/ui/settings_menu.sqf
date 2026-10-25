@@ -92,7 +92,13 @@ GRLIB_SetupParamMenu = {
             } forEach _paramArray;
         };
     } foreach GRLIB_PARAM_CatOrder;
-
+    private _scale = _display getVariable ["HPC_dialogScale",1];
+    {
+        private _position = ctrlPosition _x;
+        _x ctrlSetPosition (_position apply {_x * _scale});
+        _x ctrlSetFontHeight (0.021 * safezoneH * _scale);
+        _x ctrlCommit 0;
+    } forEach GRLIB_ParamControls;
 };
 
 GRLIB_SetValue = {

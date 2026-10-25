@@ -1,5 +1,6 @@
 class Warehouse {
   	idd = 2302;
+    onLoad = "_this call compile preprocessFileLineNumbers 'scripts/client/misc/HPC_scaleDialog.sqf';";
 	name = "Warehouse";
 	movingEnable = false;
 	enableSimulation = true;

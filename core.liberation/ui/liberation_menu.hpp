@@ -1,5 +1,6 @@
 class liberation_menu {
 	idd = 5651;
+    onLoad = "_this call compile preprocessFileLineNumbers 'scripts\client\misc\HPC_scaleDialog.sqf';";
 	movingEnable = false;
 	controls[] = { "Splash", "Start", "Help" };
 	objects[] = {};

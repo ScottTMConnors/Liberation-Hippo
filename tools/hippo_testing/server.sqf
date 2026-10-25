@@ -68,6 +68,16 @@ private _on = [_unit, "", 0.42, objNull, "", 0, objNull] call damage_manager_civ
 HPC_CivilianProtection = false;
 ["damage.civilian", _off == 0.42 && _on == 0] call _assert;
 ["catalog.classification", (["B_Soldier_F"] call HPC_fnc_catalogType) == "Infantry" && {(["B_MBT_01_cannon_F"] call HPC_fnc_catalogType) == "Tanks"} && {(["B_Heli_Light_01_F"] call HPC_fnc_catalogType) == "Helicopters"}] call _assert;
+diag_log ["HPC_CATALOG_COUNTS", count infantry_units, count light_vehicles, count heavy_vehicles, count air_vehicles, count static_vehicles];
+if (HPC_testVariant == "expanded") then {
+    private _expected = [["B_MBT_01_cannon_F",heavy_vehicles], ["B_Heli_Light_01_F",air_vehicles], ["O_Soldier_F",infantry_units]];
+    {
+        _x params ["_class","_entries"];
+        if (_entries findIf {(_x select 0) == _class} < 0) then {
+            diag_log format ["Error Missing expanded catalog class %1",_class];
+        };
+    } forEach _expected;
+};
 
 private _position = (markerPos "base_chimera") vectorAdd [15,15,0];
 private _object = ["Land_CampingChair_V1_F", _position] call HPC_fnc_createBuilding;

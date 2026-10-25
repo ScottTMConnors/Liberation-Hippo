@@ -4,7 +4,9 @@ if (isServer) then {
     private _known = createHashMap;
     { _known set [toLower (_x select 0), true] } forEach
         (infantry_units_west + light_vehicles + heavy_vehicles + air_vehicles + static_vehicles + support_vehicles_west);
-    private _classes = "getNumber (_x >> 'scope') == 2 && getNumber (_x >> 'side') in [0,1,2,3] && getText (_x >> 'displayName') != ''" configClasses (configFile >> "CfgVehicles");
+    // Empty/editor vehicles can use side 8 (or omit a playable side). Scope
+    // and the vehicle classification below determine catalog eligibility.
+    private _classes = "getNumber (_x >> 'scope') == 2 && getText (_x >> 'displayName') != ''" configClasses (configFile >> "CfgVehicles");
     {
         private _cfg = _x;
         private _class = configName _cfg;

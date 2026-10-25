@@ -102,7 +102,7 @@ private _wording = createHashMapFromArray [
 ["HippoSecondChance", ["Second Chance", "Allow some otherwise lethal hits to cause temporary unconsciousness followed by recovery. Separate from medic revives. Requires a mission restart."]],
 ["HippoVehicleProgression", ["Enemy vehicle progression", "Unlock heavier enemy vehicles as combat readiness rises. Disabled allows all enemy vehicle tiers from the start. Requires a mission restart."]],
 ["HippoCivilianProtection", ["Civilian damage protection", "Protect civilians from nonfriendly damage and low-speed friendly-driver collisions. Disabled uses ordinary civilian damage. Requires a mission restart."]],
-["HippoAllFactions", ["All Factions Catalog", "Expand the purchase menu with available units and vehicles from loaded content. Adds search and faction/type filters without changing AI Warfare factions. Requires a mission restart."]],
+["HippoAllFactions", ["All Factions Catalog", "Include editor-visible units and vehicles from mods and DLC loaded by the server. Load the same mods on clients. Rank-locked items show their XP requirements; resource costs and FOB restrictions still apply. Search, faction filters and collapsible type groups help browse the catalog. Requires a mission restart."]],
 ["HippoRepairSeconds", ["Vehicle repair cooldown", "Minimum seconds between complete vehicle repairs. Requires a mission restart."]],
 ["HippoRefuelSeconds", ["Vehicle refuel cooldown", "Minimum seconds between complete vehicle refuels. Requires a mission restart."]],
 ["HippoRearmSeconds", ["Vehicle rearm cooldown", "Minimum seconds between ammunition replenishments for non-artillery vehicles. Requires a mission restart."]],

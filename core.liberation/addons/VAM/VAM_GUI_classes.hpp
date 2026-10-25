@@ -1,6 +1,7 @@
 class VAM_GUI
 {
 	idd = 4900;
+    onLoad = "_this call compile preprocessFileLineNumbers 'scripts/client/misc/HPC_scaleDialog.sqf';";
 	movingEnable = false;
 
 	class controlsBackground {

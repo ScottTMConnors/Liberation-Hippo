@@ -98,6 +98,17 @@ _idx = 2;
 
 } foreach _players_array;
 
+private _display = findDisplay 5118;
+private _scale = _display getVariable ["HPC_dialogScale",1];
+{
+    if (!isNull ctrlParentControlsGroup _x) then {
+        private _position = ctrlPosition _x;
+        _x ctrlSetPosition (_position apply {_x * _scale});
+        _x ctrlSetFontHeight (0.02 * safezoneH * _scale);
+        _x ctrlCommit 0;
+    };
+} forEach (allControls _display);
+
 while { dialog && alive player } do {
 
 	if ( permission_playerid != -1 || permission_toset != -1 ) then {

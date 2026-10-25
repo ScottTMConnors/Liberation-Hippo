@@ -46,8 +46,8 @@
     [GRLIB_PARAM_ValueKey, 0], [GRLIB_PARAM_NameKey, "All Factions Catalog"],
     [GRLIB_PARAM_OptionLabelKey, ["Disabled","Enabled"]], [GRLIB_PARAM_OptionValuesKey, [0,1]],
     [GRLIB_PARAM_CategoryKey, GRLIB_PARAM_MiscCatKey],
-    [GRLIB_PARAM_DescriptionKey, "Add editor-visible units and vehicles from loaded content to the purchase catalog. Restart required. Other settings take effect on mission restart."],
-    [GRLIB_PARAM_OptionDescriptionKey, ["Disabled","Enabled"]]
+    [GRLIB_PARAM_DescriptionKey, "Add editor-visible units and vehicles from loaded mods and DLC to the purchase catalog. Rank-locked items remain visible with their XP requirements. Resource costs and FOB restrictions still apply. Requires a mission restart."],
+    [GRLIB_PARAM_OptionDescriptionKey, ["Use the selected faction's purchase lists.","Include units and vehicles from all content loaded by the server. Load the same mods on clients."]]
 ]],
 ["HippoRepairSeconds", createHashMapFromArray [
     [GRLIB_PARAM_ValueKey, 20], [GRLIB_PARAM_NameKey, "Repair cooldown"],

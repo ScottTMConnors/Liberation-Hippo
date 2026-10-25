@@ -1,5 +1,6 @@
 class liberation_notice {
 	idd = 5138;
+    onLoad = "_this call compile preprocessFileLineNumbers 'scripts\client\misc\HPC_scaleDialog.sqf';";
 	movingEnable = false;
 	controlsBackground[] = {};
 

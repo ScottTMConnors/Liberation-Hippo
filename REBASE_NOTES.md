@@ -163,3 +163,46 @@ Release runtime commit: `97443a96a9b25356b490d3c9b0f9a4a21ad9d485`.
 Installed Malden 1.1.1 SHA256:
 `8d04ba85b2bd570170aba40f04e654ebf468d4e00dacf4c3319c19e94fc26182`.
 The preceding installed PBO is retained in the release output's dated backup.
+
+## Catalog visibility and larger dialogs, 1.1.3
+
+The purchase menu now lists rank-locked items with XP/rank tooltips instead of
+hiding them. Hidden internal entries remain excluded. All Factions discovery
+also accepts editor-visible vehicles with empty/editor side values; vehicle
+classification still excludes unrelated objects. The type dropdown and
+collapsible headings share the same labels across infantry, vehicles,
+buildings, logistics and fortifications. Selecting a single type removes the
+heading. Visual rows map to purchase entries separately so headings cannot
+be purchased and filtering cannot purchase a different item.
+
+The build dialog is twice as wide and 30% taller, with larger text, spaced rows,
+an independent preview footer, category tooltips and an active category color.
+Mission dialogs, garage, warehouse, traders, logistics and defenses use a
+screen-bounded enlargement helper. Settings and permission controls created
+after dialog initialization also scale. Larger list rows keep text readable.
+English category names, restriction messages and catalog descriptions explain
+rank/resource/base restrictions and the requirement to load content on both
+server and clients.
+
+SQF repairs include failed-dialog handling, local temporary variables,
+selection preservation during resource/XP refresh, and affordability using
+the actual 50% outpost ammunition surcharge. Metadata remains cached and
+sorting/grouping runs on refresh rather than every polling tick.
+
+Engine validation: compacted modded expanded-catalog commander run
+`20261025T083905708877-expanded-smoke` passed all 14 server assertions with
+CBA, LRX Template and RHSUSAF. Its catalog contained 1,048 infantry entries,
+447 light vehicles, 123 armored vehicles, 118 aircraft and 108 static weapons.
+The final compacted default run `20261025T084302571395-default-smoke` passed
+all 10 server assertions. Full RPT scans found no unexpected script/config
+errors; inherited empty-server HC and legacy-map addon messages remain
+separately reported. Four Python compaction tests passed, stringtable XML
+parsed, and native CfgConvert accepted description.ext.
+
+Rendering attempts `20261025T083144842523-expanded-smoke` and
+`20261025T083724692981-expanded-smoke` timed out at the Arma splash screen,
+before any client test executed. The isolated native visual probe also stalled
+before mission entry. These are retained as incomplete infrastructure attempts,
+not passes. New client checks cover collapse/reopen, single-type headings and
+rank-lock visibility, but they and purchase/UI appearance remain unverified in
+this session. No 4K visual acceptance or multiplayer client pass is claimed.

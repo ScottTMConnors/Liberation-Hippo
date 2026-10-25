@@ -1,5 +1,6 @@
 class liberation_squad {
 	idd = 5155;
+    onLoad = "_this call compile preprocessFileLineNumbers 'scripts\client\misc\HPC_scaleDialog.sqf';";
 	movingEnable = false;
 	controlsBackground[] = {};
 

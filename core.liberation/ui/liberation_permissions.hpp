@@ -1,5 +1,6 @@
 class liberation_permissions {
 	idd = 5118;
+    onLoad = "_this call compile preprocessFileLineNumbers 'scripts\client\misc\HPC_scaleDialog.sqf';";
 	movingEnable = false;
 	controlsBackground[] = {};
 

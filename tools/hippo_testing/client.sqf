@@ -113,8 +113,46 @@ if (!isNull _medic) then {
 ["revive.manual", _reviveOk] call _assert;
 // Leave a regular catalog view available for visual inspection.
 closeDialog 0;
-buildtype = GRLIB_InfantryBuildType;
+buildtype = GRLIB_TransportVehicleBuildType;
 [player,player,-1,false] execVM "scripts\client\build\open_build_menu.sqf";
 sleep 1;
+_display = findDisplay 5501;
+private _list = _display displayCtrl 110;
+private _headers = [];
+for "_i" from 0 to ((lnbSize _list select 0) - 1) do {
+    if (_list lnbData [_i,1] != "") then {_headers pushBack _i};
+};
+private _groupOK = count _headers > 1;
+if (_groupOK) then {
+    private _key = _list lnbData [_headers select 0,1];
+    private _beforeRows = lnbSize _list select 0;
+    _list lnbSetCurSelRow (_headers select 0);
+    sleep 1;
+    _groupOK = (lnbSize _list select 0) < _beforeRows && {_key in (_display getVariable ["HPC_collapsed",[]])};
+    _list lnbSetCurSelRow 0;
+    sleep 1;
+    _groupOK = _groupOK && {(lnbSize _list select 0) == _beforeRows};
+};
+["catalog.groups", _groupOK] call _assert;
+private _type = _display displayCtrl 1703;
+if (lbSize _type > 1) then {_type lbSetCurSel 1};
+sleep 1;
+private _noHeaders = true;
+for "_i" from 0 to ((lnbSize _list select 0) - 1) do {if (_list lnbData [_i,1] != "") then {_noHeaders = false}};
+["catalog.singleType", _noHeaders && {(lnbSize _list select 0) > 0}] call _assert;
+_type lbSetCurSel 0;
+private _scoreBefore = player getVariable ["GREUH_score_count",0];
+player setVariable ["GREUH_score_count",0];
+buildtype = GRLIB_CombatVehicleBuildType;
+sleep 1;
+private _lockedRow = -1;
+for "_i" from 0 to ((lnbSize _list select 0) - 1) do {
+    if ((_list lnbText [_i,0]) find "[Rank locked]" >= 0) exitWith {_lockedRow = _i};
+};
+_list lnbSetCurSelRow _lockedRow;
+sleep 0.5;
+["catalog.rankVisible", _lockedRow >= 0 && {!ctrlEnabled (_display displayCtrl 120)}] call _assert;
+player setVariable ["GREUH_score_count",_scoreBefore];
+sleep 1;
 ["UI_READY|catalog"] call _emit;
-["RUN_DONE|8"] call _emit;
+["RUN_DONE|11"] call _emit;

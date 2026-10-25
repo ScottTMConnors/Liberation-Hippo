@@ -1,5 +1,6 @@
 class liberation_send_resources {
   	idd = 2337;
+    onLoad = "_this call compile preprocessFileLineNumbers 'scripts\client\misc\HPC_scaleDialog.sqf';";
 	name = "liberation_send_resources";
 	movingEnable = false;
 	enableSimulation = true;

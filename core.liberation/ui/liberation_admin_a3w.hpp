@@ -1,5 +1,6 @@
 class liberation_admin_a3w {
   idd = 5202;
+    onLoad = "_this call compile preprocessFileLineNumbers 'scripts\client\misc\HPC_scaleDialog.sqf';";
 	movingEnable = false;
 	controlsBackground[] = {};
 	controls[] = {

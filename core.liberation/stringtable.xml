@@ -480,7 +480,7 @@
 			<Chinese>&lt;t align='center'&gt;用新的 FOB 替換 "%1"&lt;br/&gt;該區域將被從遊戲中删除！&lt;br/&gt;你確定嗎？&lt;/t&gt;</Chinese>
 		</Key>
 		<Key ID="STR_BUILD_ERROR_WATER">
-			<Original>Can't build on water.</Original>
+			<Original>Cannot build on water.</Original>
 			<French>Impossible de construire sur l'eau.</French>
 			<German>Kann nicht auf Wasser gebaut werden.</German>
 			<Spanish>Imposible construir sobre el agua.</Spanish>
@@ -498,7 +498,7 @@
 			<Chinese>深度不够！ \n實際：%1米\n需要：%2米</Chinese>
 		</Key>
 		<Key ID="STR_BUILD_ERROR_DISTANCE">
-			<Original>Can't build further than %1 meters away.</Original>
+			<Original>Cannot build more than %1 metres away.</Original>
 			<French>Impossible de construire à plus de %1 mètres.</French>
 			<German>Kann nicht weiter als %1 Meter entfernt sein.</German>
 			<Spanish>Imposible construir más lejos de %1 metros.</Spanish>
@@ -2298,7 +2298,7 @@
 			<Czech>pěší jednotky</Czech>
 		</Key>
 		<Key ID="STR_BUILD2">
-			<Original>Light vehicles</Original>
+			<Original>Light vehicles and boats</Original>
 			<French>Véhicules légers</French>
 			<German>Leichte Fahrzeuge</German>
 			<Spanish>Vehículos ligeros</Spanish>
@@ -2322,7 +2322,7 @@
 			<Czech>Obrněná vozidla</Czech>
 		</Key>
 		<Key ID="STR_BUILD4">
-			<Original>Air vehicles</Original>
+			<Original>Aircraft and drones</Original>
 			<French>Véhicules aériens</French>
 			<German>Luftfahrzeuge</German>
 			<Spanish>Vehículos aéreos</Spanish>
@@ -2382,7 +2382,7 @@
 			<Czech>pěší čety</Czech>
 		</Key>
 		<Key ID="STR_BUILD9">
-			<Original>Fortifications and sand walls</Original>
+			<Original>Fortifications and barriers</Original>
 			<French>Tranchée / Mur de Sable</French>
 		</Key>
 		<Key ID="STR_ACTIVE_SECTORS">
@@ -2410,7 +2410,7 @@
 			<Czech>Nastavení sektoru bylo překročeno a další aktivace sektoru je dočasně pozastavena. Nyní můžete vidět seznam aktuálně aktivních sektorů, na které se můžete soustředit.</Czech>
 		</Key>
 		<Key ID="STR_VEHICLE_LOCKED">
-			<Original>LOCKED BY</Original>
+			<Original>CAPTURE TO UNLOCK</Original>
 			<French>VEROUILLE PAR</French>
 			<German>VERSCHLOSSEN VON</German>
 			<Spanish>BLOQUEADO POR</Spanish>
@@ -2422,7 +2422,7 @@
 			<Czech>ZAMKNUTO</Czech>
 		</Key>
 		<Key ID="STR_VEHICLE_UNLOCKED">
-			<Original>UNLOCKED BY</Original>
+			<Original>UNLOCKED AT</Original>
 			<French>DEVEROUILLE PAR</French>
 			<German>GEÖFFNET VON</German>
 			<Spanish>DESBLOQUEADO POR</Spanish>
@@ -7540,7 +7540,7 @@
 		</Key>
 
 		<Key ID="STR_INSULT_NOT_WELCOME">
-			<Original>You're not Welcome here, Go away!</Original>
+			<Original>You are not welcome here. Go away!</Original>
 			<French>Tu n'es pas le bienvenu ici, dégage !</French>
 			<German>Du bist hier nicht willkommen, hau ab!</German>
 			<Spanish>No eres bienvenido aquí, ¡lárgate!</Spanish>

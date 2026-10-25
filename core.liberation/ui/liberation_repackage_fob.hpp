@@ -1,5 +1,6 @@
 class liberation_repackage_fob {
 	idd = 5755;
+    onLoad = "_this call compile preprocessFileLineNumbers 'scripts\client\misc\HPC_scaleDialog.sqf';";
 	movingEnable = false;
 	controlsBackground[] = { "OuterBG", "RecycleBG", "OuterBG_F", "InnerBG", "InnerBG_F" };
 	controls[] = { "Header", "ButtonClose", "Infotext","TruckButton","BoxButton","BoatButton"};
