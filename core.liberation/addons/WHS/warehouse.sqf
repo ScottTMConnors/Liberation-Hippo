@@ -21,8 +21,7 @@ private _allbox = [];
 private _mybox = [];
 private _refresh = true;
 
-createDialog "Warehouse";
-waitUntil { dialog };
+if !(createDialog "Warehouse") exitWith {GRLIB_warehouse_in_use=nil;publicVariable "GRLIB_warehouse_in_use"};
 
 private _display = findDisplay 2302;
 ctrlEnable [ 120, false ];
@@ -166,5 +165,7 @@ while { dialog && alive player } do {
 	sleep 0.3;
 };
 
-GRLIB_warehouse_in_use = nil;
-publicVariable "GRLIB_warehouse_in_use";
+if ((missionNamespace getVariable ["GRLIB_warehouse_in_use",objNull]) isEqualTo player) then {
+    GRLIB_warehouse_in_use = nil;
+    publicVariable "GRLIB_warehouse_in_use";
+};

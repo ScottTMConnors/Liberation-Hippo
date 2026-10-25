@@ -6,13 +6,13 @@ private _skills = ["aimingAccuracy","aimingShake","aimingSpeed","spotDistance","
 private _backup = _unit getVariable ["HPC_originalSkills", []];
 if (missionNamespace getVariable ["HPC_EasyAI", true]) then {
     if (_backup isEqualTo []) then {
-        _unit setVariable ["HPC_originalSkills", _skills apply { _unit skill _x }];
+        _unit setVariable ["HPC_originalSkills", _skills apply { _unit skill _x },true];
     };
     private _value = if (_side == GRLIB_side_friendly) then {1} else {0};
     { _unit setSkill [_x, _value] } forEach _skills;
 } else {
     if !(_backup isEqualTo []) then {
         { _unit setSkill [_x, _backup select _forEachIndex] } forEach _skills;
-        _unit setVariable ["HPC_originalSkills", nil];
+        _unit setVariable ["HPC_originalSkills", nil,true];
     };
 };

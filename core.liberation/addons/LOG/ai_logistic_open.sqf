@@ -1,8 +1,7 @@
 // LRX AI Logistics System
 // by pSiKO
 
-createDialog "AI_Logistic";
-waitUntil { dialog };
+if !(createDialog "AI_Logistic") exitWith {objNull};
 
 private _transport = objNull;
 private _transport_list = [];
@@ -13,6 +12,7 @@ hintSilent localize "STR_LOGISTIC_WELCOME";
 
 logistic_action = 0;
 private _refresh = true;
+private _selected_item = -1;
 
 while { dialog && alive player && isNull _transport} do {
 	if (_refresh) then {
@@ -28,9 +28,9 @@ while { dialog && alive player && isNull _transport} do {
 		{
 			private _classname = typeOf _x;
 			private _entrytext = [_classname] call F_getLRXName;
-			if (count _entrytext > 25) then { _entrytext = _entrytext select [0,25] };
 			private _maxload = [_classname] call F_getVehicleMaxLoad;
 			lnbAddRow [110, [_entrytext, str _maxload]];
+            lnbSetTooltip [110,[((lnbSize 110) select 0)-1,0],format ["%1\nCargo capacity: %2\nRequires an unlocked, unattached vehicle without a driver.",_entrytext,_maxload]];
 			private _icon = getText ( _cfg >> _classname >> "icon");
 			if(isText  (configFile >> "CfgVehicleIcons" >> _icon)) then {
 				_icon = (getText (configFile >> "CfgVehicleIcons" >> _icon));
@@ -43,10 +43,12 @@ while { dialog && alive player && isNull _transport} do {
 	};
 
 	_selected_item = lbCurSel 110;
-	if (_selected_item != -1) then { ctrlEnable [120, true] } else { ctrlEnable [120, false] };
+	ctrlEnable [120,_selected_item >= 0 && {_selected_item < count _transport_list}];
 
 	if (logistic_action == 1) then {
+        if (_selected_item < 0 || {_selected_item >= count _transport_list}) exitWith {logistic_action=0};
 		_transport = _transport_list select _selected_item;
+        if (isNull _transport || {!alive _transport} || {!isNull driver _transport}) exitWith {_transport=objNull;logistic_action=0;hintSilent "This transport is no longer available. Reopen logistics to refresh the list."};
 		private _transport_name = [_transport] call F_getLRXName;
 		hintSilent format ["%1 selected for AI transport.", _transport_name];
 		playSound "taskSucceeded";

@@ -3,7 +3,7 @@ waitUntil { !isNil "GRLIB_permissions" };
 private [ "_nextplayer", "_players_array", "_playername", "_idx", "_control", "_player_uid", "_player_idx", "_player_uids", "_player_permissions", "_modify_permissions" ];
 
 _players_array = [];
-createDialog "liberation_permissions";
+if !(createDialog "liberation_permissions") exitWith {};
 permission_playerid = -1;
 permission_toset = -1;
 save_changes = false;

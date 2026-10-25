@@ -1,9 +1,9 @@
 //--- LRX Shared Misson Parameters ----------------------------------------
 
 // Map constant
-GRLIB_map_modder = "Unknow";
-GRLIB_west_modder = "Unknow";
-GRLIB_east_modder = "Unknow";
+GRLIB_map_modder = "Unknown";
+GRLIB_west_modder = "Unknown";
+GRLIB_east_modder = "Unknown";
 [] call compileFinal preprocessFileLineNumbers "gameplay_constants.sqf";
 
 // Save Key

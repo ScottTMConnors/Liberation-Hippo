@@ -249,3 +249,94 @@ all 12 server assertions with no unexpected script/config errors. Added client
 toolbar checks are retained but remain unexecuted because of the previously
 recorded rendering startup issue. Visual/client interaction acceptance is not
 claimed. Native CfgConvert also accepted the dialog configuration.
+
+## Mission review and headless simulation, 1.1.6
+
+Reviewed purchasing/storage/logistics menus, cargo persistence, faction vehicle
+pools, admin authorization, AI Warfare controllers and inherited HC code.
+
+Headless clients now register only after mission/faction initialization and
+server-content compatibility checks. A heartbeat registry replaces hardcoded
+HC1/HC2/HC3 load selection, and load accounting scans groups once rather than
+sleeping inside a nested player/group loop. AI Warfare infantry, FOB defenders
+and vehicle crews are balanced by living AI count among ready HCs, preserving
+whole groups and including existing HC workloads. New groups get a startup
+grace period; redistribution has a cooldown. Personal AI, player groups and
+protected mission AI are excluded. ACEX ownership blacklists prevent competing
+managers from transferring these same groups. Fast reconnects cannot retain a
+stale owner entry for the reused editor slot.
+
+Strategic controllers remain on the server and send movement, speed, combat and
+behavior commands to the current owner. Transfers replay the latest order and
+reinstall the appropriate local damage handler once per simulation machine.
+Easy AI's original-skill backup now travels with the unit. Lost HCs cause managed
+AI to move to remaining workers or return to the server, including order replay.
+Sector capture/save supervisors remain server-owned so a lost worker does not
+lose their local script state. The old manager that assigned friendly AI to the
+commander's PC was removed. HC connection identities are excluded from the player
+save/cleanup roster. Admin > AI load provides FPS, group and unit snapshots.
+
+Malden already contains three playable HC slots. The installer copies the HC
+launcher, safe config snippet and setup README into the game's HipposConquest
+folder. It does not edit the user's existing server config, profiles or mods.
+
+Other fixes and improvements:
+
+- Garage buttons/statuses say Store/Retrieve and Nearby/Stored; stored rows are
+  brighter, capacity is visible, and nearby fuel/damage appears in tooltips.
+  Vehicle availability is rechecked before storage. Normal vehicle cargo is
+  serialized rather than discarded; personal crates retain their separate path.
+- Cargo restoration fixes the off-by-one item/magazine quantities inside
+  containers, uses magazine-specific cargo commands, and preserves weapons and
+  attachments inside containers with an optional backward-compatible field.
+- Logistics and trader names are no longer manually truncated to 25 characters.
+  Empty/invalid selections and failed dialog creation are handled safely.
+  Warehouse labels use goods-specific text; closing one user's menu cannot
+  release another user's warehouse lock.
+- Trader sell rows retain their matching object after zero-value offers are
+  removed. Ownership/range/crew are rechecked after confirmation. Buy buttons
+  refresh affordability and do not index an invalid selection for previews.
+- Remote admin authorization no longer grants every remote caller admin access
+  merely because the server is player-hosted. Headless calls cannot administer
+  the server. IED rewards safely handle an empty nearby-player result.
+- Empty enemy vehicle pools have a defined fallback. Disabled progression
+  avoids repeated classification and duplicate weighting. AI Warfare's armed
+  preference checks damaging ammunition, rather than treating empty turrets,
+  horns and countermeasures as weapons.
+- Garage, warehouse and logistics descriptions and several README typos were
+  corrected. An explicit English language entry removes the unsupported-English
+  warning while other untranslated keys retain their Original fallback.
+
+Validation and limits:
+
+- `20261025T171409351891-expanded-smoke`: compacted Malden with CBA, LRX Template
+  and RHSUSAF; 32 exact assertions passed across the dedicated server, two real
+  HCs and a rejoined HC. This exercised production AI Warfare (including vehicle
+  crews), six equal groups split 3/3, unequal groups of 6/4/2/2/2 split into
+  8/8 AI, protected personal AI, local orders, disconnect recovery, rejoin,
+  server fallback after all workers leave, and cleanup.
+- `20261025T171034561604-expanded-smoke`: 18 compacted lifecycle assertions
+  passed, including live sector capture, autonomous spawns and cleanup.
+  `20261025T165237458815-expanded-smoke` passed the separate 18-check commander
+  flow. `20261025T171632877004-expanded-smoke` passed all 15 server checks,
+  including nested-container weapon/item/magazine persistence and armed pools.
+- `20261025T172119617457-expanded-smoke`: all 28 server/client assertions passed.
+  A rendering client entered through the real lobby and exercised startup,
+  purchase, catalog controls, services and manual revival. The catalog was
+  visually inspected in a window. This is not native 4K acceptance or complete
+  visual coverage of every menu.
+- All six harness controls (pass, assertion failure, executed syntax/runtime
+  errors, protocol mismatch and missing completion) behaved as expected;
+  details are in mybuild/review_controls.json. Four Python compaction tests,
+  native CfgConvert, XML parsing and launcher PowerShell parsing also passed.
+
+Earlier HC attempts are retained as failures/incomplete runs. They exposed the
+HC remote-call origin value of zero, a Windows local UDP binding conflict, and
+test-fixture errors. Tests now reserve server ports on all interfaces while
+retaining LAN-only loopback mode. The fixture cleanup now tags its units like
+the production spawner; HC order checks follow the server's actual requested
+mode (FOB defenders validly use LIMITED), rather than assuming every group
+uses FULL. No failing run was relabeled. Inherited empty-server High Command,
+legacy map-addon and shutdown-picture messages remain separately classified.
+No quantitative FPS improvement, WAN behavior, third-HC run, exhaustive mod
+compatibility, or headless projectile-damage integration is claimed.

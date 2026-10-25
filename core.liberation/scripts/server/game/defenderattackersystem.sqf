@@ -7,11 +7,11 @@ HPC_fnc_warfareActive = { HPC_AIWarfare && GRLIB_endgame == 0 && GRLIB_global_st
 HPC_fnc_warfareDelete = {
     params ["_group", ["_vehicle", objNull]];
     if (!isNull _vehicle) then {
-        {if (_x getVariable ["HPC_warfare", false] && !isPlayer _x) then {deleteVehicle _x}} forEach crew _vehicle;
+        {if (_x getVariable ["HPC_warfare", false] && !isPlayer _x) then {_vehicle deleteVehicleCrew _x}} forEach crew _vehicle;
         if (crew _vehicle isEqualTo []) then {deleteVehicle _vehicle}
         else {_vehicle setVariable ["HPC_warfare", nil, true]};
     };
-    if (!isNull _group) then { { if (_x getVariable ["HPC_warfare", false] && !isPlayer _x) then {deleteVehicle _x} } forEach units _group; if (units _group isEqualTo []) then {deleteGroup _group} };
+    if (!isNull _group) then { { if (_x getVariable ["HPC_warfare", false] && !isPlayer _x) then {deleteVehicle _x} } forEach units _group; if (units _group isEqualTo []) then {_group remoteExecCall ["deleteGroup",groupOwner _group]} };
 };
 HPC_fnc_warfarePosition = {
     params ["_center", ["_size", 3], ["_radius", 100]];
@@ -33,16 +33,16 @@ HPC_fnc_warfareInfantry = {
             _group = [_pos, _composition, _side, "infantry"] call F_libSpawnUnits;
         };
         if (!isNull _group) then {
-            _group setVariable ["HPC_warfare", true];
-            {_x setVariable ["HPC_warfare", true]} forEach units _group;
+            _group setVariable ["HPC_warfare", true, true];
+            _group setVariable ["HPC_hcManaged",true,true];
+            _group setVariable ["HPC_hcReadyAt",diag_tickTime + 15];
+            {_x setVariable ["HPC_warfare", true, true]} forEach units _group;
             private _target = [];
             while {call HPC_fnc_warfareActive && {{alive _x} count units _group > 0}} do {
                 private _choices = if (_enemy) then {GRLIB_all_fobs} else {active_sectors apply {markerPos _x}};
                 if !(_target in _choices) then { _target = if (_choices isEqualTo []) then {[]} else {+(selectRandom _choices)} };
                 if !(_target isEqualTo []) then {
-                    _group move (_target getPos [random 90, random 360]);
-                    _group setSpeedMode "FULL";
-                    _group setCombatMode "RED";
+                    [_group,_target getPos [random 90,random 360],"FULL","RED","AWARE"] call HPC_fnc_groupOrder;
                 };
                 sleep 30;
             };
@@ -63,7 +63,7 @@ HPC_fnc_warfareVehicle = {
             {getNumber (configFile >> "CfgVehicles" >> _x >> "isUav") == 0} &&
             {getNumber (configFile >> "CfgVehicles" >> _x >> "artilleryScanner") == 0}
         };
-        private _armed = _pool select {count ("true" configClasses (configFile >> "CfgVehicles" >> _x >> "Turrets")) > 0};
+        private _armed = _pool select {[_x] call HPC_fnc_isArmedVehicle};
         if !(_armed isEqualTo []) then { _pool = _armed };
         private _vehicle = objNull;
         if !(_pool isEqualTo []) then {
@@ -74,8 +74,10 @@ HPC_fnc_warfareVehicle = {
         };
         if (!isNull _vehicle) then {
             private _group = group driver _vehicle;
-            _group setVariable ["HPC_warfare", true];
-            {_x setVariable ["HPC_warfare", true]} forEach units _group;
+            _group setVariable ["HPC_warfare", true, true];
+            _group setVariable ["HPC_hcManaged",true,true];
+            _group setVariable ["HPC_hcReadyAt",diag_tickTime + 15];
+            {_x setVariable ["HPC_warfare", true, true]} forEach units _group;
             _vehicle setVariable ["HPC_warfare", true, true];
             _vehicle lock true;
             private _previous = (getPosATL _vehicle) vectorAdd [999,999,0];
@@ -96,10 +98,7 @@ HPC_fnc_warfareVehicle = {
                         if !(_newPos isEqualTo []) then { _vehicle setPosATL _newPos };
                         _stuck = _stuck + 1;
                     } else { _stuck = 0 };
-                    _group move (_destination getPos [random 90, random 360]);
-                    _group setSpeedMode "FULL";
-                    _group setCombatMode "RED";
-                    _group setBehaviourStrong "COMBAT";
+                    [_group,_destination getPos [random 90,random 360],"FULL","RED","COMBAT"] call HPC_fnc_groupOrder;
                 };
                 _previous = _pos;
                 sleep 60;
@@ -130,15 +129,14 @@ if !(call HPC_fnc_warfareActive) exitWith {HPC_warfareRunning = false};
                 private _squad = blufor_squad_inf select {isClass (configFile >> "CfgVehicles" >> _x)};
                 if (count _pos > 0 && count _squad > 0) then {
                     _group = [_pos, _squad, GRLIB_side_friendly, "infantry"] call F_libSpawnUnits;
-                    _group setVariable ["HPC_warfare", true];
-            {_x setVariable ["HPC_warfare", true]} forEach units _group;
+                    _group setVariable ["HPC_warfare", true, true];
+                    _group setVariable ["HPC_hcManaged",true,true];
+                    _group setVariable ["HPC_hcReadyAt",diag_tickTime + 15];
+                    {_x setVariable ["HPC_warfare", true, true]} forEach units _group;
                     _defenders set [_key, _group];
                 };
             };
-            _group move (_position getPos [random 50, random 360]);
-            _group setSpeedMode "LIMITED";
-            _group setCombatMode "RED";
-            _group setBehaviourStrong "COMBAT";
+            [_group,_position getPos [random 50,random 360],"LIMITED","RED","COMBAT"] call HPC_fnc_groupOrder;
             sleep 5;
         } forEach (+GRLIB_all_fobs);
         sleep 60;

@@ -11,7 +11,7 @@
     [GRLIB_PARAM_ValueKey, 1], [GRLIB_PARAM_NameKey, "AI Warfare"],
     [GRLIB_PARAM_OptionLabelKey, ["Disabled","Enabled"]], [GRLIB_PARAM_OptionValuesKey, [0,1]],
     [GRLIB_PARAM_CategoryKey, GRLIB_PARAM_MiscCatKey],
-    [GRLIB_PARAM_DescriptionKey, "Autonomous faction squads, FOB defenders and friendly vehicles in commander mode. Other settings take effect on mission restart."],
+    [GRLIB_PARAM_DescriptionKey, "Autonomous faction squads, FOB defenders and friendly vehicles in commander mode. Ready headless clients can simulate these groups automatically; capture and save controllers remain on the server. Requires a mission restart."],
     [GRLIB_PARAM_OptionDescriptionKey, ["Disabled","Enabled"]]
 ]],
 ["HippoNearbyBattles", createHashMapFromArray [

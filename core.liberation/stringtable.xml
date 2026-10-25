@@ -6,6 +6,7 @@
 		</Key>
 		<Key ID="STR_MISSION_AUTHOR">
 			<Original>TheHungryHippo</Original>
+            <English>TheHungryHippo</English>
 		</Key>
 		<Key ID="STR_MISSION_VERSION">
 			<Original>1.1.1</Original>
@@ -8715,25 +8716,25 @@
 			<Original>-- LOGISTICS SYSTEM</Original>
 		</Key>
 		<Key ID="STR_LOGISTIC_CONTINUE">
-			<Original>-- LOGISTICS CONTINUE</Original>
+			<Original>-- RESUME LOGISTICS</Original>
 		</Key>
 		<Key ID="STR_LOGISTIC_WELCOME">
-			<Original>Welcome to the AI Logistics System\nWhere you can automate resource collection.</Original>
+			<Original>AI logistics automates resource collection.\nSelect an available vehicle, then choose a destination.</Original>
 		</Key>
 		<Key ID="STR_LOGISTIC_SELECT">
-			<Original>AI Destination</Original>
+			<Original>Choose a logistics destination</Original>
 		</Key>
 		<Key ID="STR_LOGISTIC_WRONG_PLACE">
 			<Original>The AI transport cannot reach this location.</Original>
 		</Key>
 		<Key ID="STR_LOGISTIC_BACK_FOB">
-			<Original>AI Transport is full, go back to FOB!</Original>
+			<Original>The AI transport is full and is returning to the FOB.</Original>
 		</Key>		
 		<Key ID="STR_LOGISTIC_WAIT">
 			<Original>The AI transport is waiting for new orders.</Original>
 		</Key>		
 		<Key ID="STR_LOGISTIC_TRANSIT">
-			<Original>AI Transport is in transit to destination...</Original>
+			<Original>The AI transport is traveling to its destination.</Original>
 		</Key>	
 		<Key ID="STR_LOGISTIC_NO_DRIVER">
 			<Original>The AI transport's driver seat must be empty.</Original>
@@ -8961,7 +8962,7 @@
 		</Key>
 		<!-- virtual_garage.hpp -->
 		<Key ID="STR_VIRT_GARAGE">
-			<Original>-- Virtual Garage --</Original>
+			<Original>Virtual garage</Original>
 			<Russian>-- ВИРТУАЛЬНЫЙ ГАРАЖ</Russian>
 			<French>-= Garage Virtuel =-</French>
 			<Japanese>-- バーチャルガレージ --</Japanese>
@@ -8971,7 +8972,7 @@
 			<Czech>-- Virtuální garáž --</Czech>
 		</Key>
 		<Key ID="STR_GARAGE_LOAD">
-			<Original>-- LOAD --</Original>
+			<Original>Store vehicle</Original>
 			<Russian>-- ЗАГРУЗКА</Russian>
 			<French>-- RANGER --</French>
 			<Japanese>-- 入庫 --</Japanese>
@@ -8981,7 +8982,7 @@
 			<Czech>-- VLOŽIT --</Czech>
 		</Key>
 		<Key ID="STR_GARAGE_UNLOAD">
-			<Original>-- UNLOAD --</Original>
+			<Original>Retrieve vehicle</Original>
 			<Russian>-- ВЫГРУЗИТЬ</Russian>
 			<French>-- SORTIR --</French>
 			<Japanese>-- 出庫 --</Japanese>
@@ -15493,7 +15494,7 @@
 	<!-- LRX Warehouse-->
 	<Package name="LRX_WAREHOUSE">
 		<Key ID="STR_WAREHOUSE_SHOP">
-			<Original>-- Warehouse --</Original>
+			<Original>Warehouse</Original>
 			<French>-- Entrepôt --</French>
 			<Chinesesimp>-- 仓库 --</Chinesesimp>
 			<Chinese>-- 倉庫 --</Chinese>
@@ -15504,14 +15505,14 @@
 			<Chinese>-- 進入倉庫</Chinese>
 		</Key>
 		<Key ID="STR_WAREHOUSE_ACTION1">
-			<Original>LOAD</Original>
+			<Original>Store goods</Original>
 			<French>CHARGER</French>
 			<Chinesesimp>装载</Chinesesimp>
 			<Chinese>裝載</Chinese>
 
 		</Key>
 		<Key ID="STR_WAREHOUSE_ACTION2">
-			<Original>UNLOAD</Original>
+			<Original>Retrieve goods</Original>
 			<French>DECHARGER</French>
 			<Chinesesimp>卸出</Chinesesimp>
 			<Chinese>卸出</Chinese>
@@ -15523,7 +15524,7 @@
 			<Chinese>存储货物</Chinese>
 		</Key>
 		<Key ID="STR_WAREHOUSE_LOAD_MSG">
-			<Original>&lt;t align='center'&gt;Store %1 to Warehouse&lt;br/&gt;you receive %2 AMMO.&lt;br/&gt;Are you sure?&lt;/t&gt;</Original>
+			<Original>&lt;t align='center'&gt;Store %1 in the warehouse?&lt;br/&gt;You will receive %2 ammo.&lt;/t&gt;</Original>
 			<French>&lt;t align='center'&gt;Deposer %1 à l'Entrepôt&lt;br/&gt;vous recevez %2 AMMO.&lt;br/&gt;Êtes-vous sûr ?&lt;/t&gt;</French>
 			<Chinesesimp>&lt;t align='center'&gt;将 %1 存储至仓库&lt;br/&gt;你将收到 %2 弹药。&lt;br/&gt;确定吗？&lt;/t&gt;</Chinesesimp>
 			<Chinese>&lt;t align='center'&gt;將 %1 存儲至倉庫&lt;br/&gt;你將收到 %2 彈藥。&lt;br/&gt;確定嗎？&lt;/t&gt;</Chinese>
@@ -15535,7 +15536,7 @@
 			<Chinese>取出貨物</Chinese>
 		</Key>
 		<Key ID="STR_WAREHOUSE_UNLOAD_MSG">
-			<Original>&lt;t align='center'&gt;Take %1 from Warehouse&lt;br/&gt;for %2 AMMO.&lt;br/&gt;Are you sure?&lt;/t&gt;</Original>
+			<Original>&lt;t align='center'&gt;Retrieve %1 from the warehouse?&lt;br/&gt;Cost: %2 ammo.&lt;/t&gt;</Original>
 			<French>&lt;t align='center'&gt;Prendre %1 de l'Entrepôt&lt;br/&gt;pour %2 AMMO.&lt;br/&gt;Êtes-vous sûr ?&lt;/t&gt;</French>
 			<Chinesesimp>&lt;t align='center'&gt;从仓库取出 %1 &lt;br/&gt;将花费 %2 弹药。&lt;br/&gt;确定吗？&lt;/t&gt;</Chinesesimp>
 			<Chinese>&lt;t align='center'&gt;從倉庫取出 %1 &lt;br/&gt;將花費 %2 彈藥。&lt;br/&gt;確定嗎？&lt;/t&gt;</Chinese>

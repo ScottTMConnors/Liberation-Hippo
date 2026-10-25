@@ -135,6 +135,12 @@ lrx_getParamValue = compileFinal preprocessFileLineNumbers "scripts\shared\funct
 reammo_ai = compileFinal preprocessFileLineNumbers "scripts\shared\functions\F_reammo_ai.sqf";
 
 HPC_fnc_applyEasyAI = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_applyEasyAI.sqf";
+HPC_fnc_groupOrder = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_groupOrder.sqf";
+HPC_fnc_hcHeartbeat = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_hcHeartbeat.sqf";
+HPC_fnc_hcAdopt = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_hcAdopt.sqf";
+HPC_fnc_hcEligible = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_hcEligible.sqf";
+HPC_fnc_hcBalance = compileFinal preprocessFileLineNumbers "scripts\server\offloading\hc_balance.sqf";
+HPC_fnc_isArmedVehicle = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_isArmedVehicle.sqf";
 HPC_fnc_startBattle = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_startBattle.sqf";
 HPC_fnc_rewardPlayer = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_rewardPlayer.sqf";
 HPC_fnc_createBuilding = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_createBuilding.sqf";

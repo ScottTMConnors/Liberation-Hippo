@@ -5,6 +5,9 @@ GRLIB_players_known_uid = [];
 // Server EventHandler
 addMissionEventHandler ["PlayerConnected", {
 	params ["_id", "_uid", "_name", "_jip", "_owner", "_idStr"];
+    // Engine HC identifiers are not Steam player accounts. Tracking them as
+    // players makes the saved-score watchdog incorrectly clean up live HCs.
+    if (_uid select [0,2] == "HC") exitWith {};
 	if (_id != 2 && !(_uid in GRLIB_players_known_uid)) then {
 		diag_log format ["--- LRX Info: player %1 (%2) connected...", _name, _uid];
 		GRLIB_players_known_uid pushBackUnique _uid;
@@ -24,6 +27,10 @@ addMissionEventHandler ["PlayerConnected", {
 
 addMissionEventHandler ['HandleDisconnect', {
 	params ["_unit", "_id", "_uid", "_name"];
+	if (_unit isKindOf "HeadlessClient_F") exitWith {
+        diag_log format ["HPC_HC|DISCONNECTED|%1|%2",_name,_id];
+        false
+    };
 	if (_name select [0,3] == "HC1") exitWith { deleteMarker "fpsmarkerHC1" };
 	if (_name select [0,3] == "HC2") exitWith { deleteMarker "fpsmarkerHC2" };
 	if (_name select [0,3] == "HC3") exitWith { deleteMarker "fpsmarkerHC3" };
@@ -161,6 +168,15 @@ publicVariable "HPC_serverLoadingStage";
 [] execVM "scripts\server\sector\sector_markers_manager.sqf";
 
 // Offloading
+HPC_hcRequiredClasses = [];
+{
+    private _class = _x select 0;
+    if (isClass (configFile >> "CfgVehicles" >> _class)) then {HPC_hcRequiredClasses pushBackUnique _class};
+} forEach (infantry_units + light_vehicles + heavy_vehicles + air_vehicles + static_vehicles);
+{
+    if (isClass (configFile >> "CfgVehicles" >> _x)) then {HPC_hcRequiredClasses pushBackUnique _x};
+} forEach (opfor_infantry + opfor_vehicles + opfor_vehicles_low_intensity + blufor_squad_inf);
+publicVariable "HPC_hcRequiredClasses";
 [] execVM "scripts\server\offloading\offload_calculation.sqf";
 [] execVM "scripts\server\offloading\offload_manager.sqf";
 

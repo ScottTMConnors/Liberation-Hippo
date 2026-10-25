@@ -7,8 +7,7 @@
 
 if !([] call is_admin) exitWith {};
 
-createDialog "liberation_admin";
-waitUntil { dialog };
+if !(createDialog "liberation_admin") exitWith {};
 
 if (isNil "do_admin" || isDamageAllowed player) then { do_admin = 0 };
 if (isNil "last_build") then { last_build = 0 };
@@ -117,7 +116,7 @@ private _output_controls = [531,532,533,534,535,536];
 
 // Action buttons
 private _button_controls = [1600,1601,1602,1603,1604,1609,1610,1611,1612,1613,1614,1615,1616,1617,1618,1619,1623,1624,1625,1626,1630,1631,1632];
-private _disabled_controls = [1606,1607,1608,1609,1610,1613,1614,1620,1626,1630,1631,1632];
+private _disabled_controls = [1606,1607,1608,1609,1610,1613,1614,1620,1626,1631,1632];
 
 // Build Banned
 [_ban_combo] call _getBannedUID;

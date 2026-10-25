@@ -5,15 +5,16 @@ if (([GRLIB_sector_size] call F_getNearestSector) in active_sectors) exitWith {
 	gamelogic globalChat "You cannot access the Trader shop during combat.";
 };
 
-createDialog "Traders_Shop";
-waitUntil { dialog };
+private _trader = (player nearEntities [SHOP_Man,10]) param [0,objNull];
+if (isNull _trader) exitWith {hintSilent "No trader is nearby."};
+if !(createDialog "Traders_Shop") exitWith {};
 
 private _display = findDisplay 2304;
 private _ctrl_sell = _display displayCtrl (110);
 private _ctrl_buy = _display displayCtrl (111);
 private _ammo_collected = player getVariable ["GREUH_ammo_count", 0];
 private _cfg = configFile >> "cfgVehicles";
-private _ratio = (player nearEntities [SHOP_Man, 10] select 0) getvariable ["SHOP_ratio", 0.45];
+private _ratio = _trader getVariable ["SHOP_ratio",0.45];
 
 private _sell_list = [];
 private _sell_blacklist = [];
@@ -25,7 +26,7 @@ private _civ_vehicle = [];
 private _find_multiple = {
     params ["_item", "_list"];
     private _ret = false;
-    { if (_item find _x > 0) exitWith { _ret = true } } foreach _list;
+    { if (_item find _x >= 0) exitWith { _ret = true } } foreach _list;
     _ret;
 };
 
@@ -106,18 +107,20 @@ while { dialog && alive player } do {
 		};
 
 		private _sell_list_dlg = [];
+        private _sell_objects = [];
 		{
 			private _veh_class = typeOf _x;
 			private _price = 1 max ([_veh_class] call F_getObjectPrice);
 			_price = round ((_price * _ratio) * (1 - damage _x));
-			if (_price > 0) then { _sell_list_dlg pushBack [_veh_class, _price] };
+			if (_price > 0) then {_sell_list_dlg pushBack [_veh_class,_price];_sell_objects pushBack _x};
 		} forEach _sell_list;
+        _sell_list = _sell_objects;
 
 		lbClear 110;
 		{
 			_entrytext = [(_x select 0)] call F_getLRXName;
-			if (count _entrytext > 25) then { _entrytext = _entrytext select [0,25] };
 			lnbAddRow [110, [_entrytext, str (_x select 1)]];
+            lnbSetTooltip [110,[((lnbSize 110) select 0)-1,0],_entrytext];
 
 			_icon = getText ( _cfg >> (_x select 0) >> "icon");
 			if(isText (configFile >> "CfgVehicleIcons" >> _icon)) then {
@@ -134,14 +137,16 @@ while { dialog && alive player } do {
 	if (_selected_item != -1) then { ctrlEnable [120, true] } else { ctrlEnable [120, false] };
 
 	_selected_item = lbCurSel 111;
+    _ammo_collected = player getVariable ["GREUH_ammo_count",0];
+    private _validBuy = _selected_item >= 0 && {_selected_item < count _buy_list_dlg};
+    ctrlEnable [121,_validBuy && {parseNumber (_ctrl_buy lnbText [_selected_item,1]) <= _ammo_collected}];
 	if (_selected_item != _selected_item_bak) then {
-		_price = parseNumber (_ctrl_buy lnbText [_selected_item, 1]);
-		if (_selected_item != -1 && _price <= _ammo_collected) then { ctrlEnable [121, true] } else { ctrlEnable [121, false] };
-
+        if (_validBuy) then {
 		_veh_class = _buy_list_dlg select _selected_item select 0;
 		_picture = getText (configFile >> "CfgVehicles" >> _veh_class >> "editorPreview");
 		if (_picture == "") then { _picture = getMissionPath "res\preview\no_image.jpg" };
 		(_display displayCtrl (122)) ctrlSetText _picture;
+        } else {(_display displayCtrl 122) ctrlSetText ""};
 		_selected_item_bak = _selected_item;
 	};
 
@@ -150,15 +155,16 @@ while { dialog && alive player } do {
 		if (shop_action == 1) then {
 			ctrlEnable [120, false];
 			_selected_item = lbCurSel 110;
+            if (_selected_item < 0 || {_selected_item >= count _sell_list}) exitWith {shop_action=0};
 			private _vehicle_name = _ctrl_sell lnbText [_selected_item, 0];
 			private _price = parseNumber (_ctrl_sell lnbText [_selected_item, 1]);
 			private _vehicle = _sell_list select _selected_item;
 			private _msg = format [localize "STR_SHOP_SELL_MSG", _vehicle_name, _price];
 			private _result = [_msg, localize "STR_SHOP_SELL", true, true] call BIS_fnc_guiMessage;
-			if (_result && !(isNull _vehicle) && alive _vehicle) then {
+			if (_result && {!isNull _vehicle} && {alive _vehicle} && {[player,_vehicle] call is_owner} && {_vehicle distance2D player <= 50} && {crew _vehicle isEqualTo [] || {typeOf _vehicle in uavs_vehicles}}) then {
 				deleteVehicle _vehicle;
 				[player, _price, 0] remoteExec ["ammo_add_remote_call", 2];
-				_msg = format ["%1 Sold for %2 AMMO !", _vehicle_name, _price];
+				_msg = format ["%1 sold for %2 ammo.", _vehicle_name, _price];
 				hintSilent _msg;
 				gamelogic globalChat _msg;
 				ctrlEnable [120, false];
@@ -170,6 +176,7 @@ while { dialog && alive player } do {
 		if (shop_action == 2) then {
 			ctrlEnable [121, false];
 			_selected_item = lbCurSel 111;
+            if (_selected_item < 0 || {_selected_item >= count _buy_list_dlg}) exitWith {shop_action=0};
 			_vehicle_name = _ctrl_buy lnbText [_selected_item, 0];
 			_price = parseNumber (_ctrl_buy lnbText [_selected_item, 1]);
 			private _msg = format [localize "STR_SHOP_BUY_MSG", _vehicle_name, _price];

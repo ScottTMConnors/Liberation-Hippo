@@ -15,8 +15,7 @@ private _ammo_collected = player getVariable ["GREUH_ammo_count",0];
 
 if (GRLIB_ACE_enabled) then { [] call loadout_price };
 
-createDialog "liberation_arsenal";
-waitUntil { dialog };
+if !(createDialog "liberation_arsenal") exitWith {GRLIB_arsenal_open=false};
 ctrlEnable [202, false];
 ctrlEnable [203, false];
 ctrlEnable [204, false];

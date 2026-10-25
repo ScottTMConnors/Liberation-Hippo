@@ -54,6 +54,8 @@ private _units = [];
 		};
 		_unit addMPEventHandler ["MPKilled", {_this spawn kill_manager}];
 		_unit addEventHandler ["HandleDamage", { _this call damage_manager_enemy }];
+        _unit setVariable ["HPC_damageKind","enemy",true];
+        _unit setVariable [format ["HPC_damageInstalled_%1",clientOwner],true];
 		
 		if (_type == "divers") then {
 			_unit_pos set [2, -6];

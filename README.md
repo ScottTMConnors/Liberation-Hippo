@@ -14,16 +14,16 @@ Join our Discord server: https://discord.gg/uCRzJ7wauR
 
 
 ### Easy Setup
-+ Downlaod the latest release from Github.
++ Download the latest release from Github.
 + Subscribe to the LRX Template Mod for extended Factions support!
 + Place Mission.pbo in your Steam MP Missions Folder.
 + Start Campaign by hosting Online or in LAN Mode.
 + "Enable Parameters Menu" in the Lobby Params, to access LRX Params before the Mission Boots.
-+ "Save and Continue" after you've adjust the Param Settings. Then play!
-+ *Once in the Game, the LRX Params Menu can be access by Admin in the Scroll Wheel Menu*
++ "Save and Continue" after you've adjusted the Param Settings. Then play!
++ *Once in the Game, the LRX Params Menu can be accessed by an admin in the Scroll Wheel Menu*
 + *Wipe/Erase a Previous Save, is also done through the Lobby Params*
 
-### Soloplayer and Muliplayer Friendly
+### Single-player and multiplayer friendly
 + LRX is Roleplay/Multiplayer oriented, but fully functional and fun for Single Player!
 + Commander/Admin are not required to Start and Play LRX.
 + All Permissions and Functions are managed by LRX.
@@ -64,10 +64,10 @@ Join our Discord server: https://discord.gg/uCRzJ7wauR
 
 ### Vehicle and Asset Ownership:
 + Vehicles you Build, are *Owned* by you, as well as a few other assets.
-+ Owned Vehicles can Locked, Unlocked, or Abandoned (Made Public) by its Owner.
-+ Owned Vehicles can only used by its Owner or Members of his Group.
++ Owned vehicles can be locked, Unlocked, or Abandoned (Made Public) by its Owner.
++ Owned Vehicles can only be used by its Owner or Members of their group.
 + Other Players and non-Group Members can still ride in the passenger seats.
-+ If a Vehicle is *Abandonded* or *Public*, anyone can use it.
++ If a Vehicle is *Abandoned* or *Public*, anyone can use it.
 
 ### Cargo and Inventory Persistent Save
 + Your Vehicle Cargo/Inventory is Saved.
@@ -76,7 +76,7 @@ Join our Discord server: https://discord.gg/uCRzJ7wauR
 
 ### LARs (Larrow) Arsenal
 + LRX has several pre-defined "Filters" for specific Factions/Sides.
-+ LRX as several Arsenal Parameter Options for you to choose from.
++ LRX has several Arsenal Parameter Options for you to choose from.
 + Players can edit Whitelists & Blacklists easily in the Faction Templates.
 + *When ACE enabled, LRX utilizes ACE's Arsenal*
 
@@ -115,8 +115,8 @@ Join our Discord server: https://discord.gg/uCRzJ7wauR
 ### + Extended Air Supports Menu
 + A selection of vehicles you can have paradropped to your pos.
 + Includes Quads, Lt Vehicles, MRAPs, Transport Trucks, APCs, and Boats.
-+ Artiller Strike.
-+ Air Supremecy.
++ Artillery strike.
++ Air supremacy.
 
 ### Air Taxi Service
 + Located in the Air Supports Menu
@@ -126,7 +126,7 @@ Join our Discord server: https://discord.gg/uCRzJ7wauR
 + *The enemy won't shoot it down!*
 
 ### + Virtual Garage + Repaint Menu
-+ Store your Vehicles in your Virtua Garage.
++ Store your Vehicles in your virtual garage.
 + Repaint them with the VAM Menu.
 + Add items to the Inventory with the VAM Menu.
 + *Vehicles that are parked within the FOB area are safe and saved as well*
@@ -141,7 +141,7 @@ Join our Discord server: https://discord.gg/uCRzJ7wauR
 
 ### Other cool Features!
 + Dynamic Side Missions, with various Rewards or Bonuses.
-+ Secondary Missions, lowera Alert Level and add Intel Points.
++ Secondary Missions, lower the alert level and add Intel Points.
 + Magazine Repack
 + Wildlife Manager
 + High Command Squads
@@ -158,9 +158,9 @@ Join our Discord server: https://discord.gg/uCRzJ7wauR
 This mission is designed to avoid the need for a commander, even at first boot, proper rights management, and player permissions are automatically granted.
 
 Most of the important options can be configured via the "Settings" menu (in lobby)
-They can change the mission experioence radically.
+They can change the mission experience radically.
 
-Zeus mode can be used when your are both admin of the server and logged as Commander.
+Zeus mode can be used when you are both admin of the server and logged as Commander.
 
 Have Fun !
 
@@ -189,3 +189,20 @@ Have Fun !
 
    I want to thank :
    Zbug, who did a very good job, AgentRev and Larrow and all contributors of  [Bohemia Interactive Forums](https://forums.bohemia.net/). for the countless messages I read from them and gave me a real code lesson!
+
+
+## Headless clients and AI simulation
+
+Hippos Conquest can distribute autonomous AI Warfare infantry, FOB defenders and
+vehicle crews across ready headless clients. Player squads and personal AI are
+protected. Groups remain intact; balancing uses AI unit counts and includes
+existing HC workloads. Joining clients participate after initialization and
+content checks. Disconnects move managed AI to another ready HC or the server.
+Sector capture and persistence controllers stay on the server.
+
+Malden includes three playable HC slots. See [headless-client setup and the
+launcher](tools/headless/README.md). The release installer also places these
+helpers in the game's `HipposConquest` folder. Admin > **AI load** reports FPS,
+groups and AI units. A dedicated server must allow the HC addresses, and HCs
+must load the server's gameplay mods. Running more processes on one computer
+still consumes that computer's CPU and memory.

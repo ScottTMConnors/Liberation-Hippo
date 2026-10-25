@@ -3,8 +3,7 @@
 
 if (isNil "GRLIB_virtual_garage") exitWith {};
 
-createDialog "VIRT_vehicle_garage";
-waitUntil { dialog };
+if !(createDialog "VIRT_vehicle_garage") exitWith {};
 
 private _display = findDisplay 2301;
 private _control = _display displayCtrl (110);
@@ -13,6 +12,7 @@ private _selected_item = 0;
 private _old_sel = -1;
 private _cfg = configFile >> "cfgVehicles";
 private _refresh = true;
+private ["_class","_entrytext","_icon"];
 
 load_veh = 0;
 
@@ -22,6 +22,8 @@ ctrlEnable [ 121, false ];
 while { dialog && alive player } do {
 	if ( _refresh ) then {
 		_refresh = false;
+        ctrlEnable [120,false];ctrlEnable [121,false];
+        ctrlSetText [1011,format ["Garage: %1 / %2 stored",count GRLIB_virtual_garage,GRLIB_garage_size]];
 
 		// list outside
 		_vehicles_out = (player nearEntities [["LandVehicle","Air","Ship_F",playerbox_typename], 150]) select {
@@ -36,7 +38,8 @@ while { dialog && alive player } do {
 		{
 			_class = typeOf _x;
 			_entrytext = [_class] call F_getLRXName;
-			_control lnbAddRow [_entrytext, "OUT"];
+			private _row = _control lnbAddRow [_entrytext, "Nearby"];
+            _control lnbSetTooltip [[_row,0],format ["%1\nFuel: %2%% | Damage: %3%%\nStore this nearby vehicle in your garage.",_entrytext,round (fuel _x * 100),round (damage _x * 100)]];
 
 			_icon = getText ( _cfg >> _class >> "icon");
 			if(isText (configFile >> "CfgVehicleIcons" >> _icon)) then {
@@ -52,7 +55,8 @@ while { dialog && alive player } do {
 		{
 			_class = _x select 0;
 			_entrytext = [_class] call F_getLRXName;
-			_control lnbAddRow [_entrytext, "IN"];
+			private _row = _control lnbAddRow [_entrytext, "Stored"];
+            _control lnbSetTooltip [[_row,0],"Retrieve this vehicle and place it near your FOB."];
 
 			_icon = getText ( _cfg >> _class >> "icon");
 			if(isText (configFile >> "CfgVehicleIcons" >> _icon)) then {
@@ -60,8 +64,8 @@ while { dialog && alive player } do {
 			};
 			lnbSetPicture [110, [((lnbSize 110) select 0) - 1, 0], _icon];
 
-			_control lnbSetColor [[((lnbSize 110) select 0) - 1, 0], [0.4,0.4,0.4,1]];
-			_control lnbSetColor [[((lnbSize 110) select 0) - 1, 1], [0.4,0.4,0.4,1]];
+			_control lnbSetColor [[((lnbSize 110) select 0) - 1, 0], [0.72,0.86,1,1]];
+			_control lnbSetColor [[((lnbSize 110) select 0) - 1, 1], [0.72,0.86,1,1]];
 		} foreach GRLIB_virtual_garage;
 
 		_old_sel = -1;
@@ -71,7 +75,7 @@ while { dialog && alive player } do {
 	if (count (_vehicles_out + GRLIB_virtual_garage) > 0) then {
 		_selected_item = lbCurSel 110;
 		if (_selected_item != -1 && _old_sel != _selected_item) then {
-			if ( (_control lnbText [_selected_item, 1]) == "OUT") then {
+			if ( (_control lnbText [_selected_item, 1]) == "Nearby") then {
 				ctrlEnable [ 120, true ];
 				ctrlEnable [ 121, false ];
 			} else {
@@ -82,12 +86,14 @@ while { dialog && alive player } do {
 		};
 
 		if (load_veh != 0) then {
+            if (_selected_item < 0 || {_selected_item >= count (_vehicles_out + GRLIB_virtual_garage)}) exitWith {load_veh=0;_refresh=true};
 			private	_vehicle_name = _control lnbText [_selected_item, 0];
 
 			// Load
 			if (load_veh == 1) then {
 				private _vehicle = _vehicles_out select _selected_item;
 				if (isNull _vehicle) exitWith {};
+                if (!alive _vehicle || {_vehicle distance2D player > 150} || {_vehicle getVariable ["GRLIB_vehicle_owner",""] != PAR_Grp_ID}) exitWith {hintSilent "This vehicle is no longer available to store.";load_veh=0;_refresh=true};
 				private _timer = _vehicle getVariable ["GREUH_rearm_timer", 0];
 				private _msg = format [ "%1\nRearming Cooldown (%2 sec)\nPlease Wait...", _vehicle_name, round (_timer - time) ];
 				if (_timer >= time) exitWith { hintSilent _msg; sleep 2 };
@@ -102,7 +108,7 @@ while { dialog && alive player } do {
 				private _lst_a3 = [];
 				private _lst_r3f = [];
 				private _lst_lrx = [];
-				//_lst_a3 = [_vehicle, true] call F_getCargo;
+                if (typeOf _vehicle != playerbox_typename) then {_lst_a3 = [_vehicle,true] call F_getCargo};
 				if (typeOf _vehicle == playerbox_typename) then {
 					player setVariable ["GRLIB_player_box_content", ([_vehicle, true] call F_getCargo), true];
 				};

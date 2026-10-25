@@ -110,8 +110,9 @@ class liberation_admin {
   };
   class UnusedButton: StdButton {
     idc = 1630;
-    action = "do_spawn=4";
-    text = "N/A";
+    action = "[] execVM 'scripts\client\misc\HPC_hcStatus.sqf'";
+    text = "AI load";
+    tooltip = "Show server and ready headless-client FPS, groups and simulated units.";
     x = 0.3725 * safezoneW + safezoneX;
     y = 0.208 * safezoneH + safezoneY;
     w = 0.042 * safezoneW;

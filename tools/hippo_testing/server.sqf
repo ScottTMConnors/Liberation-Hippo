@@ -114,5 +114,7 @@ GRLIB_all_fobs = _oldFobs;
 deleteVehicle _unit;
 deleteGroup _group;
 if (HPC_testScenario) then {call compile preprocessFileLineNumbers "hippo_tests\scenario.sqf"};
+call compile preprocessFileLineNumbers "hippo_tests\review.sqf";
 if (HPC_testCommander) then {call compile preprocessFileLineNumbers "hippo_tests\commander.sqf"};
-[format ["RUN_DONE|%1", 11 + (if (HPC_testScenario) then {3} else {0}) + (if (HPC_testCommander) then {4} else {0})]] call _emit;
+if (missionNamespace getVariable ["HPC_testHeadless",false]) then {call compile preprocessFileLineNumbers "hippo_tests\headless.sqf"};
+[format ["RUN_DONE|%1", 14 + (if (HPC_testScenario) then {3} else {0}) + (if (HPC_testCommander) then {4} else {0}) + (if (missionNamespace getVariable ["HPC_testHeadless",false]) then {10} else {0})]] call _emit;

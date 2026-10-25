@@ -1,14 +1,14 @@
+if (!isServer) exitWith {};
 private _access = false;
-if (isServer && hasInterface) then { _access = true };
-
-private _uid = "unknow";
+private _uid = "Unknown";
 private _netid = remoteExecutedOwner;
-if (_netid == 0) exitWith {};
+if (_netid <= 0) exitWith {};
+if (hasInterface && {_netid == clientOwner}) then {_access = true};
 
 if (!_access) then {
     if (!isServer && hasInterface && !isRemoteExecuted) exitWith {};
-    private _caller = (allPlayers select { owner _x == _netid }) select 0;
-    if (isNil "_caller") exitWith {};
+    private _caller = (allPlayers select {owner _x == _netid && {!(_x isKindOf "HeadlessClient_F")}}) param [0,objNull];
+    if (isNull _caller) exitWith {};
     _uid = getPlayerUID _caller;
     if (admin _netid == 2) then { _access = true };
 };

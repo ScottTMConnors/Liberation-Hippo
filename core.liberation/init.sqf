@@ -109,11 +109,21 @@ if (abort_loading) exitWith {
 // Headless Client init
 if (!isDedicated && !hasInterface && isMultiplayer) then {
 	waitUntil { uiSleep 1; !isNil "GRLIB_LRX_server_params_loaded" };
-	waitUntil { uiSleep 1; !isNil "GRLIB_init_server" };
+	waitUntil { uiSleep 1; missionNamespace getVariable ["GRLIB_init_server",false] || {missionNamespace getVariable ["abort_loading",false]} };
 	if (GRLIB_init_server) then {
 		[] call compileFinal preprocessFileLineNumbers "scripts\server\offloading\fetch_params.sqf";
 		[] call compileFinal preprocessFileLineNumbers "scripts\shared\classnames.sqf";
 		[] call compileFinal preprocessFileLineNumbers "scripts\server\offloading\hc_manager.sqf";
+		[] spawn {
+            waitUntil {sleep 0.5; !isNull player};
+            private _deadline = diag_tickTime + 45;
+            waitUntil {sleep 0.5; !isNil "HPC_hcRequiredClasses" || diag_tickTime > _deadline};
+            if (isNil "HPC_hcRequiredClasses") exitWith {diag_log "HPC_HC|REJECTED|Server compatibility data did not arrive."};
+            private _missing = HPC_hcRequiredClasses select {!isClass (configFile >> "CfgVehicles" >> _x)};
+            if !(_missing isEqualTo []) exitWith {diag_log ["HPC_HC|REJECTED|Missing server content",_missing]};
+            diag_log format ["HPC_HC|READY|%1",clientOwner];
+            while {true} do {[player,diag_fps] remoteExecCall ["HPC_fnc_hcHeartbeat",2]; sleep 10};
+        };
 	};
 };
 

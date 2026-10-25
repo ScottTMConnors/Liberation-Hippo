@@ -19,7 +19,7 @@ if (_full) then {
 	// All Containers
 	private _containers = [];
 	{
-		_lst_a3 pushBack [(_x select 0), [getItemCargo (_x select 1), getMagazineCargo (_x select 1)], 0];
+		_lst_a3 pushBack [(_x select 0), [getItemCargo (_x select 1), getMagazineCargo (_x select 1), weaponsItemsCargo (_x select 1)], 0];
 		_containers pushBack (_x select 0);
 	} forEach (everyContainer _vehicle);
 

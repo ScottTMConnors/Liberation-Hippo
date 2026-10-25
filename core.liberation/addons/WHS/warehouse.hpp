@@ -80,7 +80,8 @@ class Warehouse {
 
 		class UnloadButton : StdButton {
 			idc = 120;
-			text = $STR_GARAGE_LOAD;
+			text = $STR_WAREHOUSE_ACTION1;
+            tooltip = "Store the selected nearby goods in the warehouse.";
 			action = "load_box = 1";
 			x = 0.21 * safezoneW + safezoneX;
 			y = 0.71 * safezoneH + safezoneY;
@@ -90,7 +91,8 @@ class Warehouse {
 
 		class LoadButton : StdButton {
 			idc = 121;
-			text = $STR_GARAGE_UNLOAD;
+			text = $STR_WAREHOUSE_ACTION2;
+            tooltip = "Retrieve the selected goods from warehouse stock.";
 			action = "load_box = 2";
 			x = 0.33 * safezoneW + safezoneX;
 			y = 0.71 * safezoneH + safezoneY;

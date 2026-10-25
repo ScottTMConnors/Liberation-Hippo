@@ -30,6 +30,7 @@ class VIRT_vehicle_garage {
 
 	class controls {
 		class Header: StdHeader {
+			idc = 1011;
 			text = $STR_VIRT_GARAGE;
 			x = 0.1985 * safezoneW + safezoneX;
 			y = 0.1444 * safezoneH + safezoneY;
@@ -43,7 +44,7 @@ class VIRT_vehicle_garage {
 			y = 0.2074 * safezoneH + safezoneY;
 			w = 0.221719 * safezoneW;
 			h = 0.484 * safezoneH;
-			columns[] = {0, 0.75};
+			columns[] = {0, 0.8};
 			onLBSelChanged = "";
 			shadow = 2;
 			rowHeight = "1.25 * 0.018 * safezoneH";
@@ -66,6 +67,7 @@ class VIRT_vehicle_garage {
 		class LoadButton : StdButton {
 			idc = 120;
 			text = $STR_GARAGE_LOAD;
+            tooltip = "Store the selected nearby vehicle. Repair it first and wait for its rearm cooldown to finish. Cargo is preserved.";
 			action = "load_veh = 1";
 			x = 0.33 * safezoneW + safezoneX;
 			y = 0.71 * safezoneH + safezoneY;
@@ -75,6 +77,7 @@ class VIRT_vehicle_garage {
 		class UnloadButton : StdButton {
 			idc = 121;
 			text = $STR_GARAGE_UNLOAD;
+            tooltip = "Retrieve the selected stored vehicle, then choose where to place it. Canceling placement keeps it in storage.";
 			action = "load_veh = 2";
 			x = 0.21 * safezoneW + safezoneX;
 			y = 0.71 * safezoneH + safezoneY;

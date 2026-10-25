@@ -105,6 +105,15 @@ def main():
         shutil.copy2(pbo,destination)
         if sha(destination)!=manifest['package_sha256']: raise RuntimeError('Installed PBO hash mismatch')
         manifest['installed']=str(destination)
+        helper_destination=GAME/'HipposConquest'
+        helper_destination.mkdir(exist_ok=True)
+        for helper_name in ('start_headless.ps1','server-headless.example.cfg','README.md'):
+            helper_source=ROOT/'tools/headless'/helper_name
+            helper_target=helper_destination/helper_name
+            if helper_target.exists() and sha(helper_target)!=sha(helper_source):
+                shutil.copy2(helper_target,out/stamp/('previous-'+helper_name))
+            shutil.copy2(helper_source,helper_target)
+        manifest['headless_tools']=str(helper_destination)
     manifest['compaction']={'report':str(compact_report),'report_sha256':sha(compact_report),**{k:compaction[k] for k in ('source_bytes','release_bytes','renamed_files')}}
     manifest_path=out/'Hippos_Conquest.Malden.manifest.json'
     manifest_path.write_text(json.dumps(manifest,indent=2),encoding='utf-8')
