@@ -149,7 +149,7 @@ addMissionEventHandler ["MPEnded",{
     for path in sorted((source_root/'core.liberation').rglob('*')):
         if path.is_file(): source_hash.update(str(path.relative_to(source_root)).encode()); source_hash.update(bytes.fromhex(sha(path)))
     roles=['server']+[f'client{i+1}' for i in range(args.clients)]
-    client_cases=['startup.client','player.abilities','catalog.filters','catalog.empty','purchase.filtered','reward.owner','services.cooldown','revive.manual','catalog.groups','catalog.singleType','catalog.rankVisible','catalog.toggle']
+    client_cases=['startup.client','player.abilities','catalog.filters','catalog.empty','purchase.filtered','reward.owner','services.cooldown','revive.manual','catalog.groups','catalog.singleType','catalog.rankVisible','catalog.toggle','catalog.tools']
     manifest={'run_id':run_id,'map':args.map,'source_head':subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT).decode().strip(),'source_sha256':source_hash.hexdigest(),'baseline':args.baseline,'variant':args.variant,'control':args.control,'cases':cases,'client_cases':client_cases,'scripts':scripts,'package_sha256':sha(pbo),'argv':argv,'roles':roles,'port':port}
     (out/'manifest.json').write_text(json.dumps(manifest,indent=2),encoding='utf-8')
     if compaction:

@@ -229,3 +229,23 @@ filter fixtures covering rank, captured-base updates, unaffordable unlocked
 items, empty results and unchanged source entries. Native CfgConvert accepted
 the updated dialog configuration. Rendering/client UI remains unverified;
 the previous session's startup-stall limitation still applies.
+
+## Catalog browsing tools, 1.1.5
+
+Added clear-search, reset-filters and expand/collapse-all buttons without
+reducing the list viewport. Type headings include matching entry counts;
+the toolbar summarizes unlocked and locked matches, including collapsed items.
+Group controls disable when only one type is shown. Clear-search returns
+keyboard focus to the search field; reset clears faction/type/search and
+unlocked-only filters and expands all groups.
+
+Item tooltips now explain rank/capture restrictions, exact resource shortfalls,
+AI and mobile respawn limits, existing personal boxes or squads, warehouse
+restrictions and disabled settings. Each cost column shows its required and
+available amount. The purchase button also explains the selected restriction.
+
+Compacted expanded engine run `20261025T162507693371-expanded-smoke` passed
+all 12 server assertions with no unexpected script/config errors. Added client
+toolbar checks are retained but remain unexecuted because of the previously
+recorded rendering startup issue. Visual/client interaction acceptance is not
+claimed. Native CfgConvert also accepted the dialog configuration.

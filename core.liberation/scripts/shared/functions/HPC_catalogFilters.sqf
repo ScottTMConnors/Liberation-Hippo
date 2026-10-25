@@ -1,7 +1,7 @@
 disableSerialization;
 params ["_display", "_entries", "_page"];
 private _applicable = _page in [1,2,3,4,5,6,7,9];
-{(_display displayCtrl _x) ctrlShow _applicable} forEach [1700,1701,1702,1703];
+{(_display displayCtrl _x) ctrlShow _applicable} forEach [1700,1701,1702,1703,1705];
 if (!_applicable) exitWith {+_entries};
 private _factionControl = _display displayCtrl 1702;
 private _typeControl = _display displayCtrl 1703;

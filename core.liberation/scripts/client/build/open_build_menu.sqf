@@ -102,6 +102,35 @@ call _updateUnlockButton;
     build_refresh = true;
 }];
 _display setVariable ["HPC_collapsed", []];
+(_display displayCtrl 1705) ctrlAddEventHandler ["ButtonClick", {
+    private _display = ctrlParent (_this select 0);
+    (_display displayCtrl 1701) ctrlSetText "";
+    ctrlSetFocus (_display displayCtrl 1701);
+    build_refresh = true;
+}];
+(_display displayCtrl 1706) ctrlAddEventHandler ["ButtonClick", {
+    private _display = ctrlParent (_this select 0);
+    _display setVariable ["HPC_collapsed", (_display getVariable ["HPC_collapsed",[]]) - (_display getVariable ["HPC_groupKeys",[]])];
+    build_refresh = true;
+}];
+(_display displayCtrl 1707) ctrlAddEventHandler ["ButtonClick", {
+    private _display = ctrlParent (_this select 0);
+    private _collapsed = _display getVariable ["HPC_collapsed",[]];
+    {_collapsed pushBackUnique _x} forEach (_display getVariable ["HPC_groupKeys",[]]);
+    _display setVariable ["HPC_collapsed",_collapsed];
+    HPC_buildSelection = [];
+    ctrlEnable [120,false];
+    ctrlEnable [121,false];
+    build_refresh = true;
+}];
+(_display displayCtrl 1708) ctrlAddEventHandler ["ButtonClick", {
+    private _display = ctrlParent (_this select 0);
+    (_display displayCtrl 1701) ctrlSetText "";
+    {(_display displayCtrl _x) lbSetCurSel 0} forEach [1702,1703];
+    HPC_catalogOnlyUnlocked = false;
+    _display setVariable ["HPC_collapsed",[]];
+    build_refresh = true;
+}];
 (_display displayCtrl 110) ctrlAddEventHandler ["LBSelChanged", {
     params ["_control", "_row"];
     if (_row < 0) exitWith {};
@@ -171,8 +200,18 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
         _build_list = _ordered apply {_x select 4};
         if (_build_list isEqualTo [] && {_msg == ""}) then {_msg = "No unlocked items match these filters."};
         private _groups = [];
-        {_groups pushBackUnique (_x select 0)} forEach _ordered;
+        private _groupCounts = createHashMap;
+        private _unlockedCount = 0;
+        {
+            private _group = _x select 0;
+            _groups pushBackUnique _group;
+            _groupCounts set [_group,(_groupCounts getOrDefault [_group,0]) + 1];
+            if ((_x select 1) == 0) then {_unlockedCount = _unlockedCount + 1};
+        } forEach _ordered;
         private _grouped = count _groups > 1;
+        _display setVariable ["HPC_groupKeys",_groups apply {str buildtype + ":" + _x}];
+        {(_display displayCtrl _x) ctrlEnable _grouped} forEach [1706,1707];
+        (_display displayCtrl 1709) ctrlSetText format ["%1 items  |  %2 unlocked  |  %3 locked",count _ordered,_unlockedCount,(count _ordered) - _unlockedCount];
         private _collapsed = _display getVariable ["HPC_collapsed", []];
         if (_msg != "") then {
 			_row = (_display displayCtrl (110)) lnbAddRow [_msg,"-","-","-"];
@@ -196,7 +235,7 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
             if (_grouped && _group != _lastGroup) then {
                 _lastGroup = _group;
                 private _key = str buildtype + ":" + _group;
-                private _header = (_display displayCtrl 110) lnbAddRow [(["v  ", ">  "] select (_key in _collapsed)) + _group, "", "", ""];
+                private _header = (_display displayCtrl 110) lnbAddRow [(["v  ", ">  "] select (_key in _collapsed)) + format ["%1 (%2)",_group,_groupCounts get _group], "", "", ""];
                 (_display displayCtrl 110) lnbSetData [[_header, 1], _key];
                 (_display displayCtrl 110) lnbSetColor [[_header, 0], [0.5,0.85,1,1]];
                 _rowItems pushBack -1;
@@ -242,11 +281,13 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
 
 			_rowItems pushBack _itemIndex;
             private _rankLocked = buildtype != GRLIB_SquadBuildType && {_score < (_x select 4)};
+            private _reasons = [];
             private _locked = ((_ordered select _itemIndex) select 1) == 1;
             _affordable = !_locked;
             if (_rankLocked) then {
                 private _required = format ["Requires %1 (%2 XP). Your XP: %3.", ([_x select 4] call F_getRank) select 0, _x select 4, _score];
                 lnbSetTooltip [110, [_row, 0], _required];
+                _reasons pushBack _required;
             };
             if (_locked) then {
                 private _name = if (buildtype == GRLIB_SquadBuildType) then {_squadname} else {_entrytext};
@@ -254,10 +295,19 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
                 if (!_rankLocked) then {
                     private _link = [_build_class] call _is_linked;
                     lnbSetTooltip [110, [_row, 0], format ["Capture %1 to unlock this item.", markerText (_link select 2)]];
+                    _reasons pushBack format ["Capture %1 to unlock this item.",markerText (_link select 2)];
                 };
             };
 			_ammo_collected = player getVariable ["GREUH_ammo_count",0];
 			_fuel_collected = player getVariable ["GREUH_fuel_count",0];
+            private _requiredAmmo = if (_near_outpost) then {round ((_x select 2) * 1.5)} else {_x select 2};
+            private _availableManpower = (infantry_cap - resources_infantry) max 0;
+            private _costs = [[_x select 1,_availableManpower,"Manpower"],[_requiredAmmo,_ammo_collected,"Ammo"],[_x select 3,_fuel_collected,"Fuel"]];
+            {
+                _x params ["_required","_available","_label"];
+                lnbSetTooltip [110,[_row,_forEachIndex + 1],format ["%1: requires %2; available %3.%4",_label,_required,_available,if (_required > _available) then {format [" Short by %1.",_required - _available]} else {""}]];
+                if (_required > _available) then {_reasons pushBack format ["Need %1 more %2.",_required - _available,toLower _label]};
+            } forEach _costs;
 			if (
 				((_x select 1 > 0) && ((_x select 1) > (infantry_cap - resources_infantry))) ||
 				((_x select 2 > 0) && ((if (_near_outpost) then {round ((_x select 2) * 1.5)} else {_x select 2}) > _ammo_collected)) ||
@@ -270,13 +320,16 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
 				if (_build_class in MFR_Dogs_classname + ["Alsatian_Random_F","Fin_random_F"] ) then {
 					if !(isNil {player getVariable ["my_dog", nil]}) then {
 						_affordable = false;
+                        _reasons pushBack "You already have a dog.";
 					};
 				} else {
 					if (count PAR_AI_bros >= ([_score] call F_getRank) select 1) then {
 						_affordable = false;
+                        _reasons pushBack "Your rank's AI recruitment limit has been reached.";
 					};
 					if !(player getVariable ["GRLIB_squad_context_loaded", false]) then {
 						_affordable = false;
+                        _reasons pushBack "Your saved squad is still loading.";
 					};
 				};
 			};
@@ -296,25 +349,31 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
 					if (_count_respawn >= GRLIB_max_spawn_point) then {
 						hintSilent localize "STR_TOO_MANY_SPAWN";
 						_affordable = false;
+                        _reasons pushBack "Your mobile respawn limit has been reached.";
 					};
 					if (GRLIB_allow_redeploy == 0) then {
 						_affordable = false;
+                        _reasons pushBack "Redeployment is disabled in mission settings.";
 					};
 				};
 				if (_build_class == playerbox_typename && _has_box) then {
 					_affordable = false;
+                    _reasons pushBack "You already own a personal supply box (including stored boxes).";
 				};
 				if (_build_class == FOB_boat_typename && GRLIB_naval_type == 0) then {
 					_affordable = false;
+                    _reasons pushBack "Naval FOBs are disabled in mission settings.";
 				};
 				if (_build_class == Warehouse_typename && (_near_warehouse || _water_fob)) then {
 					_affordable = false;
+                    _reasons pushBack "A warehouse is already nearby, or this is a naval FOB.";
 				};
 			};
 
 			if ( buildtype == GRLIB_SquadBuildType ) then {
 				if !(isNil {player getVariable "my_squad"}) then {
 					_affordable = false;
+                    _reasons pushBack "You already command a purchased squad.";
 				};
 			};
 
@@ -332,6 +391,11 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
                 for "_column" from 1 to 3 do {(_display displayCtrl 110) lnbSetColor [[_row,_column],[1,0.77,0.48,1]]};
             };
 			(_display displayCtrl (110)) lnbSetData  [[_row, 0], str _affordable];
+            (_display displayCtrl 110) lnbSetData [[_row,2],_reasons joinString "\n"];
+            private _details = if (buildtype == GRLIB_SquadBuildType) then {_squadname} else {_entrytext + "\n" + _build_class};
+            if (buildtype == GRLIB_InfantryBuildType) then {_details = _details + "\n" + (_x param [5,""])};
+            if !(_reasons isEqualTo []) then {_details = _details + "\n\n" + (_reasons joinString "\n")};
+            lnbSetTooltip [110,[_row,0],_details];
 		}
         } foreach _build_list;
 		_display setVariable ["HPC_rowItems", +_rowItems];
@@ -422,6 +486,10 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
         HPC_buildSelection = [buildtype, _chosen];
     };
 	ctrlEnable [120, _affordable && _linked_unlocked && dobuild == 0 && count HPC_buildSelection == 2];
+    private _purchaseTip = if (_selectedRow >= 0 && {_selected_item >= 0}) then {lnbData [110,[_selectedRow,2]]} else {"Select an item to see its preview and purchase it."};
+    if (_purchaseTip == "") then {_purchaseTip = "Purchase the selected item."};
+    if (_unitcap >= GRLIB_blufor_cap && {buildtype in [GRLIB_InfantryBuildType,GRLIB_SquadBuildType]}) then {_purchaseTip = "Your active unit limit has been reached."};
+    (_display displayCtrl 120) ctrlSetTooltip _purchaseTip;
 	ctrlShow [121, GRLIB_player_commander && buildtype in [GRLIB_TransportVehicleBuildType,GRLIB_CombatVehicleBuildType,GRLIB_AerialBuildType,GRLIB_DefenceBuildType]];
 	ctrlEnable [121, _affordable_crew && _linked_unlocked && dobuild == 0 && count HPC_buildSelection == 2];
 	sleep 0.2;

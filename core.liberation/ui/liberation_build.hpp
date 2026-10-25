@@ -10,7 +10,7 @@ class liberation_build {
 	"BuildTransportVehicleImage","BuildCombatVehicleImage","BuildAerialImage","ManpowerImageShadow","AmmoImageShadow","FuelImageShadow",
 	"BuildDefenceImage","BuildSupportImage","BuildSquadImage","BuildBuildingImage","ListBG","ManpowerImage","AmmoImage","FuelImage",
 	"BuildList","BuildButton","LabelManpower","LabelAmmo","LabelFuel","LabelCap","BuildMannedButton","PageLabel",
-    "BuildPreview", "LinkedSector", "CatalogSearchLabel", "CatalogSearch", "CatalogFaction", "CatalogType", "CatalogUnlocked"
+    "BuildPreview", "LinkedSector", "CatalogSearchLabel", "CatalogSearch", "CatalogFaction", "CatalogType", "CatalogUnlocked", "CatalogClear", "CatalogExpand", "CatalogCollapse", "CatalogReset", "CatalogCount"
 	};
 
 	objects[] = {};
@@ -227,7 +227,7 @@ class liberation_build {
         style = ST_LEFT;
         x = 0.294 * safezoneW + safezoneX;
         y = 0.305 * safezoneH + safezoneY;
-        w = 0.326 * safezoneW;
+        w = 0.286 * safezoneW;
         h = 0.0299 * safezoneH;
         text = "";
         tooltip = "Search names or classnames";
@@ -261,6 +261,48 @@ class liberation_build {
         sizeEx = 0.020 * safezoneH;
         text = "Unlocked only: OFF";
         tooltip = "Hide items locked by rank or an uncaptured base. Unlocked items remain visible even if you cannot yet afford them.";
+    };
+    class CatalogClear : StdButton {
+        idc = 1705;
+        x = 0.59 * safezoneW + safezoneX;
+        y = 0.305 * safezoneH + safezoneY;
+        w = 0.03 * safezoneW;
+        h = 0.0299 * safezoneH;
+        sizeEx = 0.02 * safezoneH;
+        text = "X";
+        tooltip = "Clear the search text.";
+    };
+    class CatalogExpand : CatalogClear {
+        idc = 1706;
+        x = 0.42 * safezoneW + safezoneX;
+        y = 0.24 * safezoneH + safezoneY;
+        w = 0.085 * safezoneW;
+        h = 0.025 * safezoneH;
+        text = "Expand all";
+        tooltip = "Expand all matching type groups.";
+    };
+    class CatalogCollapse : CatalogExpand {
+        idc = 1707;
+        x = 0.51 * safezoneW + safezoneX;
+        text = "Collapse all";
+        tooltip = "Collapse all matching type groups.";
+    };
+    class CatalogReset : CatalogExpand {
+        idc = 1708;
+        x = 0.6 * safezoneW + safezoneX;
+        w = 0.2 * safezoneW;
+        text = "Reset filters";
+        tooltip = "Clear search, faction and type filters, show locked items, and expand groups.";
+    };
+    class CatalogCount : StdText {
+        idc = 1709;
+        x = 0.2 * safezoneW + safezoneX;
+        y = 0.278 * safezoneH + safezoneY;
+        w = 0.42 * safezoneW;
+        h = 0.022 * safezoneH;
+        sizeEx = 0.018 * safezoneH;
+        colorText[] = {0.72,0.84,0.91,1};
+        text = "";
     };
 
 	class BuildList : StdListNBox {
@@ -320,8 +362,8 @@ class liberation_build {
 		idc = 151;
 		x = (0.2 * safezoneW + safezoneX);
 		y = (0.24 * safezoneH + safezoneY);
-		w = (0.4 * safezoneW);
-		h = (0.065 * safezoneH);
+		w = (0.21 * safezoneW);
+		h = (0.035 * safezoneH);
 		sizeEx = 0.03 * safezoneH;
 	};
 
