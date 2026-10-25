@@ -39,7 +39,7 @@ if (!isNil "chimera_vehicle_overide") then {
 			_src_pos = (getPosATL _x) vectorAdd [0, 0, 0.2];
 			_src_dir = getDir _x;
 			deleteVehicle _x;
-			sleep 0.1;
+			uiSleep 0.1;
 			if (_dst_class != "") then {
 				_veh = _dst_class createVehicle _src_pos;
 				_veh allowDamage false;
@@ -58,7 +58,7 @@ if (!isNil "chimera_vehicle_overide") then {
 						_veh setVariable ["ace_cargo_space", 30, true];
 					};
 				};
-				sleep 1;
+				uiSleep 1;
 				_veh allowDamage true;
 			};
 		} forEach _veh_lst;

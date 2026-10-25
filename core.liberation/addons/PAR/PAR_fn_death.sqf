@@ -5,7 +5,7 @@ params ["_unit"];
 removeAllActions _unit;
 if (_unit == player) then {
 	disableUserInput true;
-	titleText ["" ,"BLACK FADED", 100];
+	titleText ["" ,"PLAIN", 100];
 	1 fadeSound 0;
 	_unit connectTerminalToUAV objNull;
 
@@ -69,7 +69,7 @@ if (_unit == player) then {
 	_unit setVariable ["GREUH_killed", (_unit getVariable ["GREUH_killed", 0]) + 1, true];
 	GRLIB_player_spawned = false;
 
-	titleText ["" ,"BLACK FADED", 100];
+	titleText ["" ,"PLAIN", 100];
 } else {
 	if (_unit in PAR_AI_bros) then {
 		PAR_AI_bros = PAR_AI_bros - [_unit];

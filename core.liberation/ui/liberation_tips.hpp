@@ -33,7 +33,7 @@ class liberation_tips {
 		y = 0.14 * safezoneH + safezoneY;
 		w = 0.6 * safezoneW + ( 2 * BORDERSIZE);
 		h = 0.05 * safezoneH - (BORDERSIZE);
-		text = "-- Liberation RX - Tips --";
+		text = "-- Hippos Conquest - Tips --";
 	};
 	class ButtonClose : StdButton {
 		idc = 752;

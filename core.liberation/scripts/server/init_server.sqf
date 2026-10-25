@@ -13,7 +13,7 @@ addMissionEventHandler ["PlayerConnected", {
 
 // addMissionEventHandler ["PlayerDisconnected", {
 // 	params ["_id", "_uid", "_name", "_jip", "_owner", "_idstr"];
-// 	// sleep 0.5; // Wait for HandleDisconnect to finish
+// 	// uiSleep 0.5; // Wait for HandleDisconnect to finish
 // 	// diag_log format ["--- LRX EH-PD: player %1 (%2) disconnected...", _name, _uid];
 // 	if (_uid in GRLIB_players_known_uid) then {
 // 		[_uid] call cleanup_uid;
@@ -126,6 +126,11 @@ if (abort_loading) exitWith {
 	publicVariable "abort_loading_msg";
 };
 
+opfor_sectors = sectors_allSectors - blufor_sectors;
+publicVariable "opfor_sectors";
+HPC_serverLoadingStage = [0.65,"Preparing the world and map markers..."];
+publicVariable "HPC_serverLoadingStage";
+
 // Execute server Managers
 [] execVM "scripts\server\game\synchronise_vars.sqf";
 [] execVM "scripts\server\game\apply_saved_scores.sqf";
@@ -182,8 +187,10 @@ if (GRLIB_Commander_mode) then {
 global_locked_group = [];
 publicVariable "global_locked_group";
 
-waituntil { sleep 1; !isNil "GRLIB_marker_init" };
+waituntil { uiSleep 1; !isNil "GRLIB_marker_init" };
 
+HPC_serverLoadingStage = [0.80,"World ready. Preparing your player..."];
+publicVariable "HPC_serverLoadingStage";
 GRLIB_init_server = true;
 publicVariable "GRLIB_init_server";
 diag_log "--- Server Init stop ---";

@@ -114,5 +114,5 @@ closeDialog 0;
 if (alive player) then {
 	titleText ["", "PLAIN DOWN"];
 } else {
-	titleText ["" ,"BLACK FADED", 100];
+	titleText ["" ,"PLAIN", 100];
 };

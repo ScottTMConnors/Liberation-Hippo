@@ -1,0 +1,13 @@
+params ["_message"];
+HPC_fatalFaction = _message;
+publicVariable "HPC_fatalFaction";
+abort_loading = true;
+abort_loading_msg = _message;
+GRLIB_server_stopped = true;
+GRLIB_init_server = false;
+publicVariable "abort_loading";
+publicVariable "abort_loading_msg";
+publicVariable "GRLIB_init_server";
+diag_log ("--- Hippos Conquest startup stopped: " + _message);
+[_message] remoteExec ["HPC_fnc_factionWarning",0];
+if (isDedicated) then {[] spawn {uiSleep 15; endMission "HPC_FactionUnavailable"}};

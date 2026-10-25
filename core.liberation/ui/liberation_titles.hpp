@@ -21,7 +21,7 @@ class RscTitles
 		w = 0.4 * safezoneW;
 		y = 0.65 * safezoneH + safezoneY;
 		h = 0.1 * safezoneH;
-		text = "Based on a [GREUH] story,";
+		text = "Based on Liberation by [GREUH]";
 		shadow = 1;
 	  };
 	  class GenericLabelShadow : GenericLabel2{
@@ -50,7 +50,7 @@ class RscTitles
 		w = 0.4 * safezoneW;
 		y = 0.65 * safezoneH + safezoneY;
 		h = 0.1 * safezoneH;
-		text = "now, Revived and eXtended to the best...";
+		text = "Extended by Liberation RX contributors";
 		shadow = 1;
 	  };
 	  class GenericLabelShadow : GenericLabel2{
@@ -78,7 +78,7 @@ class RscTitles
 		w = 0.4 * safezoneW;
 		y = 0.65 * safezoneH + safezoneY;
 		h = 0.1 * safezoneH;
-		text = "[AKH pSiKO] is proud to presents:";
+		text = "Hippo gameplay changes by TheHungryHippo";
 		shadow = 1;
 	  };
 	  class GenericLabelShadow : GenericLabel2{

@@ -1,6 +1,7 @@
 // *** GLOBAL DEFINITIOON ***
 if (abort_loading) exitWith {};
 diag_log "--- LRX: Loading Classnames ---";
+if (isServer) then {HPC_serverLoadingStage = [0.20,"Preparing the selected factions and purchase catalog..."]; publicVariable "HPC_serverLoadingStage"};
 
 private ["_ret", "_path"];
 GRLIB_perm_hidden = 99999;
@@ -61,7 +62,7 @@ if (GRLIB_MFR_enabled) then {
 if (isServer) then {
 	[] call F_calcUnitsCost;
 	publicVariable "infantry_units";
-} else { waitUntil {sleep 1; !isNil "infantry_units"} };
+} else { waitUntil {uiSleep 1; !isNil "infantry_units"} };
 
 // All the UAVs must be declared here
 // uavs_west = [];  			// non AI drones (darter, etc) - player can take control

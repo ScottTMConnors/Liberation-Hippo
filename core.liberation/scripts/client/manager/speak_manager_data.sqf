@@ -18,15 +18,11 @@ speak_squad_AI = {
 	params ["_unit"];
 	player globalChat format [localize "STR_CHAT_HELLO", name _unit];
 	sleep 2;
-	private _max_revive = ([_unit] call PAR_revive_max);
-	private _cur_revive = ([_unit] call PAR_revive_cur);
-	if (_cur_revive >= 0) then {
-		private _msg = localize "STR_REPLY_FINE";
-		if (_cur_revive <= (_max_revive * 0.6)) then { _msg = format [localize "STR_REPLY_TIRED", (_max_revive - _cur_revive)] };
-		if (_cur_revive <= 3) then { _msg = format [localize "STR_REPLY_BAD_NEED_MEDIC", _cur_revive] };
-		if (_cur_revive == 0) then { _msg = localize "STR_REPLY_CRITICAL" };
-		_unit globalChat _msg;
-	};
+    private _msg = localize "STR_REPLY_FINE";
+    if (damage _unit > 0.25) then {_msg = localize "STR_REPLY_BAD_NEED_MEDIC"};
+    if (damage _unit > 0.75) then {_msg = localize "STR_REPLY_CRITICAL"};
+    _unit globalChat _msg;
+
 	[_unit] call speak_end;
 };
 

@@ -1,4 +1,4 @@
-waitUntil {sleep 1; !isNil "GRLIB_player_scores"};
+waitUntil {uiSleep 1; !isNil "GRLIB_player_scores"};
 if (!([] call F_getValid)) exitWith {};
 
 private [
@@ -88,11 +88,11 @@ while {true} do {
 
 			_score = _nextplayer getVariable ["GREUH_score_count", 0];
 			_nextplayer addScore (_score - score _nextplayer);
-			sleep 0.1;
+			uiSleep 0.1;
 		};
 	} foreach (AllPlayers - (entities "HeadlessClient_F"));
 
 	GRLIB_player_scores = _newscores;
 	publicVariable "GRLIB_player_scores";
-	sleep 5;
+	uiSleep 5;
 };

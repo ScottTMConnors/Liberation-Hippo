@@ -170,7 +170,7 @@ if (GRLIB_fob_type == 0) then {
 };
 "base_chimera" setMarkerColor GRLIB_color_friendly;
 
-sleep 2;
+uiSleep 2;
 GRLIB_marker_init = true;
 
 /*
@@ -197,7 +197,7 @@ _man disableCollisionWith _desk;
 _man setDir _desk_dir;
 _man setPosATL _man_pos;
 doStop _man;
-sleep 7;
+uiSleep 7;
 deleteVehicle _desk;
 deleteVehicle _man;
 };

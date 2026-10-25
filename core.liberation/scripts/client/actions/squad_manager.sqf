@@ -15,7 +15,7 @@ while {true} do {
 				//get in vehicle
 				private _list = (units _my_squad) select { objectParent _x != _veh_player};
 				if (count _list > 0) then {
-					player sideChat format ["%1 board in %2!", _my_squad, [_veh_player] call F_getLRXName];
+					player sideChat format ["%1, board %2!", _my_squad, [_veh_player] call F_getLRXName];
 					doStop _list;
 					[_veh_player, _list, false] call F_manualCrew;
 					sleep 5;
@@ -27,7 +27,7 @@ while {true} do {
 					!isNull _vehicle && { !(_vehicle isKindOf "ParachuteBase") } && { !(_x in [driver _vehicle, commander _vehicle, gunner _vehicle]) }
 				};
 				if (count _list > 0) then {
-					player sideChat format ["%1 get out vehicle!", _my_squad];
+					player sideChat format ["%1, dismount!", _my_squad];
 					{ [_x, false] spawn F_ejectUnit; sleep 0.5 } forEach _list;
 					sleep 5;
 				};

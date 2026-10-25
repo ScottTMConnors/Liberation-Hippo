@@ -40,4 +40,4 @@ if ( infantry_weight > 40 && !_specialists) then {
 	};
 };
 
-_squadcomp
+_squadcomp select {isClass (configFile >> "CfgVehicles" >> _x)}

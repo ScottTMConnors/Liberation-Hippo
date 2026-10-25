@@ -1,7 +1,7 @@
 playMusic "LRHIntro";
 sleep 1;
 
-titleText ["", "BLACK FADED", 100];
+titleText ["", "PLAIN", 100];
 waitUntil { sleep 1; !isNil "GRLIB_all_fobs" };
 waitUntil { sleep 1; !isNil "active_sectors" };
 [] spawn cinematic_camera;
@@ -45,7 +45,7 @@ if ( howtoplay == 1 ) then {
 };
 
 cinematic_camera_started = false;
-titleText ["","BLACK FADED", 100];
+titleText ["","PLAIN", 100];
 startgame = 1;
 
 [] spawn {

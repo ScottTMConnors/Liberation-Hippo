@@ -2,7 +2,7 @@ params ["_unit", ["_oldUnit", objNull]];
 
 // LRX Player Initalization
 
-titleText ["" ,"BLACK FADED", 100];
+titleText ["" ,"PLAIN", 100];
 
 _unit allowDamage false;
 1 fadeSound 0;

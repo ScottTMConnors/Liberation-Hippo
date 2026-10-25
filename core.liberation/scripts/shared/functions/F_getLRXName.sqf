@@ -45,7 +45,7 @@ if (_class == huron_typename) then {
 	_text = format ["%1 %2", localize "STR_RESPAWN", "(Heli)"];
 };
 if (_class == canister_fuel_typename) then {
-	_text = "Fuel Jerican";
+	_text = "Fuel Jerrycan";
 };
 if (_class == waterbarrel_typename) then {
 	_text = "Water Barrel";
@@ -66,7 +66,7 @@ if (_class == a3w_sd_item) then {
 	_text = "Mission Suitcase";
 };
 if (_class == playerbox_typename) then {
-	_text = "Personal Player Box";
+	_text = "Personal Storage Box";
 };
 if (_class == land_cutter_typename) then {
 	_text = "Magic Mower (Hide Terrain Objects)";

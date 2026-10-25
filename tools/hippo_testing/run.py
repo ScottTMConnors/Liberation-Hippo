@@ -43,35 +43,71 @@ def main():
     ap.add_argument('--hold', type=int, default=0)
     ap.add_argument('--map', choices=['Altis','Malden'], default='Malden')
     ap.add_argument('--scenario', action='store_true')
+    ap.add_argument('--commander', action='store_true')
+    ap.add_argument('--source-ref')
+    ap.add_argument('--mod',action='append',default=[])
+    ap.add_argument('--missing-faction',choices=['settings','campaign'])
     args = ap.parse_args()
     run_id = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S') + '-' + args.variant + '-' + ('baseline' if args.baseline else args.control or 'smoke')
     out = ROOT/'mybuild'/'hippo_tests'/run_id
     out.mkdir(parents=True, exist_ok=False)
     stage = out/'s'/f'Liberation_RX_T{datetime.now(timezone.utc).strftime("%H%M%S%f")}.{args.map}'
     source_root=ROOT
-    if args.baseline:
+    if args.baseline or args.source_ref:
         source_root=out/'upstream'
-        archive=subprocess.check_output(['git','archive','--format=zip','upstream/master','core.liberation',f'maps/Liberation_RX.{args.map}'],cwd=ROOT)
+        archive=subprocess.check_output(['git','archive','--format=zip',args.source_ref or 'upstream/master','core.liberation',f'maps/Liberation_RX.{args.map}'],cwd=ROOT)
         with zipfile.ZipFile(io.BytesIO(archive)) as z: z.extractall(source_root)
     shutil.copytree(source_root/'core.liberation', stage)
     shutil.copytree(source_root/'maps'/f'Liberation_RX.{args.map}', stage, dirs_exist_ok=True)
-    (stage/'build_info.sqf').write_text(f'GRLIB_build_date="{run_id}"; GRLIB_build_time="test"; GRLIB_build_version="hippo-rebase-candidate";\n')
+    tag=subprocess.check_output(['git','describe','--tags','upstream/master'],cwd=ROOT).decode().strip()
+    (stage/'build_info.sqf').write_text(f'GRLIB_build_date="{run_id}"; GRLIB_build_time="test"; GRLIB_build_version="{tag}-hippo-test";\n')
     tests=stage/'hippo_tests'; tests.mkdir()
-    cases=['engine.compile','startup.server','settings.defaults','skills.toggle','damage.civilian','catalog.classification','objects.simple']
+    cases=['engine.compile','startup.server','settings.defaults','factions.available','settings.english','skills.toggle','damage.civilian','catalog.classification','objects.simple']
     if args.scenario: cases+=['warfare.spawn','sector.capture','warfare.cleanup']
+    if args.commander: cases+=['commander.emptyRoster','commander.townLoaded','commander.progress','warfare.enemyFOB']
     if args.control: cases=['control']
     if args.baseline: cases=['startup.server']
+    if args.missing_faction: cases=['faction.rejected','faction.savePreserved','faction.ended']
     (tests/'run.sqf').write_text((ROOT/'tools'/'hippo_testing'/'server.sqf').read_text(encoding='utf-8'),encoding='utf-8')
     if args.scenario: shutil.copy2(ROOT/'tools/hippo_testing/scenario.sqf',tests/'scenario.sqf')
+    if args.commander: shutil.copy2(ROOT/'tools/hippo_testing/commander.sqf',tests/'commander.sqf')
     changed = subprocess.check_output(['git','-c','core.safecrlf=false','-c','core.autocrlf=false','diff','--name-only','upstream/master'], cwd=ROOT,stderr=subprocess.DEVNULL).decode().splitlines()
     changed += subprocess.check_output(['git','ls-files','--others','--exclude-standard','core.liberation'],cwd=ROOT).decode().splitlines()
-    scripts=sorted({p.removeprefix('core.liberation/').replace('/','\\') for p in changed if p.startswith('core.liberation/') and p.endswith('.sqf') and 'hippo_params' not in p})
+    scripts=sorted({p.removeprefix('core.liberation/').replace('/','\\') for p in changed if p.startswith('core.liberation/') and p.endswith('.sqf') and 'hippo_params' not in p and (stage/p.removeprefix('core.liberation/')).exists()})
     settings=''
     if args.variant=='expanded':
         settings='GRLIB_LRX_params set ["HippoAllFactions", createHashMapFromArray [[GRLIB_PARAM_ValueKey,1]]];\n'
         p=stage/'scripts/server/fetch_params.sqf'
         p.write_text(p.read_text(encoding='utf-8-sig').replace('// Save back cleaned params',settings+'\n// Save back cleaned params'),encoding='utf-8')
-    (stage/'initServer.sqf').write_text(f'HPC_testRun="{run_id}"; HPC_testVariant="{args.variant}"; HPC_testControl="{args.control or ""}"; HPC_testBaseline={str(args.baseline).lower()}; HPC_testScenario={str(args.scenario).lower()}; HPC_testScripts='+json.dumps(scripts).replace('\\\\','\\')+'; [] execVM "hippo_tests\\run.sqf";\n',encoding='utf-8')
+    (stage/'initServer.sqf').write_text(f'HPC_testRun="{run_id}"; HPC_testVariant="{args.variant}"; HPC_testControl="{args.control or ""}"; HPC_testBaseline={str(args.baseline).lower()}; HPC_testScenario={str(args.scenario).lower()}; HPC_testCommander={str(args.commander).lower()}; HPC_testScripts='+json.dumps(scripts).replace('\\\\','\\')+'; [] execVM "hippo_tests\\run.sqf";\n',encoding='utf-8')
+    if args.missing_faction:
+        injection = '''
+HPC_testBeforeSettings = createHashMapFromArray [["ModPresetEast",createHashMapFromArray [["Value","RHS_AFRF"]]]];
+HPC_testBeforeCampaign = [0,[],[],[],[],[],[],"A3_BLU","RHS_AFRF"];
+'''
+        if args.missing_faction=='settings': injection+='HPC_testBeforeCampaign = [];\n'
+        else: injection+='HPC_testBeforeSettings = createHashMap;\n'
+        injection+='''
+profileNamespace setVariable [GRLIB_paramsV2_save_key,HPC_testBeforeSettings];
+profileNamespace setVariable [GRLIB_save_key,HPC_testBeforeCampaign];
+HPC_testSettingsText = str HPC_testBeforeSettings;
+HPC_testCampaignText = str HPC_testBeforeCampaign;
+HPC_testFactionEmit = {
+ params ["_id","_ok"];
+ diag_log format ["HPC_TEST|%1|server|CASE_START|%2",HPC_testRun,_id];
+ diag_log format ["HPC_TEST|%1|server|ASSERT|%2|%3",HPC_testRun,_id,["FAIL","PASS"] select _ok];
+ diag_log format ["HPC_TEST|%1|server|CASE_DONE|%2",HPC_testRun,_id];
+};
+addMissionEventHandler ["MPEnded",{
+ ["faction.ended",true] call HPC_testFactionEmit;
+ diag_log format ["HPC_TEST|%1|server|RUN_DONE|3",HPC_testRun];
+ "hippo-test-command" serverCommand "#shutdown";
+}];
+'''
+        p=stage/'scripts/server/fetch_params.sqf'
+        p.write_text(p.read_text(encoding='utf-8-sig').replace('// Load Mission settings',injection+'\n// Load Mission settings'),encoding='utf-8')
+        (stage/'initServer.sqf').write_text(f'HPC_testRun="{run_id}"; [] execVM "hippo_tests\\missing_faction.sqf";')
+        shutil.copy2(ROOT/'tools/hippo_testing/missing_faction.sqf',tests/'missing_faction.sqf')
     if args.clients:
         shutil.copy2(ROOT/'tools/hippo_testing/client.sqf',tests/'client.sqf')
         (stage/'initPlayerLocal.sqf').write_text(f'HPC_testRun="{run_id}"; [] execVM "hippo_tests\\client.sqf";\n',encoding='utf-8')
@@ -88,7 +124,9 @@ def main():
         sock.bind(('127.0.0.1',0)); port=sock.getsockname()[1]
     config=out/'server.cfg'
     config.write_text('hostname="Hippo isolated test"; password="hippo-local-test"; passwordAdmin="hippo-test-admin"; serverCommandPassword="hippo-test-command"; maxPlayers=4; persistent=1; loopback=1; BattlEye=0; verifySignatures=0; kickDuplicate=0; statisticsEnabled=0; allowedFilePatching=0;\nclass Missions {class Smoke {template="'+name+'"; difficulty="Regular"; class Params {OpenParams=0;Whitelist=0;Exclusive=0;WipeSave1=0;};};};\n',encoding='utf-8')
+    if args.missing_faction: config.write_text(config.read_text().replace('loopback=1','loopback=0'))
     argv=[str(GAME/'arma3server_x64.exe'),f'-config={config}',f'-profiles={profiles}',f'-port={port}','-ip=127.0.0.1','-autoInit','-world=empty','-noSound']
+    if args.mod: argv.append('-mod='+';'.join(args.mod))
     source_hash=hashlib.sha256()
     for path in sorted((source_root/'core.liberation').rglob('*')):
         if path.is_file(): source_hash.update(str(path.relative_to(source_root)).encode()); source_hash.update(bytes.fromhex(sha(path)))
@@ -107,7 +145,10 @@ def main():
             video=out/f'{role}.cfg'; video.write_text('language="English";winX=30;winY=30;winW=1280;winH=720;winWidth=1280;winHeight=720;winDefWidth=1280;winDefHeight=720;renderWidth=1280;renderHeight=720;HDRPrecision=16;vsync=0;multiSampleCount=1;PPAA=0;pipQuality=0;\n')
             pipe_name='HPC_'+run_id+'_'+role
             cmd=[str(GAME/'arma3_x64.exe'),'-noSplash','-skipIntro','-world=empty','-window','-noPause','-noSound',f'-name=HpcClient{i+1}',f'-profiles={folder}',f'-cfg={video}',f'-command={pipe_name}']
-            clients[role]=(subprocess.Popen(cmd,cwd=GAME,creationflags=subprocess.CREATE_NO_WINDOW,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL),folder,pipe_name)
+            client_mods=args.mod
+            if client_mods: cmd.append('-mod='+';'.join(client_mods))
+            startup=subprocess.STARTUPINFO(); startup.dwFlags=subprocess.STARTF_USESHOWWINDOW; startup.wShowWindow=7
+            clients[role]=(subprocess.Popen(cmd,cwd=GAME,startupinfo=startup,creationflags=subprocess.CREATE_NO_WINDOW,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL),folder,pipe_name)
             manifest[role+'_argv']=cmd
         (out/'manifest.json').write_text(json.dumps(manifest,indent=2),encoding='utf-8')
         deadline=time.monotonic()+args.timeout

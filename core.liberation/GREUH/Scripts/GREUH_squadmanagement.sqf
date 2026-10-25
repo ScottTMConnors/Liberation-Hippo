@@ -15,10 +15,10 @@ switch (squadaction) do {
 					[player] join _grp;
 					hint format ["player %1 join Squad %2", name player, _grp];
 				} else {
-					hint "Sorry, the Squad is Locked.";
+					hint "This squad is locked.";
 				};
 			} else {
-				hint "Sorry, your Group must have no AI.";
+				hint "Remove AI from your group before joining another squad.";
 			};
 		};
 	};
@@ -35,11 +35,11 @@ switch (squadaction) do {
 	case "lock" : {
 		if (_grp == _grp_player) then {
 			if (_grp in global_locked_group) then {
-				hint "Squad unLocked !";
+				hint "Squad unlocked.";
 				[_grp, "del"] remoteExec ["addel_group_remote_call", 2];
 				ctrlSetText [516, "Lock"];
 			} else {
-				hint "Squad locked !";
+				hint "Squad locked.";
 				[_grp, "add"] remoteExec ["addel_group_remote_call", 2];
 				ctrlSetText [516, "UnLock"];
 			};

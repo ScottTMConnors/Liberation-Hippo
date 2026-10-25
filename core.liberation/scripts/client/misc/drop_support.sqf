@@ -118,7 +118,7 @@ if (do_action == 1) then {
 			private _count_blu = { _x distance2D halo_position < GRLIB_capture_size } count (units GRLIB_side_friendly);
 			private _near_fob = ([halo_position, "FOB", GRLIB_sector_size, true] call F_check_near);
 			if (_count_blu > 0 || _near_fob) then {
-				hintSilent "Cannot fire!\nToo close from friendly units";
+				hintSilent "Cannot fire!\nToo close to friendly units.";
 				player setVariable ["AirCoolDown", 0];
 			} else {
 				if ([_cost] call F_pay) then {

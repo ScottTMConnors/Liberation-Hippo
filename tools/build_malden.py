@@ -4,6 +4,7 @@ import hashlib
 import json
 import shutil
 import subprocess
+import xml.etree.ElementTree as ET
 from datetime import datetime
 from pathlib import Path
 
@@ -19,6 +20,8 @@ def main():
     dirty=subprocess.check_output(['git','status','--porcelain','--','core.liberation','maps/Liberation_RX.Malden'],cwd=ROOT).decode().strip()
     if dirty: raise RuntimeError('Commit mission source before producing a release candidate.\n'+dirty)
     revision=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT).decode().strip()
+    upstream_tag=subprocess.check_output(['git','describe','--tags','upstream/master'],cwd=ROOT).decode().strip()
+    version=next(k.findtext('Original') for k in ET.parse(ROOT/'core.liberation/stringtable.xml').getroot().iter('Key') if k.attrib.get('ID')=='STR_MISSION_VERSION')
     stamp=datetime.now().strftime('%Y%m%d-%H%M%S')
     out=ROOT/'mybuild'/'releases'
     out.mkdir(parents=True,exist_ok=True)
@@ -26,7 +29,7 @@ def main():
     shutil.copytree(ROOT/'core.liberation',stage)
     shutil.copytree(ROOT/'maps/Liberation_RX.Malden',stage,dirs_exist_ok=True)
     for name in ['CREDITS.md','COPYING.md']: shutil.copy2(ROOT/name,stage/name)
-    (stage/'build_info.sqf').write_text(f'// Hippos Conquest release provenance\nGRLIB_build_date="{stamp}";\nGRLIB_build_time="{datetime.now().strftime("%H:%M:%S")}";\nGRLIB_build_version="1.1.0-{revision[:8]}";\n',encoding='utf-8')
+    (stage/'build_info.sqf').write_text(f'// Hippos Conquest release provenance\nGRLIB_build_date="{stamp}";\nGRLIB_build_time="{datetime.now().strftime("%H:%M:%S")}";\nGRLIB_build_version="{upstream_tag}-hippo{version}-{revision[:8]}";\n',encoding='utf-8')
     pbo=out/'Hippos_Conquest.Malden.pbo'
     if pbo.exists(): shutil.copy2(pbo,out/stamp/('previous-'+pbo.name))
     pack=subprocess.run([str(ROOT/'build/bin/PBOConsole.exe'),'-pack',str(stage),str(pbo)],cwd=ROOT,capture_output=True,text=True)

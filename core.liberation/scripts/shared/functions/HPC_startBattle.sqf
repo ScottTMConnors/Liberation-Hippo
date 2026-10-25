@@ -10,6 +10,9 @@ if (GRLIB_Commander_mode && {missionNamespace getVariable ["HPC_NearbyBattles", 
 {
     if (_x in opfor_sectors && {!(_x in active_sectors)}) then {
         [_x] call start_sector;
+        waitUntil {uiSleep 0.25; !GRLIB_sector_spawning};
+        private _state = missionNamespace getVariable ["HPC_sectorState_"+_x,[]];
+        if (count _state > 0 && {_state select 0 == "failed"}) exitWith {};
         if (_forEachIndex < count _targets - 1) then { sleep 30 };
     };
 } forEach _targets;

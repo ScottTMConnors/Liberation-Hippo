@@ -13,6 +13,17 @@ if (([_sector_pos, (GRLIB_sector_size * 2), GRLIB_side_friendly, 1] call F_getUn
 	diag_log format ["--- LRX Manage Sector: Sector %1 have no more enemy, aborting.", _sector];
 };
 
+private _usableMilitia = (missionNamespace getVariable ["militia_squad",[]]) select {isClass (configFile >> "CfgVehicles" >> _x)};
+private _usableRegulars = (missionNamespace getVariable ["opfor_infantry",[]]) select {isClass (configFile >> "CfgVehicles" >> _x)};
+if (_usableMilitia isEqualTo [] && {_usableRegulars isEqualTo []}) exitWith {
+    private _name = markerText _sector;
+    [_sector,"failed",0,-1,-1,_name] call HPC_fnc_sectorState;
+    diag_log format ["--- Hippos Conquest: sector %1 rejected; enemy template %2 has no loaded infantry",_sector,GRLIB_mod_east];
+    [gamelogic,format ["Cannot load %1: enemy faction %2 has no available infantry. Enable its required mods or select an available enemy faction before restarting.",_name,GRLIB_mod_east]] remoteExec ["globalChat",0];
+    if (GRLIB_Commander_mode) then {[] remoteExec ["manage_sectors_commander",2]};
+};
+if (_usableMilitia isEqualTo []) then {_usableMilitia = +_usableRegulars};
+
 active_sectors pushback _sector;
 publicVariable "active_sectors";
 GRLIB_sector_spawning = true;
@@ -66,8 +77,8 @@ diag_log format ["Spawn Attack Sector %1 - player in combat %2 / readiness %3 at
 switch true do {
     case (_sector in sectors_bigtown): {
         _vehtospawn = [([] call F_getAdaptiveVehicle), (selectRandom militia_vehicles), (selectRandom militia_vehicles)];
-        while { count _squad1 < 12 } do { _squad1 pushback (selectRandom militia_squad) };
-        while { count _squad2 < 12 } do { _squad2 pushback (selectRandom militia_squad) };
+        for "_i" from 1 to 12 do { _squad1 pushBack (selectRandom _usableMilitia) };
+        for "_i" from 1 to 12 do { _squad2 pushBack (selectRandom _usableMilitia) };
         if (combat_readiness >= 33) then { _squad3 = ([] call F_getAdaptiveSquadComp) };
         if (combat_readiness >= 66) then { _squad4 = ([] call F_getAdaptiveSquadComp) };
         if (_count_players > 2) then { _squad5 = ([] call F_getAdaptiveSquadComp) };
@@ -87,16 +98,16 @@ switch true do {
 		_static_count = (floor random 3);
     };
     case (_sector in sectors_capture): {
-        while { count _squad1 < 12 } do { _squad1 pushback (selectRandom militia_squad) };
+        for "_i" from 1 to 12 do { _squad1 pushBack (selectRandom _usableMilitia) };
         if (combat_readiness >= 33) then {
-            while { count _squad2 < 12 } do { _squad2 pushback (selectRandom militia_squad) }
+            for "_i" from 1 to 12 do { _squad2 pushBack (selectRandom _usableMilitia) }
         };
         if (combat_readiness >= 66) then {
-            while { count _squad3 < 8 } do { _squad3 pushback (selectRandom militia_squad) };
+            for "_i" from 1 to 8 do { _squad3 pushBack (selectRandom _usableMilitia) };
             _infsquad3 = "militia"
         };
         if (_count_players > 2) then {
-            while { count _squad4 < 8 } do { _squad4 pushback (selectRandom militia_squad) };
+            for "_i" from 1 to 8 do { _squad4 pushBack (selectRandom _usableMilitia) };
             _infsquad4 = "militia"
         };
         if (_count_players > 4) then {
@@ -171,7 +182,7 @@ switch true do {
         _ied_count = 4;
     };
     case (_sector in sectors_factory): {
-        while { count _squad1 < 10 } do { _squad1 pushback (selectRandom militia_squad) };
+        for "_i" from 1 to 10 do { _squad1 pushBack (selectRandom _usableMilitia) };
         _infsquad2 = "infantry";
         _squad2 = ([] call F_getAdaptiveSquadComp);
         if (combat_readiness >= 66) then {
@@ -226,6 +237,7 @@ switch true do {
 };
 
 _sector setMarkerText format ["%2 - Loading %1%%", 10, _sectorName];
+[_sector,"loading",10,-1,-1,_sectorName,_local_capture_size] call HPC_fnc_sectorState;
 // Extra veh based on difficulty
 if ((floor GRLIB_difficulty_modifier) > 1) then {
 	for "_i" from 1 to (floor (GRLIB_difficulty_modifier)) do {
@@ -248,9 +260,10 @@ if (_uavs_count > 0) then {
 };
 
 _sector setMarkerText format ["%2 - Loading %1%%", 15, _sectorName];
+[_sector,"loading",15,-1,-1,_sectorName,_local_capture_size] call HPC_fnc_sectorState;
 // Create units
 {
-	[_x select 0, _x select 1, _x select 2, _sector_pos, _sector] spawn {
+	[_x select 0, _x select 1, _x select 2, _sector_pos, _sector] call {
 		params ["_squad", "_infsquad", "_range", "_sector_pos", "_sector"];
 		if (count _squad == 0) exitWith {};
 		private _grp = [_sector_pos, _infsquad, _squad, false] call F_spawnRegularSquad;
@@ -259,13 +272,14 @@ _sector setMarkerText format ["%2 - Loading %1%%", 15, _sectorName];
 	};
 	_ratio = round linearConversion [0, 4, _foreachIndex, 20, 40];
 	_sector setMarkerText format ["%2 - Loading %1%%", _ratio, _sectorName];
+[_sector,"loading",_ratio,-1,-1,_sectorName,_local_capture_size] call HPC_fnc_sectorState;
 	sleep 0.5;
 } forEach [[_squad1, _infsquad1, 50], [_squad2, _infsquad2, 100], [_squad3, _infsquad3, 100], [_squad4, _infsquad4, 200], [_squad5, _infsquad5, 300]];
 
 // Create vehicles
 if (count _vehtospawn > 0) then {
 	{
-		[_x, _infsquad1, _sector_pos, _sector] spawn {
+		[_x, _infsquad1, _sector_pos, _sector] call {
 			params ["_classname", "_type", "_sector_pos", "_sector"];
 			private _pos = [_sector_pos, (80 + floor random 100)] call F_getRandomPos;
 			private _vehicle = [_pos, _classname, 10, GRLIB_side_enemy, _type] call F_libSpawnVehicle;
@@ -274,8 +288,9 @@ if (count _vehtospawn > 0) then {
 				[group driver _vehicle, getPosATL _vehicle, (80 + floor random 160)] spawn defence_ai;
 			};
 		};
-		_ratio = round linearConversion [0, (count _vehtospawn) - 1, _foreachIndex, 50, 70];
+		_ratio = round linearConversion [0, count _vehtospawn, _foreachIndex + 1, 50, 70];
 		_sector setMarkerText format ["%2 - Loading %1%%", _ratio, _sectorName];
+[_sector,"loading",_ratio,-1,-1,_sectorName,_local_capture_size] call HPC_fnc_sectorState;
 		sleep 0.5;
 	} foreach _vehtospawn;
 };
@@ -285,13 +300,15 @@ if (_building_ai_max > 0) then {
 	_building_ai_max = (_building_ai_max * GRLIB_building_ai_ratio);
 	if (_sector in sectors_bigtown) then { _building_ai_max = _building_ai_max + 12 };
 	_sector setMarkerText format ["%2 - Loading %1%%", 75, _sectorName];
-	[_infsquad1, _building_ai_max, _building_range, _sector_pos, _sector] spawn {
+[_sector,"loading",75,-1,-1,_sectorName,_local_capture_size] call HPC_fnc_sectorState;
+	[_infsquad1, _building_ai_max, _building_range, _sector_pos, _sector] call {
 		params ["_infsquad1", "_building_ai_max", "_building_range", "_sector_pos", "_sector"];
 		(missionNamespace getVariable format ["LRX_sector_%1_units", _sector]) append ([_infsquad1, _building_ai_max, _sector_pos, _building_range, objNull, false] call F_buildingSquad);
 	};
 	sleep 0.5;
 };
 _sector setMarkerText format ["%2 - Loading %1%%", 80, _sectorName];
+[_sector,"loading",80,-1,-1,_sectorName,_local_capture_size] call HPC_fnc_sectorState;
 
 // Create civilians
 if (_spawncivs && GRLIB_civilian_activity > 0) then {
@@ -301,7 +318,7 @@ if (_spawncivs && GRLIB_civilian_activity > 0) then {
 	_civ = _nbcivs;
 	while { _nbcivs > 0 } do {
 		private _max_units = (selectRandom _rnd) min _nbcivs;
-		[_sector_pos, _sector, _max_units] spawn {
+		[_sector_pos, _sector, _max_units] call {
 			params ["_sector_pos", "_sector", "_max_units"];
 			private _grp = [_sector_pos, _max_units] call F_spawnCivilians;
 			if (isNull _grp) exitWith {};
@@ -311,13 +328,14 @@ if (_spawncivs && GRLIB_civilian_activity > 0) then {
 		_nbcivs = _nbcivs - _max_units;
 		_ratio = round linearConversion [0, _civ, _civ - _nbcivs, 85, 99];
 		_sector setMarkerText format ["%2 - Loading %1%%", _ratio, _sectorName];
+[_sector,"loading",_ratio,-1,-1,_sectorName,_local_capture_size] call HPC_fnc_sectorState;
 		sleep 0.5;
 	};
 };
 
 // Create static weapons
 if (_static_count > 0) then {
-	[_static_count, _infsquad1, _sector_pos, _sector] spawn {
+	[_static_count, _infsquad1, _sector_pos, _sector] call {
 		params ["_static_count", "_infsquad1", "_sector_pos", "_sector"];
 		([_sector_pos, _static_count, GRLIB_side_enemy, false, _infsquad1] call spawn_static) params ["_static_vehicles", "_static_units"];
 		(missionNamespace getVariable format ["LRX_sector_%1_units", _sector]) append _static_units;
@@ -340,7 +358,7 @@ if (_nearRadioTower) then {
 		[gamelogic, "A lucky day..."] remoteExec ["globalChat", 0];
 	};
 } else {
-	[gamelogic, "Enemies can't call Air support. No radio tower nearby."] remoteExec ["globalChat", 0];
+	[gamelogic, "Enemy air support is unavailable: no radio tower nearby."] remoteExec ["globalChat", 0];
 };
 
 // Upgraded AI defense - now dynamic and reactive instead of time-based
@@ -408,6 +426,7 @@ private _task = "attack" + _sectorName + str round time;
 _sector setMarkerText format ["%1 - Loaded", _sectorName];
 sleep 5;
 _sector setMarkerText format ["%1", _sectorName];
+[_sector,"active",0,-1,-1,_sectorName,_local_capture_size] call HPC_fnc_sectorState;
 GRLIB_sector_spawning = false;
 publicVariable "GRLIB_sector_spawning";
 
@@ -432,6 +451,7 @@ while {true} do {
     // An initially empty, successfully loaded sector is cleared; no division by zero.
     private _ratio = if (_startingCount == 0) then { if (_remaining == 0) then {0} else {100} } else {100 * _remaining / _startingCount};
     _sector setMarkerText format ["%1 - %2%%", _sectorName, round _ratio];
+    [_sector,"active",100 - _ratio,_remaining,_startingCount,_sectorName,_local_capture_size] call HPC_fnc_sectorState;
     if (_ratio <= 10) exitWith { // Victory
 		diag_log format ["Sector %1 mission succeeded.", _sector];
 		_sector setMarkerText _sectorName;

@@ -2,9 +2,9 @@ params ["_vehicle"];
 
 if (isNil "_vehicle") exitWith {};
 
-if (!([player, _vehicle] call is_owner)) exitWith { hintSilent "Wrong Vehicle Owner.\nAccess is Denied !" };
-if ([_vehicle] call F_vehicleNeedRepair) exitWith { hintSilent "Damaged Vehicles cannot be Painted !" };
-if ([_vehicle, GRLIB_vehicle_blacklist] call F_itemIsInClass) exitWith { hintSilent "This Vehicle cannot be Painted !" };
+if (!([player, _vehicle] call is_owner)) exitWith { hintSilent "You do not own this vehicle." };
+if ([_vehicle] call F_vehicleNeedRepair) exitWith { hintSilent "Repair this vehicle before repainting it." };
+if ([_vehicle, GRLIB_vehicle_blacklist] call F_itemIsInClass) exitWith { hintSilent "This vehicle cannot be repainted." };
 
 if (!local _vehicle) then {
 	if (count crew _vehicle == 0) then {

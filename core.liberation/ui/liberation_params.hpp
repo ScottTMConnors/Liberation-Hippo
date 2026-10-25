@@ -31,7 +31,7 @@ class liberation_params {
 		y = 0.14 * safezoneH + safezoneY;
 		w = 0.6 * safezoneW + ( 2 * BORDERSIZE);
 		h = 0.05 * safezoneH - (BORDERSIZE);
-		text = "--- LRX CONFIGURATION ---";
+		text = "HIPPOS CONQUEST SETTINGS";
 	};
 
 	class MissionsControlGroup  {

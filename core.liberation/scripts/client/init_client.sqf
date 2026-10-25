@@ -1,13 +1,13 @@
 diag_log "--- Client wait for Server init ---";
 
 waitUntil {
-	titleText [localize "STR_TITLE_LOADING", "BLACK FADED", 100];
-	sleep 1;
-	titleText [localize "STR_TITLE_PLEASE_WAIT", "BLACK FADED", 100];
-	sleep 1;
+	titleText [localize "STR_TITLE_LOADING", "PLAIN", 100];
+	uiSleep 1;
+	titleText [localize "STR_TITLE_PLEASE_WAIT", "PLAIN", 100];
+	uiSleep 1;
 	(!isNil "GRLIB_init_server")
 };
-titleText ["", "BLACK FADED", 100];
+titleText ["", "PLAIN", 100];
 
 diag_log "--- Client Init start ---";
 
@@ -42,10 +42,11 @@ GRLIB_BuildTypeDirect = 90;
 
 // Server Init Error
 if (abort_loading) exitWith {
+    if (!isNil "HPC_fatalFaction") exitWith {};
 	private _msg = format [localize "STR_MSG_SERVER_STARTUP_ERROR", abort_loading_msg];
-	titleText [_msg, "BLACK FADED", 100];
+	titleText [_msg, "PLAIN", 100];
 	diag_log abort_loading_msg;
-	sleep 10;
+	uiSleep 10;
 	endMission "LOSER";
 	disableUserInput false;
 };
@@ -54,8 +55,8 @@ if (abort_loading) exitWith {
 PAR_Grp_ID = getPlayerUID player;
 if (PAR_Grp_ID == "" || !(isPlayer player)) exitWith {
 	private _msg = localize "STR_MSG_SERVER_INIT_ERROR";
-	titleText [_msg, "BLACK FADED", 100];
-	sleep 10;
+	titleText [_msg, "PLAIN", 100];
+	uiSleep 10;
 	endMission "LOSER";
 	disableUserInput false;
 };
@@ -67,14 +68,14 @@ GRLIB_is_Commander = (player getvariable ["GRLIB_is_Commander", false]);
 private _name = name player;
 if (toLower _name in GRLIB_blacklisted_names || (_name == str parseNumber _name) || (count trim _name <= 2)) exitWith {
 	private _msg = format [localize "STR_NAME_PROHIBITED", _name];
-	titleText [_msg, "BLACK FADED", 100];
-	sleep 10;
+	titleText [_msg, "PLAIN", 100];
+	uiSleep 10;
 	endMission "LOSER";
 	disableUserInput false;
 };
 
 // LRX_Template mod version check
-waitUntil {sleep 0.5; !isNil "GRLIB_LRX_Template_version"};
+waitUntil {uiSleep 0.5; !isNil "GRLIB_LRX_Template_version"};
 private _version_checked = true;
 if (!isNil "LRX_Template_version") then {
 	if (typeName LRX_Template_version == "SCALAR") then {
@@ -85,26 +86,26 @@ if (!isNil "LRX_Template_version") then {
 };
 if (!_version_checked) exitWith {
 	private _msg = localize "STR_MSG_INVALID_LRXMOD_VERSION";
-	titleText [_msg, "BLACK FADED", 100];
-	sleep 10;
+	titleText [_msg, "PLAIN", 100];
+	uiSleep 10;
 	endMission "LOSER";
 	disableUserInput false;
 };
 
-waitUntil {sleep 0.5; !isNil "GRLIB_global_stop"};
+waitUntil {uiSleep 0.5; !isNil "GRLIB_global_stop"};
 if (GRLIB_global_stop == 1) exitWith {
 	private _msg = localize "STR_MSG_FINAL_MISSION_RUNNING";
-	titleText [_msg, "BLACK FADED", 100];
-	sleep 10;
+	titleText [_msg, "PLAIN", 100];
+	uiSleep 10;
 	endMission "LOSER";
 	disableUserInput false;
 };
 
-waitUntil {sleep 0.5; !isNil "GRLIB_endgame"};
+waitUntil {uiSleep 0.5; !isNil "GRLIB_endgame"};
 if (GRLIB_endgame == 1) exitWith {
 	private _msg = localize "STR_MSG_END_GAME";
-	titleText [_msg, "BLACK FADED", 100];
-	sleep 10;
+	titleText [_msg, "PLAIN", 100];
+	uiSleep 10;
 	endMission "LOSER";
 	disableUserInput false;
 };
@@ -115,15 +116,15 @@ if (GRLIB_kick_idle > 0) then {
 
 if (GRLIB_respawn_cooldown > 0) then {
 	if (isServer) exitWith {};
-	waitUntil {sleep 1; !isNil "BTC_logic"};
+	waitUntil {uiSleep 1; !isNil "BTC_logic"};
 	private _cooldown = BTC_logic getVariable [format ["%1_last_respawn", PAR_Grp_ID], 0];
 	if (_cooldown > time) then {
 		while { time < _cooldown } do {
 			private _msg = format [localize "STR_MSG_RESPAWN_COOLDOWN", round (_cooldown - time)];
-			titleText [_msg, "BLACK FADED", 100];
-			sleep 2;
+			titleText [_msg, "PLAIN", 100];
+			uiSleep 2;
 		};
-		titleText ["", "BLACK FADED", 100];
+		titleText ["", "PLAIN", 100];
 	};
 };
 
@@ -148,26 +149,30 @@ build_confirmed = -1;
 startgame = 0;
 [] spawn {
 	waituntil {
-		titleText ["... Loading Player Data ...", "BLACK FADED", 100];
-		sleep 1;
-		titleText [localize "STR_TITLE_PLEASE_WAIT", "BLACK FADED", 100];
-		sleep 1;
+		titleText ["... Loading Player Data ...", "PLAIN", 100];
+		uiSleep 1;
+		titleText [localize "STR_TITLE_PLEASE_WAIT", "PLAIN", 100];
+		uiSleep 1;
 		(LRX_init_done);
 	};
 };
 
+HPC_clientLoadingStage = [0.85,"Preparing your player and squad..."];
+
 // Create Player Group
 GRLIB_player_group = createGroup [GRLIB_side_friendly, true];
 [GRLIB_player_group, "add"] remoteExec ["addel_group_remote_call", 2];
-waitUntil { sleep 1; player getVariable ["GRLIB_score_set", 0] == 1 && player in (units GRLIB_player_group) };
+waitUntil { uiSleep 1; player getVariable ["GRLIB_score_set", 0] == 1 && player in (units GRLIB_player_group) };
 
 [] call compileFinal preprocessFileLineNumbers "addons\VAM\RPT_init_client.sqf";
+
+HPC_clientLoadingStage = [0.90,"Preparing arsenal equipment..."];
 
 // LRX Arsenal
 diag_log "--- LRX: Build Arsenal Classnames ---";
 [] call compileFinal preprocessFileLineNumbers "addons\LARs\default_classnames.sqf";
 [] spawn compileFinal preprocessFileLineNumbers "addons\LARs\liberationArsenal.sqf";
-waitUntil { sleep 1; LRX_arsenal_init_done };
+waitUntil { uiSleep 1; LRX_arsenal_init_done };
 
 // LRX Addons
 [] execVM "addons\PAR\PAR_AI_Revive.sqf";
@@ -188,7 +193,10 @@ waitUntil { sleep 1; LRX_arsenal_init_done };
 [] call compile preprocessFileLineNumbers "GREUH\scripts\GREUH_version.sqf";
 [] call compile preprocessFileLineNumbers "scripts\client\markers\init_markers.sqf";
 LRX_init_done = true;
-sleep 2;
+uiSleep 2;
+
+HPC_clientLoadingStage = [1,"Ready"];
+[] call HPC_fnc_loadingEnd;
 
 // Start intro
 diag_log "--- Client Intro start ---";
@@ -197,7 +205,7 @@ diag_log "--- Client Intro start ---";
 // Init actions
 [] execVM "scripts\client\actions\action_manager_player.sqf";
 [] execVM "scripts\client\build\build_manager.sqf";
-waitUntil {sleep 1; (GRLIB_player_configured && GRLIB_action_player_ready && build_confirmed == 0)};
+waitUntil {uiSleep 1; (GRLIB_player_configured && GRLIB_action_player_ready && build_confirmed == 0)};
 
 // Player actions manager
 [] execVM "scripts\client\actions\action_manager_veh.sqf";

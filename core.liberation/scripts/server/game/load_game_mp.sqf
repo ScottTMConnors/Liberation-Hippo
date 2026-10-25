@@ -1,4 +1,5 @@
 //--- LRX Load Savegame
+if (isServer) then {HPC_serverLoadingStage = [0.50,"Restoring the campaign..."]; publicVariable "HPC_serverLoadingStage"};
 if (!isServer) exitWith {};
 private ["_buildings_created", "_nextbuilding"];
 
@@ -79,7 +80,7 @@ if (GRLIB_param_wipe_savegame_1 == 1 && GRLIB_param_wipe_savegame_2 == 1) then {
 	saveProfileNamespace;
 	diag_log format ["--- LRX Savegame %1 Erased!", GRLIB_save_key];
 	_lrx_liberation_savegame = nil;
-	sleep 1;
+	uiSleep 1;
 };
 
 // Load Savegame
@@ -448,7 +449,7 @@ if (!isNil "_lrx_liberation_savegame") then {
 
 	[_buildings_created] spawn {
 		params ["_list"];
-		sleep 30;
+		uiSleep 30;
 		private _no_damage = [
 			FOB_typename,
 			FOB_outpost,

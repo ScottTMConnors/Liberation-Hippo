@@ -1,5 +1,6 @@
 //--- LRX Savegame
 if (!isServer) exitWith {};
+if (missionNamespace getVariable ["abort_loading",false]) exitWith {};
 if (!isNil "GRLIB_server_stopped") exitWith {};
 if (!isNil "GRLIB_save_in_progress") exitWith {};
 

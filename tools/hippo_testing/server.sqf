@@ -30,16 +30,36 @@ private _booted = !isNil "GRLIB_init_server" && {GRLIB_init_server};
 ["startup.server", _booted] call _assert;
 if (!_booted) exitWith {["RUN_DONE|0"] call _emit};
 ["settings.defaults", HPC_EasyAI && HPC_AIWarfare && HPC_NearbyBattles && !HPC_SecondChance && !HPC_VehicleProgression && !HPC_CivilianProtection && GRLIB_Undercover_mode == 1 && HPC_RepairSeconds == 20 && HPC_ArtyRearmSeconds == 30 && (HPC_AllFactions == (HPC_testVariant == "expanded"))] call _assert;
+private _offeredWest = (LRX_Mission_Params get GRLIB_PARAM_ModPresetWest) get GRLIB_PARAM_OptionValuesKey;
+private _offeredEast = (LRX_Mission_Params get GRLIB_PARAM_ModPresetEast) get GRLIB_PARAM_OptionValuesKey;
+private _factionsOK = count _offeredWest > 0 && count _offeredEast > 0 && {!("---" in (_offeredWest + _offeredEast))};
+if (isClass (configFile >> "CfgVehicles" >> "rhsusf_army_ucp_rifleman") && {!isClass (configFile >> "CfgVehicles" >> "rhs_msv_emr_rifleman")}) then {
+    _factionsOK = _factionsOK && {"RHS_USAF" in _offeredWest} && {!("RHS_AFRF" in _offeredEast)};
+};
+if (!isClass (configFile >> "CfgVehicles" >> "rhssaf_army_o_m93_oakleaf_summer_rifleman_m70")) then {_factionsOK = _factionsOK && {!("RHS_SAF" in _offeredWest)}};
+if (!isClass (configFile >> "CfgVehicles" >> "ffaa_brilat_soldado")) then {_factionsOK = _factionsOK && {!("FFAA_SPAIN_W" in _offeredWest)}};
+diag_log ["HPC_FACTION_OPTIONS",_offeredWest,_offeredEast];
+["factions.available",_factionsOK] call _assert;
+private _easyRow = LRX_Mission_Params get "HippoEasyAI";
+["settings.english",(_easyRow get GRLIB_PARAM_NameKey) == "Easy AI" && {count (_easyRow get GRLIB_PARAM_OptionDescriptionKey) == count (_easyRow get GRLIB_PARAM_OptionValuesKey)}] call _assert;
 
 private _group = createGroup [GRLIB_side_friendly, true];
 private _unit = _group createUnit [blufor_squad_inf select 0, markerPos "base_chimera", [], 0, "NONE"];
+// Let engine initialization finish, then test the helper in one unscheduled slice
+// so the periodic skill manager cannot interleave with this contract fixture.
+uiSleep 1;
+private _easy = false;
+private _restored = false;
+isNil {
+_unit setVariable ["HPC_originalSkills",nil];
 _unit setSkill ["aimingAccuracy", 0.37];
 [_unit] call HPC_fnc_applyEasyAI;
-private _easy = (_unit skill "aimingAccuracy") > 0.99;
+_easy = (_unit skill "aimingAccuracy") > 0.99;
 HPC_EasyAI = false;
 [_unit] call HPC_fnc_applyEasyAI;
-private _restored = abs ((_unit skill "aimingAccuracy") - 0.37) < 0.01;
+_restored = abs ((_unit skill "aimingAccuracy") - 0.37) < 0.01;
 HPC_EasyAI = true;
+};
 ["skills.toggle", _easy && _restored] call _assert;
 
 private _off = [_unit, "", 0.42, objNull, "", 0, objNull] call damage_manager_civilian;
@@ -72,4 +92,5 @@ GRLIB_all_fobs = _oldFobs;
 deleteVehicle _unit;
 deleteGroup _group;
 if (HPC_testScenario) then {call compile preprocessFileLineNumbers "hippo_tests\scenario.sqf"};
-[format ["RUN_DONE|%1", if (HPC_testScenario) then {10} else {7}]] call _emit;
+if (HPC_testCommander) then {call compile preprocessFileLineNumbers "hippo_tests\commander.sqf"};
+[format ["RUN_DONE|%1", 9 + (if (HPC_testScenario) then {3} else {0}) + (if (HPC_testCommander) then {4} else {0})]] call _emit;

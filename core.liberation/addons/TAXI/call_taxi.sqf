@@ -10,7 +10,7 @@ if (_nb_unit <= 2) then {_taxi_type = selectRandom taxi_type_2};
 if (_nb_unit > 2 && _nb_unit <= 6) then {_taxi_type = selectRandom taxi_type_6};
 if (_nb_unit > 6 && _nb_unit <= 8) then {_taxi_type = selectRandom taxi_type_8};
 if (_nb_unit > 8) then {_taxi_type = selectRandom taxi_type_14};
-if (isNil "_taxi_type") exitWith {hintSilent format ["No Taxi exist for this group size (%1)", _nb_unit]};
+if (isNil "_taxi_type") exitWith {hintSilent format ["No taxi is available for a group of %1.", _nb_unit]};
 
 // Check dest place
 buildtype = GRLIB_BuildTypeDirect;
@@ -122,7 +122,7 @@ if (time < _stop) then {
 		titleText ["", "PLAIN"];
 		sleep 1;
 		for "_i" from 3 to 0 step -1 do {
-			titleText [format ["Taxi take off in %1 seconds", _i], "PLAIN"];
+			titleText [format ["Taxi departure in %1 seconds.", _i], "PLAIN"];
 			sleep 1;
 		};
 		titleText ["Ok, let's go...", "PLAIN"];

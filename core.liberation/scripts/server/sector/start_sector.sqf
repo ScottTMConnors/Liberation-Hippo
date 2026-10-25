@@ -7,10 +7,10 @@ if (GRLIB_Commander_mode) then {
 
 private _hc = [] call F_lessLoadedHC;
 if (isNull _hc) then {
-    [_sector] spawn manage_one_sector;
+    [_sector] spawn HPC_fnc_loadSector;
 } else {
     diag_log format ["--- LRX Server: Sector: %1 spawned on %2", _sector, _hc];
-    [_sector] remoteExec ["manage_one_sector", owner _hc];
+    [_sector] remoteExec ["HPC_fnc_loadSector", owner _hc];
     active_sectors_hc pushBack [_sector, _hc];
 };
 if (_sector in sectors_military) then {

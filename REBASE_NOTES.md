@@ -101,3 +101,53 @@ Its non-dedicated host startup completed without script/config errors or the
 empty-dedicated-server issues listed above. Evidence is under
 `mybuild/host_smoke/20261024-175545/`. Later validation-tool changes do not change
 the runtime source in that release.
+
+## Commander and startup repair, 1.1.1
+
+The earlier smoke tests did not exercise commander town loading or detect an
+empty enemy roster. The reported play log selected RHS AFRF without loading
+RHSAFRF. An unbounded militia fill loop could then prevent sector loading and
+enemy warfare attacks from completing. Sector creation now rejects empty
+rosters, uses bounded construction, publishes real loading/capture progress,
+and has a watchdog. Commander HUD controls display that progress even when
+the player is away from the objective. Enemy assault squads still target FOBs.
+
+Faction choices now inspect actual primary infantry classes, independently for
+friendly/enemy templates. Vanilla divers within a mod template cannot make an
+absent faction appear available. Saved settings and campaign factions are checked
+before any save cleanup or write; missing content stops the mission with an
+explanation. It does not silently substitute another faction or overwrite saves.
+
+Startup uses an owned native Arma loading screen after settings, with Hippos
+Conquest branding, stages, guaranteed release and a finite timeout. Initialization
+waits use UI time so a listen host can finish while simulation is paused. Respawn
+and intro-camera cleanup remove stale black fades. This presentation supersedes
+the earlier request for a bird during loading. Live sector loading remains on
+the commander HUD.
+
+English names and descriptions were reviewed for 94 settings; option tooltips
+now describe their actual values. More than 320 string-table entries and visible
+hardcoded messages were corrected, including tutorials and fork titles. Existing
+translations and inherited credits remain, with the malformed duplicate French
+entry for the civilian-role prompt repaired into an English Original entry.
+Unlimited Hippo revives are described accurately. Release build metadata retains
+the upstream version prefix required by the external template compatibility code.
+
+Validation is performed without desktop automation at the user's request.
+Missing-faction settings and campaign cases `20261025T064958-default-smoke` and
+`20261025T065008-default-smoke` each passed rejection, save preservation and actual
+mission ending. The modded commander run `20261025T064804-default-smoke` passed
+11 server assertions with no unexpected script/config errors. A rendering-client
+attempt `20261025T064145-default-smoke` failed Direct3D initialization before the
+mission: it provides no client or visual validation. Native screen appearance,
+listen-host native loading and the on-screen commander bar still require player
+acceptance. Dedicated engine tests establish server logic, not those visual flows.
+
+The final modded expanded-catalog commander run
+`20261025T065439-expanded-smoke` passed all 13 assertions, including absent
+AFRF/SAF/FFAA filtering, real town spawning and progress, and both enemy squads'
+FOB destinations. The default-catalog commander run
+`20261025T065346-default-smoke` also passed 13. The combined run
+`20261025T065203-expanded-smoke` passed 15 assertions including capture and
+cleanup but reached its overall watchdog before completing the last case; it
+is retained as an incomplete run, not a pass. Scenarios are rerun separately.

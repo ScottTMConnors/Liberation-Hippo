@@ -87,7 +87,7 @@ while { !_found && {_attempt < _max_attempts} && {_radius < _max_radius} } do {
 		_attempt = _attempt + 1;
 		_spawn_pos = [(_start_pos getPos [_radius, _angle])] call _tryPos;
 		if (count _spawn_pos > 0) exitWith { _found = true };
-		if ((_attempt mod 8) == 0) then { sleep 0.01 };
+		if ((_attempt mod 8) == 0) then { uiSleep 0.01 };
 		_angle = _angle + _angle_step;
 	};
 	if (!_found) then { _radius = _radius + _radius_step };

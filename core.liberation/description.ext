@@ -66,6 +66,16 @@ class cfgSounds {
 };
 
 class CfgDebriefing {
+    class HPC_LoadFailed {
+        title = "Hippos Conquest startup stopped";
+        description = "Mission initialization did not finish. Check the RPT log for the last loading stage. Your save has not been changed.";
+        pictureBackground = "";
+    };
+    class HPC_FactionUnavailable {
+        title = "Required faction unavailable";
+        description = "Hippos Conquest stopped because a saved faction requires mods that are not loaded. Enable the required mods and restart. Your save has not been changed.";
+        pictureBackground = "";
+    };
 	class LRXEND1
 	{
 		title =	"Parameter Error";
@@ -110,3 +120,5 @@ class CfgMusic {
     tracks[] = {};
     class LRHIntro { name = "LRH Theme"; sound[] = {"music\LRHTheme.ogg", db + 10, 1.0}; };
 };
+
+#include "ui\hippo_loading.hpp"

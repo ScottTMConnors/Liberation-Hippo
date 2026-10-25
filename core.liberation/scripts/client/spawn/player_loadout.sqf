@@ -2,7 +2,7 @@
 [player] call F_fixModUnit;
 [] spawn loadout_price;
 
-waitUntil {sleep 0.2; !(isSwitchingWeapon player)};
+waitUntil {uiSleep 0.2; !(isSwitchingWeapon player)};
 
 // Player Loadout
 if (isNil {player getVariable "GREUH_stuff_price"}) then {
@@ -34,7 +34,7 @@ if (isNil {player getVariable "GREUH_stuff_price"}) then {
 	player setVariable ["GREUH_stuff_price", ([player] call F_loadoutPrice), true];
 };
 
-sleep 1;
+uiSleep 1;
 GRLIB_backup_loadout = getUnitLoadout player;
 
 { player setUnitTrait [_x, true] } forEach ["Medic","Engineer","ExplosiveSpecialist","UAVHacker"];

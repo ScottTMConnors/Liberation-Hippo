@@ -66,7 +66,7 @@ class TXU_GUI_RscButton
 
 class TXU_TS_INFOBUTTON1 : TXU_GUI_RscButton
 {
-	text = "Vist our Reddit Website";
+	text = "Visit our Reddit community";
 	url = "https://www.reddit.com/r/Liberation_RX/";
 	w = 0.5;
 	colorText[] = {0,1,1,1};

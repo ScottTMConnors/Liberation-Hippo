@@ -3,7 +3,7 @@ diag_log "--- Hippos Conquest by TheHungryHippo; based on Liberation RX ---";
 // Multiplayer only
 if (!isMultiplayer) exitWith {
 	private _msg = localize "STR_MSG_MP_ONLY";
-	titleText [_msg, "BLACK FADED", 100];
+	titleText [_msg, "PLAIN", 100];
 	systemChat _msg;
 	diag_log _msg;
 	endMission "LOSER";
@@ -12,7 +12,7 @@ if (!isMultiplayer) exitWith {
 if (isServer && !isNil "GRLIB_init_server") exitWith { diag_log "--- LRX Error: Mission restart too fast!" };
 
 disableUserInput true;
-titleText ["","BLACK FADED", 100];
+titleText ["","PLAIN", 100];
 0 fadeSound 0;
 
 [] call compileFinal preprocessFileLineNumbers "build_info.sqf";
@@ -22,7 +22,7 @@ clean_unit = compileFinal preprocessFileLineNumbers "scripts\client\misc\clean_u
 player_loadout = compileFinal preprocessFileLineNumbers "scripts\client\spawn\player_loadout.sqf";
 
 diag_log "--- Init start ---";
-titleText ["-- Liberation RX --","BLACK FADED", 100];
+titleText ["-- Hippos Conquest --","PLAIN", 100];
 
 profileNamespace setVariable ["BIS_SupportDevelopment", nil];
 enableSaving [false, false];
@@ -32,7 +32,7 @@ disableMapIndicators [false,true,false,false];
 setGroupIconsVisible [false,false];
 
 abort_loading = false;
-abort_loading_msg = "Unkwon Error";
+abort_loading_msg = "Unknown startup error";
 GRLIB_ACE_enabled = false;
 //GRLIB_LRX_debug = true;
 
@@ -78,7 +78,9 @@ if (abort_loading) exitWith {
 if (isServer) then {
 	[] call compileFinal preprocessFileLineNumbers "scripts\server\server_functions.sqf";
 	[] call compileFinal preprocessFileLineNumbers "scripts\server\fetch_params.sqf";
+    if (abort_loading) exitWith {};
 	[] call compileFinal preprocessFileLineNumbers "scripts\shared\classnames.sqf";
+    if (abort_loading) exitWith {};
 	if (GRLIB_ACE_enabled) then {
 		[] spawn compileFinal preprocessFileLineNumbers "scripts\shared\init_ace.sqf";
 	} else {
@@ -98,8 +100,8 @@ if (abort_loading) exitWith {
 
 // Headless Client init
 if (!isDedicated && !hasInterface && isMultiplayer) then {
-	waitUntil { sleep 1; !isNil "GRLIB_LRX_server_params_loaded" };
-	waitUntil { sleep 1; !isNil "GRLIB_init_server" };
+	waitUntil { uiSleep 1; !isNil "GRLIB_LRX_server_params_loaded" };
+	waitUntil { uiSleep 1; !isNil "GRLIB_init_server" };
 	if (GRLIB_init_server) then {
 		[] call compileFinal preprocessFileLineNumbers "scripts\server\offloading\fetch_params.sqf";
 		[] call compileFinal preprocessFileLineNumbers "scripts\shared\classnames.sqf";

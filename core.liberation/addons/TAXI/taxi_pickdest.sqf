@@ -32,6 +32,6 @@ closeDialog 0;
 "spawn_marker" setMarkerTextLocal "";
 
 if (dojump > 0) then {
-	if (player distance2D halo_position < 300) exitWith { hintSilent "Wrong place.\ntoo close from player!" };
+	if (player distance2D halo_position < 300) exitWith { hintSilent "Choose a destination farther from your current position." };
 	[_vehicle, halo_position] spawn taxi_check_dest;
 };

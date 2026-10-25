@@ -4,7 +4,7 @@ if (isNull _unit) exitWith {};
 // Free hostages
 if (goggles _unit == "G_Blindfold_01_black_F") exitWith {
     removeGoggles _unit;
-    _unit globalChat format ["I'm free!!, Thanks you %1...", name player];
+    _unit globalChat format ["I'm free! Thank you, %1!", name player];
     _unit setVariable ["GRLIB_is_prisoner", false, true];
     [_unit, true] remoteExec ["escape_ai", 2];
     [player, 5] remoteExec ["F_addReput", 2];

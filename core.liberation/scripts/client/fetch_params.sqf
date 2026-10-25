@@ -9,14 +9,15 @@ if (!isServer) then {
 	[] call compileFinal preprocessFileLineNumbers "scripts\shared\mission_params.sqf";
 };
 
-waitUntil { sleep 1; !isNil "GRLIB_LRX_params" };
+waitUntil { uiSleep 1; !isNil "GRLIB_LRX_params" };
 if (!GRLIB_ParamsInitialized) then {
 	[] execVM "scripts\client\commander\open_params.sqf";
-	waitUntil { sleep 1; GRLIB_ParamsInitialized };
+	waitUntil { uiSleep 1; GRLIB_ParamsInitialized };
 };
 
 // LRX Selectable
 if (!isServer) then { [] call F_readParamsLRX };
+[] call HPC_fnc_loadingStart;
 
 GREUH_allow_mapmarkers = [GRLIB_PARAM_MapMarkers] call lrx_getParamValue;
 GREUH_allow_nametags = [GRLIB_PARAM_NameTags] call lrx_getParamValue;
@@ -67,6 +68,6 @@ GRLIB_permissions_param = (GRLIB_permissions_param == 1);
 GRLIB_air_support = (GRLIB_air_support == 1);
 GRLIB_admin_menu = (GRLIB_admin_menu == 1);
 
-waitUntil { sleep 1; !isNil "GRLIB_LRX_server_params_loaded" };
+waitUntil { uiSleep 1; !isNil "GRLIB_LRX_server_params_loaded" };
 
 diag_log "--- LRX: Client settings loaded ---";

@@ -14,11 +14,11 @@ private _lrx_getParamValue = {
 };
 
 private _lrx_get_mod_template = {
-	params ["_mod_list"];
-	private _mod_data = [["---"], ["---"]];
+	params ["_mod_list", "_role"];
+	private _mod_data = [[], []];
 	{
         _faction = _x;
-        if ([_faction] call GRLIB_Template_Modloaded) then {
+        if ([_faction,_role] call HPC_fnc_templateAvailable) then {
             (_mod_data select 0) pushBack ([_faction] call _lrx_getParamValue);
             (_mod_data select 1) pushBack _faction;
         };
@@ -26,10 +26,10 @@ private _lrx_get_mod_template = {
 	_mod_data;
 };
 
-waitUntil {sleep 0.5; !isNil "GRLIB_mod_list_west"};
-waitUntil {sleep 0.5; !isNil "GRLIB_mod_list_east"};
-private _list_west = ([GRLIB_mod_list_west] call _lrx_get_mod_template);
-private _list_east = ([GRLIB_mod_list_east] call _lrx_get_mod_template);
+waitUntil {uiSleep 0.5; !isNil "GRLIB_mod_list_west"};
+waitUntil {uiSleep 0.5; !isNil "GRLIB_mod_list_east"};
+private _list_west = ([GRLIB_mod_list_west,"west"] call _lrx_get_mod_template);
+private _list_east = ([GRLIB_mod_list_east,"east"] call _lrx_get_mod_template);
 
 GRLIB_PARAM_separatorKey = "=========";
 
@@ -1527,6 +1527,7 @@ _Mission_Params = [
 
 // ParamsValidator
 _Mission_Params append ([] call compileFinal preprocessFileLineNumbers "scripts\shared\hippo_params.sqf");
+[_Mission_Params] call compileFinal preprocessFileLineNumbers "scripts\shared\hippo_settings_english.sqf";
 
 try {
     if (isNil "_Mission_Params") then {

@@ -58,4 +58,4 @@ for "_i" from 1 to 6 do {
 	};
 	sleep 5;
 };
-[gamelogic, "Artillery fires end."] remoteExec ["globalChat", 0];
+[gamelogic, "Artillery barrage complete."] remoteExec ["globalChat", 0];

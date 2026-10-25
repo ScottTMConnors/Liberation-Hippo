@@ -16,8 +16,8 @@ private _dst_fuel = _dst getVariable ["GREUH_fuel_count",0];
 _dst setVariable ["GREUH_ammo_count", (_dst_ammo + _ammo), true];
 _dst setVariable ["GREUH_fuel_count", (_dst_fuel + _fuel), true];
 
-private _text = format ["Send %1 AMMO and %2 FUEL to %3", _ammo, _fuel, name _dst];
+private _text = format ["Sent %1 AMMO and %2 FUEL to %3.", _ammo, _fuel, name _dst];
 [gamelogic, _text] remoteExec ["globalChat", owner _src];
 
-private _text = format ["Receive %1 AMMO and %2 FUEL from %3", _ammo, _fuel, name _src];
+private _text = format ["Received %1 AMMO and %2 FUEL from %3.", _ammo, _fuel, name _src];
 [gamelogic, _text] remoteExec ["globalChat", owner _dst];

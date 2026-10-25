@@ -28,7 +28,7 @@ private _display = findDisplay 2302;
 ctrlEnable [ 120, false ];
 ctrlEnable [ 121, false ];
 
-gamelogic globalChat "Welcome to the WareHouse!";
+gamelogic globalChat "Welcome to the warehouse!";
 
 private [
 	"_control", "_entrytext", "_icon", "_typename",
@@ -121,7 +121,7 @@ while { dialog && alive player } do {
 			_result = [_msg, localize "STR_WAREHOUSE_LOAD", true, true] call BIS_fnc_guiMessage;
 
 			if (_result) then {
-				hintSilent format ["%1 Stored to Warehouse,\n for %2 AMMO.", _box_name, _price];
+				hintSilent format ["Stored %1 in the warehouse for %2 AMMO.", _box_name, _price];
 				[_box, load_box, player] remoteExec ["warehouse_remote_call", 2];
 				playSound "taskSucceeded";
 				waitUntil {sleep 0.1; isNull _box };
@@ -150,7 +150,7 @@ while { dialog && alive player } do {
 				if (build_confirmed == 0) then {
 					if ([_price] call F_pay) then {
 						[_typename, load_box, player] remoteExec ["warehouse_remote_call", 2];
-						hintSilent format ["%1 Taken from Warehouse,\n for %2 AMMO.", _box_name, _price];
+						hintSilent format ["Withdrew %1 from the warehouse for %2 AMMO.", _box_name, _price];
 						playSound "taskSucceeded";
 						_refresh = true;
 					} else {

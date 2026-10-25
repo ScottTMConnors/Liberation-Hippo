@@ -12,7 +12,7 @@ if (count _context == 0) then {
 
 // Player loadout
 if (count _context >= 1) then {
-    waitUntil {sleep 0.1; !(isSwitchingWeapon _player)};
+    waitUntil {uiSleep 0.1; !(isSwitchingWeapon _player)};
     _player setUnitLoadout (_context select 1);
     _player setVariable ["GREUH_stuff_price", ([_player] call F_loadoutPrice), true];
     diag_log format ["--- LRX Loaded player %1 profile.", name _player];
@@ -32,7 +32,7 @@ private _virtual_garage = [];
 if (count _context >= 5) then { _virtual_garage = (_context select 4) };
 _player setVariable ["GRLIB_virtual_garage", _virtual_garage, true];
 
-// Load Personal Player Box
+// Load Personal Storage Box
 if (count _context >= 6) then {
     _player setVariable ["GRLIB_player_box_content", (_context select 5), true];
 };

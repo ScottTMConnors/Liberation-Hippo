@@ -168,7 +168,7 @@ if (isServer) then {
 							_owner_player = _owner_id call BIS_fnc_getUnitByUID;
 							[_owner_player, -GRLIB_civ_penalties] call F_addScore;
 							[_owner_player, -1] call F_addReput;
-							_msg = format ["%1, Your AI kill a Civilian !!", name _owner_player];
+							_msg = format ["%1, Your AI killed a civilian !!", name _owner_player];
 							[gamelogic, _msg] remoteExec ["globalChat", 0];
 							[name _unit, GRLIB_civ_penalties, _owner_player] remoteExec ["remote_call_civ_penalty", 0];
 						};

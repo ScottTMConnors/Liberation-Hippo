@@ -9,7 +9,7 @@ if (count crew _vehicle > 0) exitWith { grpNull };
 
 private _vehicle_class = typeOf _vehicle;
 private _grp =_side createVehicleCrew _vehicle;
-sleep 0.5;
+uiSleep 0.5;
 private _crew = crew _vehicle;
 if (count _crew == 0) exitWith { diag_log format ["--- LRX can't create crew for vehicle %1", _vehicle_class]; grpNull };
 if (_vehicle_class isKindOf "Air" || _vehicle_class in (uavs_vehicles + list_static_weapons + static_vehicles_AI)) then {
@@ -78,7 +78,7 @@ if (_side == GRLIB_side_civilian) then {
 _vehicle allowCrewInImmobile [true, false];
 _vehicle setUnloadInCombat [true, false];
 
-sleep 1;
+uiSleep 1;
 { _x allowDamage true } forEach _crew;
 
 _grp;

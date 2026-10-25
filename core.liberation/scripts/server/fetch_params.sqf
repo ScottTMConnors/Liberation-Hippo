@@ -17,6 +17,30 @@ publicVariable "GRLIB_LRX_Template_version";
 
 // Load Mission settings
 _savedParams = profileNamespace getVariable [GRLIB_paramsV2_save_key, nil];
+// Reject unavailable saved factions before cleaning or writing saved settings.
+private _missingFactions = [];
+if (!isNil "_savedParams" && {_savedParams isEqualType createHashMap}) then {
+    {
+        _x params ["_key","_role"];
+        private _row = _savedParams get _key;
+        if (!isNil "_row" && {_row isEqualType createHashMap}) then {
+            private _faction = _row getOrDefault [GRLIB_PARAM_ValueKey,""];
+            if (_faction isEqualType "" && {_faction != ""} && {!([_faction,_role] call HPC_fnc_templateAvailable)}) then {_missingFactions pushBackUnique _faction};
+        };
+    } forEach [[GRLIB_PARAM_ModPresetWest,"west"],[GRLIB_PARAM_ModPresetEast,"east"]];
+};
+private _campaign = profileNamespace getVariable [GRLIB_save_key,[]];
+if (!(GRLIB_param_wipe_savegame_1 == 1 && GRLIB_param_wipe_savegame_2 == 1) && {_campaign isEqualType []} && {count _campaign > 8}) then {
+    {
+        _x params ["_index","_role"];
+        private _faction = _campaign select _index;
+        if (_faction isEqualType "" && {!([_faction,_role] call HPC_fnc_templateAvailable)}) then {_missingFactions pushBackUnique _faction};
+    } forEach [[7,"west"],[8,"east"]];
+};
+if !(_missingFactions isEqualTo []) exitWith {
+    [format ["A saved faction is unavailable: %1. Enable its required mods in the Arma 3 Launcher and restart the mission. Your campaign and saved settings have not been changed.",_missingFactions joinString ", "]] call HPC_fnc_stopForFaction;
+};
+
 if (isNil "_savedParams" ) then {
 	diag_log "--- LRX: No saved settings found, loading default ---";
 	_savedParams = [] call GRLIB_DefaultParams;
@@ -88,12 +112,16 @@ publicVariable "GRLIB_mod_list_west";
 publicVariable "GRLIB_mod_list_east";
 publicVariable "GRLIB_mod_list_name";
 publicVariable "GRLIB_LRX_params";
-sleep 0.5;
+uiSleep 0.5;
 
 if (!GRLIB_ParamsInitialized) then {
 	diag_log "--- LRX: Waiting for Admin to configure Mission ---";
-	waitUntil { sleep 1; GRLIB_ParamsInitialized };
+	waitUntil { uiSleep 1; GRLIB_ParamsInitialized };
 };
+
+[] call HPC_fnc_loadingStart;
+HPC_serverLoadingStage = [0.10,"Reading mission settings..."];
+publicVariable "HPC_serverLoadingStage";
 
 // LRX Selectable
 [] call F_readParamsLRX;
@@ -201,7 +229,7 @@ diag_log format ["--- LRX Mod Detection: %1 vs %2", GRLIB_mod_west, GRLIB_mod_ea
 publicVariable "GRLIB_side_friendly";
 publicVariable "GRLIB_side_enemy";
 publicVariable "GRLIB_side_civilian";
-sleep 1;
+uiSleep 1;
 
 // Params loaded
 GRLIB_LRX_server_params_loaded = true;

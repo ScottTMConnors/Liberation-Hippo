@@ -97,7 +97,7 @@ while {true} do {
 						[gamelogic, _text] remoteExec ["globalChat", 0];
 						_text = "We have a new Colonel !!";
 						[gamelogic, _text] remoteExec ["globalChat", 0];
-						_text = format ["Congratulation to %1 for his fight !!", name _x];
+						_text = format ["Congratulations to %1 on reaching Colonel!", name _x];
 						[gamelogic, _text] remoteExec ["globalChat", 0];
 						_text = "Over.";
 						[gamelogic, _text] remoteExec ["globalChat", 0];

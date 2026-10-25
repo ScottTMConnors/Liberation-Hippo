@@ -149,6 +149,11 @@ while {true} do {
 					};
 				};
 
+                if (GRLIB_Commander_mode && {count active_sectors > 0}) then {
+                    _nearest_active_sector = active_sectors select ((floor (_uiticks / 4)) mod count active_sectors);
+                    _fob_sector = false;
+                };
+
 				if (_nearest_active_sector == "") then {
 					{ (_overlay displayCtrl _x) ctrlShow false } foreach _sectorcontrols;
 					"zone_capture" setmarkerposlocal markers_reset;
@@ -221,7 +226,20 @@ while {true} do {
 					};
 				} else {
 					if (count active_sectors > 0) then {
-						_active_sector = active_sectors select 0;
+						_active_sector = _nearest_active_sector;
+                        private _state = missionNamespace getVariable ["HPC_sectorState_"+_active_sector,[]];
+                        private _progress = 0;
+                        if (count _state > 1) then {
+                            _progress = ((_state select 1) / 100) max 0 min 1;
+                            if (_state select 0 == "loading") then {
+                                (_overlay displayCtrl 205) ctrlSetText format ["%1 - Loading %2%3",_state param [4,markerText _active_sector],round (_state select 1),"%"];
+                            };
+                        } else {
+                            _progress = [_active_sector,500] call F_getForceRatio;
+                        };
+                        {(_overlay displayCtrl _x) ctrlShow true} forEach _sectorcontrols;
+                        _bar ctrlSetPosition [(ctrlPosition _bar) select 0,(ctrlPosition _bar) select 1,0.084 * safezoneW * _progress,(ctrlPosition _bar) select 3];
+                        _bar ctrlCommit 0.3;
 						if (_active_sector in blufor_sectors) then {
 							(_overlay displayCtrl (206)) ctrlSetText "Standby for mission";
 							(_overlay displayCtrl (206)) ctrlSetTextColor _color_F;
@@ -254,18 +272,6 @@ while {true} do {
 						(_overlay displayCtrl (206)) ctrlSetText _text;
 					};
 
-					_barwidth = 0.084 * safezoneW * 1;
-					if (_nearest_active_sector in opfor_sectors) then {
-						_barwidth = 0.084 * safezoneW * 0;
-					};
-					//if (player distance2D (markerPos _nearest_active_sector) <= _zone_size) then {
-					if (_nearest_active_sector in active_sectors) then {
-						_ratio = [_nearest_active_sector, _zone_size] call F_getForceRatio;
-						_barwidth = 0.084 * safezoneW * _ratio;
-					};
-
-					_bar ctrlSetPosition [(ctrlPosition _bar) select 0,(ctrlPosition _bar) select 1,_barwidth,(ctrlPosition _bar) select 3];
-					_bar ctrlCommit 0;
 				};
 			};
 		};

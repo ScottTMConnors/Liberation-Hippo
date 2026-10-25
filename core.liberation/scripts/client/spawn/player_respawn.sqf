@@ -2,12 +2,12 @@ params ["_newUnit", "_oldUnit"];
 
 // LRX Player Respawn
 
-titleText ["" ,"BLACK FADED", 100];
+titleText ["" ,"PLAIN", 0];
 
 GRLIB_player_configured = false;
 [_newUnit] call clean_unit;
 _newUnit switchMove "";
-waitUntil { sleep 0.1; !isNil "GRLIB_player_group" };
+waitUntil { uiSleep 0.1; !isNil "GRLIB_player_group" };
 
 private _unit = objNull;
 
@@ -51,7 +51,7 @@ if (GRLIB_side_friendly == WEST) then {
     };
     [_unit] call player_EHP;
     [] spawn compile preprocessFileLineNumbers "GREUH\scripts\GREUH_version.sqf";
-    sleep 0.2;
+    uiSleep 0.2;
     deleteVehicle _newUnit;
 };
 
@@ -67,12 +67,12 @@ deleteVehicle _oldUnit;
 // Player Loadout
 if !(_unit getVariable ["GRLIB_player_context_loaded", false]) then {
     [_unit] remoteExec ["load_player_context_remote_call", 2];
-    sleep 1;
+    uiSleep 1;
 };
-waitUntil { sleep 0.5; (_unit getVariable ["GRLIB_player_context_loaded", false]) };
+waitUntil { uiSleep 0.5; (_unit getVariable ["GRLIB_player_context_loaded", false]) };
 
 [_unit] spawn player_loadout;
-waitUntil { sleep 0.5; startgame == 1 };
+waitUntil { uiSleep 0.5; startgame == 1 };
 
 [_unit] call player_EH;
 [_unit] call player_init;
