@@ -10,7 +10,7 @@ class liberation_build {
 	"BuildTransportVehicleImage","BuildCombatVehicleImage","BuildAerialImage","ManpowerImageShadow","AmmoImageShadow","FuelImageShadow",
 	"BuildDefenceImage","BuildSupportImage","BuildSquadImage","BuildBuildingImage","ListBG","ManpowerImage","AmmoImage","FuelImage",
 	"BuildList","BuildButton","LabelManpower","LabelAmmo","LabelFuel","LabelCap","BuildMannedButton","PageLabel",
-    "BuildPreview", "LinkedSector", "CatalogSearchLabel", "CatalogSearch", "CatalogFaction", "CatalogType"
+    "BuildPreview", "LinkedSector", "CatalogSearchLabel", "CatalogSearch", "CatalogFaction", "CatalogType", "CatalogUnlocked"
 	};
 
 	objects[] = {};
@@ -227,7 +227,7 @@ class liberation_build {
         style = ST_LEFT;
         x = 0.294 * safezoneW + safezoneX;
         y = 0.305 * safezoneH + safezoneY;
-        w = 0.506 * safezoneW;
+        w = 0.326 * safezoneW;
         h = 0.0299 * safezoneH;
         text = "";
         tooltip = "Search names or classnames";
@@ -252,6 +252,16 @@ class liberation_build {
         w = 0.2 * safezoneW;
         tooltip = "Filter item type. When all types are shown, click a type heading to collapse or expand it.";
     };
+    class CatalogUnlocked : StdButton {
+        idc = 1704;
+        x = 0.63 * safezoneW + safezoneX;
+        y = 0.305 * safezoneH + safezoneY;
+        w = 0.17 * safezoneW;
+        h = 0.0299 * safezoneH;
+        sizeEx = 0.020 * safezoneH;
+        text = "Unlocked only: OFF";
+        tooltip = "Hide items locked by rank or an uncaptured base. Unlocked items remain visible even if you cannot yet afford them.";
+    };
 
 	class BuildList : StdListNBox {
 		idc = 110;
@@ -262,8 +272,13 @@ class liberation_build {
 		columns[] = {0, 0.73, 0.82, 0.91};
 		onLBSelChanged="";
 		shadow = 2;
-		sizeEx = 0.023 * safezoneH;
-        rowHeight = 0.033 * safezoneH;
+		sizeEx = 0.020 * safezoneH;
+        rowHeight = 0.025 * safezoneH;
+        colorBackground[] = {0.035,0.045,0.06,0.96};
+        colorSelectBackground[] = {0.08,0.3,0.4,1};
+        colorSelectBackground2[] = {0.08,0.3,0.4,1};
+        colorSelect[] = {1,1,1,1};
+        colorSelect2[] = {1,1,1,1};
 		colorPicture[] = {1,1,1,1};
 		colorPictureSelected[] = {0,1,0,1};
 		colorPictureDisabled[] = {0.4,0.4,0.4,1};
@@ -284,17 +299,17 @@ class liberation_build {
 	class LabelManpower : LabelResource{
 		idc = 131;
 		y = (0.76 * safezoneH + safezoneY);
-		colorText[] = {0, 0.75, 0, 1};
+		colorText[] = {0.5, 0.9, 0.65, 1};
 	};
 	class LabelAmmo : LabelResource{
 		idc = 132;
 		y = (0.786 * safezoneH + safezoneY);
-		colorText[] = {0.75, 0, 0, 1};
+		colorText[] = {0.95, 0.65, 0.58, 1};
 	};
 	class LabelFuel : LabelResource{
 		idc = 133;
 		y = (0.812 * safezoneH + safezoneY);
-		colorText[] = {0.75, 0.75, 0, 1};
+		colorText[] = {0.95, 0.84, 0.47, 1};
 	};
 	class LabelCap : LabelResource{
 		idc = 134;

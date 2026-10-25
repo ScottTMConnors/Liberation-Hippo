@@ -147,12 +147,20 @@ buildtype = GRLIB_CombatVehicleBuildType;
 sleep 1;
 private _lockedRow = -1;
 for "_i" from 0 to ((lnbSize _list select 0) - 1) do {
-    if ((_list lnbText [_i,0]) find "[Rank locked]" >= 0) exitWith {_lockedRow = _i};
+    if ((_list lnbText [_i,0]) find "[Locked]" >= 0) exitWith {_lockedRow = _i};
 };
 _list lnbSetCurSelRow _lockedRow;
 sleep 0.5;
 ["catalog.rankVisible", _lockedRow >= 0 && {!ctrlEnabled (_display displayCtrl 120)}] call _assert;
+(_display displayCtrl 1704) ctrlActivate true;
+sleep 1;
+private _onlyUnlocked = missionNamespace getVariable ["HPC_catalogOnlyUnlocked",false];
+for "_i" from 0 to ((lnbSize _list select 0) - 1) do {
+    if ((_list lnbText [_i,0]) find "[Locked]" >= 0) then {_onlyUnlocked = false};
+};
+["catalog.toggle", _onlyUnlocked] call _assert;
+(_display displayCtrl 1704) ctrlActivate true;
 player setVariable ["GREUH_score_count",_scoreBefore];
 sleep 1;
 ["UI_READY|catalog"] call _emit;
-["RUN_DONE|11"] call _emit;
+["RUN_DONE|12"] call _emit;

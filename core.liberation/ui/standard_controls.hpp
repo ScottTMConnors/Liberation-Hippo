@@ -433,7 +433,7 @@ class StdListBox {
 	style = 0 + 0x10;
 	font = FONTM;
 	sizeEx = 0.018 * safezoneH;
-    rowHeight = 0.035 * safezoneH;
+    rowHeight = 0.027 * safezoneH;
 	color[] = COLOR_LIGHTGRAY;
 	colorText[] = COLOR_WHITE;
 	colorScrollbar[] = COLOR_BRIGHTGREEN;

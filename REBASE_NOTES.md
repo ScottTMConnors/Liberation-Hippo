@@ -206,3 +206,26 @@ before mission entry. These are retained as incomplete infrastructure attempts,
 not passes. New client checks cover collapse/reopen, single-type headings and
 rank-lock visibility, but they and purchase/UI appearance remain unverified in
 this session. No 4K visual acceptance or multiplayer client pass is claimed.
+
+## Compact catalog browsing, 1.1.4
+
+The menu uses the shorter `Locked` label and a persistent `Unlocked only`
+toggle. Both rank and uncaptured-base locks participate in filtering and
+ordering. Categories always place unlocked items before locked items, with
+names alphabetized within each group. Resource shortages do not count as locks.
+Sector captures refresh an open catalog, and selection restoration continues
+to use the purchase entry rather than the sorted visual row.
+
+Build rows shrink from 0.033 to 0.025 screen height, with text reduced from
+0.023 to 0.020. Other mission list rows shrink from 0.035 to 0.027, with a
+matching font cap. Alternating white/blue text tints, a dark list background,
+cyan selection and lighter locked text improve contrast. Resource-limited
+items retain readable names and use amber costs. Crew/passenger counts now
+use explicit labels, and resource summaries use brighter colors.
+
+Compacted expanded-catalog engine run `20261025T160429948891-expanded-smoke`
+passed all 12 server assertions, including independent ordering and unlock
+filter fixtures covering rank, captured-base updates, unaffordable unlocked
+items, empty results and unchanged source entries. Native CfgConvert accepted
+the updated dialog configuration. Rendering/client UI remains unverified;
+the previous session's startup-stall limitation still applies.

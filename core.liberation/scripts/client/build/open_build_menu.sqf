@@ -91,6 +91,16 @@ private _oldFilters = [];
 private _oldResources = [];
 private _rowItems = [];
 private _lastGroup = "";
+private _onlyUnlocked = missionNamespace getVariable ["HPC_catalogOnlyUnlocked",false];
+private _updateUnlockButton = {
+    (_display displayCtrl 1704) ctrlSetText (if (_onlyUnlocked) then {"Unlocked only: ON"} else {"Unlocked only: OFF"});
+    (_display displayCtrl 1704) ctrlSetBackgroundColor (if (_onlyUnlocked) then {[0.08,0.36,0.42,1]} else {[0.12,0.15,0.19,1]});
+};
+call _updateUnlockButton;
+(_display displayCtrl 1704) ctrlAddEventHandler ["ButtonClick", {
+    HPC_catalogOnlyUnlocked = !(missionNamespace getVariable ["HPC_catalogOnlyUnlocked",false]);
+    build_refresh = true;
+}];
 _display setVariable ["HPC_collapsed", []];
 (_display displayCtrl 110) ctrlAddEventHandler ["LBSelChanged", {
     params ["_control", "_row"];
@@ -114,12 +124,14 @@ ctrlEnable [121, false];
 
 while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryBuildType, GRLIB_SquadBuildType])} do {
 	if (_old_buildtype != buildtype) then { build_refresh = true };
-    private _resources = [[player] call F_getScore, player getVariable ["GREUH_ammo_count",0], player getVariable ["GREUH_fuel_count",0], resources_infantry, infantry_cap, count PAR_AI_bros];
+    private _resources = [[player] call F_getScore, player getVariable ["GREUH_ammo_count",0], player getVariable ["GREUH_fuel_count",0], resources_infantry, infantry_cap, count PAR_AI_bros, +blufor_sectors];
     if !(_resources isEqualTo _oldResources) then {_oldResources = _resources; _score = _resources select 0; build_refresh = true};
     private _filters = [ctrlText (_display displayCtrl 1701), lbCurSel (_display displayCtrl 1702), lbCurSel (_display displayCtrl 1703)];
     if !(_filters isEqualTo _oldFilters) then {build_refresh = true; _oldFilters = _filters};
 
 	if (build_refresh) then {
+        _onlyUnlocked = missionNamespace getVariable ["HPC_catalogOnlyUnlocked",false];
+        call _updateUnlockButton;
 		private _previousClass = if (count HPC_buildSelection == 2 && {_old_buildtype == buildtype}) then {HPC_buildSelection select 1 select 0} else {""};
 		build_refresh = false;
 		lnbClear 110;
@@ -155,16 +167,9 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
 			if (count _build_list == 0) then { _msg = "No items match these filters." };
 		};
 
-        private _sortIndex = -1;
-		// Sort once per refresh, keeping purchase entries separate from visual rows.
-        private _ordered = _build_list apply {
-            _sortIndex = _sortIndex + 1;
-            private _class = _x select 0;
-            private _group = [_class, buildtype] call HPC_fnc_catalogGroup;
-            [_group, toLower (if (buildtype == GRLIB_SquadBuildType) then {_x param [5, "Squad"]} else {[_class] call F_getLRXName}), _sortIndex, _x]
-        };
-        _ordered sort true;
-        _build_list = _ordered apply {_x select 3};
+        private _ordered = [_build_list,buildtype,_score,_onlyUnlocked,GRLIB_vehicle_to_military_base_links,blufor_sectors] call HPC_fnc_catalogOrder;
+        _build_list = _ordered apply {_x select 4};
+        if (_build_list isEqualTo [] && {_msg == ""}) then {_msg = "No unlocked items match these filters."};
         private _groups = [];
         {_groups pushBackUnique (_x select 0)} forEach _ordered;
         private _grouped = count _groups > 1;
@@ -203,7 +208,7 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
 				if (buildtype in [GRLIB_TransportVehicleBuildType,GRLIB_CombatVehicleBuildType,GRLIB_AerialBuildType]) then {
 					_countCrew = [_build_class, false] call BIS_fnc_crewCount;
 					_countCargo = ([_build_class, true] call BIS_fnc_crewCount) - _countCrew;
-					_entrytext = _entrytext + format [" (%1|%2)", str _countCrew, str _countCargo];
+					_entrytext = _entrytext + format [" (%1 crew / %2 seats)", _countCrew, _countCargo];
 				};
 
 				_veh_man = format [ "%1", _x select 1];
@@ -237,11 +242,19 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
 
 			_rowItems pushBack _itemIndex;
             private _rankLocked = buildtype != GRLIB_SquadBuildType && {_score < (_x select 4)};
-            _affordable = !_rankLocked;
+            private _locked = ((_ordered select _itemIndex) select 1) == 1;
+            _affordable = !_locked;
             if (_rankLocked) then {
                 private _required = format ["Requires %1 (%2 XP). Your XP: %3.", ([_x select 4] call F_getRank) select 0, _x select 4, _score];
                 lnbSetTooltip [110, [_row, 0], _required];
-                lnbSetText [110, [_row, 0], _entrytext + " [Rank locked]"];
+            };
+            if (_locked) then {
+                private _name = if (buildtype == GRLIB_SquadBuildType) then {_squadname} else {_entrytext};
+                lnbSetText [110, [_row, 0], _name + " [Locked]"];
+                if (!_rankLocked) then {
+                    private _link = [_build_class] call _is_linked;
+                    lnbSetTooltip [110, [_row, 0], format ["Capture %1 to unlock this item.", markerText (_link select 2)]];
+                };
             };
 			_ammo_collected = player getVariable ["GREUH_ammo_count",0];
 			_fuel_collected = player getVariable ["GREUH_fuel_count",0];
@@ -311,17 +324,13 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
 				};
 			};
 
-			if ( _affordable ) then {
-				(_display displayCtrl (110)) lnbSetColor  [[((lnbSize 110) select 0) - 1, 0], [1,1,1,1]];
-				(_display displayCtrl (110)) lnbSetColor  [[((lnbSize 110) select 0) - 1, 1], [1,1,1,1]];
-				(_display displayCtrl (110)) lnbSetColor  [[((lnbSize 110) select 0) - 1, 2], [1,1,1,1]];
-				(_display displayCtrl (110)) lnbSetColor  [[((lnbSize 110) select 0) - 1, 3], [1,1,1,1]];
-			} else {
-				(_display displayCtrl (110)) lnbSetColor  [[((lnbSize 110) select 0) - 1, 0], [0.4,0.4,0.4,1]];
-				(_display displayCtrl (110)) lnbSetColor  [[((lnbSize 110) select 0) - 1, 1], [0.4,0.4,0.4,1]];
-				(_display displayCtrl (110)) lnbSetColor  [[((lnbSize 110) select 0) - 1, 2], [0.4,0.4,0.4,1]];
-				(_display displayCtrl (110)) lnbSetColor  [[((lnbSize 110) select 0) - 1, 3], [0.4,0.4,0.4,1]];
-			};
+            private _tint = if (_row % 2 == 0) then {[0.96,0.98,1,1]} else {[0.77,0.88,0.96,1]};
+            if (_locked) then {_tint = [0.69,0.71,0.75,1]};
+            for "_column" from 0 to 3 do {(_display displayCtrl 110) lnbSetColor [[_row,_column],_tint]};
+            // Keep names readable when resources are insufficient; highlight costs.
+            if (!_affordable && {!_locked}) then {
+                for "_column" from 1 to 3 do {(_display displayCtrl 110) lnbSetColor [[_row,_column],[1,0.77,0.48,1]]};
+            };
 			(_display displayCtrl (110)) lnbSetData  [[_row, 0], str _affordable];
 		}
         } foreach _build_list;

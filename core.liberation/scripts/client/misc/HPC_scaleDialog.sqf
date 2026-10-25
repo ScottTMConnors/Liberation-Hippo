@@ -29,7 +29,7 @@ _display setVariable ["HPC_dialogScale", _scale];
     private _height = ctrlFontHeight _x;
     if (_height > 0 && {ctrlType _x in [0,1,2,4,5,11,12,13,16,102]}) then {
         private _font = (_height * _scale) max (0.022 * safezoneH);
-        if (ctrlType _x == 102) then {_font = _font min (0.028 * safezoneH)};
+        if (ctrlType _x == 102) then {_font = _font min (0.022 * safezoneH)};
         _x ctrlSetFontHeight _font;
     };
 } forEach (allControls _display);

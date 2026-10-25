@@ -68,6 +68,18 @@ private _on = [_unit, "", 0.42, objNull, "", 0, objNull] call damage_manager_civ
 HPC_CivilianProtection = false;
 ["damage.civilian", _off == 0.42 && _on == 0] call _assert;
 ["catalog.classification", (["B_Soldier_F"] call HPC_fnc_catalogType) == "Infantry" && {(["B_MBT_01_cannon_F"] call HPC_fnc_catalogType) == "Tanks"} && {(["B_Heli_Light_01_F"] call HPC_fnc_catalogType) == "Helicopters"}] call _assert;
+// Deliberately put a locked Hunter before an unlocked Quadbike. Its name
+// sorts earlier, so alphabetical-only sorting would fail this check.
+private _fixture = [["B_MRAP_01_F",2,75,12,100], ["B_Quadbike_01_F",2,999999,12,0], ["B_MRAP_01_hmg_F",2,75,12,0], ["B_Truck_01_transport_F",5,50,15,0]];
+private _fixtureBefore = str _fixture;
+private _links = [["B_MRAP_01_hmg_F","test_base"]];
+private _ordered = [_fixture,2,0,false,[],[]] call HPC_fnc_catalogOrder;
+private _cars = _ordered select {(_x select 0) == "Cars"};
+["catalog.order", count _ordered == 4 && {(_cars select 0 select 4 select 0) == "B_MRAP_01_hmg_F" || {(_cars select 0 select 4 select 0) == "B_Quadbike_01_F"}} && {(_cars select ((count _cars)-1) select 4 select 0) == "B_MRAP_01_F"} && {str _fixture == _fixtureBefore}] call _assert;
+private _filtered = [_fixture,3,0,true,_links,[]] call HPC_fnc_catalogOrder;
+private _captured = [_fixture,3,0,true,_links,["test_base"]] call HPC_fnc_catalogOrder;
+private _none = [_fixture,3,-1,true,_links,[]] call HPC_fnc_catalogOrder;
+["catalog.unlockFilter", count _filtered == 2 && {count _captured == 3} && {_none isEqualTo []} && {_filtered findIf {(_x select 4 select 0) == "B_Quadbike_01_F"} >= 0}] call _assert;
 diag_log ["HPC_CATALOG_COUNTS", count infantry_units, count light_vehicles, count heavy_vehicles, count air_vehicles, count static_vehicles];
 if (HPC_testVariant == "expanded") then {
     private _expected = [["B_MBT_01_cannon_F",heavy_vehicles], ["B_Heli_Light_01_F",air_vehicles], ["O_Soldier_F",infantry_units]];
@@ -103,4 +115,4 @@ deleteVehicle _unit;
 deleteGroup _group;
 if (HPC_testScenario) then {call compile preprocessFileLineNumbers "hippo_tests\scenario.sqf"};
 if (HPC_testCommander) then {call compile preprocessFileLineNumbers "hippo_tests\commander.sqf"};
-[format ["RUN_DONE|%1", 9 + (if (HPC_testScenario) then {3} else {0}) + (if (HPC_testCommander) then {4} else {0})]] call _emit;
+[format ["RUN_DONE|%1", 11 + (if (HPC_testScenario) then {3} else {0}) + (if (HPC_testCommander) then {4} else {0})]] call _emit;
