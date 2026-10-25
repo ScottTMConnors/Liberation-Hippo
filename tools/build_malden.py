@@ -16,6 +16,16 @@ GAME=Path('E:/SteamLibrary/steamapps/common/Arma 3')
 
 def sha(path): return hashlib.sha256(path.read_bytes()).hexdigest()
 
+def next_version(base_version, manifest_path):
+    """Advance the patch number after every successful local build."""
+    versions = [base_version]
+    if manifest_path.exists():
+        versions.append(json.loads(manifest_path.read_text(encoding='utf-8'))['version'])
+    latest = max(tuple(map(int, value.split('+', 1)[0].split('.'))) for value in versions)
+    if len(latest) != 3:
+        raise ValueError('Expected a major.minor.patch mission version')
+    return f'{latest[0]}.{latest[1]}.{latest[2] + 1}'
+
 def stamp_identity(stage, version):
     """Show the same unique release ID in mission selection and loading UI."""
     title=f'Hippos Conquest v{version}'
@@ -61,15 +71,15 @@ def main():
     upstream_tag=subprocess.check_output(['git','describe','--tags','upstream/master'],cwd=ROOT).decode().strip()
     version=next(k.findtext('Original') for k in ET.parse(ROOT/'core.liberation/stringtable.xml').getroot().iter('Key') if k.attrib.get('ID')=='STR_MISSION_VERSION')
     stamp=datetime.now().strftime('%Y%m%d-%H%M%S')
-    release_version=version+'+'+stamp.replace('-','.')
     out=ROOT/'mybuild'/'releases'
     out.mkdir(parents=True,exist_ok=True)
+    release_version=next_version(version,out/'Hippos_Conquest.Malden.manifest.json')
     stage=out/stamp/'Hippos_Conquest.Malden'
     shutil.copytree(ROOT/'core.liberation',stage)
     shutil.copytree(ROOT/'maps/Liberation_RX.Malden',stage,dirs_exist_ok=True)
     for name in ['CREDITS.md','COPYING.md']: shutil.copy2(ROOT/name,stage/name)
     title=stamp_identity(stage,release_version)
-    (stage/'build_info.sqf').write_text(f'// Hippos Conquest release provenance\nGRLIB_build_date="{stamp}";\nGRLIB_build_time="{datetime.now().strftime("%H:%M:%S")}";\nGRLIB_build_version="{release_version}-{revision[:8]}";\n',encoding='utf-8')
+    (stage/'build_info.sqf').write_text(f'// Hippos Conquest release provenance\nGRLIB_build_date="{stamp}";\nGRLIB_build_time="{datetime.now().strftime("%H:%M:%S")}";\nGRLIB_build_version="{release_version}";\n',encoding='utf-8')
     compact_report=out/stamp/'compaction.json'
     compaction=compact_stage(stage,compact_report)
     pbo=out/'Hippos_Conquest.Malden.pbo'

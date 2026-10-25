@@ -8,7 +8,10 @@ The Malden builder installs by default into the game's `MPMissions` folder for
 Quick Play → Host Server → Malden 2035 → Hippos Conquest. Use `--build-only`
 only when an explicitly uninstalled candidate is wanted. Each build stamps a
 unique version into the mission-selection title, loading title, stringtable,
-build info and manifest: the base version plus a timestamp build suffix.
+build info and manifest: a simple major.minor.patch number, incrementing the
+patch after each successful build (for example, 1.1.2, 1.1.3, 1.1.4). The latest
+release manifest preserves the counter; timestamps remain only in build metadata
+and archive folder names.
 Deployment backs up the previous package and verifies the installed SHA-256.
 Report the manifest's exact `title` and `version` after building/deploying.
 
