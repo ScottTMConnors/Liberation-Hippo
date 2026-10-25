@@ -4,6 +4,9 @@ import hashlib
 import json
 import shutil
 import subprocess
+import re
+import tempfile
+from mission_compact import compact_stage
 import xml.etree.ElementTree as ET
 from datetime import datetime
 from pathlib import Path
@@ -13,9 +16,44 @@ GAME=Path('E:/SteamLibrary/steamapps/common/Arma 3')
 
 def sha(path): return hashlib.sha256(path.read_bytes()).hexdigest()
 
+def stamp_identity(stage, version):
+    """Show the same unique release ID in mission selection and loading UI."""
+    title=f'Hippos Conquest v{version}'
+    path=stage/'stringtable.xml'
+    text=path.read_text(encoding='utf-8-sig')
+    for key,value in [('STR_MISSION_TITLE',title),('STR_MISSION_VERSION',version)]:
+        pattern=rf'(<Key ID="{key}">\s*<Original>)[^<]*(</Original>)'
+        text,count=re.subn(pattern,lambda m:m[1]+value+m[2],text)
+        if count!=1: raise RuntimeError('Missing/duplicate release identity key: '+key)
+    path.write_text(text,encoding='utf-8')
+    path=stage/'description.ext'
+    text=path.read_text(encoding='utf-8-sig')
+    for key in ('briefingName','onLoadName'):
+        text,count=re.subn(rf'(?m)^{key}\s*=.*?;',lambda m:f'{key} = "{title}";',text)
+        if count!=1: raise RuntimeError('Missing/duplicate mission title: '+key)
+    path.write_text(text,encoding='utf-8')
+    # Malden's mission.sqm is binarized: never edit its offsets as raw bytes.
+    converter=GAME.parent/'Arma 3 Tools/CfgConvert/CfgConvert.exe'
+    with tempfile.TemporaryDirectory(prefix='Hippo-release-title-') as folder:
+        decoded=Path(folder)/'mission.cpp'
+        subprocess.run([str(converter),'-txt','-dst',str(decoded),str(stage/'mission.sqm')],check=True,capture_output=True)
+        text=decoded.read_text(encoding='utf-8-sig')
+        text,count=re.subn(r'\bbriefingName\s*=\s*"[^"]*";',lambda m:f'briefingName="{title}";',text)
+        if count!=1: raise RuntimeError('Expected one Malden Intel briefingName')
+        decoded.write_text(text,encoding='utf-8')
+        subprocess.run([str(converter),'-bin','-dst',str(stage/'mission.sqm'),str(decoded)],check=True,capture_output=True)
+        verified=Path(folder)/'verified.cpp'
+        subprocess.run([str(converter),'-txt','-dst',str(verified),str(stage/'mission.sqm')],check=True,capture_output=True)
+        if f'briefingName="{title}";' not in verified.read_text(encoding='utf-8-sig'):
+            raise RuntimeError('Native mission title round-trip verification failed')
+    return title
+
 def main():
     parser=argparse.ArgumentParser()
-    parser.add_argument('--install', action='store_true', help='Copy the built PBO into the installed game MPMissions folder.')
+    deployment=parser.add_mutually_exclusive_group()
+    deployment.add_argument('--install',dest='install',action='store_true',help='Install into the game MPMissions folder (default).')
+    deployment.add_argument('--build-only',dest='install',action='store_false',help='Build without replacing the installed mission.')
+    parser.set_defaults(install=True)
     args=parser.parse_args()
     dirty=subprocess.check_output(['git','status','--porcelain','--','core.liberation','maps/Liberation_RX.Malden'],cwd=ROOT).decode().strip()
     if dirty: raise RuntimeError('Commit mission source before producing a release candidate.\n'+dirty)
@@ -23,13 +61,17 @@ def main():
     upstream_tag=subprocess.check_output(['git','describe','--tags','upstream/master'],cwd=ROOT).decode().strip()
     version=next(k.findtext('Original') for k in ET.parse(ROOT/'core.liberation/stringtable.xml').getroot().iter('Key') if k.attrib.get('ID')=='STR_MISSION_VERSION')
     stamp=datetime.now().strftime('%Y%m%d-%H%M%S')
+    release_version=version+'+'+stamp.replace('-','.')
     out=ROOT/'mybuild'/'releases'
     out.mkdir(parents=True,exist_ok=True)
     stage=out/stamp/'Hippos_Conquest.Malden'
     shutil.copytree(ROOT/'core.liberation',stage)
     shutil.copytree(ROOT/'maps/Liberation_RX.Malden',stage,dirs_exist_ok=True)
     for name in ['CREDITS.md','COPYING.md']: shutil.copy2(ROOT/name,stage/name)
-    (stage/'build_info.sqf').write_text(f'// Hippos Conquest release provenance\nGRLIB_build_date="{stamp}";\nGRLIB_build_time="{datetime.now().strftime("%H:%M:%S")}";\nGRLIB_build_version="{upstream_tag}-hippo{version}-{revision[:8]}";\n',encoding='utf-8')
+    title=stamp_identity(stage,release_version)
+    (stage/'build_info.sqf').write_text(f'// Hippos Conquest release provenance\nGRLIB_build_date="{stamp}";\nGRLIB_build_time="{datetime.now().strftime("%H:%M:%S")}";\nGRLIB_build_version="{release_version}-{revision[:8]}";\n',encoding='utf-8')
+    compact_report=out/stamp/'compaction.json'
+    compaction=compact_stage(stage,compact_report)
     pbo=out/'Hippos_Conquest.Malden.pbo'
     if pbo.exists(): shutil.copy2(pbo,out/stamp/('previous-'+pbo.name))
     pack=subprocess.run([str(ROOT/'build/bin/PBOConsole.exe'),'-pack',str(stage),str(pbo)],cwd=ROOT,capture_output=True,text=True)
@@ -43,6 +85,7 @@ def main():
             entries.append(name)
             source_hash.update(name.encode()); source_hash.update(bytes.fromhex(sha(path)))
     manifest={'mission':'Hippos Conquest','terrain':'Malden 2035','source_commit':revision,'upstream_base':subprocess.check_output(['git','rev-parse','upstream/master'],cwd=ROOT).decode().strip(),'package':str(pbo),'package_sha256':sha(pbo),'staged_source_sha256':source_hash.hexdigest(),'entries':entries,'built_at':stamp}
+    manifest.update(version=release_version,base_version=version,title=title)
     if args.install:
         destination=GAME/'MPMissions'/pbo.name
         if destination.exists() and sha(destination)!=manifest['package_sha256']:
@@ -52,6 +95,7 @@ def main():
         shutil.copy2(pbo,destination)
         if sha(destination)!=manifest['package_sha256']: raise RuntimeError('Installed PBO hash mismatch')
         manifest['installed']=str(destination)
+    manifest['compaction']={'report':str(compact_report),'report_sha256':sha(compact_report),**{k:compaction[k] for k in ('source_bytes','release_bytes','renamed_files')}}
     manifest_path=out/'Hippos_Conquest.Malden.manifest.json'
     manifest_path.write_text(json.dumps(manifest,indent=2),encoding='utf-8')
     print(json.dumps({k:v for k,v in manifest.items() if k!='entries'},indent=2))

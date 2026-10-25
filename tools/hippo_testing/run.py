@@ -45,10 +45,13 @@ def main():
     ap.add_argument('--scenario', action='store_true')
     ap.add_argument('--commander', action='store_true')
     ap.add_argument('--source-ref')
+    ap.add_argument('--compact',action='store_true',help='Apply release compaction before packaging.')
     ap.add_argument('--mod',action='append',default=[])
     ap.add_argument('--missing-faction',choices=['settings','campaign'])
     args = ap.parse_args()
-    run_id = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S') + '-' + args.variant + '-' + ('baseline' if args.baseline else args.control or 'smoke')
+    if args.scenario and args.commander:
+        ap.error('Run --scenario and --commander separately: scenario cleanup stops the warfare managers needed by commander checks.')
+    run_id = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%f') + '-' + args.variant + '-' + ('baseline' if args.baseline else args.control or 'smoke')
     out = ROOT/'mybuild'/'hippo_tests'/run_id
     out.mkdir(parents=True, exist_ok=False)
     stage = out/'s'/f'Liberation_RX_T{datetime.now(timezone.utc).strftime("%H%M%S%f")}.{args.map}'
@@ -111,6 +114,21 @@ addMissionEventHandler ["MPEnded",{
     if args.clients:
         shutil.copy2(ROOT/'tools/hippo_testing/client.sqf',tests/'client.sqf')
         (stage/'initPlayerLocal.sqf').write_text(f'HPC_testRun="{run_id}"; [] execVM "hippo_tests\\client.sqf";\n',encoding='utf-8')
+    compaction=None
+    if args.compact:
+        import sys
+        sys.path.insert(0,str(ROOT/'tools'))
+        from mission_compact import compact_stage
+        if not args.control:
+            cases.append('compaction.leaves')
+            shutil.copy2(ROOT/'tools/hippo_testing/compact.sqf',tests/'compact.sqf')
+            p=tests/'run.sqf'
+            p.write_text(p.read_text(encoding='utf-8').replace('["settings.defaults",', '[] call compile preprocessFileLineNumbers "hippo_tests\\compact.sqf";\n["settings.defaults",').replace('9 + (if (HPC_testScenario)', '10 + (if (HPC_testScenario)'),encoding='utf-8')
+        # Include all delivered SQF in the native syntax check.
+        scripts=sorted(p.relative_to(stage).as_posix().replace('/','\\') for p in stage.rglob('*.sqf') if 'hippo_tests' not in p.parts)
+        p=stage/'initServer.sqf'
+        p.write_text(p.read_text(encoding='utf-8')+'\nHPC_testScripts='+json.dumps(scripts).replace('\\\\','\\')+';\n',encoding='utf-8')
+        compaction=compact_stage(stage,out/'compaction.json')
     profiles=out/'profiles'; profiles.mkdir()
     name=stage.name
     pbo=out/(name+'.pbo')
@@ -134,7 +152,11 @@ addMissionEventHandler ["MPEnded",{
     client_cases=['startup.client','player.abilities','catalog.filters','catalog.empty','purchase.filtered','reward.owner','services.cooldown','revive.manual']
     manifest={'run_id':run_id,'map':args.map,'source_head':subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT).decode().strip(),'source_sha256':source_hash.hexdigest(),'baseline':args.baseline,'variant':args.variant,'control':args.control,'cases':cases,'client_cases':client_cases,'scripts':scripts,'package_sha256':sha(pbo),'argv':argv,'roles':roles,'port':port}
     (out/'manifest.json').write_text(json.dumps(manifest,indent=2),encoding='utf-8')
-    process=None; completed=False; rpt=''; stop_reason='watchdog'; clients={}; pipes={}; connected=set()
+    if compaction:
+        manifest['compaction']={k:compaction[k] for k in ('source_bytes','release_bytes','renamed_files')}
+        manifest['compaction_report_sha256']=sha(out/'compaction.json')
+        (out/'manifest.json').write_text(json.dumps(manifest,indent=2),encoding='utf-8')
+    process=None; completed=False; rpt=''; stop_reason='watchdog'; clients={}; pipes={}; connected=set(); last_connect={}; client_ready={}
     def logs(folder):
         return '\n'.join(p.read_text(errors='replace') for p in dict.fromkeys(list(folder.glob('*.rpt'))+list(folder.glob('*.RPT'))))
     try:
@@ -142,26 +164,50 @@ addMissionEventHandler ["MPEnded",{
         from native_pipe import ArmaPipe
         for i in range(args.clients):
             role=f'client{i+1}'; folder=out/role; folder.mkdir()
-            video=out/f'{role}.cfg'; video.write_text('language="English";winX=30;winY=30;winW=1280;winH=720;winWidth=1280;winHeight=720;winDefWidth=1280;winDefHeight=720;renderWidth=1280;renderHeight=720;HDRPrecision=16;vsync=0;multiSampleCount=1;PPAA=0;pipQuality=0;\n')
+            user=folder/'Users'/f'HpcClient{i+1}'; user.mkdir(parents=True)
+            (user/f'HpcClient{i+1}.Arma3Profile').write_text('version=2;singleVoice=0;sceneComplexity=300000;viewDistance=1600;preferredObjectViewDistance=1200;terrainGrid=25;\n',encoding='utf-8')
+            video=out/f'{role}.cfg'; video.write_text('language="English";forcedAdapterId=-1;displayMode=0;winX=30;winY=30;winWidth=1280;winHeight=720;winDefWidth=1280;winDefHeight=720;renderWidth=1280;renderHeight=720;HDRPrecision=16;vsync=0;multiSampleCount=1;PPAA=0;pipQuality=0;GPU_MaxFramesAhead=1;GPU_DetectedFramesAhead=1;\n')
             pipe_name='HPC_'+run_id+'_'+role
-            cmd=[str(GAME/'arma3_x64.exe'),'-noSplash','-skipIntro','-world=empty','-window','-noPause','-noSound',f'-name=HpcClient{i+1}',f'-profiles={folder}',f'-cfg={video}',f'-command={pipe_name}']
+            cmd=[str(GAME/'arma3_x64.exe'),'-noSplash','-skipIntro','-world=empty','-window','-noPause','-noSound',f'-name=HpcClient{i+1}',f'-profiles={folder}',f'-cfg={video}',f'-command={pipe_name}', '-connect=127.0.0.1',f'-port={port}','-password=hippo-local-test']
             client_mods=args.mod
             if client_mods: cmd.append('-mod='+';'.join(client_mods))
-            startup=subprocess.STARTUPINFO(); startup.dwFlags=subprocess.STARTF_USESHOWWINDOW; startup.wShowWindow=7
-            clients[role]=(subprocess.Popen(cmd,cwd=GAME,startupinfo=startup,creationflags=subprocess.CREATE_NO_WINDOW,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL),folder,pipe_name)
+            # A rendering client needs a normal initial window for DX11 setup;
+            # forcing a minimized startup can fail before mission entry.
+            child=subprocess.Popen(cmd,cwd=GAME,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+            clients[role]=(child,folder,pipe_name)
+            startup_deadline=time.monotonic()+45
+            while time.monotonic()<startup_deadline and child.poll() is None:
+                content=logs(folder)
+                if 'Error creating Direct3D' in content: break
+                if 'MovesType CfgMovesMaleSdr load time' not in content:
+                    time.sleep(0.5); continue
+                # Do not claim the command pipe during early initialization.
+                break
             manifest[role+'_argv']=cmd
         (out/'manifest.json').write_text(json.dumps(manifest,indent=2),encoding='utf-8')
         deadline=time.monotonic()+args.timeout
         while time.monotonic()<deadline:
             rpt=logs(profiles)
+            if any(child.poll() is not None or 'Error creating Direct3D' in logs(folder) for child,folder,_ in clients.values()):
+                stop_reason='client_startup_failure'; break
             for role,(_,folder,pipe_name) in clients.items():
-                if role not in connected:
+                if role not in connected or (f'HPC_TEST|{run_id}|{role}|RUN_START|' not in logs(folder) and time.monotonic()-last_connect.get(role,0)>120):
+                    if 'MovesType CfgMovesMaleSdr load time' not in logs(folder): continue
+                    # Steam/profile/audio initialization continues after the
+                    # pipe opens. Do not interrupt an ongoing connection with
+                    # rapid retries; fresh-profile mission entry can be slow.
+                    if role not in client_ready: client_ready[role]=time.monotonic()
+                    if time.monotonic()-client_ready[role]<10: continue
                     try:
                         if role not in pipes: pipes[role]=ArmaPipe(pipe_name)
                         answer=pipes[role].send('reply hippo_test_pipe',reply=True)
                         if 'hippo_test_pipe' not in answer: raise RuntimeError('Pipe handshake failed')
-                        pipes[role].send('connect '+json.dumps({'ip':'127.0.0.1','port':port,'password':'hippo-local-test'})); connected.add(role)
-                    except (OSError,TimeoutError): pass
+                        pipes[role].send('connect '+json.dumps({'ip':'127.0.0.1','port':port,'password':'hippo-local-test'})); connected.add(role); last_connect[role]=time.monotonic()
+                    except (OSError,TimeoutError) as error:
+                        # Never retain an early/stale pipe handle indefinitely.
+                        if not isinstance(error,TimeoutError) and role in pipes: pipes.pop(role).close()
+                        with (out/'connection.log').open('a',encoding='utf-8') as log:
+                            log.write(json.dumps({'role':role,'error':str(error)})+'\n')
             if f'HPC_TEST|{run_id}|server|RUN_DONE|' in rpt and all(f'HPC_TEST|{run_id}|{role}|RUN_DONE|' in logs(folder) for role,(_,folder,_) in clients.items()):
                 completed=True; stop_reason='protocol_complete'
                 if args.hold: time.sleep(min(args.hold,60))

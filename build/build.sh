@@ -36,6 +36,7 @@ GRLIB_build_version = \"$(git describe --tags)\";" > ./"${dir}"/build_info.sqf
 			cp -r ./custom/* ./"${dir}"/
 		fi
 
+		python3 ../tools/mission_compact.py "${dir}" --report "${dir}.compaction.json" || exit 1
 		makepbo -X=none "${dir}" "${dir}".pbo >/dev/null
 		rm -rf ./"${dir}"
 		echo "Done."
