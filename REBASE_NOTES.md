@@ -151,3 +151,15 @@ FOB destinations. The default-catalog commander run
 `20261025T065203-expanded-smoke` passed 15 assertions including capture and
 cleanup but reached its overall watchdog before completing the last case; it
 is retained as an incomplete run, not a pass. Scenarios are rerun separately.
+
+The separate final lifecycle run `20261025T065638-default-smoke` passed all 12
+checks, including actual capture with the radio tower alive and complete cleanup
+of the autonomous warfare forces. Exact installed release startup passed using
+isolated dedicated profiles in `mybuild/release_checks/20261025T065734`; there
+were no unexpected script/config errors. This still does not test listen-host
+loading or rendered UI appearance.
+
+Release runtime commit: `97443a96a9b25356b490d3c9b0f9a4a21ad9d485`.
+Installed Malden 1.1.1 SHA256:
+`8d04ba85b2bd570170aba40f04e654ebf468d4e00dacf4c3319c19e94fc26182`.
+The preceding installed PBO is retained in the release output's dated backup.
