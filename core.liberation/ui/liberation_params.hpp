@@ -1,9 +1,19 @@
 class liberation_params {
 	idd = 5119;
 	movingEnable = false;
-	controlsBackground[] = {};
+	onLoad = "private _display = _this select 0; _display setVariable ['HPC_settingsSoundVolume',soundVolume]; 0 fadeSound 0;";
+	onUnload = "if !(missionNamespace getVariable ['HPC_startupPresentationActive',false]) then {0 fadeSound ((_this select 0) getVariable ['HPC_settingsSoundVolume',1])};";
+	controlsBackground[] = { "SettingsBackdrop" };
 	controls[] = { "OuterBG1", "OuterBG_F1", "InnerBG1", "InnerBG_F1", "Header", "ButtonReset", "ButtonSave", "ButtonCancel", "MissionsControlGroup" };
 	objects[] = {};
+
+	class SettingsBackdrop : StdBG {
+		x = safezoneX;
+		y = safezoneY;
+		w = safezoneW;
+		h = safezoneH;
+		colorBackground[] = {0,0,0,1};
+	};
 
 	class OuterBG1 : StdBG{
 		colorBackground[] = COLOR_BROWN;

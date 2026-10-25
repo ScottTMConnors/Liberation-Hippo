@@ -12,6 +12,14 @@ if (!isMultiplayer) exitWith {
 if (isServer && !isNil "GRLIB_init_server") exitWith { diag_log "--- LRX Error: Mission restart too fast!" };
 
 disableUserInput true;
+if (hasInterface) then {
+	HPC_startupPresentationActive = true;
+	HPC_startupAudio = [soundVolume, musicVolume, radioVolume, speechVolume];
+	"HPC_StartupBackdrop" cutText ["", "BLACK FADED", 0];
+	0 fadeMusic 0;
+	0 fadeRadio 0;
+	0 fadeSpeech 0;
+};
 titleText ["","PLAIN", 100];
 0 fadeSound 0;
 

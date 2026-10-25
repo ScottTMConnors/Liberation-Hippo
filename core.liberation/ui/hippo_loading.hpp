@@ -9,7 +9,7 @@ class HPC_LoadingScreen {
     class controlsBackground {
         class Background : StdText {
             x = safezoneX; y = safezoneY; w = safezoneW; h = safezoneH;
-            colorBackground[] = {0.025,0.035,0.025,1};
+            colorBackground[] = {0,0,0,1};
             text = "";
         };
         class Artwork : BgPicture {

@@ -49,8 +49,10 @@ deletemarker format ["PAR_marker_%1", PAR_Grp_ID];
 
 waituntil {sleep 1; GRLIB_player_spawned};
 
-1 fadeSound 1;
-1 fadeRadio 1;
+if !(missionNamespace getVariable ["HPC_startupPresentationActive",false]) then {
+    1 fadeSound 1;
+    1 fadeRadio 1;
+};
 NRE_EarplugsActive = 0;
 hintSilent "";
 showMap true;
