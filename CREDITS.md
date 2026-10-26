@@ -1,6 +1,6 @@
 # Hippos Conquest credits
 
-Hippos Conquest is maintained by **TheHungryHippo** (ScottTMConnors / STC).
+Hippos Conquest is maintained by **TheHungryHippo**.
 The Hippo fork adds its gameplay rules, configurable AI warfare, faction catalog
 tools, presentation, and integration changes on top of Liberation RX.
 
