@@ -3,6 +3,7 @@ waitUntil {sleep 1; missionNamespace getVariable ["GRLIB_init_server",false]};
 private _history = createHashMap;
 private _nextLog = 0;
 while {GRLIB_endgame == 0} do {
+    private _readyClients = (missionNamespace getVariable ["HPC_headlessClients",[]]) select {!isNull _x && {owner _x > 2}};
     private _machines = [[gamelogic,"Server",2]];
     {_machines pushBack [_x,name _x,owner _x]} forEach allPlayers;
     private _counts = createHashMap;
@@ -57,7 +58,7 @@ while {GRLIB_endgame == 0} do {
         private _label = vehicleVarName _unit;
         if (_label == "") then {_label = format ["HC %1",_id]};
         HPC_hcStatus pushBack [_label,_id,_heartbeat select 2,_row select 3,_row select 4,_row select 5,(_row select 4)-(_row select 5),_row select 6,_heartbeat param [3,0],_heartbeat param [4,0],(diag_tickTime-(_heartbeat select 1)) max 0];
-    } forEach (missionNamespace getVariable ["HPC_headlessClients",[]]);
+    } forEach _readyClients;
     publicVariable "HPC_hcStatus";
     HPC_hcTelemetryStamp = serverTime;
     publicVariable "HPC_hcTelemetryStamp";
@@ -68,7 +69,7 @@ while {GRLIB_endgame == 0} do {
             _playerAI = _playerAI + ((_counts get str (_x select 2)) select 4);
         };
     } forEach (_machines select [1]);
-    HPC_hcSummary = [_totalAI,_totalGroups,_eligibleAI,_playerAI,_serverUnmarked,_serverProtected,count (missionNamespace getVariable ["HPC_headlessClients",[]]),count (missionNamespace getVariable ["HPC_ambientCivilians",[]])];
+    HPC_hcSummary = [_totalAI,_totalGroups,_eligibleAI,_playerAI,_serverUnmarked,_serverProtected,count _readyClients,count (missionNamespace getVariable ["HPC_ambientCivilians",[]])];
     publicVariable "HPC_hcSummary";
     private _keys = HPC_hcStatus apply {str (_x select 1)};
     {if !(_x in _keys) then {_history deleteAt _x}} forEach (keys _history);

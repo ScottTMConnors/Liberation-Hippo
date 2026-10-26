@@ -8,7 +8,7 @@ In Arma 3, load **cool**, open Multiplayer > Direct Connect, enter
 the HC slots are reserved for the headless clients. No mission is selected
 automatically. After joining, open chat with `/`, enter `#login hippo-admin`,
 and press Enter. Then enter `#missions` and select **Malden > Hippos Conquest
-v1.1.3**. Set lobby **Parameters > Open Mission Parameters > Enabled** before
+v1.1.4**. Set lobby **Parameters > Open Mission Parameters > Enabled** before
 starting. When you deliberately start setup, the full mission settings screen
 opens and campaign initialization waits until **Save and Continue**.
 The HCs do not connect to the lobby; a background helper launches them only
@@ -76,7 +76,7 @@ until the old processes exit before relaunching the same profiles.
 - The admin must enable **Open Mission Parameters** in the selected mission's
   lobby, then deliberately start setup and finish with **Save and Continue**.
   `watch_headless.ps1` waits for the new server RPT's `--- Server Init stop ---`
-  before launching both HCs. It cannot cause the lobby to advance because no
+  before launching all three HCs. It cannot cause the lobby to advance because no
   HC is connected during mission selection or setup. It exits after launching
   them, recording their PIDs in the same ownership ledger. Keep `persistent=1`
   for after startup. `status_server.ps1` reports `waiting_for_manual_start`
@@ -93,7 +93,7 @@ until the old processes exit before relaunching the same profiles.
   ownership if an HC disconnects. Two processes merely waiting in the lobby
   are not yet registered for mission AI.
 
-Verify both `HPC_HC|READY|` lines and Admin > AI load after starting gameplay.
+Verify all three `HPC_HC|READY|` lines and Admin > AI load after starting gameplay.
 
 ## Network and Steam
 
@@ -133,7 +133,7 @@ game connection and server/HC RPTs to confirm joining from the other computer.
 ## Mods and allocator
 
 `cool-preset.json` records the 61 requested Workshop IDs in the supplied order.
-The server and both HCs load the same list. Resolve addon paths from the
+The server and all three HCs load the same list. Resolve addon paths from the
 game's sibling `steamapps/workshop/content/107410` directory. Windows folder
 punctuation differences do not change Workshop identity. Steam subscriptions
 must be downloaded first; the launcher stops if an addon directory is missing.
@@ -278,7 +278,7 @@ server now has fresh campaign/settings data. No personal player saves were
 reset. Campaign initialization waits for Save and Continue when the admin
 enables Open Mission Parameters before starting setup.
 
-## AI Load, crowds and sector command posts (v1.1.3)
+## AI Load, crowds and sector command posts (v1.1.4)
 
 AI load opens a persistent standalone window from Admin > AI load or the admin
 scroll action. Close/Escape returns to play; Pause display freezes the view only.
@@ -333,3 +333,11 @@ HC1 10.8%, HC2 12.2%, HC3 12.3% of the 12-thread host CPU; working sets 5.20,
 not a controlled before/after FPS benchmark. The user reported 47 FPS across
 the original server/two HCs. Large pages remain unavailable without the Windows
 Lock pages in memory privilege; the requested allocator is loaded.
+
+Validation for v1.1.4: the compacted native smoke suite passed all 19 checks;
+the separate sector scenario passed all 23 checks, including rejecting capture
+with a living commander and allowing it after his death. Agent density, sleep,
+cleanup, traffic crews/routes and fortification placement were exercised in the
+engine. The UI config and scripts compile; visual layout still requires checking
+on the player's rendering client. The live save/runtime stayed separate from
+all isolated test profiles.
