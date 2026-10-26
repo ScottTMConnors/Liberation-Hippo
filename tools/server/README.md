@@ -383,3 +383,12 @@ The isolated HCs provide online player identities for ownership and resource
 receipt assertions. The suite exercises delayed deaths, stale-hit rejection,
 direct-killer priority, duplicate prevention, the fuel ratio, and a native RPG
 impact on an HC-owned tank. Test profiles never use the live campaign save.
+
+Validation completed for v1.1.5: compacted smoke 19/19, focused attribution 8/8
+(including both native HCs ready). The native RPG hit damaged an HC-owned tank
+and recorded the shooter on the server; delayed bounty tests verified ammo,
+fuel at half ammo, XP, kill counters and duplicate rejection. Source 1715ad1f.
+The live campaign save completed at 15:44:59 on 2026-10-26 and was backed up
+under mybuild/lan-server/backups/pre-1.1.5-20261026-154540/ before stopping.
+The installed v1.1.5 PBO SHA256 is
+2a8e12dd7db9213e532b3e78e740d4f5da978c8b01b5a2fc107fdf365fde0344.
