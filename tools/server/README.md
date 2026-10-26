@@ -341,3 +341,10 @@ cleanup, traffic crews/routes and fortification placement were exercised in the
 engine. The UI config and scripts compile; visual layout still requires checking
 on the player's rendering client. The live save/runtime stayed separate from
 all isolated test profiles.
+
+The separate compacted HC suite passed 37 assertions across the server, two HCs
+and a rejoining HC: legacy defender/patrol transfer, AI Warfare infantry/vehicles,
+weighted distribution, player-squad exclusion, order locality, disconnect recovery,
+rejoin, total-HC-loss fallback and cleanup. Final telemetry filters disconnected
+HC placeholders before constructing rows, preventing transient duplicate server
+counts. Source commits: c8923ce0 (features), c4ab98a2 (telemetry disconnect fix).
