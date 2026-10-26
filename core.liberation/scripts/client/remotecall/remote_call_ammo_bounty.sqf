@@ -4,6 +4,6 @@ if (!GRLIB_player_spawned) exitWith {};
 
 params [ "_classname", "_bounty", "_killer" ];
 
-gamelogic globalChat format [localize "STR_BOUNTY_MESSAGE"+".  Bonus Score %4pts !", 
-    (_bounty select 0), ([_classname] call F_getLRXName),
-    ([_killer] call get_player_name), (_bounty select 1)];
+gamelogic globalChat format ["%1 destroyed %2: +%3 ammo, +%4 fuel, +%5 XP.",
+    ([_killer] call get_player_name), ([_classname] call F_getLRXName),
+    _bounty select 0, _bounty param [2,0], _bounty select 1];

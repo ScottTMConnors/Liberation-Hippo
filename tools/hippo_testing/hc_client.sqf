@@ -11,7 +11,7 @@ private _assert = {
 };
 ["RUN_START|1"] call _emit;
 ["hc.ready",!hasInterface && {!isServer} && {clientOwner > 2} && {!isNull player}] call _assert;
-if (_role == "hc1_rejoin") exitWith {["RUN_DONE|1"] call _emit};
+if (_role == "hc1_rejoin" || {missionNamespace getVariable ["HPC_testAttribution",false]}) exitWith {["RUN_DONE|1"] call _emit};
 _deadline = diag_tickTime + 150;
 private _groups = [];
 waitUntil {sleep 0.5; _groups = allGroups select {_x getVariable ["HPC_hcManaged",false] && {local _x} && {{alive _x} count units _x > 0}}; count _groups >= 2 || diag_tickTime > _deadline};

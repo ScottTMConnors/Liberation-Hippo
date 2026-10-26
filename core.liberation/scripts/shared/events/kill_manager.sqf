@@ -7,16 +7,6 @@ if (isServer) then {
 	if (_unit getVariable ["GRLIB_mp_kill", false]) exitWith {};
 	_unit setVariable ["GRLIB_mp_kill", true];
 
-	if (!isNull _instigator) then {
-		if (isNull (getAssignedCuratorLogic _instigator)) then {
-	    	_killer = _instigator;
-		};
-	} else {
-		if (!(_killer isKindOf "CAManBase")) then {
-			_killer = effectiveCommander _killer;
-		};
-	};
-
 	// ACE
 	if (GRLIB_ACE_medical_enabled && local _unit) then {
 		if (isNull _killer || _killer == _unit) then {
@@ -24,12 +14,11 @@ if (isServer) then {
 		};
 	};
 
-	// Indirect kill
-	private _indirect_kill = false;
-	if (isNull _killer) then {
-		_killer = _unit getVariable ["GRLIB_last_killer", objNull];
-		_indirect_kill = true;
-	};
+    private _attribution = [_unit,_killer,_instigator] call HPC_fnc_killAttribution;
+    _killer = _attribution select 0;
+    private _rewardPlayer = _attribution select 1;
+    private _indirect_kill = _attribution select 2;
+    if (isNull _killer && {!isNull _rewardPlayer}) then {_killer = _rewardPlayer};
 
 	private _unit_class = typeOf _unit;
 	private _unit_side = if (_unit getVariable ["HPC_ambientAgent",false]) then {GRLIB_side_civilian} else {side group _unit};
@@ -56,22 +45,22 @@ if (isServer) then {
 		stats_player_deaths = stats_player_deaths + 1;
 	};
 
-	if (isPlayer _killer) then {
+	if (!isNull _rewardPlayer) then {
 		switch (true) do {
 			case (_unit isKindOf "CAManBase"): {
-				_killer setVariable ["GREUH_kills_inf", (_killer getVariable ["GREUH_kills_inf", 0]) + 1, true];
+				_rewardPlayer setVariable ["GREUH_kills_inf", (_rewardPlayer getVariable ["GREUH_kills_inf", 0]) + 1, true];
 			};			
 			case (_unit isKindOf "Wheeled_APC_F");
 			case (_unit isKindOf "APC_Tracked_02_base_F");
 			case (_unit isKindOf "Tank_F"): {
-				_killer setVariable ["GREUH_kills_armor", (_killer getVariable ["GREUH_kills_armor", 0]) + 1, true];
+				_rewardPlayer setVariable ["GREUH_kills_armor", (_rewardPlayer getVariable ["GREUH_kills_armor", 0]) + 1, true];
 			};
 			case (_unit isKindOf "Air"): {
-				_killer setVariable ["GREUH_kills_air", (_killer getVariable ["GREUH_kills_air", 0]) + 1, true];
+				_rewardPlayer setVariable ["GREUH_kills_air", (_rewardPlayer getVariable ["GREUH_kills_air", 0]) + 1, true];
 			};
 			case (_unit isKindOf "StaticWeapon");
 			case (_unit isKindOf "Car"): {
-				_killer setVariable ["GREUH_kills_soft", (_killer getVariable ["GREUH_kills_soft", 0]) + 1, true];
+				_rewardPlayer setVariable ["GREUH_kills_soft", (_rewardPlayer getVariable ["GREUH_kills_soft", 0]) + 1, true];
 			};
 			case (_unit isKindOf "Ship"): {};
 			default {
@@ -177,7 +166,6 @@ if (isServer) then {
 
 				if (_unit_side == GRLIB_side_enemy) exitWith {
 					stats_opfor_soldiers_killed = stats_opfor_soldiers_killed + 1;
-                    private _rewardPlayer = [_killer] call HPC_fnc_rewardPlayer;
                     if (!isNull _rewardPlayer) then {
                         stats_opfor_killed_by_players = stats_opfor_killed_by_players + 1;
                         [_rewardPlayer, 1] call F_addScore;
@@ -241,8 +229,10 @@ if (isServer) then {
 
 		if (_unit_class == mobile_respawn) exitWith { [_unit, "del"] call mobile_respawn_remote_call };
 		if (_unit_class in respawn_vehicles) then {	[_unit, "del"] call mobile_respawn_remote_call };
+        // Explicit mission hostility also covers modded vehicles absent from
+        // the selected faction's static classname list.
+        private _hostileVehicle = (_unit getVariable ["GRLIB_vehicle_reward",false]) || {_unit_class in all_hostile_classnames};
 
-		private _rewardPlayer = [_killer] call HPC_fnc_rewardPlayer;
 		if (!isNull _rewardPlayer) then {
 			_owner_id = getPlayerUID _rewardPlayer;
 			if (!(_unit getVariable ["GRLIB_vehicle_owner", ""] in ["", "public", "server", _owner_id])) then {
@@ -252,18 +242,18 @@ if (isServer) then {
 				[_rewardPlayer, -_penalty] call F_addScore;
 			};
 
-			if (_unit_class in all_hostile_classnames) then {
+			if (_hostileVehicle) then {
 				_bounty = [_unit] call F_getBounty;
 				if (((_bounty select 0) + (_bounty select 1)) > 0) then {
 					[_unit_class, _bounty, _rewardPlayer] remoteExec ["remote_call_ammo_bounty", 0];
-					[_rewardPlayer, (_bounty select 0), 0] call ammo_add_remote_call;
+					[_rewardPlayer, (_bounty select 0), (_bounty select 2)] call ammo_add_remote_call;
 					[_rewardPlayer, (_bounty select 1)] call F_addScore;
 					stats_opfor_vehicles_killed_by_players = stats_opfor_vehicles_killed_by_players + 1;
 				};
 			};
 		};
 
-		if (_unit_class in all_hostile_classnames) then {
+		if (_hostileVehicle) then {
 			stats_opfor_vehicles_killed = stats_opfor_vehicles_killed + 1;
 		} else {
 			stats_blufor_vehicles_killed = stats_blufor_vehicles_killed + 1;

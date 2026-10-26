@@ -42,6 +42,7 @@ def main():
     ap.add_argument('--timeout', type=int, default=150)
     ap.add_argument('--baseline', action='store_true')
     ap.add_argument('--clients', type=int, choices=[0,1,2], default=0)
+    ap.add_argument('--attribution',action='store_true')
     ap.add_argument('--headless', type=int, choices=[0,2], default=0)
     ap.add_argument('--hc-binary',choices=['server','client'],default='server')
     ap.add_argument('--hold', type=int, default=0)
@@ -54,6 +55,7 @@ def main():
     ap.add_argument('--missing-faction',choices=['settings','campaign'])
     args = ap.parse_args()
     GAME=args.game_directory
+    if args.attribution and args.headless != 2: ap.error("--attribution requires --headless 2")
     if args.scenario and args.commander:
         ap.error('Run --scenario and --commander separately: scenario cleanup stops the warfare managers needed by commander checks.')
     if args.scenario and args.headless:
@@ -76,11 +78,16 @@ def main():
     if args.scenario: cases+=['warfare.spawn','sector.commanderGate','sector.capture','warfare.cleanup']
     if args.commander: cases+=['commander.emptyRoster','commander.townLoaded','commander.progress','warfare.enemyFOB']
     if args.headless: cases+=['hc.connected','hc.legacy','hc.warfare','hc.balanced','hc.weighted','hc.playerSafe','hc.orders','hc.recovered','hc.rejoined','hc.serverFallback','hc.cleanup']
+    if args.attribution: cases=['engine.compile','startup.server','reward.squad','reward.vehicleHistory','reward.vehicleBounty','reward.projectile']
     if args.control: cases=['control']
     if args.baseline: cases=['startup.server']
     if args.missing_faction: cases=['faction.rejected','faction.savePreserved','faction.ended']
     (tests/'run.sqf').write_text((ROOT/'tools'/'hippo_testing'/'server.sqf').read_text(encoding='utf-8'),encoding='utf-8')
     shutil.copy2(ROOT/'tools/hippo_testing/review.sqf',tests/'review.sqf')
+    if args.attribution:
+        shutil.copy2(ROOT/'tools/hippo_testing/attribution.sqf',tests/'attribution.sqf')
+        p=tests/'run.sqf'
+        p.write_text('HPC_testAttribution=true; publicVariable "HPC_testAttribution";\n'+p.read_text(encoding='utf-8'),encoding='utf-8')
     if args.headless:
         p=tests/'run.sqf'
         p.write_text('HPC_testHeadless=true; publicVariable "HPC_testRun";\n'+p.read_text(encoding='utf-8'),encoding='utf-8')
@@ -135,7 +142,7 @@ addMissionEventHandler ["MPEnded",{
         import sys
         sys.path.insert(0,str(ROOT/'tools'))
         from mission_compact import compact_stage
-        if not args.control:
+        if not args.control and not args.attribution:
             cases.append('compaction.leaves')
             shutil.copy2(ROOT/'tools/hippo_testing/compact.sqf',tests/'compact.sqf')
             p=tests/'run.sqf'
@@ -175,7 +182,7 @@ addMissionEventHandler ["MPEnded",{
     source_hash=hashlib.sha256()
     for path in sorted((source_root/'core.liberation').rglob('*')):
         if path.is_file(): source_hash.update(str(path.relative_to(source_root)).encode()); source_hash.update(bytes.fromhex(sha(path)))
-    roles=['server']+[f'client{i+1}' for i in range(args.clients)]+(['hc1','hc2','hc1_rejoin'] if args.headless else [])
+    roles=['server']+[f'client{i+1}' for i in range(args.clients)]+((['hc1','hc2'] if args.attribution else ['hc1','hc2','hc1_rejoin']) if args.headless else [])
     client_cases=['startup.client','player.abilities','catalog.filters','catalog.empty','purchase.filtered','reward.owner','services.cooldown','revive.manual','catalog.groups','catalog.singleType','catalog.rankVisible','catalog.toggle','catalog.tools']
     manifest={'run_id':run_id,'map':args.map,'source_head':subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT).decode().strip(),'source_sha256':source_hash.hexdigest(),'baseline':args.baseline,'variant':args.variant,'control':args.control,'cases':cases,'client_cases':client_cases,'scripts':scripts,'package_sha256':sha(pbo),'argv':argv,'roles':roles,'port':port}
     (out/'manifest.json').write_text(json.dumps(manifest,indent=2),encoding='utf-8')
@@ -288,7 +295,7 @@ addMissionEventHandler ["MPEnded",{
                         if not isinstance(error,TimeoutError) and role in pipes: pipes.pop(role).close()
                         with (out/'connection.log').open('a',encoding='utf-8') as log:
                             log.write(json.dumps({'role':role,'error':str(error)})+'\n')
-            if f'HPC_TEST|{run_id}|server|RUN_DONE|' in rpt and all(f'HPC_TEST|{run_id}|{role}|RUN_DONE|' in logs(folder) for role,(_,folder,_) in clients.items()) and (not args.headless or ('hc1_rejoin' in headless and all(f'HPC_TEST|{run_id}|{role}|RUN_DONE|' in logs(folder) for role,(_,folder) in headless.items()))):
+            if f'HPC_TEST|{run_id}|server|RUN_DONE|' in rpt and all(f'HPC_TEST|{run_id}|{role}|RUN_DONE|' in logs(folder) for role,(_,folder,_) in clients.items()) and (not args.headless or ((args.attribution or 'hc1_rejoin' in headless) and all(f'HPC_TEST|{run_id}|{role}|RUN_DONE|' in logs(folder) for role,(_,folder) in headless.items()))):
                 completed=True; stop_reason='protocol_complete'
                 if args.hold: time.sleep(min(args.hold,60))
                 break
@@ -341,7 +348,7 @@ addMissionEventHandler ["MPEnded",{
     passed=completed and exact and all(a[1]=='PASS' for a in assertions) and not errors
     for role,(_,folder) in headless.items():
         content=logs(folder);tag=f'HPC_TEST|{run_id}|{role}|'
-        expected=['hc.ready'] if role=='hc1_rejoin' else ['hc.ready','hc.locality','hc.orders']
+        expected=['hc.ready'] if role=='hc1_rejoin' or args.attribution else ['hc.ready','hc.locality','hc.orders']
         checks=re.findall(re.escape(tag)+r'ASSERT\|([^|"\r\n]+)\|(PASS|FAIL)',content)
         starts=re.findall(re.escape(tag)+r'CASE_START\|([^|"\r\n]+)',content)
         dones=re.findall(re.escape(tag)+r'CASE_DONE\|([^|"\r\n]+)',content)

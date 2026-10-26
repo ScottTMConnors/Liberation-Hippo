@@ -29,6 +29,7 @@ waitUntil {sleep 0.5; diag_tickTime > _deadline || {!isNil "GRLIB_init_server" &
 private _booted = !isNil "GRLIB_init_server" && {GRLIB_init_server};
 ["startup.server", _booted] call _assert;
 if (!_booted) exitWith {["RUN_DONE|0"] call _emit};
+if (missionNamespace getVariable ["HPC_testAttribution",false]) exitWith {call compile preprocessFileLineNumbers "hippo_tests\attribution.sqf"};
 _deadline = diag_tickTime + 25;
 waitUntil {sleep 0.2; !isNil "HPC_hcSummary" || diag_tickTime > _deadline};
 private _status = missionNamespace getVariable ["HPC_hcStatus",[]];

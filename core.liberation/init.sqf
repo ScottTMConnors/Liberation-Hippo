@@ -55,6 +55,7 @@ if (fileExists _path) then {
 [] call compileFinal preprocessFileLineNumbers "scripts\shared\fetch_params.sqf";
 [] call compileFinal preprocessFileLineNumbers "scripts\server\sector\init_sectors.sqf";
 [] call compileFinal preprocessFileLineNumbers "scripts\shared\init_shared.sqf";
+if (isServer) then {[] call compileFinal preprocessFileLineNumbers "scripts\server\game\vehicle_attribution.sqf"};
 
 // Client init
 if (!isDedicated && hasInterface) then {

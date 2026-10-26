@@ -1,6 +1,6 @@
 params ["_vehicle"];
 
-if !(_vehicle getVariable ["GRLIB_vehicle_reward", false]) exitWith {[0,0]};
+if !(_vehicle getVariable ["GRLIB_vehicle_reward", false]) exitWith {[0,0,0]};
 
 private _extra_bounty = opfor_air + [
 	"O_MBT_04_cannon_F",
@@ -44,4 +44,4 @@ if (typeOf _vehicle in _heavy_blu) then {
 
 _bounty = _bounty + floor random 6;
 
-[_bounty, _bonus];
+[_bounty, _bonus, floor (_bounty/2)];

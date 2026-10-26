@@ -8,7 +8,7 @@ In Arma 3, load **cool**, open Multiplayer > Direct Connect, enter
 the HC slots are reserved for the headless clients. No mission is selected
 automatically. After joining, open chat with `/`, enter `#login hippo-admin`,
 and press Enter. Then enter `#missions` and select **Malden > Hippos Conquest
-v1.1.4**. Set lobby **Parameters > Open Mission Parameters > Enabled** before
+v1.1.5**. Set lobby **Parameters > Open Mission Parameters > Enabled** before
 starting. When you deliberately start setup, the full mission settings screen
 opens and campaign initialization waits until **Save and Continue**.
 The HCs do not connect to the lobby; a background helper launches them only
@@ -348,3 +348,38 @@ weighted distribution, player-squad exclusion, order locality, disconnect recove
 rejoin, total-HC-loss fallback and cleanup. Final telemetry filters disconnected
 HC placeholders before constructing rows, preventing transient duplicate server
 counts. Source commits: c8923ce0 (features), c4ab98a2 (telemetry disconnect fix).
+
+## Delayed vehicle credit and fuel bounties (v1.1.5)
+
+The mission records meaningful vehicle hits on the server through MPHit. This
+works when simulation belongs to an HC or client, without depending on the
+client-only KC_shooters data used by the local Kill_Confirmed addon. Actual
+kill instigators take priority; a vehicle's environmental/self-destruction can
+fall back to its last valid attacker for ten minutes. The beneficiary UID is
+recorded at impact so respawning does not discard credit. New/existing vehicles
+are instrumented once via EntityCreated plus one initial enumeration, with no
+continuous vehicle scan or damage override.
+
+Squad AI kills resolve to the player leader, owned vehicle's online owner, or
+purchased AI's online owner tag. XP, eligible vehicle bounties and kill counters
+use the same beneficiary. Infantry kills award existing infantry XP; eligible
+hostile vehicle kills award ammo, XP and now fuel equal to floor(ammo / 2).
+The notification displays all three amounts. Explicit GRLIB_vehicle_reward
+also admits modded vehicles missing from the selected faction classname list.
+Existing GRLIB_mp_kill guards prevent duplicate awards. Offline-account awards
+and assist splitting are not introduced.
+
+References checked locally: arma3-wiki/events/multiplayer/MPHit.yml,
+events/standard/Hit.yml and the local Kill_Confirmed KC_HitPart.sqf and
+KC_EntityKilled.sqf. No changes were made to the Kill Confirmed addon.
+
+Reproduce the focused native attribution check with:
+
+```powershell
+python tools/hippo_testing/run.py --game-directory 'F:\Medium500\Applications\Steam\steamapps\common\Arma 3' --compact --headless 2 --attribution --timeout 240
+```
+
+The isolated HCs provide online player identities for ownership and resource
+receipt assertions. The suite exercises delayed deaths, stale-hit rejection,
+direct-killer priority, duplicate prevention, the fuel ratio, and a native RPG
+impact on an HC-owned tank. Test profiles never use the live campaign save.
