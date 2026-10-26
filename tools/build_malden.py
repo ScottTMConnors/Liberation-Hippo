@@ -59,12 +59,15 @@ def stamp_identity(stage, version):
     return title
 
 def main():
+    global GAME
     parser=argparse.ArgumentParser()
+    parser.add_argument('--game-directory', type=Path, default=GAME, help='Arma 3 install (also locates sibling Arma 3 Tools).')
     deployment=parser.add_mutually_exclusive_group()
     deployment.add_argument('--install',dest='install',action='store_true',help='Install into the game MPMissions folder (default).')
     deployment.add_argument('--build-only',dest='install',action='store_false',help='Build without replacing the installed mission.')
     parser.set_defaults(install=True)
     args=parser.parse_args()
+    GAME=args.game_directory
     dirty=subprocess.check_output(['git','status','--porcelain','--','core.liberation','maps/Liberation_RX.Malden'],cwd=ROOT).decode().strip()
     if dirty: raise RuntimeError('Commit mission source before producing a release candidate.\n'+dirty)
     revision=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT).decode().strip()

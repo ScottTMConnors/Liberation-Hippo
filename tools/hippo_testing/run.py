@@ -34,7 +34,9 @@ def classify_errors(content):
 def sha(path): return hashlib.sha256(path.read_bytes()).hexdigest()
 
 def main():
+    global GAME
     ap = argparse.ArgumentParser()
+    ap.add_argument('--game-directory', type=Path, default=GAME)
     ap.add_argument('--variant', choices=['default','expanded'], default='default')
     ap.add_argument('--control', choices=['pass','assertion','syntax','runtime','timeout','protocol'])
     ap.add_argument('--timeout', type=int, default=150)
@@ -51,6 +53,7 @@ def main():
     ap.add_argument('--mod',action='append',default=[])
     ap.add_argument('--missing-faction',choices=['settings','campaign'])
     args = ap.parse_args()
+    GAME=args.game_directory
     if args.scenario and args.commander:
         ap.error('Run --scenario and --commander separately: scenario cleanup stops the warfare managers needed by commander checks.')
     run_id = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%f') + '-' + args.variant + '-' + ('baseline' if args.baseline else args.control or 'smoke')
