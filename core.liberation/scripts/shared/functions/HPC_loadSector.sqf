@@ -20,6 +20,11 @@ if (count _state > 0 && {_state select 0 == "loading"}) then {
     private _vehicles = missionNamespace getVariable [format ["LRX_sector_%1_vehicles",_sector],[]];
     {deleteVehicle _x} forEach _units;
     {deleteVehicleCrew _x; deleteVehicle _x} forEach _vehicles;
+    {deleteVehicle _x} forEach (missionNamespace getVariable ["HPC_sectorProps_"+_sector,[]]);
+    missionNamespace setVariable ["HPC_sectorProps_"+_sector,nil];
+    deleteMarker ("HPC_command_"+_sector);
+    missionNamespace setVariable ["HPC_sectorCommander_"+_sector,nil,true];
+    missionNamespace setVariable ["HPC_sectorCommanderDead_"+_sector,nil,true];
     active_sectors = active_sectors - [_sector];
     GRLIB_sector_spawning = false;
     publicVariable "active_sectors";

@@ -1,4 +1,4 @@
-params ["_unit","_fps"];
+params ["_unit","_fps",["_fpsMin",0],["_scripts",0]];
 if (isServer) then {
     private _source = remoteExecutedOwner;
     private _key = format ["HPC_hcHeartbeatSeen_%1",_source];
@@ -10,4 +10,4 @@ private _owner = owner _unit;
 // Normal player requests still have to match the supplied object's owner.
 if (_owner <= 2 || {!(remoteExecutedOwner in [0,_owner])}) exitWith {};
 if (isNil "HPC_hcRegistry") then {HPC_hcRegistry = createHashMap};
-HPC_hcRegistry set [str _owner,[_unit,diag_tickTime,_fps]];
+HPC_hcRegistry set [str _owner,[_unit,diag_tickTime,_fps,_fpsMin,_scripts]];

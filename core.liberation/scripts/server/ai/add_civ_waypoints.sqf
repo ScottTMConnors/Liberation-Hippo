@@ -40,3 +40,7 @@ if (count (waypoints _grp) > 1) then {
 };
 
 {_x doFollow leader _grp} foreach units _grp;
+// Native cyclic waypoints survive transfer; no server-local AI loop to move.
+if (side _grp == GRLIB_side_enemy && {units _grp findIf {_x getVariable ["GRLIB_mission_AI",false]} < 0}) then {
+    _grp setVariable ["HPC_hcManaged",true,true];
+};

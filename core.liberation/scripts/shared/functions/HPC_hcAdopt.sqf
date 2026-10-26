@@ -9,7 +9,13 @@ if (!isServer && {!(remoteExecutedOwner in [0,2])}) exitWith {};
             _x addEventHandler ["HandleDamage",{_this call damage_manager_enemy}];
             _x setVariable [_handlerKey,true];
         };
+        if (!(_x getVariable [_handlerKey,false]) && {_x getVariable ["HPC_damageKind",""] == "civilian"}) then {
+            _x addEventHandler ["HandleDamage",{_this call damage_manager_civilian}];
+            _x setVariable [_handlerKey,true];
+        };
         [_x] call HPC_fnc_applyEasyAI;
     };
 } forEach units _group;
 _group setVariable ["HPC_hcAck",clientOwner,true];
+private _defence = _group getVariable ["HPC_defenceRecipe",[]];
+if !(_defence isEqualTo []) then {([_group] + _defence + [true]) spawn defence_ai};

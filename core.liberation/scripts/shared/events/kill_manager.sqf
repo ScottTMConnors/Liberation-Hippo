@@ -32,7 +32,7 @@ if (isServer) then {
 	};
 
 	private _unit_class = typeOf _unit;
-	private _unit_side = side group _unit;
+	private _unit_side = if (_unit getVariable ["HPC_ambientAgent",false]) then {GRLIB_side_civilian} else {side group _unit};
 	private _killer_side = side group _killer;
 	//diag_log format ["DBG: Killer: %1 %2", name _killer, _killer_side];
 	//diag_log format ["DBG: Killed: %1 %2", name _unit, _unit_side];

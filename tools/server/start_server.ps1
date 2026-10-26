@@ -3,7 +3,7 @@ param(
     [string]$RuntimeDirectory = (Join-Path $PSScriptRoot '..\..\mybuild\lan-server'),
     [string]$BindAddress = '192.168.1.144',
     [int]$Port = 2302,
-    [ValidateRange(0,3)][int]$HeadlessCount = 2,
+    [ValidateRange(0,3)][int]$HeadlessCount = 3,
     [string]$AdminPassword = 'hippo-admin'
 )
 $ErrorActionPreference = 'Stop'

@@ -8,7 +8,7 @@ In Arma 3, load **cool**, open Multiplayer > Direct Connect, enter
 the HC slots are reserved for the headless clients. No mission is selected
 automatically. After joining, open chat with `/`, enter `#login hippo-admin`,
 and press Enter. Then enter `#missions` and select **Malden > Hippos Conquest
-v1.1.2**. Set lobby **Parameters > Open Mission Parameters > Enabled** before
+v1.1.3**. Set lobby **Parameters > Open Mission Parameters > Enabled** before
 starting. When you deliberately start setup, the full mission settings screen
 opens and campaign initialization waits until **Save and Continue**.
 The HCs do not connect to the lobby; a background helper launches them only
@@ -18,7 +18,7 @@ The admin password can be changed
 with the launcher's `-AdminPassword` parameter.
 
 Also enable the Creator DLCs **Western Sahara (WS)**, **Reaction Forces (RF)**,
-and **Expeditionary Forces (EF)**. On the user's request, the server and both
+and **Expeditionary Forces (EF)**. On the user's request, the server and all three
 HCs now load those three installed DLC directories before the 61 Workshop mods.
 The launcher checks their addon directories and records them in `session.json`.
 
@@ -38,7 +38,7 @@ Run these commands from the repository root in PowerShell:
 git fetch https://github.com/tbox1911/Liberation-RX.git master:refs/remotes/upstream/master --tags
 python tools/build_malden.py --build-only --game-directory 'F:\Medium500\Applications\Steam\steamapps\common\Arma 3'
 
-# Start the server; two HCs launch automatically after manual campaign setup.
+# Start the server; three HCs launch automatically after manual campaign setup.
 .\tools\server\start_server.ps1
 .\tools\server\status_server.ps1
 ```
@@ -187,18 +187,18 @@ large-page byte count. No process memory contents are read or modified.
 ## CPU and performance baseline
 
 Host: Ryzen 5 5600, 6 physical cores/12 logical processors, 32 GB RAM. Baseline:
-one server plus two HCs. Each uses `-enableHT -exThreads=1`, x64, no sound,
+one server plus three HCs. Each uses `-enableHT -exThreads=1`, x64, no sound,
 empty startup world, and the requested allocator. No artificial
 memory cap, real-time priority, or fixed process affinity is imposed. Windows
-can distribute the three simulation threads and their workers across cores;
+can distribute the four simulation threads and their workers across cores;
 `-cpuCount` is omitted because it overrides `-enableHT`.
 
 The server uses `-loadMissionToMemory`; `basic.cfg` specifies a LAN bandwidth
 baseline. These are starting values, not a claim of measured optimal FPS.
 Rendering and texture-loading thread flags do not make server SQF parallel.
 HCs improve utilization only for groups whose ownership the mission transfers.
-Inspect Admin > AI load under actual load before increasing `-HeadlessCount`
-to 3; more processes also consume memory and can compete for CPU time.
+The default is now three HCs after a live capacity check. More processes
+consume memory and compete for CPU time; monitor available RAM and FPS.
 
 The gaming client's supplied RPT describes a different CPU: Ryzen 9 5950X
 (16 physical cores/32 logical processors). Its `-cpuCount=16` overrides
@@ -277,3 +277,59 @@ directory into `mybuild/lan-server/resets/20261026-144129/profiles`; the active
 server now has fresh campaign/settings data. No personal player saves were
 reset. Campaign initialization waits for Save and Continue when the admin
 enables Open Mission Parameters before starting setup.
+
+## AI Load, crowds and sector command posts (v1.1.3)
+
+AI load opens a persistent standalone window from Admin > AI load or the admin
+scroll action. Close/Escape returns to play; Pause display freezes the view only.
+Samples update every 10 seconds, with six minutes of FPS history. FPS/low FPS
+are engine frame statistics; SQF counts are scheduled scripts, not CPU usage.
+Managed/other distinguish the eligible HC workload. Ambient agents are listed
+separately because they have no soldier groups. Host CPU/RAM audits remain
+external measurements rather than invented in-game counters.
+
+Ordinary enemy defenders, waypoint patrols, static crews and ambient vehicle
+crews now join the existing weighted HC balancer. Defender controllers resume
+on the current owner. Player squads, owned AI and special mission actors stay
+protected. No arbitrary transfer of every group is attempted.
+
+Ambient population uses lightweight createAgent pedestrians with one population
+controller, not a scheduled script and soldier combat FSM for every pedestrian.
+At maximum density the global ceiling is 240 agents: up to 48 per settlement or
+active sector and 24 per FOB, fairly divided when many areas are active.
+Active sectors and FOBs anchor population even without nearby players, plus
+settlements within 1.5 km of those anchors and players. Agents sleep beyond
+1.2 km of all players and wake on approach; anchors retain their sleeping
+population. About 20% of candidate pedestrian spawns use valid building positions;
+existing occupied spots are skipped. Enemy spawn pools and positions are not
+reserved or reduced. Hostages and scripted mission civilians keep normal AI.
+
+Ambient traffic scales separately: up to 16 cars, two helicopters and two planes
+at maximum density. Vehicles retain full driving/flying AI on HCs and follow
+cyclic routes. They spawn outside 250 m of players, expire after 30 minutes when
+out of sight, and replenish gradually. Existing faction cars are preferred;
+aircraft use loaded vanilla civilian classes. Population remains bounded.
+
+Every activated enemy sector gains a compact command post, guards, a patrol and
+at least two static defenses (four at military sectors). Available clear ground
+controls how many bunkers, cargo buildings and extra houses fit. Placement rejects
+water, roads and nearby structures. Added props and troops join sector cleanup;
+they are regenerated rather than written into campaign persistence. A marked
+sector commander must die as well as satisfying the normal enemy-clear threshold
+before capture. Loading failures and sector cleanup remove owned props/markers.
+
+A third HC can be added to an already initialized mission without restarting:
+
+```powershell
+.\tools\server\add_headless.ps1
+```
+
+The tool validates the live server identity and adds an unused HC slot to the
+owned process ledger. Normal launches defer all three HCs until manual setup ends.
+
+Live capacity sample on 2026-10-26, before these mission changes: server 12.1%,
+HC1 10.8%, HC2 12.2%, HC3 12.3% of the 12-thread host CPU; working sets 5.20,
+4.89, 4.94, 4.64 GiB; 5.14 GiB physical RAM available. These are a short sample,
+not a controlled before/after FPS benchmark. The user reported 47 FPS across
+the original server/two HCs. Large pages remain unavailable without the Windows
+Lock pages in memory privilege; the requested allocator is loaded.

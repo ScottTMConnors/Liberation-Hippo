@@ -16,7 +16,8 @@ _deadline = diag_tickTime + 150;
 private _groups = [];
 waitUntil {sleep 0.5; _groups = allGroups select {_x getVariable ["HPC_hcManaged",false] && {local _x} && {{alive _x} count units _x > 0}}; count _groups >= 2 || diag_tickTime > _deadline};
 ["hc.locality",count _groups >= 2 && {units (_groups select 0) findIf {!local _x} < 0}] call _assert;
-_deadline = diag_tickTime + 20;
+// Legacy defenders may arrive before AI Warfare issues its first stored order.
+_deadline = diag_tickTime + 120;
 private _ordered = false;
 waitUntil {
     sleep 0.5;

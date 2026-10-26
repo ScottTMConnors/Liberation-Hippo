@@ -112,7 +112,7 @@ class liberation_admin {
     idc = 1630;
     action = "[] execVM 'scripts\client\misc\HPC_hcStatus.sqf'";
     text = "AI load";
-    tooltip = "Show server and ready headless-client FPS, groups and simulated units.";
+    tooltip = "Open the persistent AI load window: live metrics, ownership breakdown and FPS history.";
     x = 0.3725 * safezoneW + safezoneX;
     y = 0.208 * safezoneH + safezoneY;
     w = 0.042 * safezoneW;

@@ -29,6 +29,12 @@ waitUntil {sleep 0.5; diag_tickTime > _deadline || {!isNil "GRLIB_init_server" &
 private _booted = !isNil "GRLIB_init_server" && {GRLIB_init_server};
 ["startup.server", _booted] call _assert;
 if (!_booted) exitWith {["RUN_DONE|0"] call _emit};
+_deadline = diag_tickTime + 25;
+waitUntil {sleep 0.2; !isNil "HPC_hcSummary" || diag_tickTime > _deadline};
+private _status = missionNamespace getVariable ["HPC_hcStatus",[]];
+private _sum = 0;
+{_sum = _sum + (_x select 4)} forEach _status;
+["telemetry.ownership",count _status > 0 && {_status findIf {count _x != 11 || {(_x select 5)+(_x select 6) != (_x select 4)}} < 0} && {_sum == (HPC_hcSummary select 0)} && {getNumber (missionConfigFile >> "HPC_AILoad" >> "idd") == 7765} && {(missionNamespace getVariable ["HPC_hcHistory",[]]) findIf {count (_x select 1) > 36} < 0}] call _assert;
 ["settings.defaults", HPC_EasyAI && HPC_AIWarfare && HPC_NearbyBattles && !HPC_SecondChance && !HPC_VehicleProgression && !HPC_CivilianProtection && GRLIB_Undercover_mode == 1 && HPC_RepairSeconds == 20 && HPC_ArtyRearmSeconds == 30 && (HPC_AllFactions == (HPC_testVariant == "expanded"))] call _assert;
 private _offeredWest = (LRX_Mission_Params get GRLIB_PARAM_ModPresetWest) get GRLIB_PARAM_OptionValuesKey;
 private _offeredEast = (LRX_Mission_Params get GRLIB_PARAM_ModPresetEast) get GRLIB_PARAM_OptionValuesKey;
@@ -117,4 +123,4 @@ if (HPC_testScenario) then {call compile preprocessFileLineNumbers "hippo_tests\
 call compile preprocessFileLineNumbers "hippo_tests\review.sqf";
 if (HPC_testCommander) then {call compile preprocessFileLineNumbers "hippo_tests\commander.sqf"};
 if (missionNamespace getVariable ["HPC_testHeadless",false]) then {call compile preprocessFileLineNumbers "hippo_tests\headless.sqf"};
-[format ["RUN_DONE|%1", 14 + (if (HPC_testScenario) then {3} else {0}) + (if (HPC_testCommander) then {4} else {0}) + (if (missionNamespace getVariable ["HPC_testHeadless",false]) then {10} else {0})]] call _emit;
+[format ["RUN_DONE|%1", 18 + (if (HPC_testScenario) then {4} else {0}) + (if (HPC_testCommander) then {4} else {0}) + (if (missionNamespace getVariable ["HPC_testHeadless",false]) then {11} else {0})]] call _emit;

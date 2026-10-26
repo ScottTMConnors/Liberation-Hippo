@@ -52,10 +52,10 @@ while { _static_count < _count && _max_try > 0 } do {
 		};
 
 		_static_units append (units _grp);
-		private _hc = [] call F_lessLoadedHC;
-		if (isDedicated && !isNull _hc) then {
-			_grp setGroupOwner (owner _hc);
-		};
+        if (!_mission_ai) then {
+            if (_side == GRLIB_side_enemy) then {{_x setVariable ["HPC_damageKind","enemy",true]} forEach units _grp};
+            _grp setVariable ["HPC_hcManaged",true,true];
+        };
 	};
 	_max_try = _max_try - 1;
 	sleep 1;

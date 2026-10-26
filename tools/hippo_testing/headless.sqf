@@ -1,6 +1,17 @@
 private _deadline = diag_tickTime + 130;
 waitUntil {sleep 0.5; count (missionNamespace getVariable ["HPC_headlessClients",[]]) == 2 || diag_tickTime > _deadline};
 ["hc.connected",count (missionNamespace getVariable ["HPC_headlessClients",[]]) == 2] call _assert;
+// Legacy sector defenders and native waypoint patrols must now leave the server
+// and retain a live behaviour controller on their new owner.
+private _legacyPos = (markerPos "base_chimera") vectorAdd [300,300,0];
+private _defender = [_legacyPos,["O_Soldier_F","O_Soldier_F"],GRLIB_side_enemy,"infantry"] call F_libSpawnUnits;
+private _patrol = [_legacyPos vectorAdd [40,0,0],["O_Soldier_F","O_Soldier_F"],GRLIB_side_enemy,"infantry"] call F_libSpawnUnits;
+[_defender,_legacyPos,40] spawn defence_ai;
+[_patrol,_legacyPos] call add_civ_waypoints;
+_deadline = diag_tickTime + 70;
+waitUntil {sleep 0.5; (groupOwner _defender > 2 && {groupOwner _patrol > 2} && {(_defender getVariable ["HPC_defenceOwner",-1]) == groupOwner _defender}) || diag_tickTime > _deadline};
+["hc.legacy",groupOwner _defender > 2 && {groupOwner _patrol > 2} && {count waypoints _patrol > 1} && {(_defender getVariable ["HPC_defenceOwner",-1]) == groupOwner _defender}] call _assert;
+{private _g = _x; {deleteVehicle _x} forEach units _g; deleteGroup _g} forEach [_defender,_patrol];
 // Exercise the production AI Warfare managers, including vehicle crews,
 // before switching to fixed-size groups for the balance boundary checks.
 private _beforeFobs = +GRLIB_all_fobs;

@@ -163,7 +163,7 @@ if (PAR_Grp_ID in GRLIB_whitelisted_moderators) then {
 	_button_controls = _disabled_controls;
 };
 
-while { alive player && dialog } do {
+while { alive player && {!isNull _display} } do {
 	_msg = "";
 	_admin_msg = "";
 

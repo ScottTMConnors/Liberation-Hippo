@@ -69,3 +69,6 @@ _waypoint setWaypointType "CYCLE";
 (driver _vehicle) doMove _wp0;
 
 {_x doFollow leader _grp} foreach units _grp;
+if (side _grp == GRLIB_side_enemy && {units _grp findIf {_x getVariable ["GRLIB_mission_AI",false]} < 0}) then {
+    _grp setVariable ["HPC_hcManaged",true,true];
+};

@@ -158,3 +158,6 @@ HPC_fnc_sectorState = compileFinal preprocessFileLineNumbers "scripts\shared\fun
 HPC_fnc_loadSector = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_loadSector.sqf";
 HPC_fnc_loadingStart = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_loadingStart.sqf";
 HPC_fnc_loadingEnd = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_loadingEnd.sqf";
+HPC_fnc_civilianTick = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_civilianTick.sqf";
+HPC_fnc_ambientTraffic = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_ambientTraffic.sqf";
+HPC_fnc_sectorFortifications = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_sectorFortifications.sqf";

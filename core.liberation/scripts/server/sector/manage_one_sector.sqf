@@ -310,28 +310,12 @@ if (_building_ai_max > 0) then {
 _sector setMarkerText format ["%2 - Loading %1%%", 80, _sectorName];
 [_sector,"loading",80,-1,-1,_sectorName,_local_capture_size] call HPC_fnc_sectorState;
 
-// Create civilians
-if (_spawncivs && GRLIB_civilian_activity > 0) then {
-	private _nbcivs = round ((5 + (floor random 6)) * GRLIB_civilian_activity);
-	if (_sector in sectors_bigtown) then { _nbcivs = _nbcivs + 12 };
-	private _rnd = [1,1,1,1,2,2,3];
-	_civ = _nbcivs;
-	while { _nbcivs > 0 } do {
-		private _max_units = (selectRandom _rnd) min _nbcivs;
-		[_sector_pos, _sector, _max_units] call {
-			params ["_sector_pos", "_sector", "_max_units"];
-			private _grp = [_sector_pos, _max_units] call F_spawnCivilians;
-			if (isNull _grp) exitWith {};
-			[_grp, _sector_pos] spawn add_civ_waypoints;
-			(missionNamespace getVariable format ["LRX_sector_%1_civils", _sector]) append (units _grp);
-		};
-		_nbcivs = _nbcivs - _max_units;
-		_ratio = round linearConversion [0, _civ, _civ - _nbcivs, 85, 99];
-		_sector setMarkerText format ["%2 - Loading %1%%", _ratio, _sectorName];
-[_sector,"loading",_ratio,-1,-1,_sectorName,_local_capture_size] call HPC_fnc_sectorState;
-		sleep 0.5;
-	};
+// Ambient agents are maintained independently for active sectors, nearby towns and FOBs.
+[_sector] call HPC_fnc_sectorFortifications;
+if (isNull (missionNamespace getVariable ["HPC_sectorCommander_"+_sector,objNull])) exitWith {
+    diag_log format ["--- Hippos Conquest: sector %1 loader aborted; commander creation failed",_sector];
 };
+_static_count = _static_count max (if (_sector in sectors_military) then {4} else {2});
 
 // Create static weapons
 if (_static_count > 0) then {
@@ -421,7 +405,7 @@ private _building_alive = (nearestObjects [_sector_pos, ["House"], _local_captur
 diag_log format ["Sector %1 wait attack to finish", _sector];
 
 private _task = "attack" + _sectorName + str round time;
-[true, _task, [format ["Attack %1", _sectorName], format ["Attack %1", _sectorName], _sector], _sector_pos, "ASSIGNED", 2, true] call BIS_fnc_taskCreate;
+[true, _task, [format ["Clear %1 and eliminate its marked sector commander. Both are required to capture the sector.", _sectorName], format ["Attack %1", _sectorName], _sector], _sector_pos, "ASSIGNED", 2, true] call BIS_fnc_taskCreate;
 [_task, true] call BIS_fnc_taskSetCurrent;
 _sector setMarkerText format ["%1 - Loaded", _sectorName];
 sleep 5;
@@ -450,9 +434,13 @@ while {true} do {
     private _remaining = call _countEnemies;
     // An initially empty, successfully loaded sector is cleared; no division by zero.
     private _ratio = if (_startingCount == 0) then { if (_remaining == 0) then {0} else {100} } else {100 * _remaining / _startingCount};
-    _sector setMarkerText format ["%1 - %2%%", _sectorName, round _ratio];
+    private _commander = missionNamespace getVariable ["HPC_sectorCommander_"+_sector,objNull];
+    private _commanderAlive = alive _commander;
+    private _commanderDead = missionNamespace getVariable ["HPC_sectorCommanderDead_"+_sector,false];
+    if (_commanderAlive) then {("HPC_command_"+_sector) setMarkerPos (getPosATL _commander)} else {deleteMarker ("HPC_command_"+_sector)};
+    _sector setMarkerText format ["%1 - %2%% %3", _sectorName, round _ratio,if (_commanderAlive) then {"| commander alive"} else {"| commander eliminated"}];
     [_sector,"active",100 - _ratio,_remaining,_startingCount,_sectorName,_local_capture_size] call HPC_fnc_sectorState;
-    if (_ratio <= 10) exitWith { // Victory
+    if (_ratio <= 10 && {_commanderDead}) exitWith { // Victory
 		diag_log format ["Sector %1 mission succeeded.", _sector];
 		_sector setMarkerText _sectorName;
 		[_task,"SUCCEEDED"] call BIS_fnc_taskSetState;
@@ -561,3 +549,9 @@ private _managed_vehicles = missionNamespace getVariable [format ["LRX_sector_%1
 missionNamespace setVariable [format ["LRX_sector_%1_units", _sector], nil];
 missionNamespace setVariable [format ["LRX_sector_%1_civils", _sector], nil];
 missionNamespace setVariable [format ["LRX_sector_%1_vehicles", _sector], nil];
+
+{deleteVehicle _x} forEach (missionNamespace getVariable ["HPC_sectorProps_"+_sector,[]]);
+missionNamespace setVariable ["HPC_sectorProps_"+_sector,nil];
+deleteMarker ("HPC_command_"+_sector);
+missionNamespace setVariable ["HPC_sectorCommander_"+_sector,nil,true];
+missionNamespace setVariable ["HPC_sectorCommanderDead_"+_sector,nil,true];

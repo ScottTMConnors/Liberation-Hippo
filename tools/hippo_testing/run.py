@@ -56,6 +56,8 @@ def main():
     GAME=args.game_directory
     if args.scenario and args.commander:
         ap.error('Run --scenario and --commander separately: scenario cleanup stops the warfare managers needed by commander checks.')
+    if args.scenario and args.headless:
+        ap.error('Run --scenario and --headless separately: scenario cleanup stops the warfare managers needed by HC checks.')
     run_id = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%f') + '-' + args.variant + '-' + ('baseline' if args.baseline else args.control or 'smoke')
     out = ROOT/'mybuild'/'hippo_tests'/run_id
     out.mkdir(parents=True, exist_ok=False)
@@ -70,10 +72,10 @@ def main():
     tag=subprocess.check_output(['git','describe','--tags','upstream/master'],cwd=ROOT).decode().strip()
     (stage/'build_info.sqf').write_text(f'GRLIB_build_date="{run_id}"; GRLIB_build_time="test"; GRLIB_build_version="{tag}-hippo-test";\n')
     tests=stage/'hippo_tests'; tests.mkdir()
-    cases=['engine.compile','startup.server','settings.defaults','factions.available','settings.english','skills.toggle','damage.civilian','catalog.classification','catalog.order','catalog.unlockFilter','objects.simple','cargo.restore','vehicles.emptyPools','warfare.armedPool']
-    if args.scenario: cases+=['warfare.spawn','sector.capture','warfare.cleanup']
+    cases=['engine.compile','startup.server','telemetry.ownership','civilians.ambient','civilians.traffic','sector.fortifications','settings.defaults','factions.available','settings.english','skills.toggle','damage.civilian','catalog.classification','catalog.order','catalog.unlockFilter','objects.simple','cargo.restore','vehicles.emptyPools','warfare.armedPool']
+    if args.scenario: cases+=['warfare.spawn','sector.commanderGate','sector.capture','warfare.cleanup']
     if args.commander: cases+=['commander.emptyRoster','commander.townLoaded','commander.progress','warfare.enemyFOB']
-    if args.headless: cases+=['hc.connected','hc.warfare','hc.balanced','hc.weighted','hc.playerSafe','hc.orders','hc.recovered','hc.rejoined','hc.serverFallback','hc.cleanup']
+    if args.headless: cases+=['hc.connected','hc.legacy','hc.warfare','hc.balanced','hc.weighted','hc.playerSafe','hc.orders','hc.recovered','hc.rejoined','hc.serverFallback','hc.cleanup']
     if args.control: cases=['control']
     if args.baseline: cases=['startup.server']
     if args.missing_faction: cases=['faction.rejected','faction.savePreserved','faction.ended']
@@ -137,7 +139,7 @@ addMissionEventHandler ["MPEnded",{
             cases.append('compaction.leaves')
             shutil.copy2(ROOT/'tools/hippo_testing/compact.sqf',tests/'compact.sqf')
             p=tests/'run.sqf'
-            p.write_text(p.read_text(encoding='utf-8').replace('["settings.defaults",', '[] call compile preprocessFileLineNumbers "hippo_tests\\compact.sqf";\n["settings.defaults",').replace('14 + (if (HPC_testScenario)', '15 + (if (HPC_testScenario)'),encoding='utf-8')
+            p.write_text(p.read_text(encoding='utf-8').replace('["settings.defaults",', '[] call compile preprocessFileLineNumbers "hippo_tests\\compact.sqf";\n["settings.defaults",').replace('18 + (if (HPC_testScenario)', '19 + (if (HPC_testScenario)'),encoding='utf-8')
         # Include all delivered SQF in the native syntax check.
         scripts=sorted(p.relative_to(stage).as_posix().replace('/','\\') for p in stage.rglob('*.sqf') if 'hippo_tests' not in p.parts)
         p=stage/'initServer.sqf'

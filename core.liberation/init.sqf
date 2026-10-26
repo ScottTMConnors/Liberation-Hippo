@@ -122,7 +122,7 @@ if (!isDedicated && !hasInterface && isMultiplayer) then {
             private _missing = HPC_hcRequiredClasses select {!isClass (configFile >> "CfgVehicles" >> _x)};
             if !(_missing isEqualTo []) exitWith {diag_log ["HPC_HC|REJECTED|Missing server content",_missing]};
             diag_log format ["HPC_HC|READY|%1",clientOwner];
-            while {true} do {[player,diag_fps] remoteExecCall ["HPC_fnc_hcHeartbeat",2]; sleep 10};
+            while {true} do {[player,diag_fps,diag_fpsMin,count diag_activeSQFScripts] remoteExecCall ["HPC_fnc_hcHeartbeat",2]; sleep 10};
         };
 	};
 };
