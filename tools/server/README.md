@@ -71,7 +71,9 @@ Verify both `HPC_HC|READY|` lines and Admin > AI load after starting gameplay.
 
 The server uses Arma's `loopback=1` LAN mode and `upnp=0`. No router mappings
 are created. BattlEye is disabled, the join password is empty, signatures are
-not enforced, and file patching is disabled for packaged Workshop mods. Keep this a
+not enforced. The server/HC launch flags keep file patching off; the server
+allows joining clients with it on (`allowedFilePatching=2`) so a player's
+launcher setting does not cause an immediate kick. Keep this a
 trusted LAN setup.
 
 The existing Windows inbound allow rules already cover this exact
@@ -142,6 +144,19 @@ this launcher. No unrelated userconfig or Workshop files are edited. The supplie
 emits upstream UAS syntax/missing-ammo warnings, Lightsabers duplicate-addon
 and animation warnings, and some translation/animation warnings during load.
 Keep these separate from mission script errors when diagnosing a problem.
+
+Client admission and host file loading are separate settings: allowing
+clients through does not enable `-filePatching` on the server or HCs. A kick
+before the lobby is unrelated to logging in as admin. The server config logs
+connection and kick events as `HIPPO_CONNECT|...` in the RPT for diagnosis.
+If a pre-lobby rejection has no kick event, inspect the gaming client's latest
+`Arma3_x64_*.rpt` in `%LOCALAPPDATA%\Arma 3`. A player's confirmed disabled
+file-patching setting rules out that admission restriction as the cause;
+permitting patched clients is not proof that a particular rejection is fixed.
+
+Admin login is optional. Once connected, open Arma's chat (normally `/`), type
+`#login hippo-admin`, and press Enter to access server controls. No admin
+login is needed to join or play.
 
 References: [server configuration](https://community.bistudio.com/wiki/Arma_3:_Server_Config_File),
 [startup parameters](https://community.bistudio.com/wiki/Arma_3:_Startup_Parameters),

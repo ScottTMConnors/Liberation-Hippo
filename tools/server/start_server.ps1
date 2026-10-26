@@ -48,7 +48,8 @@ persistent = 1;
 autoSelectMission = true;
 BattlEye = 0;
 verifySignatures = 0;
-allowedFilePatching = 0;
+// Permit a player's launcher setting without enabling loose files on this host.
+allowedFilePatching = 2;
 upnp = 0;
 steamProtocolMaxDataSize = 8192;
 headlessClients[] = {"127.0.0.1"};
@@ -61,6 +62,8 @@ vonCodecQuality = 20;
 timeStampFormat = "full";
 statisticsEnabled = 0;
 logFile = "server-console.log";
+onUserKicked = "diag_log 'HIPPO_CONNECT|KICK'; diag_log _this;";
+onUserConnected = "diag_log 'HIPPO_CONNECT|CONNECTED'; diag_log _this;";
 class Missions {
     class HippoMalden {
         template = "Hippos_Conquest.Malden";
