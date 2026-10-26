@@ -101,5 +101,5 @@ if __name__ == '__main__':
     parser.add_argument('--runtime', type=Path, default=Path(__file__).resolve().parents[2] / 'mybuild' / 'lan-server')
     args = parser.parse_args()
     session = json.loads((args.runtime / 'session.json').read_text(encoding='utf-8-sig'))
-    result = [{'role': entry['role'], **inspect(entry['pid'])} for entry in session['processes']]
+    result = [{'role': entry['role'], **inspect(entry['pid'])} for entry in session['processes'] if entry['role'] != 'HC watcher']
     print(json.dumps(result, indent=2))

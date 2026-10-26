@@ -1,6 +1,7 @@
 param([string]$RuntimeDirectory = (Join-Path $PSScriptRoot '..\..\mybuild\lan-server'))
 $ErrorActionPreference = 'Stop'
 $session = Get-Content -LiteralPath (Join-Path $RuntimeDirectory 'session.json') -Raw | ConvertFrom-Json
+if ($session.headlessState) { Write-Host "HC startup: $($session.headlessState)" }
 foreach ($entry in $session.processes) {
     $p = Get-Process -Id $entry.pid -ErrorAction SilentlyContinue
     $matches = $p -and ($p.StartTime.ToUniversalTime() -eq ([datetime]$entry.started).ToUniversalTime())

@@ -5,8 +5,16 @@
 In Arma 3, load **cool**, open Multiplayer > Direct Connect, enter
 **192.168.1.144**, port **2302**, and leave the password blank. Server name:
 **Hippos Conquest - cool LAN**. Terrain: Malden. Join a normal playable slot;
-the HC slots are reserved for the headless clients. Start from the lobby when
-ready. Admin chat command: `#login hippo-admin`. The password can be changed
+the HC slots are reserved for the headless clients. No mission is selected
+automatically. After joining, open chat with `/`, enter `#login hippo-admin`,
+and press Enter. Then enter `#missions` and select **Malden > Hippos Conquest
+v1.1.2**. Set lobby **Parameters > Open Mission Parameters > Enabled** before
+starting. When you deliberately start setup, the full mission settings screen
+opens and campaign initialization waits until **Save and Continue**.
+The HCs do not connect to the lobby; a background helper launches them only
+after campaign setup has completed. This prevents HC readiness from starting
+the mission before the admin is ready.
+The admin password can be changed
 with the launcher's `-AdminPassword` parameter.
 
 Also enable the Creator DLCs **Western Sahara (WS)**, **Reaction Forces (RF)**,
@@ -17,6 +25,8 @@ The launcher checks their addon directories and records them in `session.json`.
 The host's Ethernet address was 192.168.1.144/24 on 2026-10-26. Check
 `Get-NetIPAddress -AddressFamily IPv4` if DHCP changes it. Do not use
 127.0.0.1 from the other computer: that means the other computer itself.
+If the address changes, pass `-BindAddress '<new private IPv4>'` to the
+launcher. It rejects public addresses and addresses not assigned to this host.
 
 ## Build, start, inspect, stop
 
@@ -28,14 +38,14 @@ Run these commands from the repository root in PowerShell:
 git fetch https://github.com/tbox1911/Liberation-RX.git master:refs/remotes/upstream/master --tags
 python tools/build_malden.py --build-only --game-directory 'F:\Medium500\Applications\Steam\steamapps\common\Arma 3'
 
-# Start the last built release and two HCs, without Steam or a rendering client.
+# Start the server; two HCs launch automatically after manual campaign setup.
 .\tools\server\start_server.ps1
 .\tools\server\status_server.ps1
 ```
 
 The launcher verifies all 61 installed Workshop addon directories, the mission
-package hash, and the allocator hash before starting. It waits for all three
-processes to open their UDP sockets. It refuses to replace an active instance
+package hash, and the allocator hash before starting. It waits for the
+server to open its UDP sockets. It refuses to replace an active instance
 of the same runtime or use an occupied game port. Logs and a PID/start-time
 ownership ledger are under `mybuild/lan-server/`. `status_server.ps1` checks
 process identity rather than trusting a possibly recycled PID.
@@ -56,8 +66,21 @@ until the old processes exit before relaunching the same profiles.
 ## Mission lifecycle and storage
 
 - `persistent=1` keeps a started mission running after human players leave.
-- The launcher deliberately omits `-autoInit`. HCs can connect and cause the
-  mission to be read into the lobby, but gameplay awaits the human player.
+- The launcher omits `-autoInit`, sets `autoSelectMission=false`, and leaves
+  `class Missions {}` empty. Only the admin selects the mission using
+  `#missions`. The mission whitelist allows the packaged Malden mission.
+- Role/briefing/voting/debriefing phase windows are a full 24 hours, rather
+  than the default short countdowns; idle kicking is disabled. No phase can
+  load a mission before the admin selects one because there is no rotation
+  and no HC connected. Avoid undocumented negative timeout values.
+- The admin must enable **Open Mission Parameters** in the selected mission's
+  lobby, then deliberately start setup and finish with **Save and Continue**.
+  `watch_headless.ps1` waits for the new server RPT's `--- Server Init stop ---`
+  before launching both HCs. It cannot cause the lobby to advance because no
+  HC is connected during mission selection or setup. It exits after launching
+  them, recording their PIDs in the same ownership ledger. Keep `persistent=1`
+  for after startup. `status_server.ps1` reports `waiting_for_manual_start`
+  until setup is complete.
 - Each server/HC has its own `-profiles` directory. This is a new dedicated
   campaign; existing player-hosted campaign saves are not imported or changed.
 - Keep `mybuild/lan-server/profiles/server/` across restarts. Back it up with
@@ -74,31 +97,38 @@ Verify both `HPC_HC|READY|` lines and Admin > AI load after starting gameplay.
 
 ## Network and Steam
 
-The server uses Arma's `loopback=1` LAN mode and `upnp=0`. No router mappings
-are created. BattlEye is disabled, the join password is empty, signatures are
-not enforced. The server/HC launch flags keep file patching off; the server
-allows joining clients with it on (`allowedFilePatching=2`) so a player's
-launcher setting does not cause an immediate kick. Keep this a
+The server uses normal network mode (`loopback=0`), binds explicitly to the
+private LAN address with `-ip`, and keeps `upnp=0`. No router mappings are
+created. The HCs bind and connect through the same LAN address, included in both
+`headlessClients[]` and `localClient[]`. Do not revert to `loopback=1` for a
+player on another PC: the original local-test configuration repeatedly rejected
+that player's connection; an isolated network-mode probe on the standard port
+successfully reached the lobby.
+
+BattlEye is disabled, the join password is empty, signatures are
+not enforced. File patching is disabled on the server and HCs, and clients
+with file patching enabled are rejected (`allowedFilePatching=0`), as requested.
+Keep this a
 trusted LAN setup.
 
 The existing Windows inbound allow rules already cover this exact
 `arma3server_x64.exe`. Creating additional firewall rules from the agent's
-token returned access denied; no firewall changes were applied. LAN mode is
-configured by the game instead. If hosting on another machine, allow UDP
+token returned access denied; no firewall changes were applied. Network
+binding is limited to the host's private LAN interface. If hosting on another machine, allow UDP
 2302-2306 on the private LAN in Windows Firewall. Do not open router ports.
 The launcher's `-Port` option selects another base game port if needed.
 
 All three processes use `arma3server_x64.exe` directly, with `-client` for the
 HCs. The pipeline never starts steam.exe, arma3launcher.exe, arma3_x64.exe, or
 BattlEye. An initial `SteamAPI initialization failed` message is expected when
-no desktop Steam client is running; LAN dedicated hosting does not require
-launching the player's Steam session. This avoids registering a desktop game
+no desktop Steam client is running. The dedicated server separately initializes
+its Steam server API and logs `Connected to Steam servers` without starting
+the desktop Steam client. This avoids registering a desktop game
 session on this host. No license bypass or Steam binary modifications are used.
 
-Steam's A2S query endpoint is unavailable in this offline LAN configuration;
-do not use a failed A2S probe as evidence that the game port is down. Use the
-actual game connection and the server/HC RPTs. A remote player's final join
-must be verified from that computer.
+Normal network mode also opens the Steam query port (base game port + 1).
+The original loopback test mode did not expose that endpoint. Use the actual
+game connection and server/HC RPTs to confirm joining from the other computer.
 
 ## Mods and allocator
 
@@ -187,18 +217,21 @@ emits upstream UAS syntax/missing-ammo warnings, Lightsabers duplicate-addon
 and animation warnings, and some translation/animation warnings during load.
 Keep these separate from mission script errors when diagnosing a problem.
 
-Client admission and host file loading are separate settings: allowing
-clients through does not enable `-filePatching` on the server or HCs. A kick
+Client admission and host file loading are separate settings. Both are now
+configured to disallow file patching. A kick
 before the lobby is unrelated to logging in as admin. The server config logs
 connection and kick events as `HIPPO_CONNECT|...` in the RPT for diagnosis.
 If a pre-lobby rejection has no kick event, inspect the gaming client's latest
 `Arma3_x64_*.rpt` in `%LOCALAPPDATA%\Arma 3`. A player's confirmed disabled
 file-patching setting rules out that admission restriction as the cause;
-permitting patched clients is not proof that a particular rejection is fixed.
+Changing this setting did not fix the reported rejection, and the user
+confirmed file patching was disabled on their client. The temporary permission
+was reverted at the user's request.
 
-Admin login is optional. Once connected, open Arma's chat (normally `/`), type
-`#login hippo-admin`, and press Enter to access server controls. No admin
-login is needed to join or play.
+No admin login is needed merely to join. For this server's initial setup,
+open Arma's chat (normally `/`), type `#login hippo-admin`, and press Enter.
+The admin configures the startup parameters and selects Save and Continue;
+other players do not need to log in as admin to play afterward.
 
 References: [server configuration](https://community.bistudio.com/wiki/Arma_3:_Server_Config_File),
 [startup parameters](https://community.bistudio.com/wiki/Arma_3:_Startup_Parameters),
@@ -227,3 +260,20 @@ returned to mission loading; disabling it removed that failure. The final
 launcher leaves it off for server and HCs. No downloaded Workshop PBOs were
 modified to conceal the preset's warnings. Cross-computer joining and actual
 campaign performance still require the player's client.
+
+The remote player subsequently confirmed joining the main mission lobby after
+switching from loopback test mode to normal network mode on the private LAN
+address. Both HCs must also use `-ip=<LAN address>`: without an explicit bind,
+one HC bound `0.0.0.0:2304` over the server's interface-specific Steam port and
+did not finish connecting. Explicit HC bindings produced separate local ports
+2316 and 2328, and both connection events were observed.
+
+Connecting HCs during mission selection still advanced the original lobby
+before the admin was ready, even after the timeout adjustment. The final
+production configuration therefore has no automatic mission selection or
+rotation, and holds HCs entirely until campaign setup is finished. At the
+user's request, all dedicated profiles were moved out of the active profile
+directory into `mybuild/lan-server/resets/20261026-144129/profiles`; the active
+server now has fresh campaign/settings data. No personal player saves were
+reset. Campaign initialization waits for Save and Continue when the admin
+enables Open Mission Parameters before starting setup.
