@@ -13,6 +13,11 @@ $manifest = Get-Content -LiteralPath $manifestPath -Raw | ConvertFrom-Json
 $preset = @(Get-Content -LiteralPath (Join-Path $PSScriptRoot 'cool-preset.json') -Raw | ConvertFrom-Json)
 $workshop = [IO.Path]::GetFullPath((Join-Path $GameDirectory '..\..\workshop\content\107410'))
 $mods = @($preset | ForEach-Object { Join-Path $workshop $_.id })
+$creatorDlc = @('WS','RF','EF')
+foreach ($dlc in $creatorDlc) {
+    if (!(Test-Path -LiteralPath (Join-Path $GameDirectory "$dlc\addons"))) { throw "Missing Creator DLC data: $dlc" }
+}
+$mods = @($creatorDlc | ForEach-Object { Join-Path $GameDirectory $_ }) + $mods
 foreach ($mod in $mods) { if (!(Test-Path -LiteralPath (Join-Path $mod 'addons'))) { throw "Missing Workshop mod: $mod" } }
 if ($preset.Count -ne 61) { throw 'Expected exactly 61 cool preset mods.' }
 if (!(Test-Path -LiteralPath $exe)) { throw "Missing dedicated executable: $exe" }
@@ -102,7 +107,7 @@ try {
         $owned += [pscustomobject]@{role="HC$i";pid=$p.Id;started=$p.StartTime.ToUniversalTime().ToString('o');profile=$profile}
     }
 } finally {
-    [pscustomobject]@{port=$Port;gameDirectory=$GameDirectory;runtime=$RuntimeDirectory;missionVersion=$manifest.version;sourceCommit=$manifest.source_commit;allocatorSHA256=$dllHash;mods=$preset;processes=$owned} | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $RuntimeDirectory 'session.json')
+    [pscustomobject]@{port=$Port;gameDirectory=$GameDirectory;runtime=$RuntimeDirectory;missionVersion=$manifest.version;sourceCommit=$manifest.source_commit;allocatorSHA256=$dllHash;creatorDlc=$creatorDlc;mods=$preset;processes=$owned} | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $RuntimeDirectory 'session.json')
 }
 $deadline = (Get-Date).AddSeconds(180)
 foreach ($entry in $owned) {

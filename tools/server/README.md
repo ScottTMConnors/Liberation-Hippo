@@ -9,6 +9,11 @@ the HC slots are reserved for the headless clients. Start from the lobby when
 ready. Admin chat command: `#login hippo-admin`. The password can be changed
 with the launcher's `-AdminPassword` parameter.
 
+Also enable the Creator DLCs **Western Sahara (WS)**, **Reaction Forces (RF)**,
+and **Expeditionary Forces (EF)**. On the user's request, the server and both
+HCs now load those three installed DLC directories before the 61 Workshop mods.
+The launcher checks their addon directories and records them in `session.json`.
+
 The host's Ethernet address was 192.168.1.144/24 on 2026-10-26. Check
 `Get-NetIPAddress -AddressFamily IPv4` if DHCP changes it. Do not use
 127.0.0.1 from the other computer: that means the other computer itself.
@@ -120,6 +125,35 @@ committed to this repository. No global allocator environment variables,
 large-page privileges, or power policies are changed. Custom allocator options
 for this release use `ARMA3_MIMALLOC_*` if later tuning is needed.
 
+### Large pages: verified state, not just a launcher checkbox
+
+This particular Arma mimalloc build requests large OS pages and eager arena
+commit by default. Its exported `EnableHugePages` function is a no-op because
+options are set when the DLL loads; adding the launcher's `-hugePages` flag
+does not change that allocator's setup. See the pinned release's
+[defaults](https://github.com/GoldJohnKing/mimalloc/blob/Arma-3-v3.6.0-20261024/src/cma/cma_utils.c)
+and [API implementation](https://github.com/GoldJohnKing/mimalloc/blob/Arma-3-v3.6.0-20261024/src/cma/cma_api.c).
+
+The initial audit on this host found **no large-page allocations** and found
+`SeLockMemoryPrivilege` absent from the server and both HC process tokens.
+The RPT's `HasLockMemory` text alone is not proof that large pages were
+allocated. No Windows user-rights policy has been changed by this pipeline.
+Actually enabling large-page allocations requires the Windows **Lock pages
+in memory** account right and processes launched with a token containing it;
+the current agent has no elevated token to grant that right. The allocator
+continues to work using ordinary pages.
+
+Audit the currently recorded processes without changing them:
+
+```powershell
+python tools/server/inspect_memory.py
+```
+
+The tool reads process-token privilege metadata, enumerates committed memory
+regions with `VirtualQueryEx`, and samples `QueryWorkingSetEx` at 2 MiB
+intervals. It reports whether any large pages were observed, not an exact
+large-page byte count. No process memory contents are read or modified.
+
 ## CPU and performance baseline
 
 Host: Ryzen 5 5600, 6 physical cores/12 logical processors, 32 GB RAM. Baseline:
@@ -135,6 +169,14 @@ Rendering and texture-loading thread flags do not make server SQF parallel.
 HCs improve utilization only for groups whose ownership the mission transfers.
 Inspect Admin > AI load under actual load before increasing `-HeadlessCount`
 to 3; more processes also consume memory and can compete for CPU time.
+
+The gaming client's supplied RPT describes a different CPU: Ryzen 9 5950X
+(16 physical cores/32 logical processors). Its `-cpuCount=16` overrides
+`-enableHT`. For automatic use of logical processors, omit the manual CPU
+count and retain `-enableHT`. `-exThreads=7` enables file, geometry, and texture
+loading helpers for a rendering client; it is not seven additional AI
+simulation threads. The server and HCs use `-exThreads=1` for file operations.
+No manual `-maxMem` or `-maxVRAM` overrides are set by the host pipeline.
 
 File patching is a development setting, not an FPS switch. Leave it off for
 this packaged preset: enabling it produced a missing `Kill_Confirmed/Init.sqf`
