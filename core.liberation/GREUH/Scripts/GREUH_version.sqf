@@ -120,21 +120,6 @@ player createDiaryRecord ["Ranking", ["Ranking", format ["<font color='#0000ff'>
 player createDiaryRecord ["Ranking", ["Ranking", format ["-= How Work the Ranking System =-"]]];
 
 player createDiarySubject["Table","Killing Table"];
-player createDiarySubject["Table","Civilian Reputation (Penalties)"];
-player createDiaryRecord ["Table", ["Civilian Reputation (Penalties)", format ["<font color='#ff4000'> -R</font> pts  :  Destroy Civillian Buildings or Homes"]]];
-player createDiaryRecord ["Table", ["Civilian Reputation (Penalties)", format ["<font color='#ff4000'>-10</font> pts  :  Fail 'Defend Patrols' Mission"]]];
-player createDiaryRecord ["Table", ["Civilian Reputation (Penalties)", format ["<font color='#ff4000'> -5</font> pts  :  Fail 'Heal Civillians' Mission"]]];
-player createDiaryRecord ["Table", ["Civilian Reputation (Penalties)", format ["<font color='#ff4000'> -7</font> pts  :  Fail 'Special Delivery' Mission"]]];
-player createDiaryRecord ["Table", ["Civilian Reputation (Penalties)", format ["<font color='#ff4000'> -2</font> pts  :  Fail 'Ammo Delivery' Mission"]]];
-player createDiaryRecord ["Table", ["Civilian Reputation (Penalties)", format ["<font color='#ff4000'> -5</font> pts  :  Fail 'Fuel Delivery' Mission"]]];
-player createDiaryRecord ["Table", ["Civilian Reputation (Penalties)", format ["<font color='#ff4000'> -5</font> pts  :  Fail 'Food Delivery' Mission"]]];
-player createDiaryRecord ["Table", ["Civilian Reputation (Penalties)", format ["<font color='#ff4000'> -5</font> pts  :  Fail 'Water Delivery' Mission"]]];
-player createDiaryRecord ["Table", ["Civilian Reputation (Penalties)", format ["<font color='#ff4000'> -3</font> pts  :  Fail 'Meet Resistance' Mission"]]];
-player createDiaryRecord ["Table", ["Civilian Reputation (Penalties)", format ["<font color='#ff4000'>-10</font> pts  :  Fail 'Town Invasion' Mission"]]];
-player createDiaryRecord ["Table", ["Civilian Reputation (Penalties)", format ["<font color='#ff4000'>-15</font> pts  :  Fail 'Free Hostages' Mission"]]];
-player createDiaryRecord ["Table", ["Civilian Reputation (Penalties)", format ["<font color='#ff4000'>-15</font> pts  :  Fail to Defend an Attacked Sector"]]];
-player createDiaryRecord ["Table", ["Civilian Reputation (Penalties)", format ["<font color='#ff4000'> -5</font> pts  :  Fail to Capture an activated Sector"]]];
-player createDiaryRecord ["Table", ["Civilian Reputation (Penalties)", format ["-= Civillian Reputation (Penalties) =-"]]];
 
 player createDiarySubject["Table","Civilian Reputation (Bonuses)"];
 player createDiaryRecord ["Table", ["Civilian Reputation (Bonuses)", format ["<font color='#00ff40'>+20</font> pts  :  Complete 'Defend Patrols' Mission"]]];
@@ -153,16 +138,13 @@ player createDiaryRecord ["Table", ["Civilian Reputation (Bonuses)", format ["<f
 player createDiaryRecord ["Table", ["Civilian Reputation (Bonuses)", format ["-= Civillian Reputation (Bonuses) =-"]]];
 
 player createDiarySubject["Table","Civilian Reputation"];
-player createDiaryRecord ["Table", ["Civilian Reputation", "Most Bonuses apply to Players near or within the Mission area, but most Penalties apply to everyone on the server."]];
-player createDiaryRecord ["Table", ["Civilian Reputation", "Each Player has a Civillian Reputation rating displayed on the right side of your screen, which indicates your current 'Reputation' among the Civillian population. It scales from -100 to +100.<br/><br/>If you have a higher Rep, the civillians will at times help you: Heal you, Repair your vehicle, Supply you with Ammo during combat.<br/><br/>The lower your Rep goes, especially into the negative, then they will harass you, and do other things to make your life miserable!.<br/><br/>It is beneficial to you, that you keep them happy by completing humanitarian missions and taking care not to kill any of them or let their property be destroyed in combat.<br/><br/>Successfully completing certain things raises your rep, while failing to complete certain things lowers your rep..."]];
+player createDiaryRecord ["Table", ["Civilian Reputation", "Reputation bonuses generally apply to players near or within the mission area."]];
+player createDiaryRecord ["Table", ["Civilian Reputation", "Each Player has a Civillian Reputation rating displayed on the right side of your screen, which indicates your current 'Reputation' among the Civillian population. It scales from -100 to +100.<br/><br/>If you have a higher Rep, the civillians will at times help you: Heal you, Repair your vehicle, Supply you with Ammo during combat.<br/><br/>Completing humanitarian missions can raise your reputation."]];
 
 player createDiarySubject["Table","Killing Table"];
 player createDiaryRecord ["Table", ["Killing Table", format ["<br/>note: XP points may vary depending on the nature or rank of the targets."]]];
 player createDiaryRecord ["Table", ["Killing Table", format ["<font color='#ff4000'>-50</font> pts  :  Killing Friendly"]]];
 player createDiaryRecord ["Table", ["Killing Table", format ["<font color='#ff4000'>-20</font> up to <font color='#ff4000'>-80</font> pts  :  Killing Prisoners"]]];
-player createDiaryRecord ["Table", ["Killing Table", format ["<font color='#ff4000'>-20</font> up to <font color='#ff4000'>-80</font> pts  :  Killing Civilians"]]];
-player createDiaryRecord ["Table", ["Killing Table", format ["<font color='#ff4000'>-20</font> pts  :  Killing Civilians by AI"]]];
-player createDiaryRecord ["Table", ["Killing Table", format ["<font color='#ff4000'> -5</font> pts  :  Eject Civilian from Vehicle"]]];
 player createDiaryRecord ["Table", ["Killing Table", format ["<font color='#ff4000'> -5</font> pts  :  Friendly Fires"]]];
 player createDiaryRecord ["Table", ["Killing Table", format ["<font color='#ff4000'> -5</font> pts  :  Respawn (Sergeant and above)"]]];
 player createDiaryRecord ["Table", ["Killing Table", format ["<font color='#ff4000'> -1</font> pts  :  Wounded (Sergeant and above)"]]];

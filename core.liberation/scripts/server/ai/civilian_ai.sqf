@@ -67,10 +67,6 @@ while {alive _unit && _continue} do {
 		if ( _reputation >= 50 ) then { _list_actions = [1,2,2,3,3] };
 		if ( _reputation >= 75 ) then { _list_actions = [2,2,3,4,4,5] };
 		if ( _reputation >= 90 ) then { _list_actions = [2,3,4,5,5] };
-		if ( _reputation <= -25 ) then { _list_actions = [0,10,10] };
-		if ( _reputation <= -50 ) then { _list_actions = [10,11,11] };
-		if ( _reputation <= -75 ) then { _list_actions = [11,11,12,12,14] };
-		if ( _reputation <= -90 ) then { _list_actions = [11,12,12,13,13,14,14] };
 		_action = selectRandom _list_actions;
 	};
 

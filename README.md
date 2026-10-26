@@ -46,10 +46,8 @@ Join our Discord server: https://discord.gg/uCRzJ7wauR
 + Ranges -100 to +100.
 + Each Player has their own Rating.
 + Raise your Rep by completing Civ related Side Missions and Helping Civs.
-+ Anytime you *Fail* a Mission, your Rep decreases.
-+ If you or your AI kill Civs, or destroy their Buildings, your Rep decreases.
 + At higher Rep, they will Repair your vehicle, Heal you, and bring you Ammo!
-+ If your Rep gets too low, they will harass you... and kill you!
++ Civilian casualties and mission failures do not reduce reputation.
 
 ### Personal Economy:
 + You have three Main Resources: Ammo, Fuel, and Man Power.

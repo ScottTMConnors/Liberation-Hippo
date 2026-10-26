@@ -59,10 +59,6 @@ if (_ownership == GRLIB_side_enemy) then {
 	if (GRLIB_endgame == 0 && GRLIB_global_stop == 0) then {
 		if (_ownership == GRLIB_side_enemy) then {
 			diag_log format ["FOB %1 Lost at %2", _fob_pos, time];
-			if (!_near_outpost) then {
-				[_fob_pos, 250] remoteExec ["remote_call_penalty", 0];
-				sleep 3;
-			};
 			[_fob_pos, 2] remoteExec ["remote_call_fob", 0];
 			sleep 1;
 			[_fob_pos] call fob_destroy;

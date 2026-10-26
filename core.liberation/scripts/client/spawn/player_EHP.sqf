@@ -124,12 +124,6 @@ if (_unit == player) then {
 						_unit setVariable ["GRLIB_isProtected", round(time + 10)];
 						private _msg = format ["%1 (%2)", localize "STR_FRIENDLY_FIRE", name _killer];
 						[gamelogic, _msg] remoteExec ["globalChat", 0];
-						[_killer, -15] remoteExec ["F_addScore", 2];
-						// TK Protect
-						if (GRLIB_tk_mode > 0) then {
-							["PAR_tkMessage", [_unit, _killer]] remoteExec ["PAR_public_EH", 0];
-							[_unit, _killer] remoteExec ["LRX_tk_check", 0];
-						};
 					};
 					_damage = 0;
 				};

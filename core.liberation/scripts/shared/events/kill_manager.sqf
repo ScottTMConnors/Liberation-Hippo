@@ -17,7 +17,6 @@ if (isServer) then {
     private _attribution = [_unit,_killer,_instigator] call HPC_fnc_killAttribution;
     _killer = _attribution select 0;
     private _rewardPlayer = _attribution select 1;
-    private _indirect_kill = _attribution select 2;
     if (isNull _killer && {!isNull _rewardPlayer}) then {_killer = _rewardPlayer};
 
 	private _unit_class = typeOf _unit;
@@ -124,43 +123,7 @@ if (isServer) then {
 				if (!_isKamikaz && !_isZombie && _unit_side == GRLIB_side_civilian || _isPrisoner) exitWith {
 					stats_civilians_killed = stats_civilians_killed + 1;
 					if (isPlayer _killer) then {
-						if (GRLIB_civ_penalties > 0) then {
-							private _penalty = GRLIB_civ_penalties;
-							private _score = [_killer] call F_getScore;
-							if (_score < GRLIB_perm_inf) then { _penalty = GRLIB_civ_penalties/2};
-							if (_score > GRLIB_perm_inf) then { _penalty = GRLIB_civ_penalties*1 };
-							if (_score > GRLIB_perm_tank) then { _penalty = GRLIB_civ_penalties*2 };
-							if (_score > GRLIB_perm_air) then { _penalty = GRLIB_civ_penalties*3 };
-							if (_score > GRLIB_perm_max) then { _penalty = GRLIB_civ_penalties*4 };
-							if (_indirect_kill) then { _penalty = GRLIB_civ_penalties };
-							if (_killer getVariable ["GREUH_reput_count", 0] == -100) then {
-								_penalty = 100;
-								_msg = format ["Player %1, -%2 score penalty! you kill too many civilians!", name _killer, _penalty];
-								[gamelogic, _msg] remoteExec ["globalChat", owner _killer];
-							};
-							[_killer, -_penalty] call F_addScore;
-							[_killer, -5] call F_addReput;
-							[name _unit, _penalty, _killer] remoteExec ["remote_call_civ_penalty", 0];
-							combat_readiness = combat_readiness + (0.5 * GRLIB_difficulty_modifier);
-							stats_readiness_earned = stats_readiness_earned + (0.5 * GRLIB_difficulty_modifier);
-							if (combat_readiness > 100 && GRLIB_difficulty_modifier < 2) then { combat_readiness = 100 };
-						};
 						stats_civilians_killed_by_players = stats_civilians_killed_by_players + 1;
-					};
-
-					if (_killer_side == GRLIB_side_friendly && !isPlayer _killer) then {
-						_owner_id = (vehicle _killer) getVariable ["GRLIB_vehicle_owner", ""];
-						if (_owner_id in ["", "server"]) then {
-							_owner_id = (_killer getVariable ["PAR_Grp_ID", "0_0"]) splitString "_" select 1;
-						};
-						if (_owner_id != "0" && GRLIB_civ_penalties > 0) then {
-							_owner_player = _owner_id call BIS_fnc_getUnitByUID;
-							[_owner_player, -GRLIB_civ_penalties] call F_addScore;
-							[_owner_player, -1] call F_addReput;
-							_msg = format ["%1, Your AI killed a civilian !!", name _owner_player];
-							[gamelogic, _msg] remoteExec ["globalChat", 0];
-							[name _unit, GRLIB_civ_penalties, _owner_player] remoteExec ["remote_call_civ_penalty", 0];
-						};
 					};
 				};
 
@@ -184,7 +147,6 @@ if (isServer) then {
 				};
 				if (_unit_side == GRLIB_side_friendly) exitWith {
 					stats_blufor_teamkills = stats_blufor_teamkills + 1;
-					if (GRLIB_civ_penalties > 0) then { [_killer, -50] call F_addScore };
 					_msg = localize "STR_FRIENDLY_FIRE";
 					[gamelogic, _msg] remoteExec ["globalChat", 0];
 				};
@@ -234,14 +196,6 @@ if (isServer) then {
         private _hostileVehicle = (_unit getVariable ["GRLIB_vehicle_reward",false]) || {_unit_class in all_hostile_classnames};
 
 		if (!isNull _rewardPlayer) then {
-			_owner_id = getPlayerUID _rewardPlayer;
-			if (!(_unit getVariable ["GRLIB_vehicle_owner", ""] in ["", "public", "server", _owner_id])) then {
-				_penalty = 50;
-				_msg = format ["Penalty of %1 to %2 for killing a Friendly vehicle !!", _penalty, name _rewardPlayer];
-				[gamelogic, _msg] remoteExec ["globalChat", 0];
-				[_rewardPlayer, -_penalty] call F_addScore;
-			};
-
 			if (_hostileVehicle) then {
 				_bounty = [_unit] call F_getBounty;
 				if (((_bounty select 0) + (_bounty select 1)) > 0) then {
