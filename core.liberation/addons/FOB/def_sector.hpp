@@ -1,6 +1,6 @@
 class Sector_Defense {
   	idd = 2310;
-    onLoad = "_this call compile preprocessFileLineNumbers 'scripts/client/misc/HPC_scaleDialog.sqf';";
+    onLoad = "_this call compile preprocessFileLineNumbers 'scripts\client\misc\HPC_scaleDialog.sqf';";
 	name = "Sector_Defense";
 	movingEnable = false;
 	enableSimulation = true;

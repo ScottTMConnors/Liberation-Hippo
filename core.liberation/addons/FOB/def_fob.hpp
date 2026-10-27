@@ -1,6 +1,6 @@
 class FOB_Defense {
   	idd = 2309;
-    onLoad = "_this call compile preprocessFileLineNumbers 'scripts/client/misc/HPC_scaleDialog.sqf';";
+    onLoad = "_this call compile preprocessFileLineNumbers 'scripts\client\misc\HPC_scaleDialog.sqf';";
 	name = "FOB_Defense";
 	movingEnable = false;
 	enableSimulation = true;

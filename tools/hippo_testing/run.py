@@ -33,6 +33,49 @@ def classify_errors(content):
 
 def sha(path): return hashlib.sha256(path.read_bytes()).hexdigest()
 
+class SteamChild:
+    """Track the isolated game process created asynchronously by Steam."""
+    def __init__(self, pid):
+        import ctypes
+        self.pid=pid
+        self.kernel=ctypes.WinDLL('kernel32',use_last_error=True)
+        self.kernel.OpenProcess.restype=ctypes.c_void_p
+        self.kernel.OpenProcess.argtypes=[ctypes.c_uint32,ctypes.c_int,ctypes.c_uint32]
+        self.kernel.GetExitCodeProcess.argtypes=[ctypes.c_void_p,ctypes.POINTER(ctypes.c_uint32)]
+        self.kernel.TerminateProcess.argtypes=[ctypes.c_void_p,ctypes.c_uint32]
+        self.handle=self.kernel.OpenProcess(0x100001 | 0x1000,False,pid)
+        if not self.handle: raise ctypes.WinError(ctypes.get_last_error())
+    def poll(self):
+        import ctypes
+        code=ctypes.c_uint32()
+        if not self.kernel.GetExitCodeProcess(self.handle,ctypes.byref(code)): raise ctypes.WinError(ctypes.get_last_error())
+        return None if code.value == 259 else code.value
+    def wait(self,timeout=None):
+        end=None if timeout is None else time.monotonic()+timeout
+        while self.poll() is None:
+            if end is not None and time.monotonic()>=end: raise subprocess.TimeoutExpired('steam-launched Arma',timeout)
+            time.sleep(0.1)
+        return self.poll()
+    def terminate(self):
+        if self.poll() is None: self.kernel.TerminateProcess(self.handle,1)
+    kill=terminate
+
+def launch_steam_client(game,cmd,profile):
+    steam=game.parent.parent.parent/'steam.exe'
+    subprocess.Popen([str(steam),'-applaunch','107410','-noLauncher']+cmd[1:],cwd=game,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+    deadline=time.monotonic()+90
+    query="Get-CimInstance Win32_Process -Filter \"Name='arma3_x64.exe'\" | Select-Object ProcessId,CommandLine | ConvertTo-Json -Compress"
+    while time.monotonic()<deadline:
+        result=subprocess.run(['powershell.exe','-NoProfile','-Command',query],capture_output=True,text=True,creationflags=subprocess.CREATE_NO_WINDOW)
+        if result.returncode==0 and result.stdout.strip():
+            processes=json.loads(result.stdout)
+            if isinstance(processes,dict): processes=[processes]
+            found=[p for p in processes if str(profile).lower() in (p.get('CommandLine') or '').lower()]
+            if len(found)==1: return SteamChild(found[0]['ProcessId'])
+            if len(found)>1: raise RuntimeError('Multiple clients share the isolated profile')
+        time.sleep(1)
+    raise RuntimeError('Steam did not start the isolated Arma client')
+
 def main():
     global GAME
     ap = argparse.ArgumentParser()
@@ -42,6 +85,7 @@ def main():
     ap.add_argument('--timeout', type=int, default=150)
     ap.add_argument('--baseline', action='store_true')
     ap.add_argument('--clients', type=int, choices=[0,1,2], default=0)
+    ap.add_argument('--steam-launch', action='store_true', help='Launch the isolated rendering client through Steam.')
     ap.add_argument('--targeted', action='store_true', help='Test fortification action and coastal placement in a disposable mission.')
     ap.add_argument('--visual', action='store_true', help='Run isolated civilian and commander visual fixture (requires one client).')
     ap.add_argument('--movement', action='store_true', help='Measure ambient pedestrian movement and garrison occupancy on the server.')
@@ -58,6 +102,7 @@ def main():
     ap.add_argument('--missing-faction',choices=['settings','campaign'])
     args = ap.parse_args()
     GAME=args.game_directory
+    if args.steam_launch and args.clients != 1: ap.error("--steam-launch requires --clients 1")
     if args.targeted and args.clients != 1: ap.error("--targeted requires --clients 1")
     if args.visual and args.clients != 1: ap.error("--visual requires --clients 1")
     if args.attribution and args.headless != 2: ap.error("--attribution requires --headless 2")
@@ -178,7 +223,7 @@ addMissionEventHandler ["MPEnded",{
             cases.append('compaction.leaves')
             shutil.copy2(ROOT/'tools/hippo_testing/compact.sqf',tests/'compact.sqf')
             p=tests/'run.sqf'
-            p.write_text(p.read_text(encoding='utf-8').replace('["settings.defaults",', '[] call compile preprocessFileLineNumbers "hippo_tests\\compact.sqf";\n["settings.defaults",').replace('18 + (if (HPC_testScenario)', '19 + (if (HPC_testScenario)'),encoding='utf-8')
+            p.write_text(p.read_text(encoding='utf-8').replace('["settings.defaults",', '[] call compile preprocessFileLineNumbers "hippo_tests\\compact.sqf";\n["settings.defaults",').replace(('21' if args.targeted else '18') + ' + (if (HPC_testScenario)', ('22' if args.targeted else '19') + ' + (if (HPC_testScenario)'),encoding='utf-8')
         # Include all delivered SQF in the native syntax check.
         scripts=sorted(p.relative_to(stage).as_posix().replace('/','\\') for p in stage.rglob('*.sqf') if 'hippo_tests' not in p.parts)
         p=stage/'initServer.sqf'
@@ -275,7 +320,7 @@ addMissionEventHandler ["MPEnded",{
             if client_mods: cmd.append('-mod='+';'.join(client_mods))
             # A rendering client needs a normal initial window for DX11 setup;
             # forcing a minimized startup can fail before mission entry.
-            child=subprocess.Popen(cmd,cwd=GAME,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+            child=launch_steam_client(GAME,cmd,folder) if args.steam_launch else subprocess.Popen(cmd,cwd=GAME,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
             clients[role]=(child,folder,pipe_name)
             startup_deadline=time.monotonic()+45
             while time.monotonic()<startup_deadline and child.poll() is None:

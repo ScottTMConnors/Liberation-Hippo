@@ -1,6 +1,6 @@
 class Traders_Shop {
   	idd = 2304;
-    onLoad = "_this call compile preprocessFileLineNumbers 'scripts/client/misc/HPC_scaleDialog.sqf';";
+    onLoad = "_this call compile preprocessFileLineNumbers 'scripts\client\misc\HPC_scaleDialog.sqf';";
 	name = "Traders_Shop";
 	movingEnable = false;
 	enableSimulation = true;

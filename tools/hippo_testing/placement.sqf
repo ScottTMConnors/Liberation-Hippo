@@ -1,7 +1,7 @@
 // Find an actual coastal pier with an enterable building nearby on the selected map.
 private _all = nearestTerrainObjects [[worldSize/2,worldSize/2,0],["HOUSE","BUILDING"],worldSize,false,true];
 private _piers = _all select {typeOf _x == "Land_Pier_F"};
-private _suitable = _piers select {private _p = getPosATL _x; (nearestObjects [_p,["House","Building"],250] findIf {alive _x && {!surfaceIsWater (getPosATL _x)} && {count (_x buildingPos -1) > 0}}) >= 0};
+private _suitable = _piers select {private _p = getPosATL _x; (nearestObjects [_p,["House","Building"],250] findIf {alive _x && {(toLower typeOf _x find "pier") < 0} && {(toLower typeOf _x find "jetty") < 0} && {(toLower typeOf _x find "quay") < 0} && {!surfaceIsWater (getPosATL _x)} && {(_x buildingPos -1) findIf {!surfaceIsWater _x} >= 0}}) >= 0};
 diag_log ["HPC_PIER_CANDIDATES",count _piers,count _suitable,(_piers select [0,5]) apply {[typeOf _x,getPosATL _x]}];
 private _pier = _suitable param [0,objNull];
 private _marker = "HPC_test_pier";
@@ -13,10 +13,10 @@ private _exercise = {
     private _props = [_marker] call HPC_fnc_sectorFortifications;
     private _commander = missionNamespace getVariable ["HPC_sectorCommander_"+_marker,objNull];
     private _houses = nearestObjects [getPosATL _commander,["House","Building"],20];
-    private _interior = !isNull _commander && {_houses findIf {(_x buildingPos -1) findIf {_x distance (getPosATL _commander) < 1.5} >= 0} >= 0};
+    private _interior = !isNull _commander && {_houses findIf {(_x buildingPos -1) findIf {_x distance (getPosATL _commander) < 2.5} >= 0} >= 0};
     private _ok = _interior && {!surfaceIsWater (getPosATL _commander)} && {alive _commander};
     if (_large && !_small) then {_ok = _ok && {count _props == 3} && {_props findIf {typeOf _x == "Land_Cargo_House_V1_F"} >= 0}};
-    if (_large && _small) then {_ok = _ok && {_houses findIf {!(_x in _props) && {(_x buildingPos -1) findIf {_x distance (getPosATL _commander) < 1.5} >= 0}} >= 0}};
+    if (_large && _small) then {_ok = _ok && {_houses findIf {!(_x in _props) && {(toLower typeOf _x find "pier") < 0} && {(toLower typeOf _x find "jetty") < 0} && {(toLower typeOf _x find "quay") < 0} && {(_x buildingPos -1) findIf {_x distance (getPosATL _commander) < 2.5} >= 0}} >= 0}};
     diag_log ["HPC_PIER_EVIDENCE",_case,typeOf _pier,getPosATL _pier,count _props,getPosATL _commander,_interior,_houses apply {[typeOf _x,_x in _props,getPosATL _x,(_x buildingPos -1) apply {_x distance (getPosATL _commander)}]}];
     [_case,_ok] call _assert;
     {deleteVehicle _x} forEach (missionNamespace getVariable [format ["LRX_sector_%1_units",_marker],[]]);

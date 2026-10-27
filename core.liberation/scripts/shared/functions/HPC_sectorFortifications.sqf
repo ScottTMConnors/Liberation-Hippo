@@ -54,7 +54,10 @@ if !(_compound isEqualTo []) then {
 } else {
     // Dense towns and steep terrain may have no room for a template. Use an
     // existing enterable building and add a few separate defensive structures.
-    private _houses = nearestObjects [_center,["House","Building"],250] select {alive _x && {!surfaceIsWater (getPosATL _x)} && {count (_x buildingPos -1) > 0}};
+    private _houses = nearestObjects [_center,["House","Building"],250] select {
+        private _class = toLower typeOf _x;
+        alive _x && {(_class find "pier") < 0} && {(_class find "jetty") < 0} && {(_class find "quay") < 0} && {!surfaceIsWater (getPosATL _x)} && {(_x buildingPos -1) findIf {!surfaceIsWater _x} >= 0}
+    };
     if !(_houses isEqualTo []) then {_hq = selectRandom _houses; _compound = getPosATL _hq} else {_compound = _center};
     {
         private _pos = [];
@@ -80,7 +83,10 @@ missionNamespace setVariable [_key,_props];
 if (_garrison) then {
     if (isNull _hq) exitWith { diag_log format ["HPC: no suitable commander building for %1",_sector] };
     private _post = _compound;
-    if (!isNull _hq && {count (_hq buildingPos -1) > 0}) then {_post = selectRandom (_hq buildingPos -1)};
+    if (!isNull _hq) then {
+        private _positions = (_hq buildingPos -1) select {!surfaceIsWater _x};
+        if !(_positions isEqualTo []) then {_post = selectRandom _positions};
+    };
     private _pool = opfor_infantry select {isClass (configFile >> "CfgVehicles" >> _x)};
     if (_pool isEqualTo []) then {_pool = ["O_Soldier_F"]};
     private _officer = if (isClass (configFile >> "CfgVehicles" >> opfor_officer)) then {opfor_officer} else {_pool select 0};
