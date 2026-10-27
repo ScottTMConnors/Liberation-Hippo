@@ -1,5 +1,16 @@
 // A real sector lifecycle plus bounded autonomous-force workload on the selected map.
 private _base = markerPos "base_chimera";
+// Some maps place Chimera close to the sea. An inland FOB is required by the warfare
+// fixture, so anchor the test to the nearest town on land on those maps.
+private _nearWater = surfaceIsWater _base || {[0,45,90,135,180,225,270,315] findIf {surfaceIsWater (_base getPos [1500,_x])} >= 0};
+if (_nearWater) then {
+    private _towns = nearestLocations [_base,["NameCityCapital","NameCity","NameVillage"],15000];
+    private _landTown = _towns findIf {
+        private _townPos = locationPosition _x;
+        !surfaceIsWater _townPos && {[0,45,90,135,180,225,270,315] findIf {surfaceIsWater (_townPos getPos [1500,_x])} < 0}
+    };
+    if (_landTown >= 0) then {_base = locationPosition (_towns select _landTown)};
+};
 private _position = [_base, 8, 0, 250] call F_findSafePlace;
 private _fobsBefore = +GRLIB_all_fobs;
 private _sectorChoices = sectors_tower apply {[(markerPos _x) distance2D _base, _x]};

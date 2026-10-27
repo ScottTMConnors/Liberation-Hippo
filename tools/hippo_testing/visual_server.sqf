@@ -1,0 +1,21 @@
+waitUntil {sleep 1; missionNamespace getVariable ["HPC_visualServerReady",false] && {count (allPlayers - entities "HeadlessClient_F") > 0}};
+private _player = (allPlayers - entities "HeadlessClient_F") select 0;
+private _home = markerPos (sectors_bigtown select 0);
+HPC_visualTown = _home; publicVariable "HPC_visualTown";
+waitUntil {sleep 1; _player distance2D _home < 500};
+GRLIB_civilian_activity = 2;
+for "_i" from 1 to 4 do {[[[_home,24]],[_player]] call HPC_fnc_civilianTick; sleep 1};
+private _civs = HPC_ambientCivilians select {alive _x && {_x distance2D _home < 350}};
+HPC_visualCivilians = _civs; publicVariable "HPC_visualCivilians";
+private _before = _civs apply {getPosATL _x};
+sleep 45;
+private _distances = [];
+{_distances pushBack (_x distance2D (_before select _forEachIndex))} forEach _civs;
+HPC_visualDistances = _distances; publicVariable "HPC_visualDistances";
+diag_log ["HPC_VISUAL_CIVILIAN_DISTANCES",_distances];
+private _sector = sectors_military select 0;
+[_sector] call HPC_fnc_sectorFortifications;
+HPC_visualCommander = missionNamespace getVariable ["HPC_sectorCommander_"+_sector,objNull]; publicVariable "HPC_visualCommander";
+HPC_visualProps = missionNamespace getVariable ["HPC_sectorProps_"+_sector,[]]; publicVariable "HPC_visualProps";
+
+HPC_visualSector = _sector; publicVariable "HPC_visualSector";

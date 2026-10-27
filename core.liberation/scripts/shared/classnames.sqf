@@ -142,8 +142,8 @@ if (GRLIB_mod_civ in [0,2]) then {
 	civilian_vehicles = civilian_vehicles arrayIntersect civilian_vehicles;
 };
 if (!_ret) exitWith { abort_loading = true };
-if (count civilians == 0) then { civilians = "C_man_1" };
-if (count civilian_vehicles == 0) then { civilian_vehicles = "C_SUV_01_F" };
+if (count civilians == 0) then { civilians = ["C_man_1"] };
+if (count civilian_vehicles == 0) then { civilian_vehicles = ["C_SUV_01_F"] };
 
 // *** INDEPENDENT ***
 

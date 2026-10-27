@@ -42,6 +42,8 @@ def main():
     ap.add_argument('--timeout', type=int, default=150)
     ap.add_argument('--baseline', action='store_true')
     ap.add_argument('--clients', type=int, choices=[0,1,2], default=0)
+    ap.add_argument('--visual', action='store_true', help='Run isolated civilian and commander visual fixture (requires one client).')
+    ap.add_argument('--movement', action='store_true', help='Measure ambient pedestrian movement and garrison occupancy on the server.')
     ap.add_argument('--attribution',action='store_true')
     ap.add_argument('--headless', type=int, choices=[0,2], default=0)
     ap.add_argument('--hc-binary',choices=['server','client'],default='server')
@@ -55,6 +57,7 @@ def main():
     ap.add_argument('--missing-faction',choices=['settings','campaign'])
     args = ap.parse_args()
     GAME=args.game_directory
+    if args.visual and args.clients != 1: ap.error("--visual requires --clients 1")
     if args.attribution and args.headless != 2: ap.error("--attribution requires --headless 2")
     if args.scenario and args.commander:
         ap.error('Run --scenario and --commander separately: scenario cleanup stops the warfare managers needed by commander checks.')
@@ -75,6 +78,7 @@ def main():
     (stage/'build_info.sqf').write_text(f'GRLIB_build_date="{run_id}"; GRLIB_build_time="test"; GRLIB_build_version="{tag}-hippo-test";\n')
     tests=stage/'hippo_tests'; tests.mkdir()
     cases=['engine.compile','startup.server','telemetry.ownership','civilians.ambient','civilians.traffic','sector.fortifications','settings.defaults','factions.available','settings.english','skills.toggle','damage.civilian','catalog.classification','catalog.order','catalog.unlockFilter','objects.simple','cargo.restore','vehicles.emptyPools','warfare.armedPool']
+    if args.movement: cases+=['civilians.displacement','outpost.commanderInterior','outpost.defenders']
     if args.scenario: cases+=['warfare.spawn','sector.commanderGate','sector.capture','warfare.cleanup']
     if args.commander: cases+=['commander.emptyRoster','commander.townLoaded','commander.progress','warfare.enemyFOB']
     if args.headless: cases+=['hc.connected','hc.legacy','hc.warfare','hc.balanced','hc.weighted','hc.playerSafe','hc.orders','hc.recovered','hc.rejoined','hc.serverFallback','hc.cleanup']
@@ -95,6 +99,10 @@ def main():
         shutil.copy2(ROOT/'tools/hippo_testing/hc_client.sqf',tests/'hc_client.sqf')
         p=stage/'init.sqf'
         p.write_text(p.read_text(encoding='utf-8-sig')+'\nif (!hasInterface && !isServer) then {[] execVM "hippo_tests\\hc_client.sqf"};\n',encoding='utf-8')
+    if args.movement:
+        shutil.copy2(ROOT/'tools/hippo_testing/movement.sqf',tests/'movement.sqf')
+        p=tests/'run.sqf'
+        p.write_text(p.read_text(encoding='utf-8').replace('[format [\"RUN_DONE|%1\",', 'call compile preprocessFileLineNumbers \"hippo_tests\\movement.sqf\";\n[format [\"RUN_DONE|%1\",').replace('18 + (if (HPC_testScenario)', '21 + (if (HPC_testScenario)'),encoding='utf-8')
     if args.scenario: shutil.copy2(ROOT/'tools/hippo_testing/scenario.sqf',tests/'scenario.sqf')
     if args.commander: shutil.copy2(ROOT/'tools/hippo_testing/commander.sqf',tests/'commander.sqf')
     changed = subprocess.check_output(['git','-c','core.safecrlf=false','-c','core.autocrlf=false','diff','--name-only','upstream/master'], cwd=ROOT,stderr=subprocess.DEVNULL).decode().splitlines()
@@ -135,7 +143,11 @@ addMissionEventHandler ["MPEnded",{
         (stage/'initServer.sqf').write_text(f'HPC_testRun="{run_id}"; [] execVM "hippo_tests\\missing_faction.sqf";')
         shutil.copy2(ROOT/'tools/hippo_testing/missing_faction.sqf',tests/'missing_faction.sqf')
     if args.clients:
-        shutil.copy2(ROOT/'tools/hippo_testing/client.sqf',tests/'client.sqf')
+        shutil.copy2(ROOT/('tools/hippo_testing/visual_client.sqf' if args.visual else 'tools/hippo_testing/client.sqf'),tests/'client.sqf')
+        if args.visual:
+            shutil.copy2(ROOT/'tools/hippo_testing/visual_server.sqf',tests/'visual_server.sqf')
+            with (tests/'run.sqf').open('a', encoding='utf-8') as f: f.write('\nHPC_visualServerReady = true; publicVariable \"HPC_visualServerReady\";\n')
+            with (stage/'initServer.sqf').open('a', encoding='utf-8') as f: f.write('\n[] execVM \"hippo_tests\\visual_server.sqf\";\n')
         (stage/'initPlayerLocal.sqf').write_text(f'HPC_testRun="{run_id}"; [] execVM "hippo_tests\\client.sqf";\n',encoding='utf-8')
     compaction=None
     if args.compact:
@@ -184,6 +196,7 @@ addMissionEventHandler ["MPEnded",{
         if path.is_file(): source_hash.update(str(path.relative_to(source_root)).encode()); source_hash.update(bytes.fromhex(sha(path)))
     roles=['server']+[f'client{i+1}' for i in range(args.clients)]+((['hc1','hc2'] if args.attribution else ['hc1','hc2','hc1_rejoin']) if args.headless else [])
     client_cases=['startup.client','player.abilities','catalog.filters','catalog.empty','purchase.filtered','reward.owner','services.cooldown','revive.manual','catalog.groups','catalog.singleType','catalog.rankVisible','catalog.toggle','catalog.tools']
+    if args.visual: client_cases=['startup.client','visual.civilianMovement','visual.commanderPost']
     manifest={'run_id':run_id,'map':args.map,'source_head':subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT).decode().strip(),'source_sha256':source_hash.hexdigest(),'baseline':args.baseline,'variant':args.variant,'control':args.control,'cases':cases,'client_cases':client_cases,'scripts':scripts,'package_sha256':sha(pbo),'argv':argv,'roles':roles,'port':port}
     (out/'manifest.json').write_text(json.dumps(manifest,indent=2),encoding='utf-8')
     if compaction:

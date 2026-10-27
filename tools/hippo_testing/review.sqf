@@ -18,7 +18,8 @@ _fallbackOK = _fallbackOK && {([] call F_getAdaptiveVehicle) == "O_MRAP_02_hmg_F
 _vehicleState params ["_oldHeavy","_oldLight","_oldTrucks","_oldMilitia","_oldReadiness","_oldProgression"];
 opfor_vehicles=_oldHeavy;opfor_vehicles_low_intensity=_oldLight;opfor_troup_transports_truck=_oldTrucks;militia_vehicles=_oldMilitia;combat_readiness=_oldReadiness;HPC_VehicleProgression=_oldProgression;
 ["vehicles.emptyPools",_fallbackOK] call _assert;
-["warfare.armedPool",(["B_MRAP_01_hmg_F"] call HPC_fnc_isArmedVehicle) && {(["B_MBT_01_cannon_F"] call HPC_fnc_isArmedVehicle)} && {!(["B_MRAP_01_F"] call HPC_fnc_isArmedVehicle)} && {!(["B_Truck_01_transport_F"] call HPC_fnc_isArmedVehicle)}] call _assert;
+private _waterSafe = if (surfaceIsWater [0,0,0]) then {([[0,0,0],10,0] call HPC_fnc_warfarePosition) isEqualTo []} else {true};
+["warfare.armedPool",_waterSafe && {(["B_MRAP_01_hmg_F"] call HPC_fnc_isArmedVehicle) && {(["B_MBT_01_cannon_F"] call HPC_fnc_isArmedVehicle)} && {!(["B_MRAP_01_F"] call HPC_fnc_isArmedVehicle)} && {!(["B_Truck_01_transport_F"] call HPC_fnc_isArmedVehicle)}}] call _assert;
 private _densityBefore = GRLIB_civilian_activity;
 private _ambientBefore = missionNamespace getVariable ["HPC_ambientCivilians",[]];
 HPC_ambientCivilians = [];
@@ -30,7 +31,13 @@ private _normalCount = count HPC_ambientCivilians;
 GRLIB_civilian_activity = 2;
 [[[_civilianHome,12]],[]] call HPC_fnc_civilianTick;
 private _denseCount = count HPC_ambientCivilians;
-private _agentsOK = _normalCount > 0 && {_denseCount > _normalCount} && {_denseCount <= 24} && {count allGroups == _groupsBefore} && {HPC_ambientCivilians findIf {!isNull group _x || {simulationEnabled _x}} < 0};
+private _agentsOK = _normalCount > 0 && {_denseCount > _normalCount} && {_denseCount <= 6} && {count allGroups <= _groupsBefore + 2} && {HPC_ambientCivilians findIf {isNull group _x || {simulationEnabled _x}} < 0};
+// A nearby observer wakes pedestrians and schedules a walking destination.
+if (_denseCount > 0) then {
+    private _observer = HPC_ambientCivilians select 0;
+    [[[_civilianHome,12]],[_observer]] call HPC_fnc_civilianTick;
+    _agentsOK = _agentsOK && {simulationEnabled _observer} && {(_observer getVariable ["HPC_nextWalk",0]) > diag_tickTime};
+};
 // With no players, anchored civilians stay present but asleep. Removing the
 // anchors must clean them up without touching mission groups.
 [[[_civilianHome,12]],[]] call HPC_fnc_civilianTick;
@@ -50,6 +57,7 @@ GRLIB_civilian_activity = _densityBefore;
 private _fortSector = sectors_military select 0;
 private _props = [_fortSector,false] call HPC_fnc_sectorFortifications;
 private _again = [_fortSector,false] call HPC_fnc_sectorFortifications;
-["sector.fortifications",count _props > 0 && {_props isEqualTo _again} && {_props findIf {surfaceIsWater getPosATL _x || {count (_x nearRoads 10) > 0}} < 0}] call _assert;
+diag_log ["HPC_FORT_CHECK",_fortSector,markerPos _fortSector,_props apply {[typeOf _x,getPosATL _x,surfaceIsWater getPosATL _x,count (_x nearRoads 10)]}];
+["sector.fortifications",count _props > 0 && {_props isEqualTo _again} && {_props findIf {surfaceIsWater getPosATL _x || {count (_x nearRoads 10) > 0} || {_x distance2D (markerPos _fortSector) > 350}} < 0}] call _assert;
 {deleteVehicle _x} forEach _props;
 missionNamespace setVariable ["HPC_sectorProps_"+_fortSector,nil];

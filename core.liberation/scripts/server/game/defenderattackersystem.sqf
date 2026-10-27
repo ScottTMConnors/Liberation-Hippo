@@ -16,6 +16,8 @@ HPC_fnc_warfareDelete = {
 HPC_fnc_warfarePosition = {
     params ["_center", ["_size", 3], ["_radius", 100]];
     private _guess = _center getPos [_radius * sqrt random 1, random 360];
+    if (surfaceIsWater _guess) then {_guess = _center};
+    if (surfaceIsWater _guess) exitWith {[]};
     [_guess, _size, 0, 200] call F_findSafePlace
 };
 HPC_fnc_warfareInfantry = {

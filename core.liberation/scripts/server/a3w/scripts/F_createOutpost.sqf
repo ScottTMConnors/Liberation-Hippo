@@ -86,18 +86,19 @@ private _nb_player = count (AllPlayers - (entities "HeadlessClient_F"));
 
 if (_enable_defenders) then {
     // Static Defenders
-    private _classname = _defenders_to_build apply { _x select 0 };
+    private _selected_defenders = +_defenders_to_build;
     if (_nb_player <= 2) then {
-        _classname = (_classname call BIS_fnc_arrayShuffle) select [0, 12 min (count _classname)];
+        _selected_defenders = (_selected_defenders call BIS_fnc_arrayShuffle) select [0, 12 min (count _selected_defenders)];
     };
+    private _classname = _selected_defenders apply { _x select 0 };
     _grp_defenders = [_base_position, _classname, GRLIB_side_enemy, "building", true] call F_libSpawnUnits;
     {
         _unit = _x;
-        _nextentry = _defenders_to_build select _forEachIndex;
+        _nextentry = _selected_defenders select _forEachIndex;
         _nextpos = _nextentry select 1;
         _nextpos = [((_base_position select 0) + (_nextpos select 0)),((_base_position select 1) + (_nextpos select 1)),(_nextpos select 2)];
         _nextdir = _nextentry select 2;
-        _nextobject setDir _nextdir;
+        _unit setDir _nextdir;
         _unit setPos _nextpos;
         [_unit, true] spawn building_defence_ai;
         sleep 0.1;
