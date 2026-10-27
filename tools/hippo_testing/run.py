@@ -117,7 +117,13 @@ def main():
         shutil.copy2(ROOT/'tools/hippo_testing/movement.sqf',tests/'movement.sqf')
         p=tests/'run.sqf'
         p.write_text(p.read_text(encoding='utf-8').replace('[format [\"RUN_DONE|%1\",', 'call compile preprocessFileLineNumbers \"hippo_tests\\movement.sqf\";\n[format [\"RUN_DONE|%1\",').replace('18 + (if (HPC_testScenario)', '21 + (if (HPC_testScenario)'),encoding='utf-8')
-    if args.scenario: shutil.copy2(ROOT/'tools/hippo_testing/scenario.sqf',tests/'scenario.sqf')
+    if args.scenario:
+        shutil.copy2(ROOT/'tools/hippo_testing/scenario.sqf',tests/'scenario.sqf')
+        p=stage/'scripts/server/game/defenderattackersystem.sqf'
+        code=p.read_text(encoding='utf-8')
+        needle='_vehicle setVariable ["HPC_warfare", true, true];'
+        if code.count(needle) != 1: raise RuntimeError('Warfare slot instrumentation target changed')
+        p.write_text(code.replace(needle,needle+'\n            _vehicle setVariable ["HPC_testWarfareSlot", [_heavy,_number]];'),encoding='utf-8')
     if args.commander: shutil.copy2(ROOT/'tools/hippo_testing/commander.sqf',tests/'commander.sqf')
     changed = subprocess.check_output(['git','-c','core.safecrlf=false','-c','core.autocrlf=false','diff','--name-only','upstream/master'], cwd=ROOT,stderr=subprocess.DEVNULL).decode().splitlines()
     changed += subprocess.check_output(['git','ls-files','--others','--exclude-standard','core.liberation'],cwd=ROOT).decode().splitlines()

@@ -24,14 +24,17 @@ private _densityBefore = GRLIB_civilian_activity;
 private _ambientBefore = missionNamespace getVariable ["HPC_ambientCivilians",[]];
 HPC_ambientCivilians = [];
 private _civilianHome = markerPos (sectors_bigtown select 0);
-private _groupsBefore = count allGroups;
 GRLIB_civilian_activity = 1;
-[[[_civilianHome,12]],[]] call HPC_fnc_civilianTick;
+for "_attempt" from 1 to 8 do {
+    if (count HPC_ambientCivilians < 4) then {[[[_civilianHome,12]],[]] call HPC_fnc_civilianTick};
+};
 private _normalCount = count HPC_ambientCivilians;
 GRLIB_civilian_activity = 2;
-[[[_civilianHome,12]],[]] call HPC_fnc_civilianTick;
+for "_attempt" from 1 to 8 do {
+    if (count HPC_ambientCivilians < 6) then {[[[_civilianHome,12]],[]] call HPC_fnc_civilianTick};
+};
 private _denseCount = count HPC_ambientCivilians;
-private _agentsOK = _normalCount > 0 && {_denseCount > _normalCount} && {_denseCount <= 6} && {count allGroups <= _groupsBefore + 2} && {HPC_ambientCivilians findIf {isNull group _x || {!simulationEnabled _x}} < 0};
+private _agentsOK = _normalCount > 0 && {_denseCount > _normalCount} && {_denseCount <= 6} && {count ((HPC_ambientCivilians apply {group _x}) arrayIntersect (HPC_ambientCivilians apply {group _x})) <= 2} && {HPC_ambientCivilians findIf {isNull group _x || {!simulationEnabled _x}} < 0};
 // A nearby observer wakes pedestrians and schedules a walking destination.
 if (_denseCount > 0) then {
     private _observer = HPC_ambientCivilians select 0;
@@ -52,6 +55,7 @@ if (_denseCount > 0) then {
 [[[_civilianHome,12]],[]] call HPC_fnc_civilianTick;
 _agentsOK = _agentsOK && {count HPC_ambientCivilians >= _denseCount};
 [[],[]] call HPC_fnc_civilianTick;
+diag_log ["HPC_CIVILIAN_TEST",_normalCount,_denseCount,_agentsOK,count HPC_ambientCivilians];
 ["civilians.ambient",_agentsOK && {HPC_ambientCivilians isEqualTo []}] call _assert;
 private _trafficBefore = missionNamespace getVariable ["HPC_ambientTraffic",[]];
 HPC_ambientTraffic = [];

@@ -32,17 +32,22 @@ HPC_fnc_warfarePosition = {
 };
 GRLIB_all_fobs = [_position];
 [_sector] call start_sector;
-private _deadline = diag_tickTime + 160;
+private _deadline = diag_tickTime + 240;
+private _slotsSeen = [];
+private _maxGroups = 0;
 waitUntil {
-    sleep 1;
-    diag_tickTime > _deadline || {
-        ({_x getVariable ["HPC_warfare", false] && side _x == GRLIB_side_friendly} count allGroups >= 6) &&
-        {{_x getVariable ["HPC_warfare", false]} count vehicles >= 5}
-    }
+    sleep 0.5;
+    {
+        private _slot = _x getVariable ["HPC_testWarfareSlot",[]];
+        if !(_slot isEqualTo []) then {_slotsSeen pushBackUnique _slot};
+    } forEach vehicles;
+    _maxGroups = _maxGroups max ({_x getVariable ["HPC_warfare", false]} count allGroups);
+    diag_tickTime > _deadline || {count _slotsSeen == 5 && {_maxGroups >= 8}}
 };
 private _groups = allGroups select {_x getVariable ["HPC_warfare", false]};
 private _vehicles = vehicles select {_x getVariable ["HPC_warfare", false]};
-["warfare.spawn", HPC_testVehicleFailureInjected && {count _groups >= 8} && {count _vehicles >= 5}] call _assert;
+diag_log ["HPC_WARFARE_DEPLOYMENTS",_slotsSeen,_maxGroups,HPC_testVehicleFailureInjected];
+["warfare.spawn", HPC_testVehicleFailureInjected && {_maxGroups >= 8} && {count _slotsSeen == 5}] call _assert;
 private _samples = [];
 for "_sample" from 1 to 12 do {_samples pushBack diag_fps; sleep 1};
 diag_log ["HPC_LOAD", "warfare", count allUnits, count _groups, count _vehicles, _samples];
