@@ -205,7 +205,7 @@ class RscTitles
 		controls[] = { BGPicture,LabelScore,LabelAmmo,LabelManpower,LabelFuel,LabelCap,PictureAmmoShadow,PictureScoreShadow,PictureManpowerShadow,
 		BGPictureActiveSectors,PictureFuelShadow,PictureScore,PictureAmmo,PictureManpower,PictureFuel,PictureCap,PictureCombatReadinessShadow,
 		PictureCombatReadiness,PictureIntelShadow,PictureIntel,LabelIntel,BGPictureSector,CaptureFrame_OPFOR,CaptureFrame_BLUFOR,CaptureFrame,
-		LabelPoint,CommanderInfo,DetectionFrame,DetectionLevel,DetectionLabel,
+		LabelPoint,CommanderInfo,ObjectivePanel,DetectionFrame,DetectionLevel,DetectionLabel,
 		LabelCombatReadiness,CentralShadow,CentralLabel,ActiveSectors,AlertBGPicture,AlertLabel,AlertTimer };
 		class BGPicture {
 		idc = -1;
@@ -466,6 +466,20 @@ class RscTitles
 			h = 0.03 * safezoneH;
 			colorText[] = {0.7, 0, 0, 1};
 		};
+        class ObjectivePanel {
+            idc = 518;
+            type = CT_STRUCTURED_TEXT;
+            style = ST_LEFT;
+            x = 0.755 * safezoneW + safezoneX;
+            y = 0.61 * safezoneH + safezoneY;
+            w = 0.24 * safezoneW;
+            h = 0.25 * safezoneH;
+            colorBackground[] = {0.025,0.035,0.045,0.88};
+            text = "";
+            size = 0.026 * safezoneH;
+            shadow = 1;
+            class Attributes { font = "RobotoCondensed"; color = "#E9EEF0"; align = "left"; valign = "top"; };
+        };
 		class ActiveSectors
 		{
 			idc = 516;

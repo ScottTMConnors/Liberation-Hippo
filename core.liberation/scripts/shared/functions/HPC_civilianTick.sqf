@@ -17,7 +17,7 @@ private _kept = [];
     if (!isNull _unit && {alive _unit} && {_wanted || _near}) then {
         _kept pushBack _unit;
         if (_near != (_unit getVariable ["HPC_ambientAwake",true])) then {
-            _unit enableSimulationGlobal _near;
+            _unit enableSimulationGlobal true;
             _unit setVariable ["HPC_ambientAwake",_near];
         };
         if (_near && {diag_tickTime >= (_unit getVariable ["HPC_nextWalk",0])}) then {
@@ -26,7 +26,7 @@ private _kept = [];
             if (!surfaceIsWater _destination) then {_unit doMove _destination};
             _unit setVariable ["HPC_nextWalk",diag_tickTime+20+random 25];
         };
-    } else {if (!isNull _unit) then {deleteVehicle _unit}};
+    } else {if (!isNull _unit && {alive _unit}) then {deleteVehicle _unit}};
 } forEach _population;
 {
     _x params ["_home","_base"];
@@ -53,7 +53,7 @@ private _kept = [];
                 _unit disableAI "AUTOTARGET";
                 _unit disableAI "TARGET";
                 private _awake = _players findIf {_x distance2D _unit < 1200} >= 0;
-                _unit enableSimulationGlobal _awake;
+                _unit enableSimulationGlobal true;
                 _unit setVariable ["HPC_ambientAwake",_awake];
                 _kept pushBack _unit;
                 _budget = _budget-1;

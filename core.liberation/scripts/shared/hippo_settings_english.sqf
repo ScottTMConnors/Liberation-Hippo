@@ -91,7 +91,6 @@ private _wording = createHashMapFromArray [
 ["KickIdle", ["Idle-player timeout", "Time a player can remain idle before the mission removes them from the session. Requires a mission restart."]],
 ["TK_mode", ["Friendly-fire enforcement", "Legacy setting; friendly-fire enforcement is disabled."]],
 ["TK_count", ["Friendly-fire warning limit", "Number of team-kill warnings before the configured enforcement action applies. Requires a mission restart."]],
-["CommanderMode", ["Commander objective selection", "Select objectives through the commander or a vote instead of activating them by player proximity. AI Warfare is a separate option. Requires a mission restart."]],
 ["CommanderRadius", ["Nearby objective radius", "Distance in metres around the selected objective used when Battle Scope includes nearby sectors. Ignored in selected-objective-only mode. Requires a mission restart."]],
 ["CommVoteTimeout", ["Objective voting time", "Seconds players have to vote for the next commander objective, or prepare for automatic selection. Requires a mission restart."]],
 ["CommAutoStart", ["Automatic objective selection", "Begin the next voting or preparation window when no battle is active and eligible objectives are available. Requires a mission restart."]],

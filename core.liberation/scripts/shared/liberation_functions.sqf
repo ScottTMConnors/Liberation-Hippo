@@ -91,7 +91,6 @@ F_notice_ammo = compileFinal preprocessFileLineNumbers "scripts\shared\functions
 F_notice_bad = compileFinal preprocessFileLineNumbers "scripts\shared\functions\F_notice_bad.sqf";
 F_notice_good = compileFinal preprocessFileLineNumbers "scripts\shared\functions\F_notice_good.sqf";
 F_notice_hof = compileFinal preprocessFileLineNumbers "scripts\shared\functions\F_notice_hof.sqf";
-F_notice_news = compileFinal preprocessFileLineNumbers "scripts\shared\functions\F_notice_news.sqf";
 F_notice_weather = compileFinal preprocessFileLineNumbers "scripts\shared\functions\F_notice_weather.sqf";
 F_playSound = compileFinal preprocessFileLineNumbers "scripts\shared\functions\F_playSound.sqf";
 F_pay = compileFinal preprocessFileLineNumbers "scripts\shared\functions\F_pay.sqf";

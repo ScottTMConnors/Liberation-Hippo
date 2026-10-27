@@ -21,6 +21,17 @@ for "_attempt" from 1 to 80 do {
         };
     };
 };
+if (_compound isEqualTo []) then {
+    private _small = [["Land_Cargo_House_V1_F",[0,0,0],0],["Land_HBarrier_3_F",[0,8,0],0],["Land_HBarrier_3_F",[0,-8,0],0]];
+    for "_attempt" from 1 to 100 do {
+        if (_compound isEqualTo []) then {
+            private _candidate = _center getPos [20 + random 230, random 360];
+            if (!surfaceIsWater _candidate && {(surfaceNormal _candidate select 2) > 0.96} && {(_candidate nearRoads 16) isEqualTo []} && {(nearestObjects [_candidate,["House","Building","LandVehicle","Air"],16]) isEqualTo []} && {(nearestTerrainObjects [_candidate,["TREE","ROCK"],12]) isEqualTo []} && {(_small findIf {surfaceIsWater (_candidate vectorAdd (_x select 1))}) < 0}) then {
+                _compound = _candidate; _template set [1,_small];
+            };
+        };
+    };
+};
 private _props = [];
 private _hq = objNull;
 private _towers = [];
@@ -36,14 +47,14 @@ if !(_compound isEqualTo []) then {
             _object setVariable ["GRLIB_vehicle_init",true,true];
             _object setVariable ["R3F_LOG_disabled",true,true];
             _props pushBack _object;
-            if (_class == opfor_hq) then {_hq = _object};
+            if (_class == opfor_hq || {_class == "Land_Cargo_House_V1_F"}) then {_hq = _object};
             if (_class == opfor_patrol) then {_towers pushBack _object};
         };
     } forEach (_template select 1);
 } else {
     // Dense towns and steep terrain may have no room for a template. Use an
     // existing enterable building and add a few separate defensive structures.
-    private _houses = nearestObjects [_center,["House","Building"],250] select {count (_x buildingPos -1) > 0};
+    private _houses = nearestObjects [_center,["House","Building"],250] select {alive _x && {!surfaceIsWater (getPosATL _x)} && {count (_x buildingPos -1) > 0}};
     if !(_houses isEqualTo []) then {_hq = selectRandom _houses; _compound = getPosATL _hq} else {_compound = _center};
     {
         private _pos = [];
@@ -67,17 +78,17 @@ if !(_compound isEqualTo []) then {
 };
 missionNamespace setVariable [_key,_props];
 if (_garrison) then {
+    if (isNull _hq) exitWith { diag_log format ["HPC: no suitable commander building for %1",_sector] };
     private _post = _compound;
     if (!isNull _hq && {count (_hq buildingPos -1) > 0}) then {_post = selectRandom (_hq buildingPos -1)};
     private _pool = opfor_infantry select {isClass (configFile >> "CfgVehicles" >> _x)};
     if (_pool isEqualTo []) then {_pool = ["O_Soldier_F"]};
     private _officer = if (isClass (configFile >> "CfgVehicles" >> opfor_officer)) then {opfor_officer} else {_pool select 0};
-    private _guards = [_post,[_officer,selectRandom _pool,selectRandom _pool,selectRandom _pool],GRLIB_side_enemy,"infantry"] call F_libSpawnUnits;
-    private _commander = (units _guards) param [0,objNull];
+    private _commandGroup = [_post,[_officer],GRLIB_side_enemy,"building"] call F_libSpawnUnits;
+    private _commander = (units _commandGroup) param [0,objNull];
+    private _guards = [_post,[selectRandom _pool,selectRandom _pool,selectRandom _pool,selectRandom _pool],GRLIB_side_enemy,"infantry"] call F_libSpawnUnits;
     if (!isNull _commander) then {
         missionNamespace setVariable ["HPC_sectorCommanderDead_"+_sector,false,true];
-        private _commandGroup = createGroup [GRLIB_side_enemy,true];
-        if (!isNull _commandGroup) then {[_commander] joinSilent _commandGroup};
         _commander setPosATL _post;
         _commander disableAI "PATH";
         _commander setVariable ["GRLIB_in_building",!isNull _hq,true];
@@ -130,7 +141,15 @@ if (_garrison) then {
             };
         } forEach [90,270];
     };
-    [_guards,_post,45] spawn defence_ai;
+    [_guards,_post,18] spawn defence_ai;
+    private _nearHouses = nearestObjects [_compound,["House","Building"],100] select {alive _x && {count (_x buildingPos -1) > 0} && {_x != _hq} && {!(_x in _towers)}};
+    {
+        if (_forEachIndex < 6) then {
+            private _positions = _x buildingPos -1;
+            private _group = [_compound,[selectRandom _pool,selectRandom _pool],GRLIB_side_enemy,"building"] call F_libSpawnUnits;
+            { _x setPosATL (_positions select (_forEachIndex mod count _positions)); _extraUnits pushBack _x } forEach units _group;
+        };
+    } forEach _nearHouses;
     private _patrol = [_center,[selectRandom _pool,selectRandom _pool,selectRandom _pool,selectRandom _pool],GRLIB_side_enemy,"infantry"] call F_libSpawnUnits;
     [_patrol,_center,120] spawn defence_ai;
     private _tracked = missionNamespace getVariable [format ["LRX_sector_%1_units",_sector],[]];

@@ -12,6 +12,23 @@ waitUntil {
 private _ready = missionNamespace getVariable ["GRLIB_player_spawned",false];
 ["startup.client",_ready] call _assert;
 if (!_ready) exitWith {["RUN_DONE|0"] call _emit};
+// Exercise the actual HUD with two simultaneous, locally simulated objective states.
+_deadline = diag_tickTime + 90;
+waitUntil {sleep 0.5; diag_tickTime > _deadline || {!isNull (uiNamespace getVariable ["GUI_OVERLAY",displayNull])}};
+private _oldSectors = +active_sectors;
+private _hudSectors = sectors_capture select [0,2];
+if (count _hudSectors == 2) then {
+    active_sectors = _hudSectors;
+    missionNamespace setVariable ["HPC_sectorState_" + (_hudSectors select 0),["active",42,12,20,"Long objective name: La Trinite",500]];
+    missionNamespace setVariable ["HPC_sectorState_" + (_hudSectors select 1),["loading",75,-1,-1,"Second objective: coastal outpost",500]];
+    sleep 5;
+    private _display = uiNamespace getVariable ["GUI_OVERLAY",displayNull];
+    private _panel = if (isNull _display) then {controlNull} else {_display displayCtrl 518};
+    ["visual.objectivePanel",!isNull _panel && {ctrlShown _panel} && {(ctrlPosition _panel select 3) > 0.1 * safezoneH}] call _assert;
+    diag_log "HPC_VISUAL_PHASE|two-objective-panel";
+    sleep 35;
+    active_sectors = _oldSectors;
+} else {["visual.objectivePanel",false] call _assert};
 _deadline = diag_tickTime+60;
 waitUntil {sleep 0.5; diag_tickTime > _deadline || {!isNil "HPC_visualTown"}};
 if (isNil "HPC_visualTown") exitWith {["RUN_DONE|0"] call _emit};
@@ -55,4 +72,4 @@ if (!isNull _commander) then {
     player setDir (player getDir _commander);
     diag_log ["HPC_VISUAL_PHASE","compound",_pos,count _props];
 };
-["RUN_DONE|3"] call _emit;
+["RUN_DONE|4"] call _emit;

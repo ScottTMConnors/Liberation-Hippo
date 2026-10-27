@@ -62,13 +62,12 @@ if (build_action == 0) exitWith {};
 
 private _count_objects = count _objects_to_build;
 if (_count_objects == 0) exitWith {};
-if (!([parseNumber _defense_price] call F_pay)) exitWith {};
+if (!([parseNumber _defense_price, 0, true] call F_pay)) exitWith {};
 
 build_confirmed = 1;
 private _msg = format [localize "STR_FOB_BUILD_STATUS", name player, _defense_name, _count_objects, ([_fob_pos] call F_getFobName)];
 [gamelogic, _msg] remoteExec ["globalChat", 0];
-_msg = format [localize "STR_FOB_DEFENSE_TEMPLATE_INFO", _defense_name, _template_creator];
-[_msg] remoteExec ["hint", 0];
+[player, "Land_Carrier_01_blast_deflector_up_sound"] remoteExec ["sound_range_remote_call", 2];
 diag_log format ["--- LRX FOB Defense Template '%1' - %2 objects to build at FOB %3", _defense_name, _count_objects, ([_fob_pos] call F_getFobName)];
 
 // Build defense in FOB direction
@@ -76,10 +75,7 @@ private ["_nextclass", "_nextobject", "_nextpos", "_nextdir"];
 private _building_count = 0;
 _fob_pos set [2, 0];
 {
-    if (_forEachIndex % 20 == 0) then {
-        [player, "Land_Carrier_01_blast_deflector_up_sound"] remoteExec ["sound_range_remote_call", 2];
-        gamelogic globalChat format [localize "STR_FOB_CONSTRUCTION_IN_PROGRESS", (_count_objects - _forEachIndex)];
-    };
+
 	_nextclass = (_x select 0);
 	_nextpos = (_x select 1);
 	_nextdir = (_x select 2) + _fob_dir;
@@ -87,7 +83,7 @@ _fob_pos set [2, 0];
     if (_nextclass in fob_defenses_blacklist) then {
         _msg = format [localize "STR_FOB_DEFENSE_TEMPLATE_REJECTED", _defense_name, _nextclass];
         diag_log _msg;
-        if ([] call is_admin) then { gamelogic globalChat _msg };
+
     } else {
         _building_count = _building_count + 1;
         _nextobject = [_nextclass, _nextpos] call HPC_fnc_createBuilding;
@@ -100,11 +96,11 @@ _fob_pos set [2, 0];
             _nextobject setVectorDirAndUp [[-cos _nextdir, sin _nextdir, 0] vectorCrossProduct surfaceNormal _nextpos, surfaceNormal _nextpos];
         };
         all_fob_defense_classnames pushBackUnique _nextclass;
-        sleep 0.1;
+        if (_forEachIndex % 50 == 49) then { sleep 0.01 };
     };
 } foreach _objects_to_build;
 
-gamelogic globalChat format [localize "STR_FOB_CONSTRUCTION_COMPLETED", _building_count, _count_objects];
+[gamelogic, format [localize "STR_FOB_CONSTRUCTION_COMPLETED", _building_count, _count_objects]] remoteExec ["globalChat", 0];
 diag_log format ["--- LRX FOB Defense Construction Completed (%1/%2)", _building_count, _count_objects];
 sleep 1;
 build_confirmed = 0;

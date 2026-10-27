@@ -436,7 +436,8 @@ while {true} do {
     private _ratio = if (_startingCount == 0) then { if (_remaining == 0) then {0} else {100} } else {100 * _remaining / _startingCount};
     private _commander = missionNamespace getVariable ["HPC_sectorCommander_"+_sector,objNull];
     private _commanderAlive = alive _commander;
-    private _commanderDead = missionNamespace getVariable ["HPC_sectorCommanderDead_"+_sector,false];
+    private _commanderDead = (missionNamespace getVariable ["HPC_sectorCommanderDead_"+_sector,false]) || {!isNull _commander && {!alive _commander}};
+    if (_commanderDead) then { missionNamespace setVariable ["HPC_sectorCommanderDead_"+_sector,true,true] };
     if (_commanderAlive) then {("HPC_command_"+_sector) setMarkerPos (getPosATL _commander)} else {deleteMarker ("HPC_command_"+_sector)};
     _sector setMarkerText format ["%1 - %2%% %3", _sectorName, round _ratio,if (_commanderAlive) then {"| commander alive"} else {"| commander eliminated"}];
     [_sector,"active",100 - _ratio,_remaining,_startingCount,_sectorName,_local_capture_size] call HPC_fnc_sectorState;

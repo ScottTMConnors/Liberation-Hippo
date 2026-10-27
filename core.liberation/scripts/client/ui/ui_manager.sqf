@@ -150,7 +150,7 @@ while {true} do {
 				};
 
                 if (GRLIB_Commander_mode && {count active_sectors > 0}) then {
-                    _nearest_active_sector = active_sectors select ((floor (_uiticks / 4)) mod count active_sectors);
+                    _nearest_active_sector = active_sectors select 0;
                     _fob_sector = false;
                 };
 
@@ -276,6 +276,33 @@ while {true} do {
 			};
 		};
 	};
+
+
+    if (_overlayshown && {!isNil "_overlay"}) then {
+        // A single compact panel lists every active objective without rotating.
+        {(_overlay displayCtrl _x) ctrlShow false} forEach [201,202,203,204,205,206,516,517];
+        private _panel = _overlay displayCtrl 518;
+        private _body = "<t color='#75CBB8' size='0.9'>OPERATIONS</t><br/>";
+        if (active_sectors isEqualTo []) then {
+            _body = _body + "<t color='#BDC8CC'>Select an objective on the map</t>";
+        } else {
+            {
+                private _state = missionNamespace getVariable ["HPC_sectorState_" + _x,[]];
+                private _name = _state param [4,markerText _x];
+                private _phase = _state param [0,"loading"];
+                private _progress = round ((_state param [1,0]) max 0 min 100);
+                private _status = if (_phase == "loading") then {format ["Preparing · %1%2",_progress,"%"]} else {
+                    private _commander = missionNamespace getVariable ["HPC_sectorCommander_" + _x,objNull];
+                    private _dead = (missionNamespace getVariable ["HPC_sectorCommanderDead_" + _x,false]) || {!isNull _commander && {!alive _commander}};
+                    format ["%1%2 cleared  ·  Commander %3",_progress,"%",if (_dead) then {"eliminated"} else {"alive"}]
+                };
+                _body = _body + format ["<t size='1.05' color='#FFFFFF'>%1</t><br/><t color='#B5C2C7' size='0.9'>%2</t><br/>",_name,_status];
+            } forEach active_sectors;
+        };
+        _panel ctrlSetStructuredText parseText _body;
+        _panel ctrlSetPosition [(ctrlPosition _panel select 0),(ctrlPosition _panel select 1),(ctrlPosition _panel select 2),((0.04 + 0.055 * ((count active_sectors) max 1)) min 0.38) * safezoneH];
+        _panel ctrlCommit 0;
+    };
 
 	_uiticks = _uiticks + 1;
 	if (_uiticks > 1000) then { _uiticks = 0 };

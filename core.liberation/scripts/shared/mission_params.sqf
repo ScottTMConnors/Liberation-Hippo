@@ -1444,18 +1444,6 @@ _Mission_Params = [
             format [localize "STR_TK_COUNT_OPT0", 6]
         ]]
     ]],
-    [GRLIB_PARAM_CommanderModeEnabled, createHashMapFromArray [
-        [GRLIB_PARAM_ValueKey, 1],
-        [GRLIB_PARAM_NameKey, localize "STR_COMMANDER_MODE"],
-        [GRLIB_PARAM_OptionLabelKey, [localize "STR_PARAMS_DISABLED", localize "STR_PARAMS_ENABLED"]],
-        [GRLIB_PARAM_OptionValuesKey, [0,1]],
-        [GRLIB_PARAM_CategoryKey, GRLIB_PARAM_CommanderCatKey],
-        [GRLIB_PARAM_DescriptionKey, localize "STR_COMMANDER_MODE_DESC"],
-        [GRLIB_PARAM_OptionDescriptionKey, [
-            localize "STR_COMMANDER_MODE_OPT0",
-            localize "STR_COMMANDER_MODE_OPT1"
-        ]]
-    ]],
     [GRLIB_PARAM_CommanderModeRadius, createHashMapFromArray [
         [GRLIB_PARAM_ValueKey, GRLIB_sector_size],
         [GRLIB_PARAM_NameKey, localize "STR_COMMANDER_MODE_RADIUS"],

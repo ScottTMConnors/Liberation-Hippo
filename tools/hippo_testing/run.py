@@ -42,6 +42,7 @@ def main():
     ap.add_argument('--timeout', type=int, default=150)
     ap.add_argument('--baseline', action='store_true')
     ap.add_argument('--clients', type=int, choices=[0,1,2], default=0)
+    ap.add_argument('--targeted', action='store_true', help='Test fortification action and coastal placement in a disposable mission.')
     ap.add_argument('--visual', action='store_true', help='Run isolated civilian and commander visual fixture (requires one client).')
     ap.add_argument('--movement', action='store_true', help='Measure ambient pedestrian movement and garrison occupancy on the server.')
     ap.add_argument('--attribution',action='store_true')
@@ -57,6 +58,7 @@ def main():
     ap.add_argument('--missing-faction',choices=['settings','campaign'])
     args = ap.parse_args()
     GAME=args.game_directory
+    if args.targeted and args.clients != 1: ap.error("--targeted requires --clients 1")
     if args.visual and args.clients != 1: ap.error("--visual requires --clients 1")
     if args.attribution and args.headless != 2: ap.error("--attribution requires --headless 2")
     if args.scenario and args.commander:
@@ -78,6 +80,7 @@ def main():
     (stage/'build_info.sqf').write_text(f'GRLIB_build_date="{run_id}"; GRLIB_build_time="test"; GRLIB_build_version="{tag}-hippo-test";\n')
     tests=stage/'hippo_tests'; tests.mkdir()
     cases=['engine.compile','startup.server','telemetry.ownership','civilians.ambient','civilians.traffic','sector.fortifications','settings.defaults','factions.available','settings.english','skills.toggle','damage.civilian','catalog.classification','catalog.order','catalog.unlockFilter','objects.simple','cargo.restore','vehicles.emptyPools','warfare.armedPool']
+    if args.targeted: cases+=['placement.pier','placement.small','placement.building']
     if args.movement: cases+=['civilians.displacement','outpost.commanderInterior','outpost.defenders']
     if args.scenario: cases+=['warfare.spawn','sector.commanderGate','sector.capture','warfare.cleanup']
     if args.commander: cases+=['commander.emptyRoster','commander.townLoaded','commander.progress','warfare.enemyFOB']
@@ -88,6 +91,17 @@ def main():
     if args.missing_faction: cases=['faction.rejected','faction.savePreserved','faction.ended']
     (tests/'run.sqf').write_text((ROOT/'tools'/'hippo_testing'/'server.sqf').read_text(encoding='utf-8'),encoding='utf-8')
     shutil.copy2(ROOT/'tools/hippo_testing/review.sqf',tests/'review.sqf')
+    if args.targeted:
+        shutil.copy2(ROOT/'tools/hippo_testing/placement.sqf',tests/'placement.sqf')
+        p=tests/'run.sqf'
+        p.write_text(p.read_text(encoding='utf-8').replace('[format ["RUN_DONE|%1",', 'call compile preprocessFileLineNumbers "hippo_tests\\placement.sqf";\n[format ["RUN_DONE|%1",').replace('18 + (if (HPC_testScenario)', '21 + (if (HPC_testScenario)'),encoding='utf-8')
+        p=stage/'scripts/shared/functions/HPC_sectorFortifications.sqf'
+        text=p.read_text(encoding='utf-8')
+        text=text.replace('if (count _candidate >= 2 &&', 'if (!(missionNamespace getVariable ["HPC_testRejectLarge",false]) && count _candidate >= 2 &&')
+        text=text.replace('if (!surfaceIsWater _candidate && {(surfaceNormal _candidate select 2) > 0.96} && {(_candidate nearRoads 16)', 'if (!(missionNamespace getVariable ["HPC_testRejectSmall",false]) && !surfaceIsWater _candidate && {(surfaceNormal _candidate select 2) > 0.96} && {(_candidate nearRoads 16)')
+        p.write_text(text,encoding='utf-8')
+        p=stage/'scripts/server/remotecall/sound_range_remote_call.sqf'
+        p.write_text(p.read_text(encoding='utf-8').replace('params ["_pos", "_sound"];', 'params ["_pos", "_sound"];\nif (_sound == "Land_Carrier_01_blast_deflector_up_sound") then { HPC_testSoundCount = (missionNamespace getVariable ["HPC_testSoundCount",0]) + 1; publicVariable "HPC_testSoundCount"; };'),encoding='utf-8')
     if args.attribution:
         shutil.copy2(ROOT/'tools/hippo_testing/attribution.sqf',tests/'attribution.sqf')
         p=tests/'run.sqf'
@@ -143,7 +157,7 @@ addMissionEventHandler ["MPEnded",{
         (stage/'initServer.sqf').write_text(f'HPC_testRun="{run_id}"; [] execVM "hippo_tests\\missing_faction.sqf";')
         shutil.copy2(ROOT/'tools/hippo_testing/missing_faction.sqf',tests/'missing_faction.sqf')
     if args.clients:
-        shutil.copy2(ROOT/('tools/hippo_testing/visual_client.sqf' if args.visual else 'tools/hippo_testing/client.sqf'),tests/'client.sqf')
+        shutil.copy2(ROOT/('tools/hippo_testing/targeted_client.sqf' if args.targeted else 'tools/hippo_testing/visual_client.sqf' if args.visual else 'tools/hippo_testing/client.sqf'),tests/'client.sqf')
         if args.visual:
             shutil.copy2(ROOT/'tools/hippo_testing/visual_server.sqf',tests/'visual_server.sqf')
             with (tests/'run.sqf').open('a', encoding='utf-8') as f: f.write('\nHPC_visualServerReady = true; publicVariable \"HPC_visualServerReady\";\n')
@@ -196,7 +210,8 @@ addMissionEventHandler ["MPEnded",{
         if path.is_file(): source_hash.update(str(path.relative_to(source_root)).encode()); source_hash.update(bytes.fromhex(sha(path)))
     roles=['server']+[f'client{i+1}' for i in range(args.clients)]+((['hc1','hc2'] if args.attribution else ['hc1','hc2','hc1_rejoin']) if args.headless else [])
     client_cases=['startup.client','player.abilities','catalog.filters','catalog.empty','purchase.filtered','reward.owner','services.cooldown','revive.manual','catalog.groups','catalog.singleType','catalog.rankVisible','catalog.toggle','catalog.tools']
-    if args.visual: client_cases=['startup.client','visual.civilianMovement','visual.commanderPost']
+    if args.targeted: client_cases=['startup.client','fortifications.build','fortifications.sound']
+    if args.visual: client_cases=['startup.client','visual.objectivePanel','visual.civilianMovement','visual.commanderPost']
     manifest={'run_id':run_id,'map':args.map,'source_head':subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT).decode().strip(),'source_sha256':source_hash.hexdigest(),'baseline':args.baseline,'variant':args.variant,'control':args.control,'cases':cases,'client_cases':client_cases,'scripts':scripts,'package_sha256':sha(pbo),'argv':argv,'roles':roles,'port':port}
     (out/'manifest.json').write_text(json.dumps(manifest,indent=2),encoding='utf-8')
     if compaction:
@@ -249,6 +264,7 @@ addMissionEventHandler ["MPEnded",{
             video=out/f'{role}.cfg'; video.write_text('language="English";forcedAdapterId=-1;displayMode=0;winX=30;winY=30;winWidth=1280;winHeight=720;winDefWidth=1280;winDefHeight=720;renderWidth=1280;renderHeight=720;HDRPrecision=16;vsync=0;multiSampleCount=1;PPAA=0;pipQuality=0;GPU_MaxFramesAhead=1;GPU_DetectedFramesAhead=1;\n')
             pipe_name='HPC_'+run_id+'_'+role
             cmd=[str(GAME/'arma3_x64.exe'),'-noSplash','-skipIntro','-world=empty','-window','-noPause','-noSound',f'-name=HpcClient{i+1}',f'-profiles={folder}',f'-cfg={video}',f'-command={pipe_name}', '-connect=127.0.0.1',f'-port={port}','-password=hippo-local-test']
+            if args.targeted: cmd.remove('-noSound')
             client_mods=args.mod
             if client_mods: cmd.append('-mod='+';'.join(client_mods))
             # A rendering client needs a normal initial window for DX11 setup;

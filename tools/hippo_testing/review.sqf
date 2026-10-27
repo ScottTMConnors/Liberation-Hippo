@@ -31,14 +31,23 @@ private _normalCount = count HPC_ambientCivilians;
 GRLIB_civilian_activity = 2;
 [[[_civilianHome,12]],[]] call HPC_fnc_civilianTick;
 private _denseCount = count HPC_ambientCivilians;
-private _agentsOK = _normalCount > 0 && {_denseCount > _normalCount} && {_denseCount <= 6} && {count allGroups <= _groupsBefore + 2} && {HPC_ambientCivilians findIf {isNull group _x || {simulationEnabled _x}} < 0};
+private _agentsOK = _normalCount > 0 && {_denseCount > _normalCount} && {_denseCount <= 6} && {count allGroups <= _groupsBefore + 2} && {HPC_ambientCivilians findIf {isNull group _x || {!simulationEnabled _x}} < 0};
 // A nearby observer wakes pedestrians and schedules a walking destination.
 if (_denseCount > 0) then {
     private _observer = HPC_ambientCivilians select 0;
     [[[_civilianHome,12]],[_observer]] call HPC_fnc_civilianTick;
     _agentsOK = _agentsOK && {simulationEnabled _observer} && {(_observer getVariable ["HPC_nextWalk",0]) > diag_tickTime};
 };
-// With no players, anchored civilians stay present but asleep. Removing the
+// A killed pedestrian must remain a simulated corpse after the population tick.
+if (_denseCount > 0) then {
+    private _victim = HPC_ambientCivilians select 0;
+    _victim setDamage 1;
+    [[[_civilianHome,12]],[]] call HPC_fnc_civilianTick;
+    _agentsOK = _agentsOK && {!isNull _victim} && {!alive _victim} && {simulationEnabled _victim};
+    deleteVehicle _victim;
+    _denseCount = _denseCount - 1;
+};
+// With no players, anchored civilians stay simulated. Removing the
 // anchors must clean them up without touching mission groups.
 [[[_civilianHome,12]],[]] call HPC_fnc_civilianTick;
 _agentsOK = _agentsOK && {count HPC_ambientCivilians >= _denseCount};

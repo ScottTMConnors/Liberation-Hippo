@@ -3,6 +3,10 @@
 Use isolated mission packages and profiles for screenshots and engine checks;
 preserve player campaign saves and unrelated game sessions.
 
+Arma 3 is installed at `F:/Medium500/Applications/Steam/steamapps/common/Arma 3`.
+Pass this path with `--game-directory` to `tools/hippo_testing/run.py`; the
+harness default may point to an older Steam library.
+
 Before stopping for `No monitor found` / DXGI / Direct3D initialization errors,
 check the installed virtual display. This workstation has a preconfigured
 1920x1080 virtual display using the AMD Radeon RX 6900 XT. Its device is

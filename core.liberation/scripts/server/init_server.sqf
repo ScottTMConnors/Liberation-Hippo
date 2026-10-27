@@ -144,7 +144,7 @@ publicVariable "HPC_serverLoadingStage";
 [] execVM "scripts\server\base\fobbox_manager.sqf";
 [] execVM "scripts\server\base\huron_manager.sqf";
 [] execVM "scripts\server\game\spawn_radio_towers.sqf";
-[] execVM "scripts\server\game\hall_of_fame.sqf";
+
 [] execVM "scripts\server\battlegroup\random_battlegroups.sqf";
 [] execVM "scripts\server\battlegroup\readiness_decrease.sqf";
 [] execVM "scripts\server\resources\manage_resources.sqf";
@@ -195,9 +195,6 @@ if (GRLIB_Commander_mode) then {
 	GRLIB_Sector_Votes = createHashMap;
 	[] spawn manage_sectors_commander;
 	[] spawn commander_voteHandler;
-} else {
-	// Classic mode
-	[] execVM "scripts\server\sector\manage_sectors.sqf";
 };
 
 global_locked_group = [];

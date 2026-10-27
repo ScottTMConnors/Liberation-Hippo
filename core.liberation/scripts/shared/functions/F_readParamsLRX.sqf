@@ -4,7 +4,7 @@ GRLIB_alarms_enabled = [GRLIB_PARAM_Alarms] call lrx_getParamValue;
 GRLIB_allow_redeploy = [GRLIB_PARAM_Redeploy] call lrx_getParamValue;
 GRLIB_civ_penalties = [GRLIB_PARAM_CivPenalties] call lrx_getParamValue;
 GRLIB_civilian_activity = [GRLIB_PARAM_Civilians] call lrx_getParamValue;
-GRLIB_Commander_mode = [GRLIB_PARAM_CommanderModeEnabled] call lrx_getParamValue;
+GRLIB_Commander_mode = true;
 GRLIB_Commander_radius = [GRLIB_PARAM_CommanderModeRadius] call lrx_getParamValue;
 GRLIB_Commander_VoteEnabled = [GRLIB_PARAM_CommPlayerVote] call lrx_getParamValue;
 GRLIB_difficulty_modifier = [GRLIB_PARAM_Difficulty] call lrx_getParamValue;
@@ -80,7 +80,7 @@ GRLIB_permission_enemy = (GRLIB_permission_enemy == 1);
 GRLIB_free_loadout = (GRLIB_free_loadout == 1);
 GRLIB_force_english = (GRLIB_force_english == 1);
 GRLIB_enable_drones = (GRLIB_enable_drones == 1);
-GRLIB_Commander_mode = (GRLIB_Commander_mode == 1);
+GRLIB_Commander_mode = true;
 GRLIB_alarms_enabled = (GRLIB_alarms_enabled == 1);
 GRLIB_Commander_VoteEnabled = (GRLIB_Commander_VoteEnabled == 1);
 

@@ -17,10 +17,6 @@ switch (_type) do {
         _data = [] call F_notice_weather;
         _last_news = 2;
     };
-    case 3 : {
-        _data = [] call F_notice_news;
-        _last_news = 1;
-    };
     case 4 : {
         _data = [] call F_notice_hof;
         _last_news = 0;
