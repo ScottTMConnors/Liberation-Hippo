@@ -15,11 +15,22 @@ private _position = [_base, 8, 0, 250] call F_findSafePlace;
 private _fobsBefore = +GRLIB_all_fobs;
 private _sectorChoices = sectors_tower apply {[(markerPos _x) distance2D _base, _x]};
 _sectorChoices sort true;
-private _sector = _sectorChoices select 0 select 1;
+// Keep the test FOB outside immediate combat so the vehicle count measures
+// spawning, while the real sector capture and cleanup still run below.
+private _distant = _sectorChoices select {(_x select 0) >= 3000};
+private _sector = if (_distant isEqualTo []) then {(_sectorChoices select (count _sectorChoices - 1)) select 1} else {(_distant select 0) select 1};
 if (_position isEqualTo []) exitWith {
     ["warfare.spawn", false] call _assert; ["sector.capture", false] call _assert; ["warfare.cleanup", false] call _assert;
 };
-GRLIB_all_fobs pushBackUnique _position;
+// Force one vehicle placement attempt to fail, then exercise the production
+// retry path. The wrapper delegates all later calls to the real position finder.
+HPC_testOriginalWarfarePosition = HPC_fnc_warfarePosition;
+HPC_testVehicleFailureInjected = false;
+HPC_fnc_warfarePosition = {
+    if ((_this param [1,3]) == 10 && {!HPC_testVehicleFailureInjected}) exitWith {HPC_testVehicleFailureInjected = true; []};
+    _this call HPC_testOriginalWarfarePosition
+};
+GRLIB_all_fobs = [_position];
 [_sector] call start_sector;
 private _deadline = diag_tickTime + 160;
 waitUntil {
@@ -31,7 +42,7 @@ waitUntil {
 };
 private _groups = allGroups select {_x getVariable ["HPC_warfare", false]};
 private _vehicles = vehicles select {_x getVariable ["HPC_warfare", false]};
-["warfare.spawn", count _groups >= 8 && count _vehicles >= 5] call _assert;
+["warfare.spawn", HPC_testVehicleFailureInjected && {count _groups >= 8} && {count _vehicles >= 5}] call _assert;
 private _samples = [];
 for "_sample" from 1 to 12 do {_samples pushBack diag_fps; sleep 1};
 diag_log ["HPC_LOAD", "warfare", count allUnits, count _groups, count _vehicles, _samples];
@@ -62,5 +73,6 @@ waitUntil {
     }
 };
 ["warfare.cleanup", {alive _x && {_x getVariable ["HPC_warfare", false]}} count allUnits == 0 && {{_x getVariable ["HPC_warfare", false]} count vehicles == 0}] call _assert;
+HPC_fnc_warfarePosition = HPC_testOriginalWarfarePosition;
 GRLIB_all_fobs = _fobsBefore;
 diag_log ["HPC_LOAD", "recovery", count allUnits, diag_fps];

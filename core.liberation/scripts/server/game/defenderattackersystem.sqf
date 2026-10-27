@@ -74,7 +74,10 @@ HPC_fnc_warfareVehicle = {
                 _vehicle = [_pos, selectRandom _pool, 5, GRLIB_side_friendly, "infantry", true] call F_libSpawnVehicle;
             };
         };
-        if (!isNull _vehicle) then {
+        // A failed position or vehicle creation is transient; do not postpone a
+        // missing vehicle for the full replacement cooldown.
+        private _spawned = !isNull _vehicle;
+        if (_spawned) then {
             private _group = group driver _vehicle;
             _group setVariable ["HPC_warfare", true, true];
             _group setVariable ["HPC_hcManaged",true,true];
@@ -107,7 +110,7 @@ HPC_fnc_warfareVehicle = {
             };
             [_group, _vehicle] call HPC_fnc_warfareDelete;
         };
-        sleep (random [120,240,480]);
+        sleep (if (!_spawned && {!(_pool isEqualTo [])}) then {random [10,20,30]} else {random [120,240,480]});
     };
 };
 
