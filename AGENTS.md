@@ -47,3 +47,11 @@ Wait for prior owned game processes to exit before restarting the same profile.
 Capture Workshop images with Steam F12: the native screenshots retain game UI
 without the browser automation cursor. The SQF `screenshot` command captures
 only the 3D scene and omits menus. Inspect every selected image before upload.
+
+# Offline checks
+
+Before engine runs, run `python tools/sqf_wiki_check.py` (lexical errors,
+unknown event handlers, bad remoteExec targets and undefined globals checked
+against the arma3-wiki cache) and `python -m unittest test_sqf_wiki_check
+test_mission_compact` from `tools/`. The `hippo-review` project skill lists the
+full workflow and recurring bug patterns.
