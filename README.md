@@ -62,8 +62,8 @@ These are defaults; most can be changed in the settings.
 - **Easy AI** (on): friendly AI at maximum skill, enemies at minimum.
 - **Enemy vehicle progression** (off): enemy armor isn't gated by readiness.
 - **Second Chance** (off): no random temporary recovery.
-- **No friendly-fire or civilian punishments**: team-kill enforcement and
-  civilian casualty penalties are removed, and reputation can no longer drop.
+- **Friendly-fire enforcement** and **Civilian casualty penalty** (off): no
+  team-kill punishments or civilian penalties, and reputation can't drop.
 - Thermals work day and night, and artillery has no firing limit.
 - Every player is a Medic, Engineer, Explosive Specialist and UAV Hacker.
 - No ejection from vehicle seats over ownership, rank or vehicle class. Locks

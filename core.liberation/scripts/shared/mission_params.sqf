@@ -54,7 +54,8 @@ GRLIB_PARAM_Wildlife = "Wildlife";
 GRLIB_PARAM_Civilians = "Civilians";
 GRLIB_PARAM_Facilities = "Facilities";
 GRLIB_PARAM_AirSupport = "AirSupport";
-GRLIB_PARAM_CivPenalties = "CivPenalties";
+// New keys drop values saved before these settings defaulted to disabled.
+GRLIB_PARAM_CivPenalties = "CivPenaltiesOptIn";
 GRLIB_PARAM_ModPresetWest = "ModPresetWest";
 GRLIB_PARAM_ModPresetEast = "ModPresetEast";
 GRLIB_PARAM_SideVerification = "SideVerification";
@@ -104,7 +105,7 @@ GRLIB_PARAM_TFRadioRange = "TFRadioRange";
 GRLIB_PARAM_AdminMenu = "AdminMenu";
 GRLIB_PARAM_RespawnCD = "RespawnCD";
 GRLIB_PARAM_KickIdle = "KickIdle";
-GRLIB_PARAM_TK_mode = "TK_mode";
+GRLIB_PARAM_TK_mode = "TK_modeOptIn";
 GRLIB_PARAM_TK_count = "TK_count";
 GRLIB_PARAM_UndercoverModeEnabled = "UndercoverMode";
 GRLIB_PARAM_CommanderModeEnabled = "CommanderMode";
@@ -579,7 +580,7 @@ _Mission_Params = [
         ]]
     ]],
     [GRLIB_PARAM_CivPenalties, createHashMapFromArray [
-        [GRLIB_PARAM_ValueKey, 20],
+        [GRLIB_PARAM_ValueKey, 0],
         [GRLIB_PARAM_NameKey, localize "STR_CIV_PENALTIES"],
         [GRLIB_PARAM_OptionLabelKey, [
             localize "STR_PARAMS_DISABLED", "4", "6", "8", "10", "20", "25", "30", "40", "50"
@@ -1418,7 +1419,7 @@ _Mission_Params = [
         ]]
     ]],
     [GRLIB_PARAM_TK_mode, createHashMapFromArray [
-        [GRLIB_PARAM_ValueKey, 1],
+        [GRLIB_PARAM_ValueKey, 0],
         [GRLIB_PARAM_NameKey, localize "STR_TK_MODE"],
         [GRLIB_PARAM_OptionLabelKey, [localize "STR_PARAMS_DISABLED", localize "STR_TK_MODE_RELAX", localize "STR_TK_MODE_STRICT"]],
         [GRLIB_PARAM_OptionValuesKey, [0,1,2]],

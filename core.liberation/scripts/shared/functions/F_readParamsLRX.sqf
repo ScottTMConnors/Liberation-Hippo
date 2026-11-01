@@ -3,6 +3,7 @@
 GRLIB_alarms_enabled = [GRLIB_PARAM_Alarms] call lrx_getParamValue;
 GRLIB_allow_redeploy = [GRLIB_PARAM_Redeploy] call lrx_getParamValue;
 GRLIB_civ_penalties = [GRLIB_PARAM_CivPenalties] call lrx_getParamValue;
+GRLIB_tk_mode = [GRLIB_PARAM_TK_mode] call lrx_getParamValue;
 GRLIB_civilian_activity = [GRLIB_PARAM_Civilians] call lrx_getParamValue;
 GRLIB_Commander_mode = true;
 GRLIB_Commander_radius = [GRLIB_PARAM_CommanderModeRadius] call lrx_getParamValue;

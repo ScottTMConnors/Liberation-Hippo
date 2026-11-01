@@ -29,7 +29,11 @@ while {true} do {
 	_side = side player;
 	if (_side == sideEnemy) then {
 		player addrating ((abs rating player) + 500);
-
+		if (GRLIB_tk_mode > 0) then {
+			private _kill = 1 + (BTC_logic getVariable [PAR_Grp_ID, 0]);
+			BTC_logic setVariable [PAR_Grp_ID, _kill, true];
+			if (_kill == GRLIB_tk_count) then { [player] call LRX_tk_actions };
+		};
 		GRLIB_player_group selectLeader player;
 		gamelogic globalChat format [localize "STR_LOG_LRX_WRONG_SIDE", name player, _side];
 	};

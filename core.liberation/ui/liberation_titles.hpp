@@ -470,9 +470,10 @@ class RscTitles
             idc = 518;
             type = CT_STRUCTURED_TEXT;
             style = ST_LEFT;
-            x = 0.755 * safezoneW + safezoneX;
+            // Width follows screen height so ultrawide screens keep the 16:9 size.
+            x = safezoneX + safezoneW - 0.3267 * safezoneH;
             y = 0.61 * safezoneH + safezoneY;
-            w = 0.24 * safezoneW;
+            w = 0.32 * safezoneH;
             h = 0.25 * safezoneH;
             colorBackground[] = {0.025,0.035,0.045,0.88};
             text = "";

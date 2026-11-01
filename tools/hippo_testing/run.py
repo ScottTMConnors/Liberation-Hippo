@@ -100,6 +100,7 @@ def main():
     ap.add_argument('--compact',action='store_true',help='Apply release compaction before packaging.')
     ap.add_argument('--mod',action='append',default=[])
     ap.add_argument('--missing-faction',choices=['settings','campaign'])
+    ap.add_argument('--client-size',default='1280x720',help='Client window size, e.g. 1920x810 for 21:9.')
     args = ap.parse_args()
     GAME=args.game_directory
     if args.steam_launch and args.clients != 1: ap.error("--steam-launch requires --clients 1")
@@ -208,6 +209,9 @@ addMissionEventHandler ["MPEnded",{
         (stage/'initServer.sqf').write_text(f'HPC_testRun="{run_id}"; [] execVM "hippo_tests\\missing_faction.sqf";')
         shutil.copy2(ROOT/'tools/hippo_testing/missing_faction.sqf',tests/'missing_faction.sqf')
     if args.clients:
+        # Test clients cannot press the lobby OK button, so skip role assignment.
+        p=stage/'description.ext'
+        p.write_text(re.sub(r'skipLobby\s*=\s*0;','skipLobby = 1;',p.read_text(encoding='utf-8-sig')),encoding='utf-8')
         shutil.copy2(ROOT/('tools/hippo_testing/targeted_client.sqf' if args.targeted else 'tools/hippo_testing/visual_client.sqf' if args.visual else 'tools/hippo_testing/client.sqf'),tests/'client.sqf')
         if args.visual:
             shutil.copy2(ROOT/'tools/hippo_testing/visual_server.sqf',tests/'visual_server.sqf')
@@ -312,7 +316,8 @@ addMissionEventHandler ["MPEnded",{
             role=f'client{i+1}'; folder=out/role; folder.mkdir()
             user=folder/'Users'/f'HpcClient{i+1}'; user.mkdir(parents=True)
             (user/f'HpcClient{i+1}.Arma3Profile').write_text('version=2;singleVoice=0;sceneComplexity=300000;viewDistance=1600;preferredObjectViewDistance=1200;terrainGrid=25;\n',encoding='utf-8')
-            video=out/f'{role}.cfg'; video.write_text('language="English";forcedAdapterId=-1;displayMode=0;winX=30;winY=30;winWidth=1280;winHeight=720;winDefWidth=1280;winDefHeight=720;renderWidth=1280;renderHeight=720;HDRPrecision=16;vsync=0;multiSampleCount=1;PPAA=0;pipQuality=0;GPU_MaxFramesAhead=1;GPU_DetectedFramesAhead=1;\n')
+            video=out/f'{role}.cfg'; cw,ch=args.client_size.lower().split('x')
+            video.write_text(f'language="English";forcedAdapterId=-1;displayMode=0;winX=0;winY=0;winWidth={cw};winHeight={ch};winDefWidth={cw};winDefHeight={ch};renderWidth={cw};renderHeight={ch};HDRPrecision=16;vsync=0;multiSampleCount=1;PPAA=0;pipQuality=0;GPU_MaxFramesAhead=1;GPU_DetectedFramesAhead=1;\n')
             pipe_name='HPC_'+run_id+'_'+role
             cmd=[str(GAME/'arma3_x64.exe'),'-noSplash','-skipIntro','-world=empty','-window','-noPause','-noSound',f'-name=HpcClient{i+1}',f'-profiles={folder}',f'-cfg={video}',f'-command={pipe_name}', '-connect=127.0.0.1',f'-port={port}','-password=hippo-local-test']
             if args.targeted: cmd.remove('-noSound')
