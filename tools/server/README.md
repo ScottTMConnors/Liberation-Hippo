@@ -50,14 +50,24 @@ this launcher started. It does **not** save the campaign.
 
 ## Commander whitelist and moderators
 
-The mission ships with empty access lists. To set them for your server, copy
-`core.liberation/whitelist.sqf` to `<Arma 3 folder>\userconfig\whitelist.sqf`
-and add SteamID64s to `GRLIB_whitelisted_steamids` (commander slot, used when
-the Whitelist parameter is on) and `GRLIB_whitelisted_moderators` (light admin
-menu). The server reads that file at mission start and sends the lists to every
-player; restart the mission after editing it. The launcher starts the server
-with `-filePatching`, which Arma needs to read `userconfig`. If you use another
-launcher, add that flag to the server's command line.
+The mission ships with empty access lists. To set them for your server:
+
+1. Copy `core.liberation/whitelist.sqf` to `tools/server/local/whitelist.sqf`
+   (ignored by git, so SteamIDs never get committed).
+2. Add SteamID64s to `GRLIB_whitelisted_steamids` (commander slot, used when
+   the Whitelist parameter is on) and `GRLIB_whitelisted_moderators` (light
+   admin menu).
+3. Build with `python tools/build_malden.py --whitelist tools/server/local/whitelist.sqf`
+   and restart the mission. Only the server reads the lists; it sends them to
+   every player.
+
+A build made with `--whitelist` contains your list: never upload it to the
+Workshop. Build again without the flag for a public release.
+
+Servers started with `-filePatching` can instead use
+`<Arma 3 folder>\userconfig\whitelist.sqf`, which the mission checks first.
+This launcher leaves that flag off: with the full mod preset, the server kept
+returning to mission loading while it was on.
 
 Every script accepts `-Config <path>` to use another config file. The launcher
 also accepts `-BindAddress`, `-Port`, `-HeadlessCount`, `-AdminPassword`,

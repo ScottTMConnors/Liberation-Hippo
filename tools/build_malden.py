@@ -66,7 +66,12 @@ def main():
     deployment.add_argument('--install',dest='install',action='store_true',help='Install into the game MPMissions folder (default).')
     deployment.add_argument('--build-only',dest='install',action='store_false',help='Build without replacing the installed mission.')
     parser.set_defaults(install=True)
+    parser.add_argument('--whitelist',type=Path,help='Private access lists (e.g. tools/server/local/whitelist.sqf) to build in for your own server. Never upload such a build.')
     args=parser.parse_args()
+    if args.whitelist:
+        text=args.whitelist.read_text(encoding='utf-8-sig')
+        missing=[name for name in ('GRLIB_whitelisted_steamids','GRLIB_whitelisted_moderators','GRLIB_blacklisted_names') if name not in text]
+        if missing: raise RuntimeError(f'{args.whitelist} does not define: '+', '.join(missing))
     GAME=args.game_directory
     dirty=subprocess.check_output(['git','status','--porcelain','--','core.liberation','maps/Liberation_RX.Malden'],cwd=ROOT).decode().strip()
     if dirty: raise RuntimeError('Commit mission source before producing a release candidate.\n'+dirty)
@@ -81,6 +86,7 @@ def main():
     shutil.copytree(ROOT/'core.liberation',stage)
     shutil.copytree(ROOT/'maps/Liberation_RX.Malden',stage,dirs_exist_ok=True)
     for name in ['CREDITS.md','COPYING.md']: shutil.copy2(ROOT/name,stage/name)
+    if args.whitelist: shutil.copy2(args.whitelist,stage/'whitelist.sqf')
     title=stamp_identity(stage,release_version)
     (stage/'build_info.sqf').write_text(f'// Hippos Conquest release provenance\nGRLIB_build_date="{stamp}";\nGRLIB_build_time="{datetime.now().strftime("%H:%M:%S")}";\nGRLIB_build_version="{release_version}";\n',encoding='utf-8')
     compact_report=out/stamp/'compaction.json'
@@ -99,6 +105,7 @@ def main():
             source_hash.update(name.encode()); source_hash.update(bytes.fromhex(sha(path)))
     manifest={'mission':'Hippos Conquest','terrain':'Malden 2035','source_commit':revision,'upstream_base':subprocess.check_output(['git','rev-parse','upstream/master'],cwd=ROOT).decode().strip(),'package':str(pbo),'package_sha256':sha(pbo),'staged_source_sha256':source_hash.hexdigest(),'entries':entries,'built_at':stamp}
     manifest.update(version=release_version,base_version=version,title=title)
+    manifest['private_whitelist']=str(args.whitelist) if args.whitelist else None
     if args.install:
         destination=GAME/'MPMissions'/pbo.name
         if destination.exists() and sha(destination)!=manifest['package_sha256']:
@@ -121,5 +128,6 @@ def main():
     manifest_path=out/'Hippos_Conquest.Malden.manifest.json'
     manifest_path.write_text(json.dumps(manifest,indent=2),encoding='utf-8')
     print(json.dumps({k:v for k,v in manifest.items() if k!='entries'},indent=2))
+    if args.whitelist: print(f'WARNING: {pbo.name} contains the private access lists from {args.whitelist}. Do not upload it to the Workshop.')
 
 if __name__=='__main__': main()

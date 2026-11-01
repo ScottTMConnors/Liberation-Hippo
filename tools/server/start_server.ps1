@@ -140,9 +140,9 @@ try {
     $profile = Join-Path $c.runtimeDirectory 'profiles\server'
     New-Item -ItemType Directory -Path $profile -Force | Out-Null
     # Intentionally omit -autoInit: the admin starts the mission from the lobby.
-    # -filePatching (server only) lets the mission read userconfig\whitelist.sqf;
-    # allowedFilePatching = 0 above still blocks it for clients.
-    $argsServer = $common + @('-filePatching',"-ip=$($c.bindAddress)","-port=$($c.port)",'-name=HippoLAN',('-profiles="'+$profile+'"'),('-config="'+$cfg+'"'),('-cfg="'+$basic+'"'),'-loadMissionToMemory')
+    # Never add -filePatching: with the full mod preset the server loops back to
+    # mission loading. Build private access lists into the PBO instead (README).
+    $argsServer = $common + @("-ip=$($c.bindAddress)","-port=$($c.port)",'-name=HippoLAN',('-profiles="'+$profile+'"'),('-config="'+$cfg+'"'),('-cfg="'+$basic+'"'),'-loadMissionToMemory')
     $p = Start-Process -FilePath $exe -ArgumentList $argsServer -WorkingDirectory $c.gameDirectory -WindowStyle Hidden -PassThru
     $owned += [pscustomobject]@{role='server';pid=$p.Id;started=$p.StartTime.ToUniversalTime().ToString('o');profile=$profile}
     Start-Sleep -Seconds 5

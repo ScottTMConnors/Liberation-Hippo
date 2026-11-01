@@ -65,9 +65,13 @@ The server run compiles everything and fails on any RPT script error.
 ## 4. Conventions
 
 - `core.autocrlf=true`: working-tree files are CRLF; preserve each file's endings.
-- Access lists (`whitelist.sqf`) are loaded by the server only (userconfig copy
-  first, needs `-filePatching`) and broadcast; clients wait for
-  `GRLIB_whitelist_loaded`. Never hard-code SteamIDs in the mission.
+- Access lists (`whitelist.sqf`) are loaded by the server only and broadcast;
+  clients wait for `GRLIB_whitelist_loaded`. Never hard-code SteamIDs in the
+  mission: private lists go in `tools/server/local/whitelist.sqf` and are built
+  in with `build_malden.py --whitelist`.
+- Never add `-filePatching` to the server/HC launchers: with the full mod preset
+  the server loops back to mission loading (recorded in commit 106fef20).
+- Check git history (`git log -S`) before re-adding something that was removed.
 - Prefix new globals `HPC_`; compile new functions where the existing compile
   lists do (`scripts/shared/liberation_functions.sqf`, addon `*_functions.sqf`).
 - Commit messages: no Claude attribution (user's global rule).

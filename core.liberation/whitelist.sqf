@@ -1,7 +1,8 @@
-// Access lists. Only the server reads this: it loads <Arma 3 folder>\userconfig\whitelist.sqf
-// when present (the server must be started with -filePatching), otherwise this file, and
-// broadcasts the lists to every player. Copy this file there to configure a server without
-// editing the mission. The commander list is only enforced if the related mission option is on.
+// Access lists. Only the server reads this and broadcasts the lists to every player.
+// Keep this file empty in the repository. For your own server, put a filled copy in
+// tools/server/local/whitelist.sqf and build with --whitelist (see tools/server/README.md).
+// A server started with -filePatching may instead use <Arma 3 folder>\userconfig\whitelist.sqf,
+// which is checked first. The commander list is only enforced if the related mission option is on.
 // When editing be careful with quotes and commas
 
 // Allowed individual players based on their SteamID64. This is the most secure way to do.
