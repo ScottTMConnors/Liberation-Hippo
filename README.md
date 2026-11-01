@@ -6,7 +6,7 @@ Maintained by TheHungryHippo. This Liberation RX fork preserves upstream faction
 
 ## ARMA-3 Liberation RX - Extended Version
 
-![alt text](https://raw.githubusercontent.com/tbox1911/Liberation-RX/master/liberation.png "Liberation RX")
+<img src="hippos-conquest.jpg" alt="Hippos Conquest" width="512">
 
 ## Discord
 For any questions about settings, game mechanism and suggestion,
