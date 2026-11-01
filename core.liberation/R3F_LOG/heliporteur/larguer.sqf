@@ -28,16 +28,16 @@ else
 
 	if ( R3F_LOG_action_heliport_paradrop_valide ) then {
 		// Parachuter l'objet et lui appliquer la vitesse de l'h�liporteur (inertie)
-		_objet disableCollisionWith _heliporteur;
+		[_objet, _heliporteur] remoteExec ["disableCollisionWith", _objet]; // local-only commands go to the owner
 		detach _objet;
-		_objet setVelocity (velocity _heliporteur);
+		[_objet, velocity _heliporteur] remoteExec ["setVelocity", _objet];
 		sleep 3;
-		_objet enableCollisionWith _heliporteur;
+		[_objet, _heliporteur] remoteExec ["enableCollisionWith", _objet];
 		[_objet, _heliporteur] remoteExec ["F_addParachute", 2];
 	} else {
 		// D�tacher l'objet et lui appliquer la vitesse de l'h�liporteur (inertie)
 		detach _objet;
-		_objet setVelocity (velocity _heliporteur);
+		[_objet, velocity _heliporteur] remoteExec ["setVelocity", _objet];
 	};
 
 	systemChat format [STR_R3F_LOG_action_heliport_larguer_fait, [_objet] call F_getLRXName];

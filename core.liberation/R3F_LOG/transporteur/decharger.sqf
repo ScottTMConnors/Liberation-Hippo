@@ -105,8 +105,9 @@ if (R3F_LOG_mutex_local_verrou) then {
 						player enableUAVConnectability [_objet_a_decharger, true];
 					};
 					_objet_a_decharger setPos _pos_degagee;
-					_objet_a_decharger setVectorDirAndUp [[-cos getDir _transporteur, sin getDir _transporteur, 0] vectorCrossProduct surfaceNormal _pos_degagee, surfaceNormal _pos_degagee];
-					_objet_a_decharger setVelocity [0, 0, 0];
+					// Local-only commands go to the owner (the object may belong to the server or another player).
+					[_objet_a_decharger, [[-cos getDir _transporteur, sin getDir _transporteur, 0] vectorCrossProduct surfaceNormal _pos_degagee, surfaceNormal _pos_degagee]] remoteExec ["setVectorDirAndUp", _objet_a_decharger];
+					[_objet_a_decharger, [0, 0, 0]] remoteExec ["setVelocity", _objet_a_decharger];
 
 					sleep 0.4; // Car la nouvelle position n'est pas prise en compte instantann�ment
 

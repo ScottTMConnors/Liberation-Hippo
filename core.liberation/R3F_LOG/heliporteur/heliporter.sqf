@@ -108,7 +108,7 @@ if (R3F_LOG_mutex_local_verrou) then {
 						if (((boundingBoxReal _objet select 1 select 0) - (boundingBoxReal _objet select 0 select 0)) >
 							((boundingBoxReal _objet select 1 select 1) - (boundingBoxReal _objet select 0 select 1))) then
 						{
-							_objet setDir 90;
+							[_objet, 90] remoteExec ["setDir", _objet]; // local-only command
 						};
 
 						systemChat format [STR_R3F_LOG_action_heliporter_fait, [_objet] call F_getLRXName];
@@ -139,7 +139,7 @@ if (R3F_LOG_mutex_local_verrou) then {
 
 									// D�tacher l'objet et lui appliquer la vitesse de l'h�liporteur (inertie)
 									detach _objet;
-									_objet setVelocity (velocity _heliporteur);
+									[_objet, velocity _heliporteur] remoteExec ["setVelocity", _objet];
 
 									systemChat format [STR_R3F_LOG_action_heliport_larguer_fait, [_objet] call F_getLRXName];
 								};

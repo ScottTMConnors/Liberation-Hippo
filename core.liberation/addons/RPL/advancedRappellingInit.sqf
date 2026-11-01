@@ -241,7 +241,7 @@ AR_Get_Heli_Rappel_Points = {
 AR_Rappel_AI_From_Heli = {
 	params ["_player","_heli"];
 	{
-		if (!isNull objectParent _x && assignedVehicleRole _x select 0 == "cargo") then {
+		if (!isNull objectParent _x && {((assignedVehicleRole _x) param [0, ""]) == "cargo"}) then {
 			sleep 1;
 			[_x, vehicle _x] call AR_Rappel_From_Heli;
 		};
@@ -267,7 +267,7 @@ AR_Rappel_From_Heli = {
 		hintSilent localize "STR_RPL_ANCHORS_IN_USE";
 	};
 
-	_heli setVariable ["AR_Rappelling_Player_" + str _rappelPointIndex,_player];
+	_heli setVariable ["AR_Rappelling_Player_" + str _rappelPointIndex,_player,true];	// public, so other players see the anchor is taken
 
 	_player setVariable ["AR_Is_Rappelling",true,true];
 
@@ -282,7 +282,7 @@ AR_Rappel_From_Heli = {
 			if !(_player getVariable ["AR_Is_Rappelling", false]) exitWith {};
 			sleep 2;
 		};
-		_heli setVariable ["AR_Rappelling_Player_" + str _rappelPointIndex, nil];
+		_heli setVariable ["AR_Rappelling_Player_" + str _rappelPointIndex, nil, true];
 	};
 };
 
@@ -290,7 +290,7 @@ AR_Client_Rappel_From_Heli = {
 	params ["_player","_heli","_rappelPoint"];
 
 	moveOut _player;
-	waitUntil { isNull objectParent vehicle _player };
+	waitUntil { isNull objectParent _player };
 	_playerStartPosition = AGLtoASL (_heli modelToWorldVisual _rappelPoint);
 	_playerStartPosition set [2,(_playerStartPosition select 2) - 1];
 	_playerStartPosition set [1,(_playerStartPosition select 1) - ((((random 100)-50))/25)];
