@@ -2,10 +2,6 @@
 
 Maintained by TheHungryHippo. This Liberation RX fork preserves upstream faction presets and adds configurable AI Warfare, Easy AI, battle scope, combat options, and an optional searchable catalog of loaded factions and vehicles. See [credits](CREDITS.md) for inherited work and fork attribution.
 
-# Liberation RX (en)
-
-## ARMA-3 Liberation RX - Extended Version
-
 <img src="hippos-conquest.jpg" alt="Hippos Conquest" width="512">
 
 ## Discord
