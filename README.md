@@ -1,202 +1,170 @@
 # Hippos Conquest
 
-Maintained by TheHungryHippo. This Liberation RX fork preserves upstream faction presets and adds configurable AI Warfare, Easy AI, battle scope, combat options, and an optional searchable catalog of loaded factions and vehicles. See [credits](CREDITS.md) for inherited work and fork attribution.
-
 <img src="hippos-conquest.jpg" alt="Hippos Conquest" width="512">
 
-## Discord
-For any questions about settings, game mechanism and suggestion,
-Join our Discord server: https://discord.gg/HcXyqEaDVb
+**Liberate Malden with autonomous armies, FOB attacks, flexible combat rules
+and a searchable purchase catalog.**
 
+Hippos Conquest is an Arma 3 co-op campaign by TheHungryHippo, built on
+[Liberation RX](https://github.com/tbox1911/Liberation-RX). Capture territory,
+build FOBs and recruit troops while AI armies fight the war around you. Play
+with friends, or host alone and let the AI fill the battlefield.
 
-### Easy Setup
-+ Download the latest release from Github.
-+ Subscribe to the LRX Template Mod for extended Factions support!
-+ Place Mission.pbo in your Steam MP Missions Folder.
-+ Start Campaign by hosting Online or in LAN Mode.
-+ "Enable Parameters Menu" in the Lobby Params, to access LRX Params before the Mission Boots.
-+ "Save and Continue" after you've adjusted the Param Settings. Then play!
-+ *Once in the Game, the LRX Params Menu can be accessed by an admin in the Scroll Wheel Menu*
-+ *Wipe/Erase a Previous Save, is also done through the Lobby Params*
+- **Steam Workshop:** [Liberation Hippo - Malden](https://steamcommunity.com/sharedfiles/filedetails/?id=3827440475)
+- **Discord:** https://discord.gg/HcXyqEaDVb (questions, settings help, suggestions)
 
-### Single-player and multiplayer friendly
-+ LRX is Roleplay/Multiplayer oriented, but fully functional and fun for Single Player!
-+ Commander/Admin are not required to Start and Play LRX.
-+ All Permissions and Functions are managed by LRX.
-+ Commander and Admin have Access to Zeus.
-+ Admin has a special Admin Panel with many useful Functions.
-+ Moderators have a light Admin Panel.
-+ Moderators and Commanders can be defined by Steam ID.
-+ All personal and campaign progress is saved!
+## Play
 
-### Personal Progression:
-+ Earn XP Points as you Play.
-+ Your XP determines your Rank.
-+ Each Rank Unlocks additional Vehicles, Assets, and Features.
-+ Permissions are automatically granted with Rank.
-+ Certain Ranks Unlock Engineer and Medic traits.
-+ Admin can change default and/or player Permissions.
+1. Subscribe on the [Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3827440475).
+2. Launch Arma 3 and host a multiplayer game. LAN works for playing alone.
+   Choose **Malden 2035**, then **Hippos Conquest**.
+3. In the lobby, set **Parameters > Open Mission Parameters > Enabled**, start,
+   adjust the settings, then press **Save and Continue**.
+4. Build your first FOB and pick an objective. The war starts moving from there.
 
-### Civillian Reputation System:
-+ Reflects the Population's opinion about you!
-+ Ranges -100 to +100.
-+ Each Player has their own Rating.
-+ Raise your Rep by completing Civ related Side Missions and Helping Civs.
-+ At higher Rep, they will Repair your vehicle, Heal you, and bring you Ammo!
-+ Civilian casualties and mission failures do not reduce reputation.
+Vanilla factions work out of the box. Other faction presets need their mods;
+[LRX Template](https://steamcommunity.com/sharedfiles/filedetails/?id=3014195090)
+adds extended faction support. Everyone in the session needs the same mods.
+Settings changes need a mission restart, and saved settings override defaults.
+Admins can reopen the settings from the scroll menu, and wipe a campaign from
+the lobby parameters.
 
-### Personal Economy:
-+ You have three Main Resources: Ammo, Fuel, and Man Power.
-+ Resources are needed to *"Build"* your Troops, Vehicles, Defenses, etc.
-+ Ammo (units) is your Primary Currency.
-+ Fuel (units) is your Secondary Currency.
-+ Man Power (units) limits how many assets you can have in use at one time.
-+ These Resources are Personal, not Group or Global.
-+ You can Share/Send Ammo or Fuel to another Player from your 'Account'.
-+ Ammo and Fuel Spawn in Sectors or Missions for you to Collect.
-+ Man Power is determined by Points of Interest you control.
+## What Hippos Conquest adds
 
-### Vehicle and Asset Ownership:
-+ Vehicles you Build, are *Owned* by you, as well as a few other assets.
-+ Owned vehicles can be locked, Unlocked, or Abandoned (Made Public) by its Owner.
-+ Owned Vehicles can only be used by its Owner or Members of their group.
-+ Other Players and non-Group Members can still ride in the passenger seats.
-+ If a Vehicle is *Abandoned* or *Public*, anyone can use it.
+### A war that runs itself
 
-### Cargo and Inventory Persistent Save
-+ Your Vehicle Cargo/Inventory is Saved.
-+ The Cargo/Inventory of specified Crates are Saved.
-+ *When ACE enabled, LRX utilizes ACE Cargo*
+- **AI Warfare** (on by default) fields ongoing forces from your chosen
+  factions: a defending squad at every FOB, friendly assault squads, light and
+  heavy vehicles, and enemy squads that attack your FOBs. Losses are replaced
+  after a delay, so this is a continuing fight, not a single wave.
+- AI vehicles prefer armed variants, and stuck or failed vehicles recover or
+  get replaced.
+- The commander, or a player vote, picks objectives. **Battle Scope** can pull
+  nearby sectors into the same fight.
 
-### LARs (Larrow) Arsenal
-+ LRX has several pre-defined "Filters" for specific Factions/Sides.
-+ LRX has several Arsenal Parameter Options for you to choose from.
-+ Players can edit Whitelists & Blacklists easily in the Faction Templates.
-+ *When ACE enabled, LRX utilizes ACE's Arsenal*
+### Sectors worth attacking
 
-### R3F Logistics
-+ Tow Vehicles
-+ Lift Vehicle / Objects (by Helo)
-+ Adds internal Cargo Space
-+ Makes Objects able to be moved by players.
-+ Players can also edit R3F within the Faction Templates.
-+ *When ACE enabled, LRX utilizes ACE Logistics*
+- Every active enemy sector gets a **command post**: a marked commander,
+  guards, a patrol and static defenses (more at military sites), fitted to the
+  ground around it.
+- **Capture rules:** kill the commander and reduce the enemy infantry in the
+  capture zone to 10% of its starting strength. You don't need to stand in the
+  zone or destroy the radio tower.
+- The HUD shows every active objective, its progress and its commander.
+- Towns come alive with lightweight civilian crowds and traffic (cars,
+  helicopters and planes), scaled by density and put to sleep far from players
+  to save performance.
 
-### AI Revive Addon, by pSiKO
-+ Friendly AI Teammates in your Group can Revive You.
-+ They can also Revive other AI in the same Group.
-+ They are very efficient at this!
-+ *When ACE Medical enabled, Revive Support is limited*
-+ *Any AI Mod or Medical Mod may conflict*
+### Combat your way
 
-### Friendly AI Attributes
-+ AI in your Squad are Saved when you exit the game.
-+ If you Redeploy to different locations, they Follow with you.
-+ If you HALO Jump, they Follow with you.
-+ Customize their Loadout in-Game, or have them Copy your Loadout.
-+ As long as the an AI is Alive and in your Group, he earns Rank.
-+ You can pay Ammo to Promote your AI to a higher Rank.
-+ The Higher their Rank, the better their Skill becomes.
-+ If your AI gets "stuck", use 0-8-1 to help them out!
-+ *If the AI dies or you Dismiss him, that AI's stats are lost*
+These are defaults; most can be changed in the settings.
 
-### "TK" (Team Kill) Protect + AutoBAN
-+ Customizable via LRX Parameters
-+ Can be set to Auto-Ban Players after a specified number of offenses.
-+ Can also be set to allow the offended Player determine their killer's Fate.
-+ Can also be otherwise adjusted or disabled.
+- **Easy AI** (on): friendly AI at maximum skill, enemies at minimum.
+- **Enemy vehicle progression** (off): enemy armor isn't gated by readiness.
+- **Second Chance** (off): no random temporary recovery.
+- **No friendly-fire or civilian punishments**: team-kill enforcement and
+  civilian casualty penalties are removed, and reputation can no longer drop.
+- Thermals work day and night, and artillery has no firing limit.
+- Every player is a Medic, Engineer, Explosive Specialist and UAV Hacker.
+- No ejection from vehicle seats over ownership, rank or vehicle class. Locks
+  and resource costs still apply.
 
-### + Extended Air Supports Menu
-+ A selection of vehicles you can have paradropped to your pos.
-+ Includes Quads, Lt Vehicles, MRAPs, Transport Trucks, APCs, and Boats.
-+ Artillery strike.
-+ Air supremacy.
+### Squads, reviving and rewards
 
-### Air Taxi Service
-+ Located in the Air Supports Menu
-+ Sends a Helicopter to land and pick you up.
-+ Once inside, you can set your Destination.
-+ Your AI and other Players can ride along.
-+ *The enemy won't shoot it down!*
+- Up to **150 units in your group** (instead of 50 for the whole side).
+- Unlimited AI revives, a **Call Medic** action, and smarter medics that
+  handle seats, orders and getting stuck.
+- An orbiting camera while wounded, with lighter blood and screen effects.
+- Kills by your squad, your vehicles and your purchased AI are credited to you,
+  including vehicles that die later from their damage. Vehicle kills pay
+  **ammo, XP and fuel** (half the ammo reward).
 
-### + Virtual Garage + Repaint Menu
-+ Store your Vehicles in your virtual garage.
-+ Repaint them with the VAM Menu.
-+ Add items to the Inventory with the VAM Menu.
-+ *Vehicles that are parked within the FOB area are safe and saved as well*
+### Searchable purchase catalog
 
-### A Dog!
-+ He Follows you!
-+ You can give him Commands.
-+ Find Enemies...
-+ Patrol...
-+ Bring you a Weapon...
-+ The Dog automatically detects and marks nearby IEDs!
+- The optional **All Factions Catalog** (off by default) lists troops and
+  vehicles from every loaded mod: infantry, cars, trucks, armor, aircraft,
+  boats, drones and statics.
+- Search by name or class, filter by faction, type or **Unlocked only**, and
+  browse collapsible groups with item counts.
+- Locked entries stay visible, with tooltips that explain exactly what you're
+  missing.
 
-### Other cool Features!
-+ Dynamic Side Missions, with various Rewards or Bonuses.
-+ Secondary Missions, lower the alert level and add Intel Points.
-+ Magazine Repack
-+ Wildlife Manager
-+ High Command Squads
-+ Ongoing Development, Performance Updates, Bug Fixes, New Features!
-+ User Actions Keys:
-- (UserAction n°10) Weapon to back
-- (UserAction n°11) Always run
-- (UserAction n°12) Toggle earplugs
-- (UserAction n°13) Toggle HUD
-- (UserAction n°14) Take Screenshot (game engine) 
+### FOBs, deployment and logistics
 
-- MULTI 6 - English, French, German, Spanish, Russian, Chinesesimp
+- More fortifications: sandbags, H-barriers, towers, raised HMG/GMG, static
+  AA/AT, and Expeditionary Forces emplacements when that DLC is loaded.
+- Temporary fortifications place instantly and expire after ten minutes.
+- Deploy to your own parked vehicles, or back to where you last died while
+  your grave remains.
+- Repair, refuel and rearm cooldowns drop to about 20 to 30 seconds
+  (configurable).
+- More reliable garage, cargo, trader and warehouse handling.
 
-This mission is designed to avoid the need for a commander, even at first boot, proper rights management, and player permissions are automatically granted.
+### Presentation
 
-Most of the important options can be configured via the "Settings" menu (in lobby)
-They can change the mission experience radically.
+- A proper loading screen with Hippos Conquest artwork, progress and status
+  messages, and no lingering black screens on load or respawn.
+- Hippos Conquest branding and music, larger dialogs, and clearer English
+  settings and messages.
 
-Zeus mode can be used when you are both admin of the server and logged as Commander.
+### Multiplayer performance
 
-Have Fun !
+- Up to **three headless clients**. AI Warfare squads, sector defenders,
+  patrols, static crews and civilian traffic are spread across them by load.
+  If one disconnects, its AI moves to another headless client or the server.
+- **Admin > AI load** shows FPS, groups and units for the server and each
+  headless client.
 
-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## Inherited from Liberation RX
 
-## Installation
+Everything else from Liberation RX is still here, including:
 
-+ Direct Play:
-      Copy the pbo file to your "Steam\SteamApps\common\Arma3\MPMissions\" directory
-      Launch Arma 3, Host MP Game, Select Island and Liberation RX mission, Start
+- Personal XP ranks, and a personal economy of ammo, fuel and manpower
+- Owned and lockable vehicles, a virtual garage and a repaint menu
+- Persistent saves for players, squads, vehicles and cargo
+- LARs arsenal, R3F logistics (towing, sling loading, cargo), and ACE support
+- AI revive, saved squad AI with ranks, and High Command squads
+- Air support drops, artillery and an air taxi
+- Side missions, secondary missions and intel
+- A dog companion that finds enemies and marks IEDs
+- Zeus for admins and commanders, and admin and moderator panels
 
-+ Build from Source:
-      Launch "build.bat" in the build directory to build PBOs
-      Or merge the core.liberation folder with the island mission folder
-      and build the pbo by yourself.
+See the [Liberation RX repository](https://github.com/tbox1911/Liberation-RX)
+for the full feature list.
 
-+ Dedicated Server
-      Copy the pbo file to your "Steam\SteamApps\common\Arma3 Server\MPMissions\" directory
-      Edit / Create the server configuration file (look at: <https://community.bistudio.com/wiki/server.cfg>)
+## Host a dedicated server
 
-      Start the server
-            arma3server_x64.exe -high -name=server -nosound -port=2302 -config=server.cfg
-            arma3server -high -name=server -nosound -port=2302 -config=server.cfg
+[tools/server](tools/server/README.md) has PowerShell scripts that start a LAN
+dedicated server with up to three headless clients. You copy one config file,
+set an admin password, and optionally point it at an Arma 3 Launcher mod preset.
 
-## Thanks
+## Build from source
 
-   I want to thank :
-   Zbug, who did a very good job, AgentRev and Larrow and all contributors of  [Bohemia Interactive Forums](https://forums.bohemia.net/). for the countless messages I read from them and gave me a real code lesson!
+Malden is the only map built and tested for Hippos Conquest. The other
+`maps/` folders come from Liberation RX and haven't been updated.
 
+Requirements: Python 3, Arma 3 and Arma 3 Tools. The build reads the upstream
+Liberation RX history, so fetch it once:
 
-## Headless clients and AI simulation
+```powershell
+git fetch https://github.com/tbox1911/Liberation-RX.git master:refs/remotes/upstream/master --tags
+python tools/build_malden.py --build-only --game-directory 'C:\path\to\Arma 3'
+```
 
-Hippos Conquest can distribute autonomous AI Warfare infantry, FOB defenders and
-vehicle crews across ready headless clients. Player squads and personal AI are
-protected. Groups remain intact; balancing uses AI unit counts and includes
-existing HC workloads. Joining clients participate after initialization and
-content checks. Disconnects move managed AI to another ready HC or the server.
-Sector capture and persistence controllers stay on the server.
+Leave out `--build-only` to also install the mission into your game's
+`MPMissions` folder. The output goes to `mybuild/releases/`.
 
-Malden includes three playable HC slots. See [headless-client setup and the
-launcher](tools/headless/README.md). The release installer also places these
-helpers in the game's `HipposConquest` folder. Admin > **AI load** reports FPS,
-groups and AI units. A dedicated server must allow the HC addresses, and HCs
-must load the server's gameplay mods. Running more processes on one computer
-still consumes that computer's CPU and memory.
+## Languages
+
+New Hippos Conquest text is English only. Inherited Liberation RX text keeps
+its French, German, Spanish, Russian and Simplified Chinese translations, so
+other languages show a mix.
+
+## Credits and license
+
+Hippos Conquest is made and maintained by TheHungryHippo. It's based on
+Liberation RX by pSiKO and contributors, and the original Liberation by Zbug
+and contributors, with work from AgentRev, Larrow, GREUH and the authors of
+the included addons. See [CREDITS.md](CREDITS.md).
+
+Licensed under the [GNU GPL v3](COPYING.md).
