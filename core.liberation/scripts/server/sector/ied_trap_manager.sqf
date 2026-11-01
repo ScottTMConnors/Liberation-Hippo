@@ -47,7 +47,7 @@ if (count _ide_pos > 0 && floor random 100 < GRLIB_MineProbability) then {
 		sleep (1 + floor random 3);
 		_hostilecount = [_ide_pos, _activation_radius] call F_getNearbyPlayers;
 		if (count _hostilecount >= _infantry_trigger) then {
-			sleep 1 + (floor random 4);
+			sleep (1 + (floor random 4));
 			_hostilecount = [_ide_pos, _activation_radius] call F_getNearbyPlayers;
 			if (count _hostilecount == 0) exitWith {};
 			[_ied_obj] spawn {

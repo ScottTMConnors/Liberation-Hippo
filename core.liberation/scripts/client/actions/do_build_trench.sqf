@@ -9,7 +9,8 @@ _vehicle setVariable ["R3F_LOG_disabled", true, true];
 GRLIB_current_trenches = GRLIB_current_trenches + 1;
 [_vehicle] spawn {
     params ["_object"];
-    waitUntil {sleep 5; isNull _object || {time >= (_object getVariable ["GRLIB_counter_TTL", 0])}};
-    if (!isNull _object) then {deleteVehicle _object};
+    // vehicle_perm clears the TTL when someone mans the static: keep it then.
+    waitUntil {sleep 5; isNull _object || {isNil {_object getVariable "GRLIB_counter_TTL"}} || {time >= (_object getVariable ["GRLIB_counter_TTL", 0])}};
+    if (!isNull _object && {!isNil {_object getVariable "GRLIB_counter_TTL"}}) then {deleteVehicle _object};
     GRLIB_current_trenches = (GRLIB_current_trenches - 1) max 0;
 };

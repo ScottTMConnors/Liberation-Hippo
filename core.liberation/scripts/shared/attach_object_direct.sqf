@@ -25,7 +25,7 @@ private _vehicle_load = _vehicle getVariable ["GRLIB_ammo_vehicle_load", []];
 if (count _vehicle_load >= _maxload) exitWith { objNull };
 
 private _offsets = [];
-for "_i" from 2 to (2+_maxload) do { _offsets pushback (_config select _i) };
+for "_i" from 2 to (1+_maxload) do { _offsets pushback (_config select _i) };
 
 private _box_offset = [0, 0, 0];
 {

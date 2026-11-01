@@ -1,5 +1,6 @@
 // Additional Key Shortcut
 waitUntil {sleep 0.5;!(isNull (findDisplay 46))};
+if (isNil "AR_active") then { AR_active = false };
 
 // Weapon to the back
 (findDisplay 46) displayAddEventHandler ["KeyDown", {

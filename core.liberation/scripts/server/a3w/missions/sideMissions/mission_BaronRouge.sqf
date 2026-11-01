@@ -80,7 +80,7 @@ _failedExec = {
 
 _successExec = {
 	// Mission completed
-	private _killer = (_vehicles select 0) getVariable ["GRLIB_last_killer", objNull];
+	private _killer = _vehicle getVariable ["GRLIB_last_killer", objNull];
 	if (isPlayer _killer) then {
 		private _rwd_xp = 30;
 		private _text = format ["Reward Received: %1 XP", _rwd_xp];

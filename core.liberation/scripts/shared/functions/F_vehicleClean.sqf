@@ -53,7 +53,7 @@ _vehicle setVariable ["GRLIB_ammo_vehicle_load", [], true];
 
 // Delete Vehicle and Crew
 if (_delete) then {
-	{ deleteVehicle _x } forEach (crew _vehicle);
+	{ _vehicle deleteVehicleCrew _x } forEach (crew _vehicle);
 	deleteVehicle _vehicle;
 } else {
 	// Deep Water

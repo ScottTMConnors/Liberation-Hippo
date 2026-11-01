@@ -80,8 +80,8 @@ _setupObjects = {
 		private _grp = [_missionPos, 8, "infantry", false] call createCustomGroup;
 		private _cargo_indx = 3;
 		{
-		    _x assignAsCargoIndex [_vehicle2, _cargo_indx];
-            _x moveInCargo [_vehicle2, _cargo_indx];
+		    _x assignAsCargoIndex [_vehicle3, _cargo_indx];
+            _x moveInCargo [_vehicle3, _cargo_indx];
             _cargo_indx = _cargo_indx + 1;
 		} forEach (units _grp);
 		_troops = (units _grp);

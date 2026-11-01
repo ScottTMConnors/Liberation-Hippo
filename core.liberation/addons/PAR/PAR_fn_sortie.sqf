@@ -29,7 +29,7 @@ if (!isPlayer _medic) then {
 
 // Medic can't continue
 private _my_medic = _wnded getVariable ["PAR_myMedic", objNull];
-if (local _medic && !isNull _my_medic && _my_medic != _medic) exitWith { _medic switchMove ""; [_medic, _wnded] call PAR_fn_medicRelease };
+if (local _medic && !isNull _my_medic && _my_medic != _medic) exitWith { _medic switchMove ""; [_medic, _medic] call PAR_fn_medicRelease };
 if ((!alive _wnded) || (!alive _medic) || ([_medic] call PAR_is_wounded || !([_wnded] call PAR_is_wounded))) exitWith { [_medic, _wnded] call PAR_fn_medicRelease };
 
 // Wounded Revived

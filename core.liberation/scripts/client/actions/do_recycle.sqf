@@ -84,7 +84,7 @@ if ( dorecycle == 1 && !(isNull _vehicle) && (alive _vehicle || _veh_class in al
 		_public = true;
 	};
 
-	{ deleteVehicle _x } forEach (crew _vehicle);
+	{ _vehicle deleteVehicleCrew _x } forEach (crew _vehicle);
 	deleteVehicle _vehicle;
 
 	if (_veh_class in uavs_vehicles) then {

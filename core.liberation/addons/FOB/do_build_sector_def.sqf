@@ -30,6 +30,7 @@ build_action = 0;
 build_type = 0;
 private _refresh = true;
 private _sectors_def = [];
+private _defense_count = -1;
 while { dialog && alive player } do {
     if (_refresh) then {
         _sectors_def = [];
@@ -56,6 +57,7 @@ while { dialog && alive player } do {
             _sectors_def pushback _sector;
         } foreach _sectors_sorted;
         //lbSetCurSel [110, -1];
+        _defense_count = count GRLIB_sector_defense;
         _refresh = false;
     };
 
@@ -64,6 +66,10 @@ while { dialog && alive player } do {
     if (build_action != 0) then {
         { ctrlEnable [_x, false] } forEach _butons_id;
         _selected_item = lbCurSel 110;
+        if (_selected_item < 0) exitWith {
+            { ctrlEnable [_x, true] } forEach _butons_id;
+            build_action = 0;
+        };
         _sector = (_display displayCtrl (110)) lnbData [_selected_item, 0];
         _sector_name = (_display displayCtrl (110)) lnbText [_selected_item, 0];
 
@@ -86,5 +92,5 @@ while { dialog && alive player } do {
         _refresh = true;
     };
 
-    if (count _sectors_def != count GRLIB_sector_defense) then { _refresh = true };
+    if (count GRLIB_sector_defense != _defense_count) then { _refresh = true };
 };

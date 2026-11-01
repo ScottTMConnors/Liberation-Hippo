@@ -52,6 +52,14 @@ if (!_continue_mission) exitWith {
 	if (!isNil "_vehicles") then {
 		[_vehicles, true] spawn cleanMissionVehicles;
 	};
+	// release the reserved location, otherwise it stays blocked forever
+	if (!isNil "_missionLocation") then {
+		A3W_sectors_in_use = A3W_sectors_in_use - [_missionLocation];
+		publicVariable "A3W_sectors_in_use";
+		if (!isNil "_locationsArray") then {
+			[_locationsArray, _missionLocation, false] call setLocationState;
+		};
+	};
 };
 
 ["lib_secondary_a3w_mission", [localize _missionType]] remoteExec ["bis_fnc_shownotification", 0];
@@ -136,9 +144,6 @@ waitUntil {
 
 if (GRLIB_endgame == 1 || GRLIB_global_stop == 1) then { _failed = true };
 
-deleteMarker _marker;
-deleteMarker _marker_zone;
-
 if (_failed) then {
 	// Mission failed
 	if (GRLIB_endgame != 1 && GRLIB_global_stop != 1) then {
@@ -170,6 +175,10 @@ if (_failed) then {
 	diag_log format ["A3W Mission %1 - success %2", _controllerSuffix, localize _missionType];
 	A3W_mission_success = A3W_mission_success + 1;
 };
+
+// delete markers after the exec blocks (some use markerPos _marker)
+deleteMarker _marker;
+deleteMarker _marker_zone;
 
 [_task] spawn {
 	params ["_task"];

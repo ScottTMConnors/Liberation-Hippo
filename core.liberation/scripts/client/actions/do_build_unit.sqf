@@ -23,6 +23,8 @@ private _class_overide = toLower _classname;
 if (_class_overide in units_loadout_overide) then {
     private _path = format ["mod_template\%1\loadout\%2.sqf", GRLIB_mod_west, _class_overide];
     [_path, _unit] call F_getTemplateFile;
+    // Override loadouts give weapons without magazines; refill like spawned AI.
+    [_unit] spawn reammo_ai;
 };
 
 PAR_AI_bros = PAR_AI_bros + [_unit];

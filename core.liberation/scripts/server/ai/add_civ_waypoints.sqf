@@ -1,7 +1,7 @@
 params ["_grp", "_basepos"];
 if (isNil "_grp" || isNil "_basepos") exitWith {};
 if (isNull _grp) exitWith {};
-if (!local _grp) exitWith { [_grp, _basepos] remoteExec ["add_civ_waypoints", groupOwner _grp] };
+if (!local _grp) exitWith { [_grp, _basepos] remoteExec ["add_civ_waypoints", [2, groupOwner _grp] select isServer] };
 
 [_grp] call F_deleteWaypoints;
 

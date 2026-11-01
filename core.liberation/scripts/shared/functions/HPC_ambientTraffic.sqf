@@ -10,9 +10,9 @@ private _kept = [];
         _kept pushBack _vehicle;
     } else {
         private _group = group driver _vehicle;
-        {deleteVehicle _x} forEach crew _vehicle;
+        deleteVehicleCrew _vehicle;
         deleteVehicle _vehicle;
-        if (!isNull _group) then {deleteGroup _group};
+        if (!isNull _group && {local _group}) then {deleteGroup _group};
     };
 } forEach _traffic;
 HPC_ambientTraffic = _kept;
@@ -48,6 +48,8 @@ _vehicle setVariable ["HPC_trafficExpires",time+1800];
 _vehicle setVariable ["HPC_ambientTraffic",true,true];
 private _group = civilian createVehicleCrew _vehicle;
 if (isNull _group || {isNull driver _vehicle}) exitWith {deleteVehicleCrew _vehicle; deleteVehicle _vehicle};
+// The group may be moved to a headless client; let the engine remove it there once empty.
+_group deleteGroupWhenEmpty true;
 _group setBehaviourStrong "CARELESS";
 _group setCombatMode "BLUE";
 _group setSpeedMode "LIMITED";

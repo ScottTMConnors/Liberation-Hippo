@@ -44,6 +44,7 @@ GRLIB_BuildTypeDirect = 90;
 if (abort_loading) exitWith {
     if (!isNil "HPC_fatalFaction") exitWith {};
 	private _msg = format [localize "STR_MSG_SERVER_STARTUP_ERROR", abort_loading_msg];
+	[] call HPC_fnc_loadingEnd; // otherwise the native loading screen hides the message
 	titleText [_msg, "PLAIN", 100];
 	diag_log abort_loading_msg;
 	uiSleep 10;
@@ -55,6 +56,7 @@ if (abort_loading) exitWith {
 PAR_Grp_ID = getPlayerUID player;
 if (PAR_Grp_ID == "" || !(isPlayer player)) exitWith {
 	private _msg = localize "STR_MSG_SERVER_INIT_ERROR";
+	[] call HPC_fnc_loadingEnd; // otherwise the native loading screen hides the message
 	titleText [_msg, "PLAIN", 100];
 	uiSleep 10;
 	endMission "LOSER";
@@ -68,6 +70,7 @@ GRLIB_is_Commander = (player getvariable ["GRLIB_is_Commander", false]);
 private _name = name player;
 if (toLower _name in GRLIB_blacklisted_names || (_name == str parseNumber _name) || (count trim _name <= 2)) exitWith {
 	private _msg = format [localize "STR_NAME_PROHIBITED", _name];
+	[] call HPC_fnc_loadingEnd; // otherwise the native loading screen hides the message
 	titleText [_msg, "PLAIN", 100];
 	uiSleep 10;
 	endMission "LOSER";
@@ -86,6 +89,7 @@ if (!isNil "LRX_Template_version") then {
 };
 if (!_version_checked) exitWith {
 	private _msg = localize "STR_MSG_INVALID_LRXMOD_VERSION";
+	[] call HPC_fnc_loadingEnd; // otherwise the native loading screen hides the message
 	titleText [_msg, "PLAIN", 100];
 	uiSleep 10;
 	endMission "LOSER";
@@ -95,6 +99,7 @@ if (!_version_checked) exitWith {
 waitUntil {uiSleep 0.5; !isNil "GRLIB_global_stop"};
 if (GRLIB_global_stop == 1) exitWith {
 	private _msg = localize "STR_MSG_FINAL_MISSION_RUNNING";
+	[] call HPC_fnc_loadingEnd; // otherwise the native loading screen hides the message
 	titleText [_msg, "PLAIN", 100];
 	uiSleep 10;
 	endMission "LOSER";
@@ -104,6 +109,7 @@ if (GRLIB_global_stop == 1) exitWith {
 waitUntil {uiSleep 0.5; !isNil "GRLIB_endgame"};
 if (GRLIB_endgame == 1) exitWith {
 	private _msg = localize "STR_MSG_END_GAME";
+	[] call HPC_fnc_loadingEnd; // otherwise the native loading screen hides the message
 	titleText [_msg, "PLAIN", 100];
 	uiSleep 10;
 	endMission "LOSER";
@@ -119,6 +125,9 @@ if (GRLIB_respawn_cooldown > 0) then {
 	waitUntil {uiSleep 1; !isNil "BTC_logic"};
 	private _cooldown = BTC_logic getVariable [format ["%1_last_respawn", PAR_Grp_ID], 0];
 	if (_cooldown > time) then {
+		// Cooldown can exceed the loading screen's 300 s deadline and hides the message.
+		[] call HPC_fnc_loadingEnd;
+		disableUserInput true;
 		while { time < _cooldown } do {
 			private _msg = format [localize "STR_MSG_RESPAWN_COOLDOWN", round (_cooldown - time)];
 			titleText [_msg, "PLAIN", 100];

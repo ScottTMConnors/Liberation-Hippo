@@ -90,7 +90,7 @@ if (GRLIB_endgame == 0 && GRLIB_global_stop == 0) then {
 	) then {
 		[_liberated_sector] spawn {
 			params ["_liberated_sector"];
-			sleep 60 + (floor random 150);
+			sleep (60 + (floor random 150));
 			diag_log format ["Spawn Revenge BattleGroup at %1", time];
 			if (floor random 3 == 0) then {
 				private _fob_marker = [];

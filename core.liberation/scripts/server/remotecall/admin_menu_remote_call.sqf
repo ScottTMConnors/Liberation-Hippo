@@ -2,8 +2,9 @@ if (!isServer) exitWith {};
 private _access = false;
 private _uid = "Unknown";
 private _netid = remoteExecutedOwner;
-if (_netid <= 0) exitWith {};
-if (hasInterface && {_netid == clientOwner}) then {_access = true};
+// remoteExecutedOwner is always 0 in singleplayer; the only caller there is the local player.
+if (_netid <= 0 && {isMultiplayer}) exitWith {};
+if (!isMultiplayer || {hasInterface && {_netid == clientOwner}}) then {_access = true};
 
 if (!_access) then {
     if (!isServer && hasInterface && !isRemoteExecuted) exitWith {};

@@ -1,7 +1,7 @@
 params ["_grp", "_flagpos", ["_radius", 100],["_resume",false]];
 if (isNil "_grp" || isNil "_flagpos") exitWith {};
 if (isNull _grp) exitWith {};
-if (!local _grp) exitWith {_this remoteExec ["defence_ai",groupOwner _grp]};
+if (!local _grp) exitWith {_this remoteExec ["defence_ai",[2, groupOwner _grp] select isServer]};
 private _runnerKey = format ["HPC_defenceRunner_%1",clientOwner];
 private _previous = _grp getVariable [_runnerKey,scriptNull];
 if (!scriptDone _previous && {!_resume}) exitWith {};
@@ -80,7 +80,7 @@ while { local _grp && {GRLIB_endgame == 0} && {({alive _x} count (units _grp) > 
 
     // Only ordinary enemy defenders opt in. Player squads and mission actors
     // retain their existing ownership and are also checked by hcEligible.
-    if (side _grp == GRLIB_side_enemy && {units _grp findIf {_x getVariable ["GRLIB_mission_AI",false]} < 0}) then {
+    if (side _grp == GRLIB_side_enemy && {!(_grp getVariable ["HPC_hcManaged",false])} && {units _grp findIf {_x getVariable ["GRLIB_mission_AI",false]} < 0}) then {
         _grp setVariable ["HPC_hcManaged",true,true];
     };
 	sleep 60;

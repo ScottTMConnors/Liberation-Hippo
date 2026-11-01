@@ -97,5 +97,11 @@ while { alive _wnded && alive _medic && ([_wnded] call PAR_is_wounded) && !([_me
 if (_healed) then {
 	[_wnded, _medic] spawn PAR_fn_sortie;
 } else {
-	[_medic, _wnded] spawn PAR_fn_medicRelease;
+	// A manual Call Medic may already have assigned a replacement; do not release it.
+	private _current_medic = _wnded getVariable ["PAR_myMedic", objNull];
+	if (isNull _current_medic || {_current_medic == _medic}) then {
+		[_medic, _wnded] spawn PAR_fn_medicRelease;
+	} else {
+		[_medic, _medic] spawn PAR_fn_medicRelease;
+	};
 };

@@ -4,7 +4,7 @@ private _grp = grpNull;
 private _vehicle = objNull;
 private _arsenal = objNull;
 private _players = (AllPlayers - (entities "HeadlessClient_F"));
-if (count _players == 0) exitWith {};
+if (count _players == 0) exitWith { [_grp, _vehicle, _arsenal] };
 private _cost = round ((GRLIB_defense_costs select _defense_type) / (count _players));
 {
     if (_x getVariable ["GREUH_ammo_count", 0] > GREUH_start_ammo) then {

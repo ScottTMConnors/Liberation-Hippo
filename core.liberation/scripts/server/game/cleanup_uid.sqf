@@ -12,7 +12,7 @@ deletemarker format ["PAR_marker_%1", _uid];
 if (!isNil "GRLIB_mobile_respawn") then {
 	private _my_tent = GRLIB_mobile_respawn select {
 		!([_x, "FOB", GRLIB_fob_range] call F_check_near) &&
-		isNull (_x getVariable "R3F_LOG_est_transporte_par") &&
+		isNull (_x getVariable ["R3F_LOG_est_transporte_par", objNull]) &&
 		(_x getVariable ["GRLIB_vehicle_owner", ""] == _uid)
 	};
 	{

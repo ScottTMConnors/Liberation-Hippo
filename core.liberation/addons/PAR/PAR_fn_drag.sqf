@@ -2,7 +2,7 @@ params ["_target", "_caller", "_actionId", "_arguments"];
 PAR_isDragging = true;
 
 _target attachTo [player, [0, 1.1, 0.092]];
-_target setDir 180;
+[_target, 180] remoteExec ["setDir", _target];
 _target setVariable ["PAR_isDragged", 1, true];
 
 player switchMove "AcinPknlMstpSrasWrflDnon";
@@ -21,8 +21,8 @@ waitUntil {
 };
 
 if (!isNull _target && alive _target) then {
-	_target switchMove "AinjPpneMstpSnonWrflDnon";
-	_target playMoveNow  "AinjPpneMstpSnonWrflDnon";
+	[_target, "AinjPpneMstpSnonWrflDnon"] remoteExec ["switchMove", _target];
+	[_target, "AinjPpneMstpSnonWrflDnon"] remoteExec ["playMoveNow", _target];
 	_target setVariable ["PAR_isDragged", 0, true];
 	detach _target;
 };

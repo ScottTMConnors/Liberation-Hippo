@@ -283,9 +283,11 @@ while {GRLIB_run_cleanup} do {
 					_count = _count - 1;
 				};
 			} else {
-				while {(((count _nbVehicles) - _vehiclesLimit) > 0)} do {
+				_count = count _nbVehicles;
+				while {((_count - _vehiclesLimit) > 0)} do {
 					[selectRandom _nbVehicles, true, true] spawn F_vehicleClean;
 					_stats = _stats + 1;
+					_count = _count - 1;
 				};
 			};
 			sleep 1;
@@ -330,7 +332,7 @@ while {GRLIB_run_cleanup} do {
 	// CRATERS
 	if (!(_craterLimit == -1)) then {
 		_list = (allMissionObjects "Crater") select { getObjectType _x >= 8 };
-		_list append (allMissionObjects "CraterLong") select { getObjectType _x >= 8 };
+		_list append ((allMissionObjects "CraterLong") select { getObjectType _x >= 8 });
 		_count = count _list;
 		if (_count > _craterLimit) then {
 			if (_craterDistCheck) then {

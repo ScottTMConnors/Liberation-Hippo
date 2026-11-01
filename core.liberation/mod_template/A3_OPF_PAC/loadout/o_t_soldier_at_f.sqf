@@ -12,7 +12,7 @@ _unit forceAddUniform (selectRandom _militia_uniforms);
 _unit addHeadgear "H_Booniehat_oli";
 _unit addGoggles "G_Balaclava_lowprofile";
 
-_unit removeWeapon "launch_O_Titan_short_F";
+_unit removeWeapon (secondaryWeapon _unit);
 _unit addWeapon "launch_MRAWS_green_F";
 _unit addSecondaryWeaponItem "MRAWS_HEAT_F";
 

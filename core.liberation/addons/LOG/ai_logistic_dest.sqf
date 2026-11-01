@@ -20,7 +20,7 @@ waitUntil {
         _driver doMove _dest;
         sleep 10;
     };
-    (!alive _vehicle || isNull _driver || (_vehicle distance2D _dest <= _landing_range && unitReady _driver) || time >= _stop)
+    (!alive _vehicle || !alive _driver || (_vehicle distance2D _dest <= _landing_range && unitReady _driver) || time >= _stop)
 };
 
 if (!alive _vehicle) exitWith { true };
@@ -30,4 +30,4 @@ if (_vehicle isKindOf "Helicopter_Base_F") then {
     sleep 15;
 };
 
-(time >= _stop || isNull _driver || !alive _vehicle);
+(time >= _stop || !alive _driver || !alive _vehicle);

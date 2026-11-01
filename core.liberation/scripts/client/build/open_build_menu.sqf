@@ -480,11 +480,12 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
 	};
 
     buildindex = _selected_item;
-    HPC_buildSelection = [];
+    // Assign once: build_manager may read this while the menu loop is suspended.
+    private _selection = [];
     if (_selected_item >= 0 && _selected_item < count _build_list) then {
-        private _chosen = +(_build_list select _selected_item);
-        HPC_buildSelection = [buildtype, _chosen];
+        _selection = [buildtype, +(_build_list select _selected_item)];
     };
+    HPC_buildSelection = _selection;
 	ctrlEnable [120, _affordable && _linked_unlocked && dobuild == 0 && count HPC_buildSelection == 2];
     private _purchaseTip = if (_selectedRow >= 0 && {_selected_item >= 0}) then {lnbData [110,[_selectedRow,2]]} else {"Select an item to see its preview and purchase it."};
     if (_purchaseTip == "") then {_purchaseTip = "Purchase the selected item."};

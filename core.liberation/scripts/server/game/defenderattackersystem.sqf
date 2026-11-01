@@ -7,11 +7,13 @@ HPC_fnc_warfareActive = { HPC_AIWarfare && GRLIB_endgame == 0 && GRLIB_global_st
 HPC_fnc_warfareDelete = {
     params ["_group", ["_vehicle", objNull]];
     if (!isNull _vehicle) then {
+        // Decide before deleting: crew removal on an HC-owned vehicle reaches the server later.
+        private _keep = crew _vehicle select {!(_x getVariable ["HPC_warfare", false]) || isPlayer _x};
         {if (_x getVariable ["HPC_warfare", false] && !isPlayer _x) then {_vehicle deleteVehicleCrew _x}} forEach crew _vehicle;
-        if (crew _vehicle isEqualTo []) then {deleteVehicle _vehicle}
+        if (_keep isEqualTo []) then {deleteVehicle _vehicle}
         else {_vehicle setVariable ["HPC_warfare", nil, true]};
     };
-    if (!isNull _group) then { { if (_x getVariable ["HPC_warfare", false] && !isPlayer _x) then {deleteVehicle _x} } forEach units _group; if (units _group isEqualTo []) then {_group remoteExecCall ["deleteGroup",groupOwner _group]} };
+    if (!isNull _group) then { { if (_x getVariable ["HPC_warfare", false] && !isPlayer _x) then {if (isNull objectParent _x) then {deleteVehicle _x} else {(objectParent _x) deleteVehicleCrew _x}} } forEach units _group; if (units _group isEqualTo []) then {_group remoteExecCall ["deleteGroup",groupOwner _group]} };
 };
 HPC_fnc_warfarePosition = {
     params ["_center", ["_size", 3], ["_radius", 100]];

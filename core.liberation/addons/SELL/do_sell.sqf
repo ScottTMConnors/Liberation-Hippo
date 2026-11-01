@@ -34,7 +34,7 @@ while { dialog && alive player } do {
 			[player, _x] call is_owner && locked _x != 2
 		};
 
-		if (!isNil "GRLIB_personal_box") then { _sell_list append [GRLIB_personal_box] };
+		if (!isNil "GRLIB_personal_box") then { _sell_list pushBackUnique GRLIB_personal_box };
 
 		private _sell_list_dlg = [];
 		{
@@ -44,8 +44,10 @@ while { dialog && alive player } do {
 			} else {
 				_price = round (_price / GRLIB_recycling_percentage);
 			};
-			if (_price > 0) then { _sell_list_dlg pushBack [(typeOf _x), _price] };
+			if (_price > 0) then { _sell_list_dlg pushBack [(typeOf _x), _price, _x] };
 		} forEach _sell_list;
+		// keep object list aligned with the dialog rows (zero-price objects are not listed)
+		_sell_list = _sell_list_dlg apply { _x select 2 };
 
 		lbClear 110;
 		{

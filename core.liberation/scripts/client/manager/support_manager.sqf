@@ -59,6 +59,8 @@ while {true} do {
 				_needammo1 = false;
 				_needammo2 = false;
 				_needmedic = false;
+				_added_pri = 0;
+				_added_sec = 0;
 				_near_arsenal = [_unit, "REAMMO_AI", _distarsenal] call F_check_near;
 				_primary_weapon = primaryWeapon _unit;
 				_secondary_weapon = secondaryWeapon _unit;

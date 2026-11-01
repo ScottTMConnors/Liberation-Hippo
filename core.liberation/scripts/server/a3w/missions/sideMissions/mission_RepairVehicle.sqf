@@ -93,7 +93,8 @@ _setupObjects = {
 		private ["_spawn_pos", "_last_tank_pos", "_grp"];
 		while {alive _tank && (_tank distance2D _targetPos > 50)} do {
 			_last_tank_pos = getPosATL _tank;
-			waitUntil {sleep 1; (_tank distance2D _last_tank_pos > 150)};
+			waitUntil {sleep 1; (!alive _tank || _tank distance2D _last_tank_pos > 150)};
+			if (!alive _tank) exitWith {};
 			_tank setHitPointDamage ["HitEngine", 1];
 			_tank setFuel 0;
 			_tank engineOn false;
@@ -101,7 +102,8 @@ _setupObjects = {
 			_grp = [_spawn_pos, ([] call getNbUnits), "militia", false] call createCustomGroup;
 			[_grp, _tank] spawn battlegroup_ai_direct;
 			sleep 10;
-			waitUntil {sleep 1; (_tank getHitPointDamage "HitEngine" < 1)};
+			waitUntil {sleep 1; (!alive _tank || _tank getHitPointDamage "HitEngine" < 1)};
+			if (!alive _tank) exitWith {};
 			_tank setFuel 1;
 			_tank engineOn true;
 			[_tank, true] call F_vehicleUnflip;

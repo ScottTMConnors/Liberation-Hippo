@@ -48,8 +48,9 @@ while {true} do {
 		};
 	};
 
-	// Exit
-	if (count AllPlayers == 0) exitWith {};
+	// Wait for players (exiting here would stop this controller for the rest of the session)
+	waitUntil { sleep 10; (count AllPlayers > 0 || GRLIB_endgame == 1 || GRLIB_global_stop == 1) };
+	if (GRLIB_endgame == 1 || GRLIB_global_stop == 1) exitWith {};
 
 	// Mission start + lock
 	[SideMissions, _nextMission, true] call setMissionState;

@@ -64,7 +64,7 @@ if (R3F_LOG_mutex_local_verrou) then {
 						if (count crew _objet_a_decharger == 0) then {
 							[_objet_a_decharger , clientOwner] remoteExec ["setOwner", 2];
 						} else {
-							[_objet_a_decharger , clientOwner] remoteExec ["setGroupOwner", 2];
+							[group (crew _objet_a_decharger select 0), clientOwner] remoteExec ["setGroupOwner", 2];
 						};
 					};
 					[_objet_a_decharger] spawn F_forceCrew;
@@ -98,7 +98,7 @@ if (R3F_LOG_mutex_local_verrou) then {
 							if (count crew _objet_a_decharger == 0) then {
 								[_objet_a_decharger , clientOwner] remoteExec ["setOwner", 2];
 							} else {
-								[_objet_a_decharger , clientOwner] remoteExec ["setGroupOwner", 2];
+								[group (crew _objet_a_decharger select 0), clientOwner] remoteExec ["setGroupOwner", 2];
 							};
 						};
 						[_objet_a_decharger] spawn F_forceCrew;

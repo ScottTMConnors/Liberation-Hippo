@@ -2,7 +2,10 @@ if (isDedicated || (!hasInterface && !isServer)) exitWith {};
 params ["_grp"];
 
 hintSilent localize "STR_HINT_SQUAD_COMING";
-waitUNtil { sleep 0.1; (local _grp) };
+// Bounded: if ownership never arrives (group deleted, player left), stop instead of hanging.
+private _deadline = diag_tickTime + 60;
+waitUntil { sleep 0.1; isNull _grp || {local _grp} || {diag_tickTime > _deadline} };
+if (isNull _grp || {!local _grp}) exitWith { diag_log format ["LRX: squad context %1 never became local", _grp] };
 
 { _x allowDamage false } foreach (units _grp);
 private _pos = getPosATL player;

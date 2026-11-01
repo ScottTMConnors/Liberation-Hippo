@@ -53,6 +53,14 @@ private _labelwidth = -1;
 private _labelpos = [];
 
 while { alive player && ([player] call PAR_is_wounded) && _bleedout_timer > 0 } do {
+	// ESC closes the dialog (kept so the pause menu stays reachable); reopen it once the pause menu is gone.
+	if (isNull _display && {isNull findDisplay 49} && {!dialog}) then {
+		createDialog "par_respawn";
+		_display = findDisplay 5566;
+		(_display displayCtrl 677) ctrlEnable (_ticks >= _respawn_button_delay);
+		if (_ticks >= _respawn_button_delay) then { ctrlSetText [677, "Respawn"] };
+		(_display displayCtrl 679) ctrlEnable !(player getVariable ["HPC_medicCallBusy", false]);
+	};
 	_bleedOut = player getVariable ["PAR_BleedOutTimer", 0];
 	_bleedout_timer = round (_bleedOut - time);
 	_bleedout_message = format [localize "STR_BLEEDOUT_MESSAGE", _bleedout_timer];

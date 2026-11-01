@@ -39,7 +39,7 @@ if ([_unit] call PAR_is_wounded) exitWith {
 };
 
 _unit setUnconscious false;
-sleep 5 + (floor random 20);
+sleep (5 + (floor random 20));
 if (alive _unit) then {
     if (PAR_AidKit in (items _unit) || PAR_Medikit in (items _unit)) then {
         _unit action ["HealSoldierSelf", _unit];
