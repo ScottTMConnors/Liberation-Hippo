@@ -44,11 +44,22 @@ abort_loading_msg = "Unknown startup error";
 GRLIB_ACE_enabled = false;
 //GRLIB_LRX_debug = true;
 
-private _path = "\userconfig\whitelist.sqf";
-if (fileExists _path) then {
-	[] call compileFinal preprocessFile _path;
-} else {
-	[] call compileFinal preprocessFileLineNumbers "whitelist.sqf";
+// Access lists come from the server only, so a server's userconfig copy applies to every player.
+if (isServer) then {
+	private _path = "\userconfig\whitelist.sqf";
+	if (fileExists _path) then {
+		[] call compileFinal preprocessFile _path;
+		diag_log "--- LRX: access lists loaded from userconfig\whitelist.sqf";
+	} else {
+		[] call compileFinal preprocessFileLineNumbers "whitelist.sqf";
+		diag_log "--- LRX: access lists loaded from the mission whitelist.sqf";
+	};
+	{
+		if (isNil _x) then { missionNamespace setVariable [_x, []] };
+		publicVariable _x;
+	} forEach ["GRLIB_whitelisted_steamids", "GRLIB_whitelisted_moderators", "GRLIB_blacklisted_names", "GRLIB_whitelisted_player"];
+	GRLIB_whitelist_loaded = true;
+	publicVariable "GRLIB_whitelist_loaded";
 };
 
 [] call compileFinal preprocessFileLineNumbers "scripts\shared\liberation_functions.sqf";

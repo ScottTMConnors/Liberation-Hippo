@@ -48,6 +48,17 @@ To stop: save through the mission's admin menu, then type `#shutdown`. If
 processes remain, `.\tools\server\stop_server.ps1` stops only the processes
 this launcher started. It does **not** save the campaign.
 
+## Commander whitelist and moderators
+
+The mission ships with empty access lists. To set them for your server, copy
+`core.liberation/whitelist.sqf` to `<Arma 3 folder>\userconfig\whitelist.sqf`
+and add SteamID64s to `GRLIB_whitelisted_steamids` (commander slot, used when
+the Whitelist parameter is on) and `GRLIB_whitelisted_moderators` (light admin
+menu). The server reads that file at mission start and sends the lists to every
+player; restart the mission after editing it. The launcher starts the server
+with `-filePatching`, which Arma needs to read `userconfig`. If you use another
+launcher, add that flag to the server's command line.
+
 Every script accepts `-Config <path>` to use another config file. The launcher
 also accepts `-BindAddress`, `-Port`, `-HeadlessCount`, `-AdminPassword`,
 `-GameDirectory` and `-RuntimeDirectory` to override a setting for one launch.

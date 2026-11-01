@@ -69,5 +69,6 @@ GRLIB_air_support = (GRLIB_air_support == 1);
 GRLIB_admin_menu = (GRLIB_admin_menu == 1);
 
 waitUntil { uiSleep 1; !isNil "GRLIB_LRX_server_params_loaded" };
+waitUntil { uiSleep 0.5; !isNil "GRLIB_whitelist_loaded" };	// access lists broadcast by the server
 
 diag_log "--- LRX: Client settings loaded ---";

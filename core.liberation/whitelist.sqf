@@ -1,16 +1,17 @@
-// Here you can allow people to use the commander slot. It will only be enforced if you activate the related mission option.
+// Access lists. Only the server reads this: it loads <Arma 3 folder>\userconfig\whitelist.sqf
+// when present (the server must be started with -filePatching), otherwise this file, and
+// broadcasts the lists to every player. Copy this file there to configure a server without
+// editing the mission. The commander list is only enforced if the related mission option is on.
 // When editing be careful with quotes and commas
 
 // Allowed individual players based on their SteamID64. This is the most secure way to do.
 // For example: "76561198085724439"
 // To know that information: https://steamid.io/
 GRLIB_whitelisted_steamids = [
-    "76561198058380904"
 ];
 
 // Allow player to use the Light Admin Menu (aka Moderators)
 GRLIB_whitelisted_moderators = [
-    "76561198058380904"
 ];
 
 // Forbiden player names.
