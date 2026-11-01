@@ -10,7 +10,7 @@ Maintained by TheHungryHippo. This Liberation RX fork preserves upstream faction
 
 ## Discord
 For any questions about settings, game mechanism and suggestion,
-Join our Discord server: https://discord.gg/uCRzJ7wauR
+Join our Discord server: https://discord.gg/HcXyqEaDVb
 
 
 ### Easy Setup
