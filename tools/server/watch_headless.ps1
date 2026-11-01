@@ -1,5 +1,6 @@
 param([Parameter(Mandatory)][string]$RuntimeDirectory)
 $ErrorActionPreference = 'Stop'
+. (Join-Path $PSScriptRoot 'server_config.ps1')
 $sessionPath = Join-Path $RuntimeDirectory 'session.json'
 $logPath = Join-Path $RuntimeDirectory 'watch-headless.log'
 function Read-Session {
@@ -32,9 +33,7 @@ try {
     $session = Read-Session
     $game = $session.gameDirectory
     $exe = Join-Path $game 'arma3server_x64.exe'
-    $workshop = [IO.Path]::GetFullPath((Join-Path $game '..\..\workshop\content\107410'))
-    $mods = @($session.creatorDlc | ForEach-Object { Join-Path $game $_ }) + @($session.mods | ForEach-Object { Join-Path $workshop $_.id })
-    $common = @('-noSplash','-skipIntro','-noPause','-world=empty','-noSound','-enableHT','-exThreads=1','-malloc=mimalloc_v360_20261024',('-mod="'+($mods -join ';')+'"'))
+    $common = Get-HippoSessionArgs $session
     for ($i=1; $i -le $session.headlessCount; $i++) {
         $profile = Join-Path $RuntimeDirectory "profiles\HC$i"
         New-Item -ItemType Directory -Path $profile -Force | Out-Null

@@ -1,0 +1,18 @@
+{
+  "_readme": "Copy to tools/server/local/server-config.json and edit. Blank values are auto-detected. See tools/server/README.md.",
+  "adminPassword": "change-me",
+  "serverName": "Hippos Conquest",
+  "password": "",
+  "maxPlayers": 40,
+  "port": 2302,
+  "bindAddress": "",
+  "headlessClients": 2,
+  "modPreset": "",
+  "creatorDlc": [],
+  "useMimalloc": false,
+  "gameDirectory": "",
+  "workshopDirectory": "",
+  "runtimeDirectory": "mybuild/lan-server",
+  "missionPackage": "",
+  "missionName": "Hippos_Conquest.Malden"
+}

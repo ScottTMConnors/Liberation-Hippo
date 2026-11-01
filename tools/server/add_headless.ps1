@@ -1,6 +1,8 @@
-param([string]$RuntimeDirectory = (Join-Path $PSScriptRoot '..\..\mybuild\lan-server'))
+# Adds one more headless client to a running, already-initialized mission.
+param([string]$RuntimeDirectory, [string]$Config)
 $ErrorActionPreference = 'Stop'
-$RuntimeDirectory = [IO.Path]::GetFullPath($RuntimeDirectory)
+. (Join-Path $PSScriptRoot 'server_config.ps1')
+$RuntimeDirectory = Get-HippoRuntimeDirectory $RuntimeDirectory $Config
 $sessionPath = Join-Path $RuntimeDirectory 'session.json'
 $session = Get-Content -LiteralPath $sessionPath -Raw | ConvertFrom-Json
 $server = $session.processes | Where-Object role -eq 'server'
@@ -11,11 +13,9 @@ if (!$rpt -or !(Select-String -LiteralPath $rpt.FullName -SimpleMatch '--- Serve
 $slot = @(1..3 | Where-Object { $name="HC$_"; !($session.processes | Where-Object role -eq $name) }) | Select-Object -First 1
 if (!$slot) { throw 'All three mission HC slots are already recorded.' }
 $game = $session.gameDirectory
-$workshop = [IO.Path]::GetFullPath((Join-Path $game '..\..\workshop\content\107410'))
-$mods = @($session.creatorDlc | ForEach-Object { Join-Path $game $_ }) + @($session.mods | ForEach-Object { Join-Path $workshop $_.id })
 $profile = Join-Path $RuntimeDirectory "profiles\HC$slot"
 New-Item -ItemType Directory -Path $profile -Force | Out-Null
-$arguments = @('-client',"-ip=$($session.bindAddress)","-connect=$($session.bindAddress)","-port=$($session.port)","-name=HippoHC$slot",'-noSplash','-skipIntro','-noPause','-world=empty','-noSound','-enableHT','-exThreads=1','-malloc=mimalloc_v360_20261024',('-profiles="'+$profile+'"'),('-mod="'+($mods -join ';')+'"'))
+$arguments = @(Get-HippoSessionArgs $session) + @('-client',"-ip=$($session.bindAddress)","-connect=$($session.bindAddress)","-port=$($session.port)","-name=HippoHC$slot",('-profiles="'+$profile+'"'))
 $child = Start-Process -FilePath (Join-Path $game 'arma3server_x64.exe') -ArgumentList $arguments -WorkingDirectory $game -WindowStyle Hidden -PassThru
 $session.processes = @($session.processes) + [pscustomobject]@{role="HC$slot";pid=$child.Id;started=$child.StartTime.ToUniversalTime().ToString('o');profile=$profile}
 $session.headlessCount = @($session.processes | Where-Object role -match '^HC[1-3]$').Count

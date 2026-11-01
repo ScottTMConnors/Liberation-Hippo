@@ -1,66 +1,98 @@
+# Starts a Hippos Conquest dedicated server on this PC's LAN address.
+# Settings: tools/server/local/server-config.json (see server-config.example.json).
+# Command-line parameters override the config file for one launch.
 param(
-    [string]$GameDirectory = 'F:\Medium500\Applications\Steam\steamapps\common\Arma 3',
-    [string]$RuntimeDirectory = (Join-Path $PSScriptRoot '..\..\mybuild\lan-server'),
-    [string]$BindAddress = '192.168.1.144',
-    [int]$Port = 2302,
-    [ValidateRange(0,3)][int]$HeadlessCount = 3,
-    [string]$AdminPassword = 'hippo-admin'
+    [string]$Config,
+    [string]$GameDirectory,
+    [string]$RuntimeDirectory,
+    [string]$BindAddress,
+    [int]$Port,
+    [ValidateRange(0,3)][int]$HeadlessCount = -1,
+    [string]$AdminPassword
 )
 $ErrorActionPreference = 'Stop'
-$RuntimeDirectory = [IO.Path]::GetFullPath($RuntimeDirectory)
-$bindIp = [Net.IPAddress]::Parse($BindAddress)
-$bytes = $bindIp.GetAddressBytes()
-if ($bindIp.AddressFamily -ne [Net.Sockets.AddressFamily]::InterNetwork -or
-    !(($bytes[0] -eq 10) -or ($bytes[0] -eq 172 -and $bytes[1] -ge 16 -and $bytes[1] -le 31) -or ($bytes[0] -eq 192 -and $bytes[1] -eq 168))) {
-    throw 'BindAddress must be a private LAN IPv4 address.'
+. (Join-Path $PSScriptRoot 'server_config.ps1')
+$c = Get-HippoServerConfig $Config
+if ($GameDirectory) { $c.gameDirectory = [IO.Path]::GetFullPath($GameDirectory) }
+if ($RuntimeDirectory) { $c.runtimeDirectory = Resolve-HippoPath $RuntimeDirectory }
+if ($BindAddress) { $c.bindAddress = $BindAddress }
+if ($Port) { $c.port = $Port }
+if ($HeadlessCount -ge 0) { $c.headlessClients = $HeadlessCount }
+if ($AdminPassword) { $c.adminPassword = $AdminPassword }
+
+if (!$c.adminPassword -or $c.adminPassword -eq 'change-me') {
+    throw "Set ""adminPassword"" in $($c.configPath). New setup: copy tools/server/server-config.example.json to tools/server/local/server-config.json."
 }
-if (!(Get-NetIPAddress -AddressFamily IPv4 | Where-Object IPAddress -eq $BindAddress)) { throw "LAN address is not assigned to this host: $BindAddress" }
-$exe = Join-Path $GameDirectory 'arma3server_x64.exe'
-$manifestPath = Join-Path $PSScriptRoot '..\..\mybuild\releases\Hippos_Conquest.Malden.manifest.json'
-$manifest = Get-Content -LiteralPath $manifestPath -Raw | ConvertFrom-Json
-$preset = @(Get-Content -LiteralPath (Join-Path $PSScriptRoot 'cool-preset.json') -Raw | ConvertFrom-Json)
-$workshop = [IO.Path]::GetFullPath((Join-Path $GameDirectory '..\..\workshop\content\107410'))
-$mods = @($preset | ForEach-Object { Join-Path $workshop $_.id })
-$creatorDlc = @('WS','RF','EF')
-foreach ($dlc in $creatorDlc) {
-    if (!(Test-Path -LiteralPath (Join-Path $GameDirectory "$dlc\addons"))) { throw "Missing Creator DLC data: $dlc" }
+if (!$c.bindAddress) { $c.bindAddress = Get-HippoBindAddress }
+if (!(Test-HippoPrivateAddress $c.bindAddress)) { throw 'bindAddress must be a private LAN IPv4 address.' }
+if (!(Get-NetIPAddress -AddressFamily IPv4 | Where-Object IPAddress -eq $c.bindAddress)) { throw "LAN address is not assigned to this host: $($c.bindAddress)" }
+foreach ($value in @($c.adminPassword, $c.password, $c.serverName, $c.runtimeDirectory, $c.gameDirectory)) {
+    if ("$value" -match '["\r\n]') { throw 'Config values must not contain double quotes or line breaks.' }
 }
-$mods = @($creatorDlc | ForEach-Object { Join-Path $GameDirectory $_ }) + $mods
-foreach ($mod in $mods) { if (!(Test-Path -LiteralPath (Join-Path $mod 'addons'))) { throw "Missing Workshop mod: $mod" } }
-if ($preset.Count -ne 61) { throw 'Expected exactly 61 cool preset mods.' }
+
+$exe = Join-Path $c.gameDirectory 'arma3server_x64.exe'
 if (!(Test-Path -LiteralPath $exe)) { throw "Missing dedicated executable: $exe" }
-if ($AdminPassword -match '["\r\n]' -or $RuntimeDirectory.Contains('"') -or $GameDirectory.Contains('"')) { throw 'Invalid config/argument characters.' }
-$existing = @(Get-CimInstance Win32_Process -Filter "Name='arma3server_x64.exe'" | Where-Object { $_.CommandLine -like "*$RuntimeDirectory*" })
+$preset = @(Read-HippoModPreset $c.modPreset)
+$mods = @($c.creatorDlc | ForEach-Object {
+    if (!(Test-Path -LiteralPath (Join-Path $c.gameDirectory "$_\addons"))) { throw "Missing Creator DLC data: $_" }
+    Join-Path $c.gameDirectory $_
+})
+$missing = @()
+foreach ($mod in $preset) {
+    $dir = Join-Path $c.workshopDirectory $mod.id
+    if (!(Test-Path -LiteralPath (Join-Path $dir 'addons'))) { $missing += "$($mod.name) ($($mod.id))" }
+    $mods += $dir
+}
+if ($missing.Count) { throw "Workshop mods not downloaded (subscribe in Steam and let them finish):`n  $($missing -join "`n  ")" }
+
+# Mission: an explicit path, else this repo's latest build, else the Workshop download.
+$manifestPath = Join-Path $HippoRepoRoot 'mybuild\releases\Hippos_Conquest.Malden.manifest.json'
+$manifest = $null
+if ($c.missionPackage) {
+    $package = Resolve-HippoPath $c.missionPackage
+} elseif (Test-Path -LiteralPath $manifestPath) {
+    $manifest = Get-Content -LiteralPath $manifestPath -Raw | ConvertFrom-Json
+    $package = $manifest.package
+    if ((Get-FileHash -LiteralPath $package).Hash -ne $manifest.package_sha256) { throw 'Built release package hash does not match its manifest.' }
+} else {
+    $package = Get-ChildItem -LiteralPath (Join-Path $c.workshopDirectory $HippoWorkshopItem) -Filter '*.pbo' -ErrorAction SilentlyContinue |
+        Select-Object -First 1 -ExpandProperty FullName
+    if (!$package) { throw "No mission found. Subscribe to Workshop item $HippoWorkshopItem, or set ""missionPackage"" to a .pbo path." }
+}
+if (!(Test-Path -LiteralPath $package)) { throw "Mission package not found: $package" }
+$packageHash = (Get-FileHash -LiteralPath $package).Hash
+
+$existing = @(Get-CimInstance Win32_Process -Filter "Name='arma3server_x64.exe'" | Where-Object { $_.CommandLine -like "*$($c.runtimeDirectory)*" })
 if ($existing.Count) { throw "This runtime is already running (PIDs $($existing.ProcessId -join ', ')). Use status_server.ps1." }
-if (Get-NetUDPEndpoint -LocalPort $Port -ErrorAction SilentlyContinue) { throw "UDP port $Port is in use." }
-New-Item -ItemType Directory -Path $RuntimeDirectory -Force | Out-Null
-$dllName = 'mimalloc_v360_20261024.dll'
-$dllHash = '2adea7658ff7b0eb70b7997499ad6c6652d1721ed9a89e2385f6c8f803289c88'
-$dll = Join-Path $GameDirectory "Dll\$dllName"
-if (!(Test-Path -LiteralPath $dll)) {
-    Invoke-WebRequest "https://github.com/GoldJohnKing/mimalloc/releases/download/Arma-3-v3.6.0-20261024/$dllName" -OutFile $dll
+if (Get-NetUDPEndpoint -LocalPort $c.port -ErrorAction SilentlyContinue) { throw "UDP port $($c.port) is in use." }
+New-Item -ItemType Directory -Path $c.runtimeDirectory -Force | Out-Null
+
+$mallocArgs = @(Get-HippoMallocArgs $c.useMimalloc)
+if ($c.useMimalloc) {
+    $dll = Join-Path $c.gameDirectory "Dll\$($HippoMimalloc.Name).dll"
+    if (!(Test-Path -LiteralPath $dll)) { Invoke-WebRequest $HippoMimalloc.Url -OutFile $dll }
+    if ((Get-FileHash -LiteralPath $dll -Algorithm SHA256).Hash -ne $HippoMimalloc.Sha256) { throw 'Allocator SHA256 does not match the GitHub release digest.' }
 }
-if ((Get-FileHash -LiteralPath $dll -Algorithm SHA256).Hash -ne $dllHash) { throw 'Allocator SHA256 does not match the GitHub release digest.' }
-if ((Get-FileHash -LiteralPath $manifest.package).Hash -ne $manifest.package_sha256) { throw 'Release package hash mismatch.' }
-$mission = Join-Path $GameDirectory 'MPMissions\Hippos_Conquest.Malden.pbo'
-if (Test-Path -LiteralPath $mission) {
-    if ((Get-FileHash -LiteralPath $mission).Hash -ne $manifest.package_sha256) {
-        Copy-Item -LiteralPath $mission -Destination (Join-Path $RuntimeDirectory ('mission-backup-'+(Get-Date -Format yyyyMMdd-HHmmss)+'.pbo'))
-    }
+
+$mission = Join-Path $c.gameDirectory "MPMissions\$($c.missionName).pbo"
+New-Item -ItemType Directory -Path (Split-Path $mission) -Force | Out-Null
+if ((Test-Path -LiteralPath $mission) -and (Get-FileHash -LiteralPath $mission).Hash -ne $packageHash) {
+    Copy-Item -LiteralPath $mission -Destination (Join-Path $c.runtimeDirectory ('mission-backup-'+(Get-Date -Format yyyyMMdd-HHmmss)+'.pbo'))
 }
-Copy-Item -LiteralPath $manifest.package -Destination $mission -Force
-Copy-Item -LiteralPath $manifestPath -Destination (Join-Path $RuntimeDirectory 'deployed-manifest.json')
-$cfg = Join-Path $RuntimeDirectory 'server.cfg'
+if ([IO.Path]::GetFullPath($package) -ne [IO.Path]::GetFullPath($mission)) { Copy-Item -LiteralPath $package -Destination $mission -Force }
+if ($manifest) { Copy-Item -LiteralPath $manifestPath -Destination (Join-Path $c.runtimeDirectory 'deployed-manifest.json') }
+
+$cfg = Join-Path $c.runtimeDirectory 'server.cfg'
 @"
-hostname = "Hippos Conquest - cool LAN";
-password = "";
-passwordAdmin = "$AdminPassword";
-// Use network hosting for another PC; loopback test mode rejected the remote client.
+hostname = "$($c.serverName)";
+password = "$($c.password)";
+passwordAdmin = "$($c.adminPassword)";
+// Network mode: loopback test mode rejects players on other PCs.
 loopback = 0;
-maxPlayers = 40;
+maxPlayers = $($c.maxPlayers);
 persistent = 1;
 autoSelectMission = false;
-// Positive 24-hour setup windows; avoid negative values advancing a phase immediately.
+// Long setup windows so the lobby never advances before the admin is ready.
 votingTimeOut[] = {86400,86400};
 roleTimeOut[] = {86400,86400};
 briefingTimeOut[] = {86400,86400};
@@ -72,8 +104,8 @@ verifySignatures = 0;
 allowedFilePatching = 0;
 upnp = 0;
 steamProtocolMaxDataSize = 8192;
-headlessClients[] = {"127.0.0.1","$BindAddress"};
-localClient[] = {"127.0.0.1","$BindAddress"};
+headlessClients[] = {"127.0.0.1","$($c.bindAddress)"};
+localClient[] = {"127.0.0.1","$($c.bindAddress)"};
 kickDuplicate = 1;
 voteMissionPlayers = 99;
 voteThreshold = 1;
@@ -86,9 +118,9 @@ onUserKicked = "diag_log 'HIPPO_CONNECT|KICK'; diag_log _this;";
 onUserConnected = "diag_log 'HIPPO_CONNECT|CONNECTED'; diag_log _this;";
 // Empty rotation: only the logged-in admin selects/starts the mission with #missions.
 class Missions {};
-missionWhitelist[] = {"Hippos_Conquest.Malden"};
-"@ | Set-Content -LiteralPath $cfg -Encoding UTF8
-$basic = Join-Path $RuntimeDirectory 'basic.cfg'
+missionWhitelist[] = {"$($c.missionName)"};
+"@ | ForEach-Object { [IO.File]::WriteAllText($cfg, $_, (New-Object Text.UTF8Encoding $false)) }
+$basic = Join-Path $c.runtimeDirectory 'basic.cfg'
 @'
 // LAN baseline; bandwidth values are bits/second. Tune from measured desync.
 MinBandwidth = 10000000;
@@ -100,19 +132,24 @@ MinErrorToSend = 0.001;
 MinErrorToSendNear = 0.01;
 MaxCustomFileSize = 0;
 '@ | Set-Content -LiteralPath $basic -Encoding ASCII
-$common = @('-noSplash','-skipIntro','-noPause','-world=empty','-noSound','-enableHT','-exThreads=1','-malloc=mimalloc_v360_20261024',('-mod="'+($mods -join ';')+'"'))
+
+$common = @('-noSplash','-skipIntro','-noPause','-world=empty','-noSound','-enableHT','-exThreads=1') + $mallocArgs
+if ($mods.Count) { $common += ('-mod="'+($mods -join ';')+'"') }
 $owned = @()
 try {
-    $profile = Join-Path $RuntimeDirectory 'profiles\server'
+    $profile = Join-Path $c.runtimeDirectory 'profiles\server'
     New-Item -ItemType Directory -Path $profile -Force | Out-Null
-    # Intentionally omit -autoInit: the player starts the mission from the lobby.
-    $argsServer = $common + @("-ip=$BindAddress","-port=$Port",'-name=HippoLAN',('-profiles="'+$profile+'"'),('-config="'+$cfg+'"'),('-cfg="'+$basic+'"'),'-loadMissionToMemory')
-    $p = Start-Process -FilePath $exe -ArgumentList $argsServer -WorkingDirectory $GameDirectory -WindowStyle Hidden -PassThru
+    # Intentionally omit -autoInit: the admin starts the mission from the lobby.
+    $argsServer = $common + @("-ip=$($c.bindAddress)","-port=$($c.port)",'-name=HippoLAN',('-profiles="'+$profile+'"'),('-config="'+$cfg+'"'),('-cfg="'+$basic+'"'),'-loadMissionToMemory')
+    $p = Start-Process -FilePath $exe -ArgumentList $argsServer -WorkingDirectory $c.gameDirectory -WindowStyle Hidden -PassThru
     $owned += [pscustomobject]@{role='server';pid=$p.Id;started=$p.StartTime.ToUniversalTime().ToString('o');profile=$profile}
     Start-Sleep -Seconds 5
     if ($p.HasExited) { throw 'Server exited during startup; inspect the server RPT.' }
 } finally {
-    [pscustomobject]@{bindAddress=$BindAddress;port=$Port;gameDirectory=$GameDirectory;runtime=$RuntimeDirectory;missionVersion=$manifest.version;sourceCommit=$manifest.source_commit;allocatorSHA256=$dllHash;creatorDlc=$creatorDlc;mods=$preset;headlessCount=$HeadlessCount;headlessState='waiting_for_manual_start';processes=$owned} | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $RuntimeDirectory 'session.json')
+    [pscustomobject]@{bindAddress=$c.bindAddress;port=$c.port;gameDirectory=$c.gameDirectory;workshopDirectory=$c.workshopDirectory;runtime=$c.runtimeDirectory;
+        missionVersion=$(if($manifest){$manifest.version}else{$null});missionSHA256=$packageHash;sourceCommit=$(if($manifest){$manifest.source_commit}else{$null});
+        mallocArgs=$mallocArgs;creatorDlc=$c.creatorDlc;mods=$preset;headlessCount=$c.headlessClients;headlessState='waiting_for_manual_start';processes=$owned} |
+        ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $c.runtimeDirectory 'session.json')
 }
 $deadline = (Get-Date).AddSeconds(180)
 foreach ($entry in $owned) {
@@ -123,14 +160,14 @@ foreach ($entry in $owned) {
     }
 }
 $owned | Format-Table -AutoSize
-if ($HeadlessCount) {
+if ($c.headlessClients) {
     $watcherScript = Join-Path $PSScriptRoot 'watch_headless.ps1'
     $shellExecutable = (Get-Process -Id $PID).Path
-    $watcher = Start-Process -FilePath $shellExecutable -ArgumentList @('-NoProfile','-ExecutionPolicy','Bypass','-File',('"'+$watcherScript+'"'),'-RuntimeDirectory',('"'+$RuntimeDirectory+'"')) -WorkingDirectory $GameDirectory -WindowStyle Hidden -PassThru
-    $sessionPath = Join-Path $RuntimeDirectory 'session.json'
+    $watcher = Start-Process -FilePath $shellExecutable -ArgumentList @('-NoProfile','-ExecutionPolicy','Bypass','-File',('"'+$watcherScript+'"'),'-RuntimeDirectory',('"'+$c.runtimeDirectory+'"')) -WorkingDirectory $c.gameDirectory -WindowStyle Hidden -PassThru
+    $sessionPath = Join-Path $c.runtimeDirectory 'session.json'
     $session = Get-Content -LiteralPath $sessionPath -Raw | ConvertFrom-Json
-    $session.processes = @($session.processes) + [pscustomobject]@{role='HC watcher';pid=$watcher.Id;started=$watcher.StartTime.ToUniversalTime().ToString('o');profile=$RuntimeDirectory}
+    $session.processes = @($session.processes) + [pscustomobject]@{role='HC watcher';pid=$watcher.Id;started=$watcher.StartTime.ToUniversalTime().ToString('o');profile=$c.runtimeDirectory}
     $session | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $sessionPath
-    Write-Output "$HeadlessCount HCs will launch after the admin starts the mission and finishes parameter setup."
+    Write-Output "$($c.headlessClients) headless client(s) will launch after the admin starts the mission and finishes parameter setup."
 }
-Write-Output "Direct connect: ${BindAddress}:$Port | admin: #login $AdminPassword | mission $($manifest.version)"
+Write-Output "Direct connect: $($c.bindAddress):$($c.port) | admin: #login <your adminPassword> | $($preset.Count) Workshop mods"

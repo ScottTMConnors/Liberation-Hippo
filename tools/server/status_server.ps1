@@ -1,5 +1,7 @@
-param([string]$RuntimeDirectory = (Join-Path $PSScriptRoot '..\..\mybuild\lan-server'))
+param([string]$RuntimeDirectory, [string]$Config)
 $ErrorActionPreference = 'Stop'
+. (Join-Path $PSScriptRoot 'server_config.ps1')
+$RuntimeDirectory = Get-HippoRuntimeDirectory $RuntimeDirectory $Config
 $session = Get-Content -LiteralPath (Join-Path $RuntimeDirectory 'session.json') -Raw | ConvertFrom-Json
 if ($session.headlessState) { Write-Host "HC startup: $($session.headlessState)" }
 foreach ($entry in $session.processes) {
