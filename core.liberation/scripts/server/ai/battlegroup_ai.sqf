@@ -1,6 +1,9 @@
 params ["_grp", "_objective_pos"];
 if (isNil "_grp" || isNil "_objective_pos") exitWith {};
 if (isNull _grp) exitWith {};
+// Orders (doMove, doFollow, setFuel...) only work where the group is local: run on its headless client.
+if (!local _grp && {!isServer}) exitWith { _this remoteExec ["battlegroup_ai", 2] };
+if (!local _grp && {(groupOwner _grp) in ((entities "HeadlessClient_F") apply {owner _x})}) exitWith { _this remoteExec ["battlegroup_ai", groupOwner _grp] };
 
 private _vehicle = objectParent (leader _grp);
 if (_vehicle isKindOf "Ship_F") exitWith { [_grp, getPosATL _vehicle, 250] call patrol_ai };

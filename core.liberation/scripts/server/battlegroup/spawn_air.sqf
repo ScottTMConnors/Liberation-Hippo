@@ -70,6 +70,7 @@ if (_side == GRLIB_side_friendly) exitWith {
 	[_vehicle, true, true] spawn F_vehicleClean;
 };
 
+// After this handover the group may be remote: local-only commands below go to its owner.
 private _hc = [] call F_lessLoadedHC;
 if (isDedicated && !isNull _hc) then {
 	_grp setGroupOwner (owner _hc);
@@ -86,17 +87,17 @@ while { alive _vehicle && (GRLIB_endgame == 0) && time <= _timer } do {
 		private _plane_dir = getDir _vehicle;
 		private _spot = _vehicle getPos [1000, _plane_dir];
 		if ([_spot, 80, GRLIB_side_friendly, 1] call F_getUnitsCount > 0) then {
-			_vehicle action ["useWeapon", _vehicle, driver _vehicle, selectRandom [10, 11]];
+			[_vehicle, ["useWeapon", _vehicle, driver _vehicle, selectRandom [10, 11]]] remoteExec ["action", _vehicle];
 			_bomb = createVehicle [(selectRandom _bombs), ((getPos _vehicle) vectorAdd [0, 0, -40]), [], 5, "FLY"];
 			_bomb setDir _plane_dir;
 			_bomb setVelocity (velocity _vehicle);
 			sleep 0.5;
-			_vehicle action ["useWeapon", _vehicle, driver _vehicle, selectRandom [10, 11]];
+			[_vehicle, ["useWeapon", _vehicle, driver _vehicle, selectRandom [10, 11]]] remoteExec ["action", _vehicle];
 			_bomb = createVehicle [(selectRandom _bombs), ((getPos _vehicle) vectorAdd [0, 0, -40]), [], 5, "FLY"];
 			_bomb setDir _plane_dir;
 			_bomb setVelocity (velocity _vehicle);
 			sleep 0.5;
-			_vehicle action ["useWeapon", _vehicle, driver _vehicle, selectRandom [10, 11]];
+			[_vehicle, ["useWeapon", _vehicle, driver _vehicle, selectRandom [10, 11]]] remoteExec ["action", _vehicle];
 			_bomb = createVehicle [(selectRandom _bombs), ((getPos _vehicle) vectorAdd [0, 0, -40]), [], 5, "FLY"];
 			_bomb setDir _plane_dir;
 			_bomb setVelocity (velocity _vehicle);
@@ -107,8 +108,10 @@ while { alive _vehicle && (GRLIB_endgame == 0) && time <= _timer } do {
 		// Modern aircraft AI
 		_target = [_targetpos, GRLIB_sector_size] call F_getNearestBlufor;
 		if (!isNull _target) then {
-			(gunner _vehicle) reveal [_target, 4];
-			(gunner _vehicle) doTarget _target;
+			if (!isNull gunner _vehicle) then {
+				[gunner _vehicle, [_target, 4]] remoteExec ["reveal", gunner _vehicle];
+				[gunner _vehicle, _target] remoteExec ["doTarget", gunner _vehicle];
+			};
 			sleep 120;
 		};
 		// private _plane_dir = getDir _vehicle;
@@ -120,8 +123,8 @@ while { alive _vehicle && (GRLIB_endgame == 0) && time <= _timer } do {
 		// };
 		sleep 60;
 	};
-	_vehicle setVehicleAmmo 1;
-	_vehicle setFuel 1;
+	[_vehicle, 1] remoteExec ["setVehicleAmmo", _vehicle];
+	[_vehicle, 1] remoteExec ["setFuel", _vehicle];
 };
 
 sleep 3;
@@ -134,7 +137,7 @@ _waypoint setWaypointType "MOVE";
 _waypoint setWaypointSpeed "FULL";
 _waypoint setWaypointCompletionRadius 300;
 _waypoint setWaypointStatements ["true", "[vehicle this, true, true] spawn F_vehicleClean"];
-{_x doFollow (leader _grp)} foreach units _grp;
+{[_x, leader _grp] remoteExec ["doFollow", _x]} foreach units _grp;
 sleep 60;
 if (!alive _vehicle) exitWith {};
 [_vehicle, true, true] spawn F_vehicleClean;
