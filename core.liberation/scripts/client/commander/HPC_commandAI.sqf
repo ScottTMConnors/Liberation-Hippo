@@ -1,0 +1,208 @@
+// Command AI forces: the commander sends AI Warfare groups to attack an active
+// sector or defend a friendly sector or FOB. The server validates every order.
+if (!hasInterface) exitWith {};
+disableSerialization;
+if !(missionNamespace getVariable ["GRLIB_player_commander", false]) exitWith {
+    systemChat "Only the commander can give orders to AI forces.";
+};
+if (isNil "HPC_fnc_mapDraw") exitWith {systemChat "The map overlay is still loading; try again in a moment."};
+if (!isNull (uiNamespace getVariable ["HPC_AICommandDisplay", displayNull])) exitWith {};
+if (visibleMap) then {openMap false; uiSleep 0.1};
+private _display = (findDisplay 46) createDisplay "HPC_AICommand";
+if (isNull _display) exitWith {};
+
+HPC_cmdGroups = [];   // group list row -> group
+HPC_cmdDests = [];    // destination list row -> [type, key, position] or [] for headings
+HPC_mapSelected = [];
+
+HPC_fnc_cmdAction = {
+    params ["_what"];
+    private _display = uiNamespace getVariable ["HPC_AICommandDisplay", displayNull];
+    if (isNull _display) exitWith {};
+    private _list = _display displayCtrl 110;
+    private _status = _display displayCtrl 104;
+    private _selectWhere = {
+        params ["_code"];
+        _list lbSetSelected [-1, false];
+        {
+            if ([_x] call _code) then {_list lbSetSelected [_forEachIndex, true]};
+        } forEach HPC_cmdGroups;
+    };
+    switch (_what) do {
+        case "all": { [{true}] call _selectWhere };
+        case "infantry": { [{(_this select 0) getVariable ["HPC_warfareRole", ""] == "infantry"}] call _selectWhere };
+        case "armor": { [{(_this select 0) getVariable ["HPC_warfareRole", ""] in ["light", "heavy"]}] call _selectWhere };
+        case "guard": { [{(_this select 0) getVariable ["HPC_warfareRole", ""] == "guard"}] call _selectWhere };
+        case "send";
+        case "auto": {
+            private _groups = ((lbSelection _list) apply {HPC_cmdGroups param [_x, grpNull]}) select {!isNull _x};
+            if (_groups isEqualTo []) exitWith {_status ctrlSetText "Select at least one group on the left first."};
+            private _row = if (_what == "auto") then {["auto", "", []]} else {HPC_cmdDests param [lbCurSel (_display displayCtrl 111), []]};
+            if (_row isEqualTo []) exitWith {_status ctrlSetText "Pick a destination on the right, or click it on the map."};
+            [player, _groups, _row select 0, _row select 1] remoteExec ["command_ai_remote_call", 2];
+            playSoundUI ["a3\ui_f\data\sound\cfgnotifications\tacticalping3.wss", 0.5, 1.2];
+            _status ctrlSetText format ["Order sent for %1 group%2.", count _groups, ["s", ""] select (count _groups == 1)];
+        };
+    };
+};
+
+// Destination markers and a preview of the order on the window's own map.
+HPC_fnc_cmdDrawDests = {
+    params ["_map"];
+    private _display = uiNamespace getVariable ["HPC_AICommandDisplay", displayNull];
+    if (isNull _display) exitWith {};
+    private _chosen = HPC_cmdDests param [lbCurSel (_display displayCtrl 111), []];
+    private _pulse = 0.5 + 0.4 * sin (diag_tickTime * 300);
+    {
+        if !(_x isEqualTo []) then {
+            _x params ["_type", "_key", "_pos"];
+            if (_type != "auto") then {
+                private _color = switch (_type) do {
+                    case "attack": {[1, 0.35, 0.28, 0.9]};
+                    case "fob": {[0.4, 0.85, 1, 0.9]};
+                    default {[0.35, 0.65, 1, 0.6]};
+                };
+                _map drawIcon [HPC_mapIcons get (["dest", "flag"] select (_type != "attack")), _color, _pos, 22, 22, 0];
+            };
+        };
+    } forEach HPC_cmdDests;
+    if (!(_chosen isEqualTo []) && {(_chosen select 0) != "auto"}) then {
+        private _target = _chosen select 2;
+        _map drawIcon [HPC_mapIcons get "ring", [1, 0.85, 0.2, _pulse], _target, 54, 54, 0];
+        {
+            private _leader = leader _x;
+            if (alive _leader) then {_map drawLine [getPosASLVisual _leader, _target, [1, 1, 1, 0.55]]};
+        } forEach HPC_mapSelected;
+    };
+};
+
+private _map = _display ctrlCreate ["RscMapControl", 140];
+_map ctrlMapSetPosition [safezoneX + 0.335 * safezoneW, safezoneY + 0.168 * safezoneH, 0.38 * safezoneW, 0.698 * safezoneH];
+_map ctrlAddEventHandler ["Draw", {_this call HPC_fnc_mapDraw; _this call HPC_fnc_cmdDrawDests}];
+_map ctrlAddEventHandler ["MouseButtonDown", {
+    params ["_ctrl", "_button", "_mx", "_my"];
+    if (_button == 0) then {uiNamespace setVariable ["HPC_cmdMouseDown", [_mx, _my]]};
+}];
+// A click (not a drag) picks the destination nearest to the cursor.
+_map ctrlAddEventHandler ["MouseButtonUp", {
+    params ["_ctrl", "_button", "_mx", "_my"];
+    if (_button != 0) exitWith {};
+    private _down = uiNamespace getVariable ["HPC_cmdMouseDown", [-9, -9]];
+    if ([_mx, _my] distance2D _down > 0.01) exitWith {};
+    private _best = -1;
+    private _bestDistance = 0.05;
+    {
+        if (!(_x isEqualTo []) && {(_x select 0) != "auto"}) then {
+            private _distance = (_ctrl ctrlMapWorldToScreen (_x select 2)) distance2D [_mx, _my];
+            if (_distance < _bestDistance) then {_best = _forEachIndex; _bestDistance = _distance};
+        };
+    } forEach HPC_cmdDests;
+    if (_best >= 0) then {
+        ((ctrlParent _ctrl) displayCtrl 111) lbSetCurSel _best;
+        playSoundUI ["a3\ui_f\data\sound\rsccombo\soundexpand.wss", 0.4, 1.2];
+    };
+}];
+private _focus = if (GRLIB_all_fobs isEqualTo []) then {getPosATL player} else {GRLIB_all_fobs select 0};
+if !(active_sectors isEqualTo []) then {_focus = markerPos (active_sectors select 0)};
+_map ctrlMapAnimAdd [0, 0.18, _focus];
+ctrlMapAnimCommit _map;
+
+private _groupsList = _display displayCtrl 110;
+private _destList = _display displayCtrl 111;
+private _roleOrder = createHashMapFromArray [["infantry", 0], ["light", 1], ["heavy", 2], ["guard", 3]];
+private _destSignature = [];
+private _lastSingle = grpNull;
+private _tick = 0;
+
+private _fillDestinations = {
+    private _previous = HPC_cmdDests param [lbCurSel _destList, []];
+    lbClear _destList;
+    HPC_cmdDests = [];
+    private _add = {
+        params ["_text", "_row", ["_color", [0.9, 0.93, 0.95, 1]]];
+        private _index = _destList lbAdd _text;
+        _destList lbSetColor [_index, _color];
+        HPC_cmdDests pushBack _row;
+    };
+    private _heading = {
+        params ["_text"];
+        [_text, [], [0.88, 0.69, 0.25, 1]] call _add;
+    };
+    ["Automatic - AI picks its own objective", ["auto", "", []], [0.7, 0.8, 0.9, 1]] call _add;
+    ["ATTACK  (active sectors)"] call _heading;
+    if (active_sectors isEqualTo []) then {["   none - start a battle first", [], [0.5, 0.55, 0.6, 1]] call _add};
+    {["   " + markerText _x, ["attack", _x, markerPos _x], [1, 0.55, 0.48, 1]] call _add} forEach active_sectors;
+    ["DEFEND FOB"] call _heading;
+    {
+        ["   FOB " + ((missionNamespace getVariable ["military_alphabet", []]) param [_forEachIndex, str (_forEachIndex + 1)]), ["fob", +_x, +_x], [0.55, 0.88, 1, 1]] call _add;
+    } forEach GRLIB_all_fobs;
+    ["DEFEND SECTOR"] call _heading;
+    private _friendly = blufor_sectors apply {[markerText _x, _x]};
+    _friendly sort true;
+    {["   " + (_x select 0), ["defend", _x select 1, markerPos (_x select 1)], [0.6, 0.75, 1, 1]] call _add} forEach _friendly;
+    private _keep = HPC_cmdDests findIf {!(_x isEqualTo []) && {(_x select 0) == (_previous param [0, ""])} && {(_x select 1) isEqualTo (_previous param [1, ""])}};
+    _destList lbSetCurSel _keep;
+};
+
+while {!isNull _display} do {
+    if !(missionNamespace getVariable ["GRLIB_player_commander", false]) exitWith {_display closeDisplay 2};
+    if (_tick % 5 == 0) then {
+        private _signature = [+active_sectors, +blufor_sectors, +GRLIB_all_fobs];
+        if !(_signature isEqualTo _destSignature) then {
+            _destSignature = _signature;
+            call _fillDestinations;
+        };
+
+        private _groups = (call HPC_fnc_mapForceGroups) select {_x getVariable ["HPC_warfare", false]};
+        private _sorted = _groups apply {[_roleOrder getOrDefault [_x getVariable ["HPC_warfareRole", ""], 9], _x getVariable ["HPC_warfareName", groupId _x], _x]};
+        _sorted sort true;
+        _groups = _sorted apply {_x select 2};
+        if !(_groups isEqualTo HPC_cmdGroups) then {
+            private _selected = HPC_mapSelected;
+            lbClear _groupsList;
+            {
+                private _index = _groupsList lbAdd (groupId _x);
+                if (_x in _selected) then {_groupsList lbSetSelected [_index, true]};
+            } forEach _groups;
+            HPC_cmdGroups = _groups;
+        };
+        {
+            private _group = _x;
+            ([_group] call HPC_fnc_mapGroupInfo) params ["_kind", "_name", "_iconKey", "_alive"];
+            ([_group] call HPC_fnc_mapOrderText) params ["_orderText", "_target", "_ordered"];
+            private _combat = combatBehaviour _group == "COMBAT";
+            _groupsList lbSetText [_forEachIndex, format ["%1%2  [%3]  %4", ["", "! "] select _combat, _name, _alive, _orderText]];
+            _groupsList lbSetPicture [_forEachIndex, HPC_mapIcons get _iconKey];
+            _groupsList lbSetPictureColor [_forEachIndex, HPC_mapColors get _kind];
+            _groupsList lbSetColor [_forEachIndex, switch (true) do {
+                case _combat: {[1, 0.55, 0.45, 1]};
+                case _ordered: {[1, 0.86, 0.4, 1]};
+                default {[0.85, 0.9, 0.95, 1]};
+            }];
+            _groupsList lbSetTooltip [_forEachIndex, format ["%1 - %2 alive%3", _name, _alive, ["", " - in combat"] select _combat]];
+        } forEach HPC_cmdGroups;
+
+        (_display displayCtrl 103) ctrlSetText format [
+            "%1 groups under your command  |  %2 following your orders  |  %3 active objective%4  |  orders apply within seconds",
+            count HPC_cmdGroups,
+            {!((_x getVariable ["HPC_cmdOrder", []]) isEqualTo [])} count HPC_cmdGroups,
+            count active_sectors,
+            ["s", ""] select (count active_sectors == 1)
+        ];
+        if (HPC_cmdGroups isEqualTo []) then {
+            (_display displayCtrl 104) ctrlSetText "No AI Warfare groups yet. Squads and armor deploy from your FOBs once a battle starts.";
+        };
+    };
+
+    HPC_mapSelected = ((lbSelection _groupsList) apply {HPC_cmdGroups param [_x, grpNull]}) select {!isNull _x};
+    // Center the map on a group when exactly one is newly selected.
+    private _single = if (count HPC_mapSelected == 1) then {HPC_mapSelected select 0} else {grpNull};
+    if (!isNull _single && {!(_single isEqualTo _lastSingle)} && {alive leader _single}) then {
+        _map ctrlMapAnimAdd [0.4, ctrlMapScale _map min 0.12, getPosATL leader _single];
+        ctrlMapAnimCommit _map;
+    };
+    _lastSingle = _single;
+    _tick = _tick + 1;
+    uiSleep 0.2;
+};
+HPC_mapSelected = [];

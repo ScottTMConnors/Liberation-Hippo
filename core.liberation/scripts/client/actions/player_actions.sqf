@@ -13,6 +13,9 @@ player addAction ["<t color='#80FF80'>" + localize "STR_TUTO_ACTION" + "</t> <im
 if ([] call is_admin) then { [true] call player_admin_actions };
 
 // Extended Options
+// Commander orders for AI Warfare groups
+player addAction ["<t color='#E0B040'>Command AI forces</t> <img size='1' image='\a3\Ui_F_Curator\Data\Displays\RscDisplayCurator\modeGroups_ca.paa'/>","scripts\client\commander\HPC_commandAI.sqf","",-990,false,true,"","(missionNamespace getVariable ['GRLIB_player_commander', false]) && {GRLIB_Commander_mode} && {HPC_AIWarfare}"];
+
 player addAction ["<t color='#FF8000'>" + localize "STR_EXTENDED_OPTIONS" + "</t>","GREUH\scripts\GREUH_dialog.sqf","",-999,false,true,"","GRLIB_player_is_menuok"];
 
 // Dog - Actions

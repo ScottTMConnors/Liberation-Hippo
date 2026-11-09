@@ -41,6 +41,21 @@ the lobby parameters.
   get replaced.
 - The commander, or a player vote, picks objectives. **Battle Scope** can pull
   nearby sectors into the same fight.
+- **Command AI forces** (commander only, from the map or the action menu): pick
+  any assault squad, armor group or FOB guard and send it to attack an active
+  sector, defend a friendly sector or defend a FOB. Orders apply within
+  seconds; **Return to automatic** hands the group back to the AI.
+
+### A living map
+
+- Every friendly AI group is on the map with a NATO symbol: AI Warfare squads
+  and armor, FOB guards, base staff, mission units and garrisons.
+- Lines show each squad's objective (yellow for commander orders), and a
+  pulsing red ring marks groups in combat.
+- **Live bullet tracers**: shots in flight appear as small rectangles, blue for
+  friendly fire and red for enemy fire.
+- A **Friendly Forces** panel counts squads, armor, guards and active
+  objectives, with buttons to toggle the AI and tracer layers.
 
 ### Sectors worth attacking
 

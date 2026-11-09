@@ -56,6 +56,34 @@ waitUntil {
 private _destinations = _attackers apply {expectedDestination leader _x};
 private _directed = {_x isEqualType [] && {count _x > 0} && {(_x select 0) distance2D _fob < 250}} count _destinations;
 ["warfare.enemyFOB",count _attackers >= 2 && _directed >= 2] call _assert;
+// Commander orders: send a friendly warfare group to the FOB, reject a stale target, then clear.
+_deadline = diag_tickTime + 90;
+private _friendly = [];
+waitUntil {
+    sleep 1;
+    _friendly = allGroups select {_x getVariable ["HPC_warfare",false] && {side _x == GRLIB_side_friendly} && {(_x getVariable ["HPC_warfareRole",""]) != "guard"} && {{alive _x} count units _x > 0}};
+    count _friendly > 0 || diag_tickTime > _deadline
+};
+private _ordered = false;
+private _rejectedStale = false;
+private _cleared = false;
+if (count _friendly > 0) then {
+    private _group = _friendly select 0;
+    [_commander,[_group],"fob",_fob] remoteExec ["command_ai_remote_call",2];
+    sleep 3;
+    private _order = _group getVariable ["HPC_cmdOrder",[]];
+    private _move = _group getVariable ["HPC_order",[]];
+    _ordered = (_order param [0,""]) == "fob" && {count _move > 0} && {((_move select 0) distance2D _fob) < 120};
+    private _stale = (sectors_capture - active_sectors) select 0;
+    [_commander,[_group],"attack",_stale] remoteExec ["command_ai_remote_call",2];
+    sleep 2;
+    _rejectedStale = ((_group getVariable ["HPC_cmdOrder",[]]) param [0,""]) == "fob";
+    [_commander,[_group],"auto"] remoteExec ["command_ai_remote_call",2];
+    sleep 2;
+    _cleared = (_group getVariable ["HPC_cmdOrder",[]]) isEqualTo [];
+    diag_log ["HPC_COMMAND_ORDERS",_group getVariable ["HPC_warfareName",""],_order,_move,_rejectedStale,_cleared];
+};
+["commander.orders",_ordered && _rejectedStale && _cleared] call _assert;
 diag_log ["HPC_COMMANDER_EVIDENCE",_sector,_progress,_state,_destinations];
 HPC_AIWarfare = false;
 HPC_NearbyBattles = _nearby;

@@ -22,6 +22,54 @@ HPC_fnc_warfarePosition = {
     if (surfaceIsWater _guess) exitWith {[]};
     [_guess, _size, 0, 200] call F_findSafePlace
 };
+// Commander orders (HPC_cmdOrder on the group): ["attack", sector], ["defend", sector]
+// or ["fob", fobPos]. Returns [position, type], or [] (and clears the order) when
+// there is no order or its target is gone, so the group falls back to automatic orders.
+HPC_fnc_warfareOrder = {
+    params ["_group"];
+    private _order = _group getVariable ["HPC_cmdOrder", []];
+    if (_order isEqualTo []) exitWith {[]};
+    _order params ["_type", "_key"];
+    private _pos = switch (_type) do {
+        case "attack": { if (_key in active_sectors) then {markerPos _key} else {[]} };
+        case "defend": { if (_key in blufor_sectors) then {markerPos _key} else {[]} };
+        case "fob": {
+            private _index = GRLIB_all_fobs findIf {_x distance2D _key < 5};
+            if (_index < 0) then {[]} else {+(GRLIB_all_fobs select _index)}
+        };
+        default {[]};
+    };
+    if (_pos isEqualTo []) exitWith {
+        _group setVariable ["HPC_cmdOrder", nil, true];
+        []
+    };
+    [_pos, _type]
+};
+// Moves a group toward a resolved commander order. Defenders spread out around the target.
+HPC_fnc_warfareGo = {
+    params ["_group", "_order"];
+    if (_order isEqualTo []) exitWith {};
+    _order params ["_pos", "_type"];
+    private _defend = _type != "attack";
+    private _mounted = !isNull objectParent leader _group;
+    [
+        _group,
+        _pos getPos [[90, 60] select _defend, random 360],
+        ["FULL", "NORMAL"] select _defend,
+        "RED",
+        ["AWARE", "COMBAT"] select _mounted
+    ] call HPC_fnc_groupOrder;
+};
+// Public tags read by the map overlay and the commander window.
+HPC_fnc_warfareTag = {
+    params ["_group", "_role", "_name"];
+    _group setVariable ["HPC_warfare", true, true];
+    _group setVariable ["HPC_warfareRole", _role, true];
+    _group setVariable ["HPC_warfareName", _name, true];
+    _group setVariable ["HPC_hcManaged", true, true];
+    _group setVariable ["HPC_hcReadyAt", diag_tickTime + 15];
+    {_x setVariable ["HPC_warfare", true, true]} forEach units _group;
+};
 HPC_fnc_warfareInfantry = {
     params ["_enemy", "_number"];
     private _side = if (_enemy) then {GRLIB_side_enemy} else {GRLIB_side_friendly};
@@ -37,16 +85,18 @@ HPC_fnc_warfareInfantry = {
             _group = [_pos, _composition, _side, "infantry"] call F_libSpawnUnits;
         };
         if (!isNull _group) then {
-            _group setVariable ["HPC_warfare", true, true];
-            _group setVariable ["HPC_hcManaged",true,true];
-            _group setVariable ["HPC_hcReadyAt",diag_tickTime + 15];
-            {_x setVariable ["HPC_warfare", true, true]} forEach units _group;
+            [_group, "infantry", format [["Assault %1", "Enemy assault %1"] select _enemy, _number]] call HPC_fnc_warfareTag;
             private _target = [];
             while {call HPC_fnc_warfareActive && {{alive _x} count units _group > 0}} do {
-                private _choices = if (_enemy) then {GRLIB_all_fobs} else {active_sectors apply {markerPos _x}};
-                if !(_target in _choices) then { _target = if (_choices isEqualTo []) then {[]} else {+(selectRandom _choices)} };
-                if !(_target isEqualTo []) then {
-                    [_group,_target getPos [random 90,random 360],"FULL","RED","AWARE"] call HPC_fnc_groupOrder;
+                private _order = if (_enemy) then {[]} else {[_group] call HPC_fnc_warfareOrder};
+                if (_order isEqualTo []) then {
+                    private _choices = if (_enemy) then {GRLIB_all_fobs} else {active_sectors apply {markerPos _x}};
+                    if !(_target in _choices) then { _target = if (_choices isEqualTo []) then {[]} else {+(selectRandom _choices)} };
+                    if !(_target isEqualTo []) then {
+                        [_group,_target getPos [random 90,random 360],"FULL","RED","AWARE"] call HPC_fnc_groupOrder;
+                    };
+                } else {
+                    [_group, _order] call HPC_fnc_warfareGo;
                 };
                 sleep 30;
             };
@@ -81,10 +131,7 @@ HPC_fnc_warfareVehicle = {
         private _spawned = !isNull _vehicle;
         if (_spawned) then {
             private _group = group driver _vehicle;
-            _group setVariable ["HPC_warfare", true, true];
-            _group setVariable ["HPC_hcManaged",true,true];
-            _group setVariable ["HPC_hcReadyAt",diag_tickTime + 15];
-            {_x setVariable ["HPC_warfare", true, true]} forEach units _group;
+            [_group, ["light", "heavy"] select _heavy, format [["Light armor %1", "Heavy armor %1"] select _heavy, _number]] call HPC_fnc_warfareTag;
             _vehicle setVariable ["HPC_warfare", true, true];
             _vehicle lock true;
             private _previous = (getPosATL _vehicle) vectorAdd [999,999,0];
@@ -94,18 +141,28 @@ HPC_fnc_warfareVehicle = {
                 private _pos = getPosATL _vehicle;
                 private _stationary = _previous distance2D _pos < 5;
                 if (_stationary && (_stuck >= 3 || !canMove _vehicle)) exitWith {};
-                if !(_sector in active_sectors) then {
-                    _sector = if (active_sectors isEqualTo []) then {""} else {selectRandom active_sectors};
+                private _order = [_group] call HPC_fnc_warfareOrder;
+                private _destination = [];
+                if (_order isEqualTo []) then {
+                    if !(_sector in active_sectors) then {
+                        _sector = if (active_sectors isEqualTo []) then {""} else {selectRandom active_sectors};
+                    };
+                    if (_sector != "") then {_destination = markerPos _sector};
+                } else {
+                    _destination = _order select 0;
                 };
-                if (_sector != "") then {
-                    private _destination = markerPos _sector;
+                if !(_destination isEqualTo []) then {
                     if (_stationary && _pos distance2D _destination > 150) then {
                         private _toward = _pos vectorAdd ((_destination vectorDiff _pos) vectorMultiply 0.2);
                         private _newPos = [_toward, 10, 150] call HPC_fnc_warfarePosition;
                         if !(_newPos isEqualTo []) then { _vehicle setPosATL _newPos };
                         _stuck = _stuck + 1;
                     } else { _stuck = 0 };
-                    [_group,_destination getPos [random 90,random 360],"FULL","RED","COMBAT"] call HPC_fnc_groupOrder;
+                    if (_order isEqualTo []) then {
+                        [_group,_destination getPos [random 90,random 360],"FULL","RED","COMBAT"] call HPC_fnc_groupOrder;
+                    } else {
+                        [_group, _order] call HPC_fnc_warfareGo;
+                    };
                 };
                 _previous = _pos;
                 sleep 60;
@@ -136,14 +193,17 @@ if !(call HPC_fnc_warfareActive) exitWith {HPC_warfareRunning = false};
                 private _squad = blufor_squad_inf select {isClass (configFile >> "CfgVehicles" >> _x)};
                 if (count _pos > 0 && count _squad > 0) then {
                     _group = [_pos, _squad, GRLIB_side_friendly, "infantry"] call F_libSpawnUnits;
-                    _group setVariable ["HPC_warfare", true, true];
-                    _group setVariable ["HPC_hcManaged",true,true];
-                    _group setVariable ["HPC_hcReadyAt",diag_tickTime + 15];
-                    {_x setVariable ["HPC_warfare", true, true]} forEach units _group;
+                    [_group, "guard", format ["FOB %1 guard", [_position] call F_getFobName]] call HPC_fnc_warfareTag;
                     _defenders set [_key, _group];
                 };
             };
-            [_group,_position getPos [random 50,random 360],"LIMITED","RED","COMBAT"] call HPC_fnc_groupOrder;
+            // A guard the commander sent elsewhere follows that order until it is cleared.
+            private _order = [_group] call HPC_fnc_warfareOrder;
+            if (_order isEqualTo []) then {
+                [_group,_position getPos [random 50,random 360],"LIMITED","RED","COMBAT"] call HPC_fnc_groupOrder;
+            } else {
+                [_group, _order] call HPC_fnc_warfareGo;
+            };
             sleep 5;
         } forEach (+GRLIB_all_fobs);
         sleep 60;

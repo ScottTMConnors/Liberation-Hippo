@@ -39,6 +39,7 @@ while {true} do {
 		!([_x, _no_marker_classnames] call F_itemIsInClass) &&
 		(isNil {_x getVariable "GRLIB_vehicle_init"}) &&
 		(isNil {_x getVariable "GRLIB_mission_AI"}) &&
+		(isNil {_x getVariable "HPC_warfare"}) &&	// drawn by the map overlay
 		(isNull (_x getVariable ["R3F_LOG_est_transporte_par", objNull]))
 	};
 
