@@ -248,6 +248,7 @@ waitUntil {uiSleep 1; (GRLIB_player_configured && GRLIB_action_player_ready && b
 [] execVM "scripts\client\markers\vehicles_marker.sqf";
 [] execVM "scripts\client\markers\hostile_groups.sqf";
 [] execVM "scripts\client\markers\HPC_mapOverlay.sqf";
+[] execVM "scripts\shared\HPC_shotRelay.sqf";
 [] execVM "scripts\client\commander\commander_marker.sqf";
 //[] execVM "scripts\client\markers\logs_markers.sqf";
 

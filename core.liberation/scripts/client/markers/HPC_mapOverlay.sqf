@@ -4,8 +4,9 @@
 // - enemy groups only while our side knows about them (knowsAbout, merged from the server,
 //   headless clients and the player's own group); when intel is lost the group becomes a
 //   "?" at its last known position for three minutes
-// - shot markers: every shot sends a small rectangle flying from the shooter for a second,
-//   and the shooter's group icon flashes
+// - shot markers: every shot our side would know about (friendly fire, enemies near friendly
+//   players or AI, or enemy groups we have intel on), anywhere on the map, sends a small
+//   rectangle flying from the shooter for a second, and the shooter's group icon flashes
 // - hover tooltip with the group's soldiers and vehicles, a pulsing ring on groups in combat
 // - a force summary panel with layer toggles and, for the commander, the Command AI button
 if (!hasInterface) exitWith {};
@@ -233,30 +234,8 @@ HPC_fnc_mapDraw = compileFinal toString {
     };
 };
 
-// Shot markers: like Team Map Intel, a rectangle flies from the shooter along the shot.
-// Only recorded while a map that draws them is open. Civilians are ignored.
-addMissionEventHandler ["ProjectileCreated", {
-    params ["_projectile"];
-    if (!HPC_mapDrawing || {!HPC_mapShowTracers} || {count HPC_mapShots >= 300}) exitWith {};
-    (getShotParents _projectile) params [["_vehicle", objNull], ["_shooter", objNull]];
-    if (isNull _shooter) then {_shooter = effectiveCommander _vehicle};
-    if (isNull _shooter) exitWith {};
-    private _group = group _shooter;
-    private _side = side _group;
-    if (_side == civilian) exitWith {};
-    _group setVariable ["HPC_mapFiredAt", diag_tickTime];
-    private _velocity = velocity _projectile;
-    _velocity set [2, 0];
-    if (vectorMagnitude _velocity < 1) then {_velocity = vectorDir _projectile; _velocity set [2, 0]};
-    if (vectorMagnitude _velocity < 0.01) exitWith {};
-    _velocity = vectorNormalized _velocity;
-    private _color = switch (true) do {
-        case (_side == GRLIB_side_friendly): {[0.45, 0.8, 1, 0.95]};
-        case (_side == GRLIB_side_enemy): {[1, 0.35, 0.28, 0.95]};
-        default {[0.5, 1, 0.5, 0.95]};
-    };
-    HPC_mapShots pushBack [getPosASL _projectile, _velocity, diag_tickTime, _color, (_velocity select 0) atan2 (_velocity select 1)];
-}];
+// Shot markers arrive from the shot relays (scripts\shared\HPC_shotRelay.sqf) on every
+// machine, via HPC_fnc_mapShotsIn, while this client is subscribed (map open, SHOTS on).
 
 // Tooltip: the hovered group's soldiers and vehicles, after Team Map Intel.
 HPC_fnc_mapTooltipText = compileFinal toString {
@@ -305,10 +284,11 @@ private _panelIdc = 77901;
 private _tooltipIdc = 77920;
 private _createPanel = {
     params ["_display"];
-    private _x0 = safezoneX + safezoneW - 0.205 * safezoneW;
+    private _x0 = safezoneX + safezoneW - 0.245 * safezoneW; // clear of the HUD column on the right edge
     private _y0 = safezoneY + 0.1 * safezoneH;
     private _panel = _display ctrlCreate ["RscStructuredText", _panelIdc];
-    _panel ctrlSetPosition [_x0, _y0, 0.195 * safezoneW, 0.27 * safezoneH];
+    _panel ctrlSetPosition [_x0, _y0, 0.195 * safezoneW, 0.25 * safezoneH];
+    _panel ctrlSetFontHeight (0.021 * safezoneH);
     _panel ctrlSetBackgroundColor [0.025, 0.035, 0.045, 0.82];
     _panel ctrlCommit 0;
     private _accent = _display ctrlCreate ["RscText", _panelIdc + 5];
@@ -318,10 +298,10 @@ private _createPanel = {
     {
         _x params ["_offset", "_column", "_row", "_width", "_label", "_tooltip", "_code"];
         private _button = _display ctrlCreate ["RscButton", _panelIdc + _offset];
-        _button ctrlSetPosition [_x0 + _column * safezoneW, _y0 + (0.275 + 0.034 * _row) * safezoneH, _width * safezoneW, 0.03 * safezoneH];
+        _button ctrlSetPosition [_x0 + _column * safezoneW, _y0 + (0.255 + 0.036 * _row) * safezoneH, _width * safezoneW, 0.032 * safezoneH];
         _button ctrlSetText _label;
         _button ctrlSetTooltip _tooltip;
-        _button ctrlSetFontHeight (0.015 * safezoneH);
+        _button ctrlSetFontHeight (0.019 * safezoneH);
         _button ctrlAddEventHandler ["ButtonClick", _code];
         _button ctrlCommit 0;
     } forEach [
@@ -383,7 +363,7 @@ private _summary = {
             ["b_armor", "#4D9EFF", "Armor", _armor] call _row,
             ["b_inf", "#66D1FF", "FOB guards", _counts getOrDefault ["guard", 0]] call _row,
             ["b_inf", "#94B8DB", "Base staff groups", _counts getOrDefault ["staff", 0]] call _row,
-            ["b_inf", "#F2C75A", "Mission / garrison / other", (_counts getOrDefault ["mission", 0]) + (_counts getOrDefault ["garrison", 0]) + (_counts getOrDefault ["other", 0])] call _row,
+            ["b_inf", "#F2C75A", "Other friendly AI", (_counts getOrDefault ["mission", 0]) + (_counts getOrDefault ["garrison", 0]) + (_counts getOrDefault ["other", 0])] call _row,
             format ["<t color='#C9D4DE'>Under commander orders</t><t align='right' color='#FFD04D'>%1</t><br/>", _ordered]
         ];
     } else {
@@ -399,6 +379,7 @@ private _summary = {
 };
 
 private _drawnMap = controlNull;
+private _subscribed = false;
 private _nextRefresh = 0;
 private _previousIntel = [];
 private _tooltipGroup = grpNull;
@@ -406,6 +387,12 @@ private _tooltipAt = 0;
 while {true} do {
     private _commandOpen = !isNull (uiNamespace getVariable ["HPC_AICommandDisplay", displayNull]);
     HPC_mapDrawing = visibleMap || _commandOpen;
+    // Ask the server for shot batches only while a map that draws them is open.
+    private _wantShots = HPC_mapDrawing && HPC_mapShowTracers;
+    if !(_wantShots isEqualTo _subscribed) then {
+        [_wantShots] remoteExecCall ["HPC_fnc_mapSubscribe", 2];
+        _subscribed = _wantShots;
+    };
     private _display = findDisplay 12;
     private _map = _display displayCtrl 51;
     if (!isNull _map && {!(_map isEqualTo _drawnMap)}) then {
@@ -471,7 +458,19 @@ while {true} do {
 
         if (visibleMap) then {
             if (isNull (_display displayCtrl _panelIdc)) then {[_display] call _createPanel};
-            (_display displayCtrl _panelIdc) ctrlSetStructuredText parseText (call _summary);
+            private _panel = _display displayCtrl _panelIdc;
+            _panel ctrlSetStructuredText parseText (call _summary);
+            // Fit the panel to its text and keep the buttons just below it.
+            private _height = (ctrlTextHeight _panel) + 0.008 * safezoneH;
+            (ctrlPosition _panel) params ["_px", "_py", "_pw"];
+            _panel ctrlSetPosition [_px, _py, _pw, _height];
+            _panel ctrlCommit 0;
+            {
+                private _button = _display displayCtrl (_panelIdc + (_x select 0));
+                (ctrlPosition _button) params ["_bx", "", "_bw", "_bh"];
+                _button ctrlSetPosition [_bx, _py + _height + 0.005 * safezoneH + (_x select 1) * 0.036 * safezoneH, _bw, _bh];
+                _button ctrlCommit 0;
+            } forEach [[1, 0], [4, 0], [2, 0], [3, 1]];
             (_display displayCtrl (_panelIdc + 1)) ctrlSetText (["FORCES: OFF", "FORCES: ON"] select HPC_mapShowForces);
             (_display displayCtrl (_panelIdc + 4)) ctrlSetText (["INTEL: OFF", "INTEL: ON"] select HPC_mapShowIntel);
             (_display displayCtrl (_panelIdc + 2)) ctrlSetText (["SHOTS: OFF", "SHOTS: ON"] select HPC_mapShowTracers);

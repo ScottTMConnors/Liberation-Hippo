@@ -209,3 +209,4 @@ diag_log "--- Server Init stop ---";
 
 if (GRLIB_Commander_mode && HPC_AIWarfare) then { [] execVM "scripts\server\game\defenderattackersystem.sqf" };
 [] execVM "scripts\shared\HPC_intelScan.sqf";
+[] execVM "scripts\shared\HPC_shotRelay.sqf";

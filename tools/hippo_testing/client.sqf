@@ -192,23 +192,46 @@ private _round = "B_65x39_Caseless" createVehicle ((getPosATL player) vectorAdd 
 _round setVelocity [0,800,0];
 private _weapon = currentWeapon player;
 if (_weapon != "") then {player forceWeaponFire [_weapon, (getArray (configFile >> "CfgWeapons" >> _weapon >> "modes")) param [0,_weapon]]};
-uiSleep 0.05;
-private _shots = count (missionNamespace getVariable ["HPC_mapShots",[]]);
+// Shots travel through the relay (batched every 0.3 s), so allow a moment.
+private _shots = 0;
+_deadline = diag_tickTime + 5;
+waitUntil {
+    uiSleep 0.02;
+    _shots = count (missionNamespace getVariable ["HPC_mapShots",[]]);
+    if (_shots == 0 && {_weapon != ""}) then {player forceWeaponFire [_weapon, (getArray (configFile >> "CfgWeapons" >> _weapon >> "modes")) param [0,_weapon]]};
+    _shots > _shotsBefore || {diag_tickTime > _deadline}
+};
 diag_log ["HPC_MAP_OVERLAY",visibleMap,HPC_mapDrawing,_shotsBefore,_shots,count HPC_mapForces,ctrlShown (_mapDisplay displayCtrl 77901)];
 ["map.overlay", visibleMap && {HPC_mapDrawing} && {ctrlShown (_mapDisplay displayCtrl 77901)} && {ctrlShown (_mapDisplay displayCtrl 77902)} && {_shots > _shotsBefore}] call _assert;
 // A server-owned enemy soldier fires nearby: its shots must appear on this client's map in enemy red.
-[getPosATL player, getDir player] remoteExec ["HPC_testShooterFn", 2];
-private _remoteShot = false;
-_deadline = diag_tickTime + 15;
-waitUntil {
-    uiSleep 0.02;
-    _remoteShot = HPC_mapShots findIf {((_x select 3) select 0) > 0.9} >= 0;
-    _remoteShot || {diag_tickTime > _deadline}
+// Shots fired ~3 km away, by a server-owned enemy beside a friendly soldier, must reach this
+// player's map through the shot relay; the same without any friendly nearby must not.
+private _farShots = {
+    params ["_withFriendly"];
+    HPC_testShooterPos = nil;
+    [getPosATL player, _withFriendly] remoteExec ["HPC_testShooterFn", 2];
+    private _limit = diag_tickTime + 10;
+    waitUntil {uiSleep 0.1; !isNil "HPC_testShooterPos" || {diag_tickTime > _limit}};
+    private _at = missionNamespace getVariable ["HPC_testShooterPos", []];
+    if (_at isEqualTo []) exitWith {[false, [], ""]};
+    private _seen = false;
+    private _text = "";
+    _limit = diag_tickTime + 12;
+    waitUntil {
+        uiSleep 0.02;
+        if (!_seen && {HPC_mapShots findIf {((_x select 3) select 0) > 0.9 && {((_x select 0) distance2D _at) < 150}} >= 0}) then {
+            _seen = true;
+            private _shooter = missionNamespace getVariable ["HPC_testShooter", objNull];
+            if (!isNull _shooter) then {_text = [group _shooter] call HPC_fnc_mapTooltipText};
+        };
+        diag_tickTime > _limit
+    };
+    [_seen, _at, _text]
 };
-private _shooter = missionNamespace getVariable ["HPC_testShooter", objNull];
-private _tooltipText = if (isNull _shooter) then {""} else {[group _shooter] call HPC_fnc_mapTooltipText};
-diag_log ["HPC_MAP_REMOTE_SHOT",_remoteShot,!isNull _shooter,_tooltipText];
-["map.remoteShots", _remoteShot && {"ENEMY" in _tooltipText}] call _assert;
+([true] call _farShots) params ["_nearSeen", "_nearAt", "_tooltipText"];
+([false] call _farShots) params ["_aloneSeen", "_aloneAt"];
+diag_log ["HPC_MAP_REMOTE_SHOT", _nearSeen, _nearAt, player distance2D _nearAt, _aloneSeen, _aloneAt, _tooltipText];
+["map.remoteShots", _nearSeen && {player distance2D _nearAt > 2000} && {"ENEMY" in _tooltipText} && {!_aloneSeen} && {!(_aloneAt isEqualTo [])}] call _assert;
 // Commander window: opens over the game, fills its destination list and map, closes cleanly.
 player setVariable ["GRLIB_is_Commander",true,true];
 GRLIB_player_commander = true;
@@ -228,7 +251,12 @@ GRLIB_player_commander = false;
 ["RUN_DONE|16"] call _emit;
 // --hold only: a staged firefight for visual inspection of the map overlay and command window.
 if (missionNamespace getVariable ["HPC_testHold", false]) then {
-    private _center = (getPosATL player) getPos [350, getDir player];
+    player allowDamage false;
+    player setCaptive true;
+    // Stage it on the nearest land sector so the soldiers can actually fight.
+    private _sites = ((sectors_allSectors apply {markerPos _x}) select {_x distance2D player > 400 && {!surfaceIsWater _x}}) apply {[_x distance2D player, _x]};
+    _sites sort true;
+    private _center = if (_sites isEqualTo []) then {(getPosATL player) getPos [600, getDir player]} else {(_sites select 0) select 1};
     [_center] remoteExec ["HPC_testBattleFn", 2];
     sleep 4;
     openMap true;

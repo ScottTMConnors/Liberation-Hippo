@@ -60,9 +60,11 @@ Built on the idea of crub's Team Map Intel:
   (what friendly AI on the server and headless clients, and your own group,
   have spotted). When contact is lost they become a **?** at the last known
   position for three minutes.
-- **Shot markers**: every shot sends a small rectangle flying from the
-  shooter, blue for friendly and red for enemy fire, and the shooter's group
-  icon flashes. A pulsing ring marks groups in combat.
+- **Shot markers**: every shot your side would know about sends a small
+  rectangle flying from the shooter, blue for friendly and red for enemy fire,
+  and the shooter's group icon flashes. That covers friendly fire anywhere and
+  enemy fire within 1 km of any friendly player or AI (or from a spotted
+  group), wherever you are on the map. A pulsing ring marks groups in combat.
 - Hover a group to see its soldiers, vehicles and orders.
 - A **Friendly Forces** panel counts squads, armor, guards, spotted enemy
   groups and active objectives, with FORCES, INTEL and SHOTS toggles.

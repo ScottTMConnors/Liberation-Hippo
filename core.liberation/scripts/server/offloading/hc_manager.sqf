@@ -61,6 +61,7 @@ createCustomGroup = compileFinal preprocessFileLineNumbers "scripts\server\a3w\s
 
 [] execVM "scripts\server\offloading\show_fps_hc.sqf";
 [] execVM "scripts\shared\HPC_intelScan.sqf";
+[] execVM "scripts\shared\HPC_shotRelay.sqf";
 
 // Facilities
 GRLIB_Marker_ATM = [];

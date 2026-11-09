@@ -8,21 +8,35 @@ private _assert = {
 ["RUN_START|1"] call _emit;
 // Test helper the client calls by name (remoteExec of named functions only).
 HPC_testShooterFn = {
-    params ["_pos", "_dir"];
+    // An enemy fires about 3 km from the player, with or without a friendly soldier beside it.
+    params ["_playerPos", "_withFriendly"];
+    private _spots = (sectors_allSectors apply {markerPos _x}) select {_x distance2D _playerPos > 2500 && {!surfaceIsWater _x}};
+    if (!_withFriendly) then {
+        _spots = _spots select {(_x nearEntities [["CAManBase", "LandVehicle", "Air", "Ship"], 1300]) findIf {side _x == GRLIB_side_friendly} < 0};
+    };
+    if (_spots isEqualTo []) exitWith {HPC_testShooterPos = []; publicVariable "HPC_testShooterPos"};
+    private _pos = (selectRandom _spots) getPos [40, random 360];
     private _group = createGroup [GRLIB_side_enemy, true];
-    private _unit = _group createUnit ["O_Soldier_F", _pos getPos [70, _dir], [], 0, "NONE"];
+    private _unit = _group createUnit ["O_Soldier_F", _pos, [], 0, "NONE"];
     _unit setCaptive true;
     {_unit disableAI _x} forEach ["MOVE", "TARGET", "AUTOTARGET"];
-    _unit setDir (_dir + 90);
+    private _friend = objNull;
+    if (_withFriendly) then {
+        _friend = (createGroup [GRLIB_side_friendly, true]) createUnit [blufor_squad_inf select 0, _pos getPos [25, 90], [], 0, "NONE"];
+        {_friend disableAI _x} forEach ["MOVE", "TARGET", "AUTOTARGET", "FSM"];
+    };
     HPC_testShooter = _unit;
+    HPC_testShooterPos = getPosATL _unit;
     publicVariable "HPC_testShooter";
+    publicVariable "HPC_testShooterPos";
     sleep 2;
-    for "_i" from 1 to 12 do {
+    for "_i" from 1 to 15 do {
         _unit forceWeaponFire [primaryWeapon _unit, (getArray (configFile >> "CfgWeapons" >> primaryWeapon _unit >> "modes")) param [0, primaryWeapon _unit]];
         sleep 0.4;
     };
     sleep 3;
     deleteVehicle _unit;
+    deleteVehicle _friend;
 };
 // Test helper the client calls by name (remoteExec of named functions only).
 HPC_testBattleFn = {
