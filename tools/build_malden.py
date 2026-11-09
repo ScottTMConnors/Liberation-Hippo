@@ -16,10 +16,13 @@ GAME=Path('E:/SteamLibrary/steamapps/common/Arma 3')
 
 def sha(path): return hashlib.sha256(path.read_bytes()).hexdigest()
 
-def next_version(base_version, manifest_path):
-    """Advance the patch number after every successful local build."""
+# Map folder suffix -> terrain name shown in Arma.
+MAPS={'Malden':'Malden 2035','Tanoa':'Tanoa'}
+
+def next_version(base_version, manifest_paths):
+    """Advance the patch number after every successful local build (shared by all maps)."""
     versions = [base_version]
-    if manifest_path.exists():
+    for manifest_path in manifest_paths:
         versions.append(json.loads(manifest_path.read_text(encoding='utf-8'))['version'])
     latest = max(tuple(map(int, value.split('+', 1)[0].split('.'))) for value in versions)
     if len(latest) != 3:
@@ -42,14 +45,14 @@ def stamp_identity(stage, version):
         text,count=re.subn(rf'(?m)^{key}\s*=.*?;',lambda m:f'{key} = "{title}";',text)
         if count!=1: raise RuntimeError('Missing/duplicate mission title: '+key)
     path.write_text(text,encoding='utf-8')
-    # Malden's mission.sqm is binarized: never edit its offsets as raw bytes.
+    # The map mission.sqm files are binarized: never edit their offsets as raw bytes.
     converter=GAME.parent/'Arma 3 Tools/CfgConvert/CfgConvert.exe'
     with tempfile.TemporaryDirectory(prefix='Hippo-release-title-') as folder:
         decoded=Path(folder)/'mission.cpp'
         subprocess.run([str(converter),'-txt','-dst',str(decoded),str(stage/'mission.sqm')],check=True,capture_output=True)
         text=decoded.read_text(encoding='utf-8-sig')
         text,count=re.subn(r'\bbriefingName\s*=\s*"[^"]*";',lambda m:f'briefingName="{title}";',text)
-        if count!=1: raise RuntimeError('Expected one Malden Intel briefingName')
+        if count!=1: raise RuntimeError('Expected one Intel briefingName in mission.sqm')
         decoded.write_text(text,encoding='utf-8')
         subprocess.run([str(converter),'-bin','-dst',str(stage/'mission.sqm'),str(decoded)],check=True,capture_output=True)
         verified=Path(folder)/'verified.cpp'
@@ -67,34 +70,38 @@ def main():
     deployment.add_argument('--build-only',dest='install',action='store_false',help='Build without replacing the installed mission.')
     parser.set_defaults(install=True)
     parser.add_argument('--whitelist',type=Path,help='Private access lists (e.g. tools/server/local/whitelist.sqf) to build in for your own server. Never upload such a build.')
+    parser.add_argument('--map',nargs='+',choices=sorted(MAPS),default=['Malden'],help='Maps to build; all get the same release version.')
     args=parser.parse_args()
     if args.whitelist:
         text=args.whitelist.read_text(encoding='utf-8-sig')
         missing=[name for name in ('GRLIB_whitelisted_steamids','GRLIB_whitelisted_moderators','GRLIB_blacklisted_names') if name not in text]
         if missing: raise RuntimeError(f'{args.whitelist} does not define: '+', '.join(missing))
     GAME=args.game_directory
-    dirty=subprocess.check_output(['git','status','--porcelain','--','core.liberation','maps/Liberation_RX.Malden'],cwd=ROOT).decode().strip()
+    dirty=subprocess.check_output(['git','status','--porcelain','--','core.liberation',*[f'maps/Liberation_RX.{m}' for m in args.map]],cwd=ROOT).decode().strip()
     if dirty: raise RuntimeError('Commit mission source before producing a release candidate.\n'+dirty)
-    revision=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT).decode().strip()
-    upstream_tag=subprocess.check_output(['git','describe','--tags','upstream/master'],cwd=ROOT).decode().strip()
     version=next(k.findtext('Original') for k in ET.parse(ROOT/'core.liberation/stringtable.xml').getroot().iter('Key') if k.attrib.get('ID')=='STR_MISSION_VERSION')
     stamp=datetime.now().strftime('%Y%m%d-%H%M%S')
     out=ROOT/'mybuild'/'releases'
     out.mkdir(parents=True,exist_ok=True)
-    release_version=next_version(version,out/'Hippos_Conquest.Malden.manifest.json')
-    stage=out/stamp/'Hippos_Conquest.Malden'
+    release_version=next_version(version,sorted(out.glob('Hippos_Conquest.*.manifest.json')))
+    for map_name in dict.fromkeys(args.map):
+        build_map(map_name,args,out,stamp,version,release_version)
+
+def build_map(map_name,args,out,stamp,version,release_version):
+    revision=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT).decode().strip()
+    stage=out/stamp/f'Hippos_Conquest.{map_name}'
     shutil.copytree(ROOT/'core.liberation',stage)
-    shutil.copytree(ROOT/'maps/Liberation_RX.Malden',stage,dirs_exist_ok=True)
+    shutil.copytree(ROOT/f'maps/Liberation_RX.{map_name}',stage,dirs_exist_ok=True)
     for name in ['CREDITS.md','COPYING.md']: shutil.copy2(ROOT/name,stage/name)
     if args.whitelist: shutil.copy2(args.whitelist,stage/'whitelist.sqf')
     title=stamp_identity(stage,release_version)
     (stage/'build_info.sqf').write_text(f'// Hippos Conquest release provenance\nGRLIB_build_date="{stamp}";\nGRLIB_build_time="{datetime.now().strftime("%H:%M:%S")}";\nGRLIB_build_version="{release_version}";\n',encoding='utf-8')
-    compact_report=out/stamp/'compaction.json'
+    compact_report=out/stamp/f'compaction.{map_name}.json'
     compaction=compact_stage(stage,compact_report)
-    pbo=out/'Hippos_Conquest.Malden.pbo'
+    pbo=out/f'Hippos_Conquest.{map_name}.pbo'
     if pbo.exists(): shutil.copy2(pbo,out/stamp/('previous-'+pbo.name))
     pack=subprocess.run([str(ROOT/'build/bin/PBOConsole.exe'),'-pack',str(stage),str(pbo)],cwd=ROOT,capture_output=True,text=True)
-    (out/stamp/'pack.log').write_text(pack.stdout+pack.stderr,encoding='utf-8')
+    (out/stamp/f'pack.{map_name}.log').write_text(pack.stdout+pack.stderr,encoding='utf-8')
     if pack.returncode or not pbo.exists() or pbo.stat().st_size==0: raise RuntimeError('PBO packaging failed')
     source_hash=hashlib.sha256()
     entries=[]
@@ -103,7 +110,7 @@ def main():
             name=str(path.relative_to(stage)).replace('\\','/')
             entries.append(name)
             source_hash.update(name.encode()); source_hash.update(bytes.fromhex(sha(path)))
-    manifest={'mission':'Hippos Conquest','terrain':'Malden 2035','source_commit':revision,'upstream_base':subprocess.check_output(['git','rev-parse','upstream/master'],cwd=ROOT).decode().strip(),'package':str(pbo),'package_sha256':sha(pbo),'staged_source_sha256':source_hash.hexdigest(),'entries':entries,'built_at':stamp}
+    manifest={'mission':'Hippos Conquest','terrain':MAPS[map_name],'source_commit':revision,'upstream_base':subprocess.check_output(['git','rev-parse','upstream/master'],cwd=ROOT).decode().strip(),'package':str(pbo),'package_sha256':sha(pbo),'staged_source_sha256':source_hash.hexdigest(),'entries':entries,'built_at':stamp}
     manifest.update(version=release_version,base_version=version,title=title)
     manifest['private_whitelist']=str(args.whitelist) if args.whitelist else None
     if args.install:
@@ -125,7 +132,7 @@ def main():
             shutil.copy2(helper_source,helper_target)
         manifest['headless_tools']=str(helper_destination)
     manifest['compaction']={'report':str(compact_report),'report_sha256':sha(compact_report),**{k:compaction[k] for k in ('source_bytes','release_bytes','renamed_files')}}
-    manifest_path=out/'Hippos_Conquest.Malden.manifest.json'
+    manifest_path=out/f'Hippos_Conquest.{map_name}.manifest.json'
     manifest_path.write_text(json.dumps(manifest,indent=2),encoding='utf-8')
     print(json.dumps({k:v for k,v in manifest.items() if k!='entries'},indent=2))
     if args.whitelist: print(f'WARNING: {pbo.name} contains the private access lists from {args.whitelist}. Do not upload it to the Workshop.')

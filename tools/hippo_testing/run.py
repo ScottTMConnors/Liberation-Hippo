@@ -93,7 +93,7 @@ def main():
     ap.add_argument('--headless', type=int, choices=[0,2], default=0)
     ap.add_argument('--hc-binary',choices=['server','client'],default='server')
     ap.add_argument('--hold', type=int, default=0)
-    ap.add_argument('--map', choices=['Altis','Malden'], default='Malden')
+    ap.add_argument('--map', choices=['Altis','Malden','Tanoa'], default='Malden')
     ap.add_argument('--scenario', action='store_true')
     ap.add_argument('--commander', action='store_true')
     ap.add_argument('--source-ref')
