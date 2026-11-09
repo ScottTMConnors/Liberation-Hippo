@@ -208,3 +208,4 @@ publicVariable "GRLIB_init_server";
 diag_log "--- Server Init stop ---";
 
 if (GRLIB_Commander_mode && HPC_AIWarfare) then { [] execVM "scripts\server\game\defenderattackersystem.sqf" };
+[] execVM "scripts\shared\HPC_intelScan.sqf";

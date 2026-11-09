@@ -22,9 +22,12 @@ HPC_fnc_warfarePosition = {
     if (surfaceIsWater _guess) exitWith {[]};
     [_guess, _size, 0, 200] call F_findSafePlace
 };
-// Commander orders (HPC_cmdOrder on the group): ["attack", sector], ["defend", sector]
-// or ["fob", fobPos]. Returns [position, type], or [] (and clears the order) when
-// there is no order or its target is gone, so the group falls back to automatic orders.
+// Commander orders (HPC_cmdOrder on the group): ["attack", sector], ["defend", sector],
+// ["fob", fobPos] or ["hold", position]. Returns [position, type], or [] when the group
+// has no order and follows automatic orders.
+// When a target ends (sector taken or lost, FOB gone) the group's "auto after capture"
+// flag (HPC_cmdReturn, default on) decides: on -> automatic orders again; off -> it keeps
+// defending the captured sector, or holds the last objective's position.
 HPC_fnc_warfareOrder = {
     params ["_group"];
     private _order = _group getVariable ["HPC_cmdOrder", []];
@@ -37,11 +40,26 @@ HPC_fnc_warfareOrder = {
             private _index = GRLIB_all_fobs findIf {_x distance2D _key < 5};
             if (_index < 0) then {[]} else {+(GRLIB_all_fobs select _index)}
         };
+        case "hold": { +_key };
         default {[]};
     };
     if (_pos isEqualTo []) exitWith {
-        _group setVariable ["HPC_cmdOrder", nil, true];
-        []
+        private _next = [];
+        if !(_group getVariable ["HPC_cmdReturn", true]) then {
+            _next = switch (_type) do {
+                case "attack": { if (_key in blufor_sectors) then {["defend", _key]} else {["hold", markerPos _key]} };
+                case "defend": { ["hold", markerPos _key] };
+                case "fob": { ["hold", +_key] };
+                default {[]};
+            };
+        };
+        if (_next isEqualTo []) then {
+            _group setVariable ["HPC_cmdOrder", nil, true];
+            []
+        } else {
+            _group setVariable ["HPC_cmdOrder", _next, true];
+            [_group] call HPC_fnc_warfareOrder
+        }
     };
     [_pos, _type]
 };
@@ -197,13 +215,8 @@ if !(call HPC_fnc_warfareActive) exitWith {HPC_warfareRunning = false};
                     _defenders set [_key, _group];
                 };
             };
-            // A guard the commander sent elsewhere follows that order until it is cleared.
-            private _order = [_group] call HPC_fnc_warfareOrder;
-            if (_order isEqualTo []) then {
-                [_group,_position getPos [random 50,random 360],"LIMITED","RED","COMBAT"] call HPC_fnc_groupOrder;
-            } else {
-                [_group, _order] call HPC_fnc_warfareGo;
-            };
+            // FOB guards always stay at their FOB; the commander cannot order them away.
+            [_group,_position getPos [random 50,random 360],"LIMITED","RED","COMBAT"] call HPC_fnc_groupOrder;
             sleep 5;
         } forEach (+GRLIB_all_fobs);
         sleep 60;

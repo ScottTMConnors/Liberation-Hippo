@@ -60,6 +60,7 @@ cleanMissionVehicles = compileFinal preprocessFileLineNumbers "scripts\server\a3
 createCustomGroup = compileFinal preprocessFileLineNumbers "scripts\server\a3w\scripts\F_createCustomGroup.sqf";
 
 [] execVM "scripts\server\offloading\show_fps_hc.sqf";
+[] execVM "scripts\shared\HPC_intelScan.sqf";
 
 // Facilities
 GRLIB_Marker_ATM = [];

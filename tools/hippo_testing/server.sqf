@@ -6,6 +6,60 @@ private _assert = {
     ["CASE_DONE|" + _case] call _emit;
 };
 ["RUN_START|1"] call _emit;
+// Test helper the client calls by name (remoteExec of named functions only).
+HPC_testShooterFn = {
+    params ["_pos", "_dir"];
+    private _group = createGroup [GRLIB_side_enemy, true];
+    private _unit = _group createUnit ["O_Soldier_F", _pos getPos [70, _dir], [], 0, "NONE"];
+    _unit setCaptive true;
+    {_unit disableAI _x} forEach ["MOVE", "TARGET", "AUTOTARGET"];
+    _unit setDir (_dir + 90);
+    HPC_testShooter = _unit;
+    publicVariable "HPC_testShooter";
+    sleep 2;
+    for "_i" from 1 to 12 do {
+        _unit forceWeaponFire [primaryWeapon _unit, (getArray (configFile >> "CfgWeapons" >> primaryWeapon _unit >> "modes")) param [0, primaryWeapon _unit]];
+        sleep 0.4;
+    };
+    sleep 3;
+    deleteVehicle _unit;
+};
+// Test helper the client calls by name (remoteExec of named functions only).
+HPC_testBattleFn = {
+        params ["_center"];
+        private _make = {
+            params ["_side", "_class", "_pos", "_count"];
+            private _group = createGroup [_side, true];
+            for "_i" from 1 to _count do {_group createUnit [_class, _pos, [], 6, "NONE"]};
+            {_x setCaptive true; _x disableAI "MOVE"; _x allowDamage false} forEach units _group;
+            _group
+        };
+        private _friendly = [GRLIB_side_friendly, blufor_squad_inf select 0, _center getPos [80, 270], 6] call _make;
+        _friendly setVariable ["HPC_warfare", true, true];
+        _friendly setVariable ["HPC_warfareRole", "infantry", true];
+        _friendly setVariable ["HPC_warfareName", "Assault 1", true];
+        _friendly setVariable ["HPC_cmdOrder", ["hold", _center getPos [400, 20]], true];
+        private _second = [GRLIB_side_friendly, blufor_squad_inf select 0, _center getPos [150, 200], 4] call _make;
+        _second setVariable ["HPC_warfare", true, true];
+        _second setVariable ["HPC_warfareRole", "infantry", true];
+        _second setVariable ["HPC_warfareName", "Assault 2", true];
+        _second setVariable ["HPC_cmdReturn", false, true];
+        _second setVariable ["HPC_order", [_center getPos [300, 120], "FULL", "RED", "AWARE"], true];
+        private _enemy = [GRLIB_side_enemy, "O_Soldier_F", _center getPos [120, 80], 5] call _make;
+        private _enemy2 = [GRLIB_side_enemy, "O_Soldier_F", _center getPos [220, 20], 3] call _make;
+        {_x reveal [leader _enemy, 4]; _x reveal [leader _enemy2, 4]} forEach (units _friendly + units _second);
+        private _shooters = units _friendly + units _enemy;
+        for "_i" from 1 to 140 do {
+            {
+                private _me = _x;
+                _me setDir (_me getDir (selectRandom (_shooters select {side group _x != side group _me})));
+                _me forceWeaponFire [primaryWeapon _me, (getArray (configFile >> "CfgWeapons" >> primaryWeapon _me >> "modes")) param [0, primaryWeapon _me]];
+            } forEach (_shooters select {random 1 < 0.35});
+            sleep 0.35;
+        };
+        {deleteVehicle _x} forEach (units _friendly + units _second + units _enemy + units _enemy2);
+    };
+
 diag_log ["HPC_PATCH_DIAGNOSTIC", isClass (configFile >> "CfgPatches" >> "A3_Characters_F"), isClass (configFile >> "CfgPatches" >> "A3_Characters_F_BLUFOR"), configSourceAddonList (configFile >> "CfgVehicles" >> "B_Soldier_F")];
 if (HPC_testBaseline) exitWith {
     private _deadline = diag_tickTime + 110;
@@ -124,4 +178,4 @@ if (HPC_testScenario) then {call compile preprocessFileLineNumbers "hippo_tests\
 call compile preprocessFileLineNumbers "hippo_tests\review.sqf";
 if (HPC_testCommander) then {call compile preprocessFileLineNumbers "hippo_tests\commander.sqf"};
 if (missionNamespace getVariable ["HPC_testHeadless",false]) then {call compile preprocessFileLineNumbers "hippo_tests\headless.sqf"};
-[format ["RUN_DONE|%1", 19 + (if (HPC_testScenario) then {4} else {0}) + (if (HPC_testCommander) then {5} else {0}) + (if (missionNamespace getVariable ["HPC_testHeadless",false]) then {11} else {0})]] call _emit;
+[format ["RUN_DONE|%1", 19 + (if (HPC_testScenario) then {4} else {0}) + (if (HPC_testCommander) then {8} else {0}) + (if (missionNamespace getVariable ["HPC_testHeadless",false]) then {11} else {0})]] call _emit;

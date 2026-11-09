@@ -70,7 +70,7 @@ class HPC_AICommand {
         };
         class GroupsHeader : Status {
             idc = -1;
-            text = "YOUR FORCES  (Ctrl / Shift to pick several)";
+            text = "AUTO   ASSAULT SQUADS AND ARMOR  (Ctrl / Shift: several)";
             y = safezoneY + 0.168 * safezoneH;
             w = 0.25 * safezoneW;
             colorText[] = {0.88,0.69,0.25,1};
@@ -82,9 +82,9 @@ class HPC_AICommand {
         };
         class Groups : HPC_CmdList {
             idc = 110;
-            x = safezoneX + 0.07 * safezoneW;
+            x = safezoneX + 0.088 * safezoneW;
             y = safezoneY + 0.2 * safezoneH;
-            w = 0.25 * safezoneW;
+            w = 0.232 * safezoneW;
             h = 0.58 * safezoneH;
         };
         class Destinations : HPC_CmdDestList {
@@ -119,10 +119,10 @@ class HPC_AICommand {
         };
         class SelectGuards : SelectAll {
             idc = 123;
-            text = "Guards";
+            text = "None";
             x = safezoneX + 0.2614 * safezoneW;
-            action = "['guard'] call HPC_fnc_cmdAction";
-            tooltip = "Select every FOB guard squad.";
+            action = "['none'] call HPC_fnc_cmdAction";
+            tooltip = "Clear the selection.";
         };
         class Send : HPC_CmdButton {
             idc = 130;
@@ -148,7 +148,7 @@ class HPC_AICommand {
         };
         class Hint : Status {
             idc = 104;
-            text = "Yellow line: your order. Faint blue line: automatic objective. Red ring: group in combat.";
+            text = "AUTO box: once its target is taken, a checked group returns to automatic; an unchecked group stays and defends. FOB guards always stay at their FOB.";
             y = safezoneY + 0.88 * safezoneH;
             w = 0.86 * safezoneW;
         };

@@ -196,6 +196,19 @@ uiSleep 0.05;
 private _shots = count (missionNamespace getVariable ["HPC_mapShots",[]]);
 diag_log ["HPC_MAP_OVERLAY",visibleMap,HPC_mapDrawing,_shotsBefore,_shots,count HPC_mapForces,ctrlShown (_mapDisplay displayCtrl 77901)];
 ["map.overlay", visibleMap && {HPC_mapDrawing} && {ctrlShown (_mapDisplay displayCtrl 77901)} && {ctrlShown (_mapDisplay displayCtrl 77902)} && {_shots > _shotsBefore}] call _assert;
+// A server-owned enemy soldier fires nearby: its shots must appear on this client's map in enemy red.
+[getPosATL player, getDir player] remoteExec ["HPC_testShooterFn", 2];
+private _remoteShot = false;
+_deadline = diag_tickTime + 15;
+waitUntil {
+    uiSleep 0.02;
+    _remoteShot = HPC_mapShots findIf {((_x select 3) select 0) > 0.9} >= 0;
+    _remoteShot || {diag_tickTime > _deadline}
+};
+private _shooter = missionNamespace getVariable ["HPC_testShooter", objNull];
+private _tooltipText = if (isNull _shooter) then {""} else {[group _shooter] call HPC_fnc_mapTooltipText};
+diag_log ["HPC_MAP_REMOTE_SHOT",_remoteShot,!isNull _shooter,_tooltipText];
+["map.remoteShots", _remoteShot && {"ENEMY" in _tooltipText}] call _assert;
 // Commander window: opens over the game, fills its destination list and map, closes cleanly.
 player setVariable ["GRLIB_is_Commander",true,true];
 GRLIB_player_commander = true;
@@ -212,4 +225,22 @@ diag_log ["HPC_COMMAND_WINDOW",!isNull _command,if (isNull _command) then {-1} e
 if (!isNull _command) then {_command closeDisplay 1};
 player setVariable ["GRLIB_is_Commander",false,true];
 GRLIB_player_commander = false;
-["RUN_DONE|15"] call _emit;
+["RUN_DONE|16"] call _emit;
+// --hold only: a staged firefight for visual inspection of the map overlay and command window.
+if (missionNamespace getVariable ["HPC_testHold", false]) then {
+    private _center = (getPosATL player) getPos [350, getDir player];
+    [_center] remoteExec ["HPC_testBattleFn", 2];
+    sleep 4;
+    openMap true;
+    sleep 1;
+    mapAnimAdd [0, 0.045, _center];
+    mapAnimCommit;
+    ["VISUAL|map"] call _emit;
+    sleep 25;
+    player setVariable ["GRLIB_is_Commander", true, true];
+    GRLIB_player_commander = true;
+    openMap false;
+    [] execVM "scripts\client\commander\HPC_commandAI.sqf";
+    sleep 3;
+    ["VISUAL|window"] call _emit;
+};

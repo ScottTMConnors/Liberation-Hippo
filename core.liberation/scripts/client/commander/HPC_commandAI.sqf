@@ -1,5 +1,8 @@
-// Command AI forces: the commander sends AI Warfare groups to attack an active
-// sector or defend a friendly sector or FOB. The server validates every order.
+// Command AI forces: the commander sends AI Warfare assault squads and armor to attack
+// an active sector or defend a friendly sector or FOB. FOB guards are not listed: they
+// always stay at their FOB. The checkbox beside each group decides what it does once its
+// target is taken: checked -> back to automatic, unchecked -> it stays and defends.
+// The server validates every order.
 if (!hasInterface) exitWith {};
 disableSerialization;
 if !(missionNamespace getVariable ["GRLIB_player_commander", false]) exitWith {
@@ -32,7 +35,7 @@ HPC_fnc_cmdAction = {
         case "all": { [{true}] call _selectWhere };
         case "infantry": { [{(_this select 0) getVariable ["HPC_warfareRole", ""] == "infantry"}] call _selectWhere };
         case "armor": { [{(_this select 0) getVariable ["HPC_warfareRole", ""] in ["light", "heavy"]}] call _selectWhere };
-        case "guard": { [{(_this select 0) getVariable ["HPC_warfareRole", ""] == "guard"}] call _selectWhere };
+        case "none": { _list lbSetSelected [-1, false] };
         case "send";
         case "auto": {
             private _groups = ((lbSelection _list) apply {HPC_cmdGroups param [_x, grpNull]}) select {!isNull _x};
@@ -62,13 +65,13 @@ HPC_fnc_cmdDrawDests = {
                     case "fob": {[0.4, 0.85, 1, 0.9]};
                     default {[0.35, 0.65, 1, 0.6]};
                 };
-                _map drawIcon [HPC_mapIcons get (["dest", "flag"] select (_type != "attack")), _color, _pos, 22, 22, 0];
+                _map drawIcon [[["mil_objective", "mil_flag"] select (_type != "attack")] call HPC_fnc_mapIcon, _color, _pos, 22, 22, 0];
             };
         };
     } forEach HPC_cmdDests;
     if (!(_chosen isEqualTo []) && {(_chosen select 0) != "auto"}) then {
         private _target = _chosen select 2;
-        _map drawIcon [HPC_mapIcons get "ring", [1, 0.85, 0.2, _pulse], _target, 54, 54, 0];
+        _map drawIcon [["mil_circle"] call HPC_fnc_mapIcon, [1, 0.85, 0.2, _pulse], _target, 54, 54, 0];
         {
             private _leader = leader _x;
             if (alive _leader) then {_map drawLine [getPosASLVisual _leader, _target, [1, 1, 1, 0.55]]};
@@ -109,7 +112,27 @@ ctrlMapAnimCommit _map;
 
 private _groupsList = _display displayCtrl 110;
 private _destList = _display displayCtrl 111;
-private _roleOrder = createHashMapFromArray [["infantry", 0], ["light", 1], ["heavy", 2], ["guard", 3]];
+private _roleOrder = createHashMapFromArray [["infantry", 0], ["light", 1], ["heavy", 2]];
+// One "auto after capture" checkbox per list row, in a column left of the list.
+private _rowHeight = 0.03 * safezoneH;
+private _checks = [];
+for "_i" from 0 to 18 do {
+    private _check = _display ctrlCreate ["RscCheckBox", 200 + _i];
+    _check ctrlSetPosition [safezoneX + 0.07 * safezoneW, safezoneY + 0.2 * safezoneH + _i * _rowHeight + 0.002 * safezoneH, 0.016 * safezoneW, _rowHeight - 0.004 * safezoneH];
+    _check ctrlSetTooltip "Auto after capture. Checked: once this group takes its target it returns to automatic. Unchecked: it stays and defends the captured sector, or holds its last objective.";
+    _check ctrlShow false;
+    _check ctrlCommit 0;
+    _check setVariable ["HPC_row", _i];
+    _check ctrlAddEventHandler ["CheckedChanged", {
+        params ["_control", "_checked"];
+        private _group = HPC_cmdGroups param [_control getVariable ["HPC_row", -1], grpNull];
+        if (isNull _group) exitWith {};
+        _control setVariable ["HPC_clickedAt", diag_tickTime];
+        [player, [_group], "return", _checked == 1] remoteExec ["command_ai_remote_call", 2];
+        playSoundUI ["a3\ui_f\data\sound\rsccombo\soundexpand.wss", 0.4, 1.2];
+    }];
+    _checks pushBack _check;
+};
 private _destSignature = [];
 private _lastSingle = grpNull;
 private _tick = 0;
@@ -153,7 +176,7 @@ while {!isNull _display} do {
             call _fillDestinations;
         };
 
-        private _groups = (call HPC_fnc_mapForceGroups) select {_x getVariable ["HPC_warfare", false]};
+        private _groups = (call HPC_fnc_mapForceGroups) select {(_x getVariable ["HPC_warfareRole", ""]) in ["infantry", "light", "heavy"]};
         private _sorted = _groups apply {[_roleOrder getOrDefault [_x getVariable ["HPC_warfareRole", ""], 9], _x getVariable ["HPC_warfareName", groupId _x], _x]};
         _sorted sort true;
         _groups = _sorted apply {_x select 2};
@@ -168,12 +191,19 @@ while {!isNull _display} do {
         };
         {
             private _group = _x;
-            ([_group] call HPC_fnc_mapGroupInfo) params ["_kind", "_name", "_iconKey", "_alive"];
+            ([_group] call HPC_fnc_mapGroupInfo) params ["_kind", "_name", "_marker", "_alive"];
             ([_group] call HPC_fnc_mapOrderText) params ["_orderText", "_target", "_ordered"];
             private _combat = combatBehaviour _group == "COMBAT";
             _groupsList lbSetText [_forEachIndex, format ["%1%2  [%3]  %4", ["", "! "] select _combat, _name, _alive, _orderText]];
-            _groupsList lbSetPicture [_forEachIndex, HPC_mapIcons get _iconKey];
-            _groupsList lbSetPictureColor [_forEachIndex, HPC_mapColors get _kind];
+            _groupsList lbSetPicture [_forEachIndex, [_marker] call HPC_fnc_mapIcon];
+            _groupsList lbSetPictureColor [_forEachIndex, [0.3, 0.62, 1, 1]];
+            private _check = _checks param [_forEachIndex, controlNull];
+            if (!isNull _check) then {
+                private _return = _group getVariable ["HPC_cmdReturn", true];
+                // Only push server state into the box when it differs, so a fresh click is not undone.
+                if (!((cbChecked _check) isEqualTo _return) && {diag_tickTime - (_check getVariable ["HPC_clickedAt", -10]) > 3}) then {_check cbSetChecked _return};
+                if !(ctrlShown _check) then {_check ctrlShow true};
+            };
             _groupsList lbSetColor [_forEachIndex, switch (true) do {
                 case _combat: {[1, 0.55, 0.45, 1]};
                 case _ordered: {[1, 0.86, 0.4, 1]};
@@ -181,6 +211,7 @@ while {!isNull _display} do {
             }];
             _groupsList lbSetTooltip [_forEachIndex, format ["%1 - %2 alive%3", _name, _alive, ["", " - in combat"] select _combat]];
         } forEach HPC_cmdGroups;
+        {if (_forEachIndex >= count HPC_cmdGroups && {ctrlShown _x}) then {_x ctrlShow false}} forEach _checks;
 
         (_display displayCtrl 103) ctrlSetText format [
             "%1 groups under your command  |  %2 following your orders  |  %3 active objective%4  |  orders apply within seconds",
@@ -190,7 +221,7 @@ while {!isNull _display} do {
             ["s", ""] select (count active_sectors == 1)
         ];
         if (HPC_cmdGroups isEqualTo []) then {
-            (_display displayCtrl 104) ctrlSetText "No AI Warfare groups yet. Squads and armor deploy from your FOBs once a battle starts.";
+            (_display displayCtrl 104) ctrlSetText "No assault squads or armor yet. They deploy from your FOBs once a battle starts.";
         };
     };
 

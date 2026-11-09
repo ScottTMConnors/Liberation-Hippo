@@ -84,6 +84,66 @@ if (count _friendly > 0) then {
     diag_log ["HPC_COMMAND_ORDERS",_group getVariable ["HPC_warfareName",""],_order,_move,_rejectedStale,_cleared];
 };
 ["commander.orders",_ordered && _rejectedStale && _cleared] call _assert;
+// FOB guards refuse orders and stay at their FOB.
+private _guards = allGroups select {(_x getVariable ["HPC_warfareRole",""]) == "guard" && {{alive _x} count units _x > 0}};
+private _guardLocked = false;
+if (count _guards > 0) then {
+    [_commander,[_guards select 0],"fob",_fob] remoteExec ["command_ai_remote_call",2];
+    sleep 2;
+    _guardLocked = ((_guards select 0) getVariable ["HPC_cmdOrder",[]]) isEqualTo [];
+};
+["commander.guardLocked",_guardLocked] call _assert;
+// Auto after capture: unchecked -> defend the captured sector; checked -> automatic.
+private _returnOK = false;
+if (count _friendly > 0 && {count active_sectors > 0}) then {
+    private _group = _friendly select 0;
+    private _target = active_sectors select 0;
+    [_commander,[_group],"return",false] remoteExec ["command_ai_remote_call",2];
+    [_commander,[_group],"attack",_target] remoteExec ["command_ai_remote_call",2];
+    sleep 2;
+    private _stay = [];
+    private _auto = [];
+    isNil {
+        active_sectors = active_sectors - [_target];
+        blufor_sectors pushBack _target;
+        [_group] call HPC_fnc_warfareOrder;
+        _stay = _group getVariable ["HPC_cmdOrder",[]];
+        blufor_sectors = blufor_sectors - [_target];
+        active_sectors pushBack _target;
+    };
+    [_commander,[_group],"return",true] remoteExec ["command_ai_remote_call",2];
+    [_commander,[_group],"attack",_target] remoteExec ["command_ai_remote_call",2];
+    sleep 2;
+    isNil {
+        active_sectors = active_sectors - [_target];
+        blufor_sectors pushBack _target;
+        [_group] call HPC_fnc_warfareOrder;
+        _auto = _group getVariable ["HPC_cmdOrder",[]];
+        blufor_sectors = blufor_sectors - [_target];
+        active_sectors pushBack _target;
+    };
+    _returnOK = _stay isEqualTo ["defend",_target] && {_auto isEqualTo []};
+    diag_log ["HPC_COMMAND_RETURN",_target,_stay,_auto];
+};
+["commander.returnFlag",_returnOK] call _assert;
+// Team intel: an enemy group seen by friendly AI shows up in the merged list.
+private _intelPos = [_fob getPos [120, random 360],5,0,200] call F_findSafePlace;
+if (_intelPos isEqualTo []) then {_intelPos = _fob getPos [60, 0]};
+private _intelOK = false;
+if !(_intelPos isEqualTo []) then {
+    private _watchers = createGroup [GRLIB_side_friendly,true];
+    for "_i" from 1 to 2 do {_watchers createUnit [blufor_squad_inf select 0,_intelPos,[],3,"NONE"]};
+    private _enemyGroup = createGroup [GRLIB_side_enemy,true];
+    for "_i" from 1 to 2 do {_enemyGroup createUnit ["O_Soldier_F",_intelPos getPos [60,0],[],3,"NONE"]};
+    {_x setCaptive true; _x disableAI "FSM"; _x setBehaviour "CARELESS"} forEach (units _watchers + units _enemyGroup);
+    {_x reveal [leader _enemyGroup,4]} forEach units _watchers;
+    _deadline = diag_tickTime + 30;
+    waitUntil {sleep 1; diag_tickTime > _deadline || {_enemyGroup in (missionNamespace getVariable ["HPC_intelGroups",[]])}};
+    _intelOK = _enemyGroup in HPC_intelGroups;
+    diag_log ["HPC_INTEL",_intelOK,GRLIB_side_friendly knowsAbout leader _enemyGroup,count HPC_intelGroups];
+    {deleteVehicle _x} forEach (units _watchers + units _enemyGroup);
+};
+["intel.merge",_intelOK] call _assert;
 diag_log ["HPC_COMMANDER_EVIDENCE",_sector,_progress,_state,_destinations];
 HPC_AIWarfare = false;
 HPC_NearbyBattles = _nearby;

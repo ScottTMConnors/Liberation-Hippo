@@ -1,5 +1,7 @@
-// Commander order for AI Warfare groups, sent from the Command AI window.
-// _type: "auto" (clear the order), "attack" (active sector), "defend" (friendly sector) or "fob" (FOB position).
+// Commander order for AI Warfare assault squads and armor, sent from the Command AI window.
+// _type: "auto" (clear the order), "attack" (active sector), "defend" (friendly sector),
+// "fob" (FOB position) or "return" (_key true/false: return to automatic after the target is taken).
+// FOB guards are never orderable: they always stay at their FOB.
 params ["_caller", "_groups", "_type", ["_key", ""]];
 
 if (isNil "_caller" || {!(_caller isEqualType objNull)} || {isNull _caller} || {!alive _caller}) exitWith {};
@@ -8,6 +10,20 @@ if (isMultiplayer && {owner _caller != remoteExecutedOwner}) exitWith {};
 if !([_caller] call F_getCommander) exitWith {};
 if (isNil "HPC_fnc_warfareOrder") exitWith {
     ["AI Warfare is not running."] remoteExec ["systemChat", owner _caller];
+};
+
+private _orderable = (_groups select [0, 64]) select {
+    _x isEqualType grpNull && {!isNull _x} &&
+    {side _x == GRLIB_side_friendly} &&
+    {_x getVariable ["HPC_warfare", false]} &&
+    {(_x getVariable ["HPC_warfareRole", ""]) in ["infantry", "light", "heavy"]} &&
+    {{alive _x} count units _x > 0}
+};
+if (_orderable isEqualTo []) exitWith {};
+
+if (_type == "return") exitWith {
+    if !(_key isEqualType true) exitWith {};
+    {_x setVariable ["HPC_cmdReturn", _key, true]} forEach _orderable;
 };
 
 private _order = switch (_type) do {
@@ -24,23 +40,15 @@ if (_type != "auto" && {_order isEqualTo []}) exitWith {
 
 private _ordered = [];
 {
-    if (
-        _x isEqualType grpNull && {!isNull _x} &&
-        {side _x == GRLIB_side_friendly} &&
-        {_x getVariable ["HPC_warfare", false]} &&
-        {{alive _x} count units _x > 0}
-    ) then {
-        if (_type == "auto") then {
-            _x setVariable ["HPC_cmdOrder", nil, true];
-        } else {
-            _x setVariable ["HPC_cmdOrder", _order, true];
-            [_x, [_x] call HPC_fnc_warfareOrder] call HPC_fnc_warfareGo;
-        };
-        _ordered pushBack (_x getVariable ["HPC_warfareName", groupId _x]);
+    if (_type == "auto") then {
+        _x setVariable ["HPC_cmdOrder", nil, true];
+    } else {
+        _x setVariable ["HPC_cmdOrder", _order, true];
+        [_x, [_x] call HPC_fnc_warfareOrder] call HPC_fnc_warfareGo;
     };
-} forEach (_groups select [0, 64]);
+    _ordered pushBack (_x getVariable ["HPC_warfareName", groupId _x]);
+} forEach _orderable;
 
-if (_ordered isEqualTo []) exitWith {};
 private _where = switch (_type) do {
     case "attack": { format ["attack %1", markerText _key] };
     case "defend": { format ["defend %1", markerText _key] };

@@ -42,20 +42,30 @@ the lobby parameters.
 - The commander, or a player vote, picks objectives. **Battle Scope** can pull
   nearby sectors into the same fight.
 - **Command AI forces** (commander only, from the map or the action menu): pick
-  any assault squad, armor group or FOB guard and send it to attack an active
-  sector, defend a friendly sector or defend a FOB. Orders apply within
-  seconds; **Return to automatic** hands the group back to the AI.
+  any assault squad or armor group and send it to attack an active sector,
+  defend a friendly sector or defend a FOB. Orders apply within seconds.
+  The **AUTO** checkbox beside each group decides what happens once its target
+  is taken: checked, it returns to automatic orders; unchecked, it stays and
+  defends the captured sector (or holds its last objective). FOB guards always
+  stay at their FOB.
 
 ### A living map
 
+Built on the idea of crub's Team Map Intel:
+
 - Every friendly AI group is on the map with a NATO symbol: AI Warfare squads
-  and armor, FOB guards, base staff, mission units and garrisons.
-- Lines show each squad's objective (yellow for commander orders), and a
-  pulsing red ring marks groups in combat.
-- **Live bullet tracers**: shots in flight appear as small rectangles, blue for
-  friendly fire and red for enemy fire.
-- A **Friendly Forces** panel counts squads, armor, guards and active
-  objectives, with buttons to toggle the AI and tracer layers.
+  and armor, FOB guards, base staff, mission units and garrisons. Lines show
+  each squad's objective (yellow for commander orders).
+- **Enemy intel**: enemy groups appear only while your side knows about them
+  (what friendly AI on the server and headless clients, and your own group,
+  have spotted). When contact is lost they become a **?** at the last known
+  position for three minutes.
+- **Shot markers**: every shot sends a small rectangle flying from the
+  shooter, blue for friendly and red for enemy fire, and the shooter's group
+  icon flashes. A pulsing ring marks groups in combat.
+- Hover a group to see its soldiers, vehicles and orders.
+- A **Friendly Forces** panel counts squads, armor, guards, spotted enemy
+  groups and active objectives, with FORCES, INTEL and SHOTS toggles.
 
 ### Sectors worth attacking
 

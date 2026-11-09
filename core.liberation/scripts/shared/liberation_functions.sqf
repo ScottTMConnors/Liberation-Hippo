@@ -135,6 +135,9 @@ reammo_ai = compileFinal preprocessFileLineNumbers "scripts\shared\functions\F_r
 HPC_fnc_applyEasyAI = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_applyEasyAI.sqf";
 HPC_fnc_groupOrder = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_groupOrder.sqf";
 HPC_fnc_hcHeartbeat = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_hcHeartbeat.sqf";
+HPC_fnc_intelReport = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_intelReport.sqf";
+// Knowledge (0-4) our side needs before an enemy group appears on the map.
+HPC_intelThreshold = 1.5;
 HPC_fnc_hcAdopt = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_hcAdopt.sqf";
 HPC_fnc_garrisonHandoff = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_garrisonHandoff.sqf";
 HPC_fnc_hcEligible = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_hcEligible.sqf";
