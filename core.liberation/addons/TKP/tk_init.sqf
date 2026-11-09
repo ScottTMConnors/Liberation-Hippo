@@ -18,21 +18,18 @@ heavily modified by pSiKO
 
 // Disabled mode ignores saved warning counts and keeps the handlers as no-ops.
 if (GRLIB_tk_mode == 0) exitWith {
-	LRX_tk_ban_player = false;
 	LRX_tk_actions = {};
 	LRX_tk_check = {};
 };
 
 LRX_tk_actions = compileFinal preprocessFileLineNumbers "addons\TKP\tk_actions.sqf";
-if ((BTC_logic getVariable [PAR_Grp_ID, 0]) >= GRLIB_tk_count) exitWith {[player] spawn LRX_tk_actions};
-if (!([] call F_getValid)) exitWith {endMission "LOSER"};
+
+// A player already over the limit is banned again on reconnect.
+if ((BTC_logic getVariable [PAR_Grp_ID, 0]) >= GRLIB_tk_count) then { [player] call LRX_tk_actions };
 
 // TK VIP Protect
 LRX_tk_vip = [];
 LRX_tk_player_action = 0;
-
-// TK Check Handler
-LRX_tk_ban_player = false;
 
 LRX_tk_check = {
 	params ["_unit", "_killer"];
@@ -57,5 +54,8 @@ LRX_tk_check = {
 
 };
 
-waitUntil {!(isNull (findDisplay 46))};
-systemChat "-------- TK Protect Initialized --------";
+// Runs inline in init_client now, so the banner must not hold up startup.
+[] spawn {
+	waitUntil {uiSleep 1; !(isNull (findDisplay 46))};
+	systemChat "-------- TK Protect Initialized --------";
+};

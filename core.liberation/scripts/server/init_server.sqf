@@ -117,8 +117,6 @@ GRLIB_side_friendly setFriend [GRLIB_side_enemy, 0];
 	};
 } forEach (allMissionObjects "");
 
-if (!([] call F_getValid)) exitWith {};
-
 // Init Chimera unit look
 [] call compileFinal preprocessFileLineNumbers "scripts\server\game\chimera_units_overide.sqf";
 
@@ -139,6 +137,7 @@ HPC_serverLoadingStage = [0.65,"Preparing the world and map markers..."];
 publicVariable "HPC_serverLoadingStage";
 
 // Execute server Managers
+[] execVM "scripts\server\game\init_markers.sqf";
 [] execVM "scripts\server\game\synchronise_vars.sqf";
 [] execVM "scripts\server\game\apply_saved_scores.sqf";
 [] execVM "scripts\server\base\fobbox_manager.sqf";
@@ -154,7 +153,6 @@ publicVariable "HPC_serverLoadingStage";
 [] execVM "scripts\server\game\manage_score.sqf";
 [] execVM "scripts\server\game\manage_time.sqf";
 [] execVM "scripts\server\game\manage_weather.sqf";
-[] execVM "scripts\server\game\init_markers.sqf";
 [] execVM "scripts\server\game\manage_undercover.sqf";
 [] execVM "scripts\server\base\fob_markers.sqf";
 [] execVM "scripts\server\secondary\autostart.sqf";
