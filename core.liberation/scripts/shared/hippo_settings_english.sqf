@@ -41,7 +41,6 @@ private _wording = createHashMapFromArray [
 ["MineProbability", ["Post-capture mine chance", "Set the chance of mines being left after a sector is captured. Requires a mission restart."]],
 ["ModPresetWest", ["Friendly faction", "Choose the faction used for friendly troops, vehicles and AI Warfare. Only factions with loaded infantry classes are offered. Requires a mission restart."]],
 ["ModPresetEast", ["Enemy faction", "Choose the faction used for sector defenders, reinforcements and enemy AI Warfare squads. Only factions with loaded infantry classes are offered. Requires a mission restart."]],
-["ModPresetCiv", ["Civilian roster source", "Use the civilian roster from the friendly faction, enemy faction, or both. This does not change the civilian side. Requires a mission restart."]],
 ["ModPresetTaxi", ["Taxi roster source", "Choose the faction or transport option used by the helicopter taxi service. Requires a mission restart."]],
 ["SideVerification", ["Faction side checks", "Check faction side assignments for compatibility. Changing this can affect AI relationships. Requires a mission restart."]],
 ["Fatigue", ["Player stamina", "Enable normal fatigue and stamina limits, or disable them for players. Requires a mission restart."]],

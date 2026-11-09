@@ -10665,42 +10665,6 @@
 			<Portuguese>Seleciona a configuração de preset do mod para unidades inimigas (leste).</Portuguese>
 			<Czech>Vybere konfiguraci presetů modu pro nepřátelské (východní) jednotky.</Czech>
 		</Key>
-		<Key ID="STR_MOD_PRESET_CIV_DESC">
-			<Original>Configures the mod preset for civilian units.</Original>
-			<Russian>Настраивает пресет мода для гражданских подразделений.</Russian>
-			<French>Configure le préréglage du mod pour les unités civiles.</French>
-			<Chinesesimp>配置平民单位的模组预设。</Chinesesimp>
-			<Chinese>配置平民單位的模組預設。</Chinese>
-			<Portuguese>Configura o preset do mod para unidades civis.</Portuguese>
-			<Czech>Nastavuje preset modu pro civilní jednotky.</Czech>
-		</Key>
-		<Key ID="STR_MOD_PRESET_CIV_OPT0">
-			<Original>Apply mod to all civilians</Original>
-			<Russian>Применить мод ко всем гражданским</Russian>
-			<French>Appliquer le mod à tous les civils</French>
-			<Chinesesimp>对所有平民应用模组</Chinesesimp>
-			<Chinese>對所有平民應用模組</Chinese>
-			<Portuguese>Aplicar mod a todos os civis</Portuguese>
-			<Czech>Použít mod na všechny civilisty</Czech>
-		</Key>
-		<Key ID="STR_MOD_PRESET_CIV_OPT1">
-			<Original>Apply mod only to friendly civilians</Original>
-			<Russian>Применить мод только к дружественным гражданским</Russian>
-			<French>Appliquer le mod uniquement aux civils amis</French>
-			<Chinesesimp>仅对友方平民应用模组</Chinesesimp>
-			<Chinese>僅對友軍平民應用模組</Chinese>
-			<Portuguese>Aplicar mod apenas aos civis amigos</Portuguese>
-			<Czech>Použít mod pouze na přátelské civilisty</Czech>
-		</Key>
-		<Key ID="STR_MOD_PRESET_CIV_OPT2">
-			<Original>Apply mod only to enemy civilians</Original>
-			<Russian>Применить мод только к вражеским гражданским</Russian>
-			<French>Appliquer le mod uniquement aux civils ennemis</French>
-			<Chinesesimp>仅对敌方平民应用模组</Chinesesimp>
-			<Chinese>僅對敵軍平民應用模組</Chinese>
-			<Portuguese>Aplicar mod apenas aos civis inimigos</Portuguese>
-			<Czech>Použít mod pouze na nepřátelské civilisty</Czech>
-		</Key>
 		<Key ID="STR_SIDE_VERIF">
 			<Original>Team sides verification</Original>
 			<Russian>Проверка сторон команды</Russian>
@@ -12830,15 +12794,6 @@
 			<Chinese>模組預設：敵軍</Chinese>
 			<Portuguese>Predefinição MOD: inimigo</Portuguese>
 			<Czech>PŘEDVOLBA MOD: nepřátelské</Czech>
-		</Key>
-		<Key ID="STR_MOD_PRESET_CIV">
-			<Original>MOD Preset Civilian</Original>
-			<Russian>Предустановка мода: гражданские</Russian>
-			<French>PRÉRÉGLAGE MOD : civils</French>
-			<Chinesesimp>模组预设：平民</Chinesesimp>
-			<Chinese>模組預設：平民</Chinese>
-			<Portuguese>Predefinição MOD: civis</Portuguese>
-			<Czech>PŘEDVOLBA MOD: civilní</Czech>
 		</Key>
 		<Key ID="STR_MOD_PRESET_TAXI">
 			<Original>MOD Preset Taxi</Original>

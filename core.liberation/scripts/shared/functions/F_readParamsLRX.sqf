@@ -22,7 +22,6 @@ GRLIB_halo_param = [GRLIB_PARAM_HaloJump] call lrx_getParamValue;
 GRLIB_huron_type = [GRLIB_PARAM_HuronType] call lrx_getParamValue;
 GRLIB_max_spawn_point = [GRLIB_PARAM_MaxSpawnPoint] call lrx_getParamValue;
 GRLIB_max_squad_size = [GRLIB_PARAM_MaxSquadSize] call lrx_getParamValue;
-GRLIB_mod_civ = [GRLIB_PARAM_ModPresetCiv] call lrx_getParamValue;
 GRLIB_mod_east = [GRLIB_PARAM_ModPresetEast] call lrx_getParamValue;
 GRLIB_mod_taxi = [GRLIB_PARAM_ModPresetTaxi] call lrx_getParamValue;
 GRLIB_mod_west = [GRLIB_PARAM_ModPresetWest] call lrx_getParamValue;

@@ -125,22 +125,9 @@ if (isNil "opfor_pilot") then { opfor_pilot = opfor_crew };
 civilians = [];
 civilian_vehicles = [];
 
-if (GRLIB_mod_civ in [0,1]) then {
-	_path = format ["mod_template\%1\classnames_civ.sqf", GRLIB_mod_west];
-	_ret = [_path] call F_getTemplateFile;
-};
-if (!_ret) exitWith { abort_loading = true };
-
-if (GRLIB_mod_civ in [0,2]) then {
-	private _civilians_bak = civilians;
-	private _civilian_vehicles_bak = civilian_vehicles;
-	_path = format ["mod_template\%1\classnames_civ.sqf", GRLIB_mod_east];
-	_ret = [_path] call F_getTemplateFile;
-	civilians append _civilians_bak;
-	civilian_vehicles append _civilian_vehicles_bak;
-	civilians = civilians arrayIntersect civilians;
-	civilian_vehicles = civilian_vehicles arrayIntersect civilian_vehicles;
-};
+// Civilians come from the friendly faction's template.
+_path = format ["mod_template\%1\classnames_civ.sqf", GRLIB_mod_west];
+_ret = [_path] call F_getTemplateFile;
 if (!_ret) exitWith { abort_loading = true };
 if (count civilians == 0) then { civilians = ["C_man_1"] };
 if (count civilian_vehicles == 0) then { civilian_vehicles = ["C_SUV_01_F"] };

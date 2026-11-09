@@ -59,7 +59,6 @@ GRLIB_PARAM_CivPenalties = "CivPenaltiesOptIn";
 GRLIB_PARAM_ModPresetWest = "ModPresetWest";
 GRLIB_PARAM_ModPresetEast = "ModPresetEast";
 GRLIB_PARAM_SideVerification = "SideVerification";
-GRLIB_PARAM_ModPresetCiv = "ModPresetCiv";
 GRLIB_PARAM_ModPresetTaxi = "ModPresetTaxi";
 GRLIB_PARAM_Fatigue = "Fatigue";
 GRLIB_PARAM_PAR_Revive = "PAR_Revive";
@@ -659,19 +658,6 @@ _Mission_Params = [
         [GRLIB_PARAM_OptionValuesKey, _list_east select 1],
         [GRLIB_PARAM_CategoryKey, GRLIB_PARAM_TemplateCatKey],
         [GRLIB_PARAM_DescriptionKey, localize "STR_MOD_PRESET_EAST_DESC"]
-    ]],
-    [GRLIB_PARAM_ModPresetCiv, createHashMapFromArray [
-        [GRLIB_PARAM_ValueKey, 1],
-        [GRLIB_PARAM_NameKey, localize "STR_MOD_PRESET_CIV"],
-        [GRLIB_PARAM_OptionLabelKey, ["All","Friendly","Enemy"]],
-        [GRLIB_PARAM_OptionValuesKey, [0,1,2]],
-        [GRLIB_PARAM_CategoryKey, GRLIB_PARAM_TemplateCatKey],
-        [GRLIB_PARAM_DescriptionKey, localize "STR_MOD_PRESET_CIV_DESC"],
-        [GRLIB_PARAM_OptionDescriptionKey, [
-            localize "STR_MOD_PRESET_CIV_OPT0",
-            localize "STR_MOD_PRESET_CIV_OPT1",
-            localize "STR_MOD_PRESET_CIV_OPT2"
-        ]]
     ]],
     [GRLIB_PARAM_ModPresetTaxi, createHashMapFromArray [
         [GRLIB_PARAM_ValueKey, 1],
