@@ -201,6 +201,7 @@ private _manTower = {
     _unit disableAI "PATH";
     _unit setVariable ["GRLIB_in_building",true,true];
     _units pushBack _unit;
+    [_grp] call HPC_fnc_garrisonHandoff;
 };
 
 private _clearSpot = {
@@ -270,9 +271,10 @@ private _checkpointAngles = [];
                 private _p = (_guardPos getPos [1.5 * _forEachIndex, _roadDir]);
                 _x setPosATL [_p select 0, _p select 1, 0];
                 _x setDir _outward;
-                if (_forEachIndex < 2) then {_x disableAI "PATH"};
+                if (_forEachIndex < 2) then {_x disableAI "PATH"; _x setVariable ["HPC_holdPath",true,true]};
                 _units pushBack _x;
             } forEach units _grp;
+            [_grp] call HPC_fnc_garrisonHandoff;
         };
         _checkpointAngles pushBack _slotAngle;
     };

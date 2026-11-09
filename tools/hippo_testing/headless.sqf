@@ -49,10 +49,22 @@ private _protected = [_base vectorAdd [30,0,0],["B_Soldier_F"],GRLIB_side_friend
 _protected setVariable ["HPC_hcManaged",true,true];
 leader _protected setVariable ["PAR_Grp_ID","test-player-squad",true];
 private _owners = HPC_headlessClients apply {owner _x};
+// Units per HC within the test groups. When other managed AI (for example a
+// loaded sector garrison) already sits on the HCs, the balancer evens out the
+// total load instead, so the exact split of the test groups cannot be fixed.
+private _isBalanced = {
+    params ["_groups","_expected","_counts"];
+    private _others = allGroups select {!(_x in _groups) && {[_x] call HPC_fnc_hcEligible} && {groupOwner _x in _owners}};
+    if (_others isEqualTo []) exitWith {_counts isEqualTo _expected};
+    private _loads = _owners apply {private _id = _x; private _total = 0; {if (groupOwner _x == _id) then {_total = _total + ({alive _x} count units _x)}} forEach allGroups; _total};
+    private _largest = 0;
+    {_largest = _largest max ({alive _x} count units _x)} forEach (_groups + _others);
+    _groups findIf {!(groupOwner _x in _owners)} < 0 && {(selectMax _loads) - (selectMin _loads) <= _largest}
+};
 _deadline = diag_tickTime + 65;
 private _counts = [];
-waitUntil {sleep 1; _counts = _owners apply {private _id = _x; {_id == groupOwner _x} count _groups}; (_counts isEqualTo [3,3] && {_groups findIf {(_x getVariable ["HPC_hcAck",-1]) != groupOwner _x} < 0}) || diag_tickTime > _deadline};
-["hc.balanced",_counts isEqualTo [3,3] && {_groups findIf {groupOwner _x == 2} < 0}] call _assert;
+waitUntil {sleep 1; _counts = _owners apply {private _id = _x; {_id == groupOwner _x} count _groups}; ([_groups,[3,3],_counts] call _isBalanced && {_groups findIf {(_x getVariable ["HPC_hcAck",-1]) != groupOwner _x} < 0}) || diag_tickTime > _deadline};
+["hc.balanced",[_groups,[3,3],_counts] call _isBalanced && {_groups findIf {groupOwner _x == 2} < 0}] call _assert;
 ["hc.playerSafe",groupOwner _protected == 2 && {!([_protected] call HPC_fnc_hcEligible)}] call _assert;
 _deadline = diag_tickTime + 20;
 waitUntil {sleep 1; _groups findIf {(_x getVariable ["HPC_orderOwner",-1]) != groupOwner _x} < 0 || diag_tickTime > _deadline};
@@ -72,8 +84,8 @@ _groups = [];
     _groups pushBack _group;
 } forEach [6,4,2,2,2];
 _deadline = diag_tickTime + 65;
-waitUntil {sleep 1;_counts = _owners apply {private _id = _x;private _total = 0;{if (groupOwner _x == _id) then {_total=_total+count units _x}} forEach _groups;_total};_counts isEqualTo [8,8] || diag_tickTime > _deadline};
-["hc.weighted",_counts isEqualTo [8,8]] call _assert;
+waitUntil {sleep 1;_counts = _owners apply {private _id = _x;private _total = 0;{if (groupOwner _x == _id) then {_total=_total+count units _x}} forEach _groups;_total};[_groups,[8,8],_counts] call _isBalanced || diag_tickTime > _deadline};
+["hc.weighted",[_groups,[8,8],_counts] call _isBalanced] call _assert;
 ["HC_DROP|hc1"] call _emit;
 private _remainingOwner = owner (missionNamespace getVariable ["HC2",objNull]);
 _deadline = diag_tickTime + 65;

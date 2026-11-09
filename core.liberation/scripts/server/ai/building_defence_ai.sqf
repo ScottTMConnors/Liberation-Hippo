@@ -1,4 +1,9 @@
 params ["_unit", ["_keep_position", false]];
+// Runs where the unit is local; HPC_hcAdopt restarts it after an ownership change.
+if (!local _unit) exitWith {};
+private _runnerKey = format ["HPC_garrisonRunner_%1", clientOwner];
+if (!scriptDone (_unit getVariable [_runnerKey, scriptNull])) exitWith {};
+_unit setVariable [_runnerKey, _thisScript];
 
 private _resume_movement = false;
 private _target = objNull;
@@ -6,7 +11,7 @@ private _sector = [GRLIB_sector_size, _unit] call F_getNearestSector;
 
 sleep 10;
 
-while { alive _unit && !_resume_movement && !(captive _unit) } do {
+while { alive _unit && local _unit && !_resume_movement && !(captive _unit) } do {
 	_target = ([getPos _unit, 50] call F_getNearbyPlayers) select 0;
 	if (!isNil "_target") then {
 		_unit doWatch _target;
@@ -33,5 +38,7 @@ while { alive _unit && !_resume_movement && !(captive _unit) } do {
 	sleep 10;
 };
 
+// The new owner continues the job after a transfer.
+if (alive _unit && {!local _unit}) exitWith {};
 sleep 5;
 _unit setVariable ["GRLIB_in_building", nil, true];

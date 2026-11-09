@@ -13,6 +13,13 @@ if (!isServer && {!(remoteExecutedOwner in [0,2])}) exitWith {};
             _x addEventHandler ["HandleDamage",{_this call damage_manager_civilian}];
             _x setVariable [_handlerKey,true];
         };
+        // Garrison hold settings are per machine, so re-apply them here.
+        if (alive _x && {_x getVariable ["GRLIB_in_building",false] || {_x getVariable ["HPC_holdPath",false]}}) then {
+            _x disableAI "PATH";
+            if (_x getVariable ["GRLIB_in_building",false] && {isNull objectParent _x}) then {_x setUnitPos "UP"};
+            private _garrisonAI = _x getVariable "HPC_garrisonAI";
+            if (!isNil "_garrisonAI" && {_x getVariable ["GRLIB_in_building",false]}) then {[_x,_garrisonAI] spawn building_defence_ai};
+        };
         [_x] call HPC_fnc_applyEasyAI;
     };
 } forEach units _group;

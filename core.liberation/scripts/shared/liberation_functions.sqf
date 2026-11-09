@@ -136,6 +136,7 @@ HPC_fnc_applyEasyAI = compileFinal preprocessFileLineNumbers "scripts\shared\fun
 HPC_fnc_groupOrder = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_groupOrder.sqf";
 HPC_fnc_hcHeartbeat = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_hcHeartbeat.sqf";
 HPC_fnc_hcAdopt = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_hcAdopt.sqf";
+HPC_fnc_garrisonHandoff = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_garrisonHandoff.sqf";
 HPC_fnc_hcEligible = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_hcEligible.sqf";
 HPC_fnc_hcBalance = compileFinal preprocessFileLineNumbers "scripts\server\offloading\hc_balance.sqf";
 HPC_fnc_isArmedVehicle = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_isArmedVehicle.sqf";

@@ -87,6 +87,8 @@ private _grp = [_building_pos select 0, _unitclass, _side, "building", _mission_
 	[_x, _keep_position] spawn building_defence_ai;
 	if (_type == "militia") then { [_x] spawn loadout_militia };
 } foreach (units _grp);
+// Mission actors keep their server ownership; sector garrisons may move to an HC.
+if (!_mission_ai) then {[_grp, true, _keep_position] call HPC_fnc_garrisonHandoff};
 
 diag_log format ["Done Spawning building squad (%1) at %2", count (units _grp), time];
 

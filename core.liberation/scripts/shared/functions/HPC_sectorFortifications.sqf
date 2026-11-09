@@ -97,6 +97,7 @@ if (_garrison) then {
         missionNamespace setVariable ["HPC_sectorCommanderDead_"+_sector,false,true];
         _commander setPosATL _post;
         _commander disableAI "PATH";
+        _commander setVariable ["HPC_holdPath",true,true];
         _commander setVariable ["GRLIB_in_building",!isNull _hq,true];
         _commander allowFleeing 0;
         _commander setUnitRank "COLONEL";
@@ -114,6 +115,7 @@ if (_garrison) then {
         _objective setMarkerColor "ColorOPFOR";
         _objective setMarkerText "Sector commander - eliminate";
     };
+    [_commandGroup] call HPC_fnc_garrisonHandoff;
     // Occupy tower positions and put faction-appropriate static guns on the perimeter.
     private _extraUnits = [];
     {
@@ -128,6 +130,7 @@ if (_garrison) then {
                 _unit setDir (_compound getDir _x);
                 _extraUnits pushBack _unit;
             };
+            [_towerGroup] call HPC_fnc_garrisonHandoff;
         };
     } forEach _towers;
     private _staticPool = opfor_statics select {isClass (configFile >> "CfgVehicles" >> _x) && {_x isKindOf "StaticWeapon" && {!(_x isKindOf "StaticMortar")}}};
@@ -154,6 +157,7 @@ if (_garrison) then {
             private _positions = _x buildingPos -1;
             private _group = [_compound,[selectRandom _pool,selectRandom _pool],GRLIB_side_enemy,"building"] call F_libSpawnUnits;
             { _x setPosATL (_positions select (_forEachIndex mod count _positions)); _extraUnits pushBack _x } forEach units _group;
+            [_group] call HPC_fnc_garrisonHandoff;
         };
     } forEach _nearHouses;
     private _patrol = [_center,[selectRandom _pool,selectRandom _pool,selectRandom _pool,selectRandom _pool],GRLIB_side_enemy,"infantry"] call F_libSpawnUnits;
