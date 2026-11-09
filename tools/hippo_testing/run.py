@@ -227,7 +227,7 @@ addMissionEventHandler ["MPEnded",{
             cases.append('compaction.leaves')
             shutil.copy2(ROOT/'tools/hippo_testing/compact.sqf',tests/'compact.sqf')
             p=tests/'run.sqf'
-            p.write_text(p.read_text(encoding='utf-8').replace('["settings.defaults",', '[] call compile preprocessFileLineNumbers "hippo_tests\\compact.sqf";\n["settings.defaults",').replace(('21' if args.targeted else '18') + ' + (if (HPC_testScenario)', ('22' if args.targeted else '19') + ' + (if (HPC_testScenario)'),encoding='utf-8')
+            p.write_text(p.read_text(encoding='utf-8').replace('["settings.defaults",', '[] call compile preprocessFileLineNumbers "hippo_tests\\compact.sqf";\n["settings.defaults",').replace(('22' if args.targeted else '19') + ' + (if (HPC_testScenario)', ('23' if args.targeted else '20') + ' + (if (HPC_testScenario)'),encoding='utf-8')
         # Include all delivered SQF in the native syntax check.
         scripts=sorted(p.relative_to(stage).as_posix().replace('/','\\') for p in stage.rglob('*.sqf') if 'hippo_tests' not in p.parts)
         p=stage/'initServer.sqf'
