@@ -31,13 +31,13 @@ private _cards = [];
     [_left,0.18,0.198,0.085,[0.07,0.09,0.11,1]] call _rect;
     [_left+0.008,0.184,0.18,0.024,_x,0.014,_muted] call _text;
     _cards pushBack ([_left+0.008,0.211,0.18,0.043,"--",0.027] call _text);
-} forEach ["TOTAL AI / GROUPS","HEADLESS CLIENTS READY","BALANCER-MANAGED AI","YOUR CLIENT FPS"];
-private _columns = [0.09,0.24,0.34,0.415,0.48,0.54,0.62,0.69,0.76,0.83];
-private _widths = [0.145,0.095,0.07,0.06,0.055,0.075,0.065,0.065,0.065,0.07];
+} forEach ["TOTAL AI / GROUPS","HEADLESS CLIENTS READY","BALANCER-MANAGED AI","YOUR FPS / PING"];
+private _columns = [0.09,0.215,0.305,0.37,0.43,0.485,0.55,0.61,0.675,0.735,0.815];
+private _widths = [0.12,0.085,0.06,0.055,0.05,0.06,0.055,0.06,0.055,0.075,0.09];
 {
     private _header = [_columns select _forEachIndex,0.29,_widths select _forEachIndex,0.03,_x,0.014,_muted] call _text;
-    _header ctrlSetTooltip (["Simulation owner; engine owner ID in parentheses","Average / lowest FPS across the engine's last 16 frames","Average simulation frame time, 1000 / FPS","Groups with living AI","Living AI, excluding players and headless placeholders","AI eligible for the mission's HC balancer","AI outside that balancer; includes protected and separately dispatched groups","Living vehicles with AI crew, counted by actual vehicle owner","Active scheduled SQF script count; not a CPU percentage","Seconds since the server last received this HC's heartbeat"] select _forEachIndex);
-} forEach ["MACHINE","FPS / LOW","FRAME MS","GROUPS","AI","MANAGED","OTHER","VEHICLES","SQF","AGE"];
+    _header ctrlSetTooltip (["Simulation owner; engine owner ID in parentheses","Average / lowest FPS across the engine's last 16 frames","Average simulation frame time, 1000 / FPS","Groups with living AI","Living AI, excluding players and headless placeholders","AI eligible for the mission's HC balancer","AI outside that balancer; includes protected and separately dispatched groups","Living vehicles with AI crew, counted by actual vehicle owner","Active scheduled SQF script count; not a CPU percentage","Seconds since the server last received this HC's heartbeat","Average network round trip between this machine and the server, in milliseconds"] select _forEachIndex);
+} forEach ["MACHINE","FPS / LOW","FRAME MS","GROUPS","AI","MANAGED","OTHER","VEHICLES","SQF","AGE","PING"];
 private _rowControls = [];
 private _segments = [];
 private _graphs = [];
@@ -46,9 +46,9 @@ for "_i" from 0 to 3 do {
     private _bg = [0.09,_top,0.82,0.052,[0.065,0.08,0.095,1]] call _rect;
     private _stripe = [0.09,_top,0.002,0.052,_colors select _i] call _rect;
     private _fields = [];
-    for "_j" from 0 to 9 do {_fields pushBack ([_columns select _j,_top+0.002,_widths select _j,0.033,"",0.016] call _text)};
-    private _track = [0.244,_top+0.039,0.082,0.004,[0.14,0.18,0.21,1]] call _rect;
-    private _fill = [0.244,_top+0.039,0,0.004,_colors select _i] call _rect;
+    for "_j" from 0 to 10 do {_fields pushBack ([_columns select _j,_top+0.002,_widths select _j,0.033,"",0.016] call _text)};
+    private _track = [0.219,_top+0.039,0.075,0.004,[0.14,0.18,0.21,1]] call _rect;
+    private _fill = [0.219,_top+0.039,0,0.004,_colors select _i] call _rect;
     _rowControls pushBack [_bg,_stripe,_fields,_track,_fill];
     _segments pushBack ([0.09,0.683,0,0.019,_colors select _i] call _rect);
     private _left = 0.09+_i*0.207;
@@ -76,7 +76,8 @@ while {!isNull _display} do {
     _status ctrlSetText (if (_paused) then {"DISPLAY PAUSED - simulation and telemetry are still running"} else {if (_age < 0) then {"Waiting for server telemetry..."} else {format ["LIVE  |  latest sample %1s ago  |  mission %2 min",round _age,floor (time/60)]}});
     _status ctrlSetTextColor (if (_paused || {_age > 25}) then {[1,0.7,0.3,1]} else {_muted});
     if (!_paused) then {
-        (_cards select 3) ctrlSetText str round diag_fps;
+        private _own = (missionNamespace getVariable ["HPC_netPing",[]]) select {(_x select 0) == clientOwner};
+        (_cards select 3) ctrlSetText (if (_own isEqualTo []) then {format ["%1 fps / -- ms",round diag_fps]} else {format ["%1 fps / %2 ms",round diag_fps,round ((_own select 0) select 1)]});
         if (_stamp != _lastStamp) then {
             _lastStamp = _stamp;
             private _rows = missionNamespace getVariable ["HPC_hcStatus",[]];
@@ -85,7 +86,8 @@ while {!isNull _display} do {
             (_cards select 0) ctrlSetText format ["%1 / %2",_summary select 0,_summary select 1];
             (_cards select 1) ctrlSetText str (_summary select 6);
             (_cards select 2) ctrlSetText str (_summary select 2);
-            _notes ctrlSetStructuredText parseText format ["<t color='#c7d1d8'>Server outside balancer: <t color='#efb847'>%1 unmarked</t>, %2 protected. Player-owned AI: %3. Ambient agents: %4.</t><br/><t color='#91a2ad'>Agents are separate from the group AI totals above. Managed groups spread across ready HCs; other AI includes protected and separately scripted actors.</t>",_summary select 4,_summary select 5,_summary select 3,_summary param [7,0]];
+            (_summary param [8,[0,0,0,0]]) params [["_garrison",0],["_mission",0],["_crew",0],["_misc",0]];
+            _notes ctrlSetStructuredText parseText format ["<t color='#c7d1d8'>Server outside balancer: <t color='#efb847'>%1 unmarked</t> (%5 building garrison, %6 mission, %7 vehicle crew, %8 other), %2 protected. Ambient pedestrians: %4. Player-owned AI: %3.</t><br/><t color='#91a2ad'>Unmarked AI is run by a server-side script, so it stays on the server. Ambient pedestrians stay on the server by design.</t>",_summary select 4,_summary select 5,_summary select 3,_summary param [7,0],_garrison,_mission,_crew,_misc];
             private _offset = 0.09;
             for "_i" from 0 to 3 do {
                 (_rowControls select _i) params ["_bg","_stripe","_fields","_track","_fill"];
@@ -96,15 +98,15 @@ while {!isNull _display} do {
                 _segment ctrlShow _visible;
                 if (_visible) then {
                     private _row = _rows select _i;
-                    _row params ["_label","_owner","_fps","_groups","_ai",["_managed",0],["_other",0],["_vehicles",0],["_low",0],["_scripts",0],["_heartbeat",0]];
+                    _row params ["_label","_owner","_fps","_groups","_ai",["_managed",0],["_other",0],["_vehicles",0],["_low",0],["_scripts",0],["_heartbeat",0],["_ping",-1]];
                     private _color = if (_fps >= 40) then {[0.49,0.84,0.58,1]} else {if (_fps >= 25) then {[1,0.75,0.3,1]} else {[1,0.36,0.31,1]}};
-                    private _values = [format ["%1 (%2)",_label,_owner],format ["%1 / %2",round _fps,round _low],if (_fps > 0) then {(1000/_fps) toFixed 1} else {"--"},str _groups,str _ai,str _managed,str _other,str _vehicles,str _scripts,if (_owner == 2) then {"local"} else {format ["%1s",round _heartbeat]}];
+                    private _values = [format ["%1 (%2)",_label,_owner],format ["%1 / %2",round _fps,round _low],if (_fps > 0) then {(1000/_fps) toFixed 1} else {"--"},str _groups,str _ai,str _managed,str _other,str _vehicles,str _scripts,if (_owner == 2) then {"local"} else {format ["%1s",round _heartbeat]},if (_ping < 0) then {"--"} else {format ["%1 ms",round _ping]}];
                     {(_fields select _forEachIndex) ctrlSetText _x} forEach _values;
                     (_fields select 0) ctrlSetTextColor (_colors select _i);
                     (_fields select 1) ctrlSetTextColor _color;
                     (_fields select 9) ctrlSetTextColor (if (_heartbeat > 20) then {[1,0.65,0.25,1]} else {_muted});
                     private _pos = ctrlPosition _fill;
-                    _pos set [2,0.082*safezoneW*((_fps/50) max 0 min 1)];
+                    _pos set [2,0.075*safezoneW*((_fps/50) max 0 min 1)];
                     _fill ctrlSetPosition _pos; _fill ctrlSetBackgroundColor _color; _fill ctrlCommit 0;
                     private _width = 0.82*(_ai/((_summary select 0) max 1));
                     _segment ctrlSetPosition [safezoneX+_offset*safezoneW,safezoneY+0.683*safezoneH,_width*safezoneW,0.019*safezoneH];

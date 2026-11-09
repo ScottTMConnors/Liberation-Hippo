@@ -35,7 +35,7 @@ waitUntil {sleep 0.2; !isNil "HPC_hcSummary" || diag_tickTime > _deadline};
 private _status = missionNamespace getVariable ["HPC_hcStatus",[]];
 private _sum = 0;
 {_sum = _sum + (_x select 4)} forEach _status;
-["telemetry.ownership",count _status > 0 && {_status findIf {count _x != 11 || {(_x select 5)+(_x select 6) != (_x select 4)}} < 0} && {_sum == (HPC_hcSummary select 0)} && {getNumber (missionConfigFile >> "HPC_AILoad" >> "idd") == 7765} && {(missionNamespace getVariable ["HPC_hcHistory",[]]) findIf {count (_x select 1) > 36} < 0}] call _assert;
+["telemetry.ownership",count _status > 0 && {_status findIf {count _x != 12 || {(_x select 5)+(_x select 6) != (_x select 4)}} < 0} && {_sum == (HPC_hcSummary select 0)} && {getNumber (missionConfigFile >> "HPC_AILoad" >> "idd") == 7765} && {(missionNamespace getVariable ["HPC_hcHistory",[]]) findIf {count (_x select 1) > 36} < 0}] call _assert;
 ["settings.defaults", HPC_EasyAI && HPC_AIWarfare && HPC_NearbyBattles && !HPC_SecondChance && !HPC_VehicleProgression && !HPC_CivilianProtection && GRLIB_Undercover_mode == 1 && HPC_RepairSeconds == 20 && HPC_ArtyRearmSeconds == 30 && (HPC_AllFactions == (HPC_testVariant == "expanded")) && GRLIB_civ_penalties == 0 && GRLIB_tk_mode == 0 && {!isNil {LRX_Mission_Params get "CivPenaltiesOptIn"}} && {!isNil {LRX_Mission_Params get "TK_modeOptIn"}}] call _assert;
 private _offeredWest = (LRX_Mission_Params get GRLIB_PARAM_ModPresetWest) get GRLIB_PARAM_OptionValuesKey;
 private _offeredEast = (LRX_Mission_Params get GRLIB_PARAM_ModPresetEast) get GRLIB_PARAM_OptionValuesKey;

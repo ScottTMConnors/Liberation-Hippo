@@ -13,6 +13,9 @@ while {GRLIB_endgame == 0} do {
     private _eligibleAI = 0;
     private _serverUnmarked = 0;
     private _serverProtected = 0;
+    private _serverAmbient = 0;
+    // Unmarked server AI by kind: building garrisons, mission actors, vehicle crews, other.
+    private _unmarkedKinds = [0,0,0,0];
     {
         private _key = str groupOwner _x;
         private _row = _counts getOrDefault [_key,[0,0,0,0,0,0,0]];
@@ -29,7 +32,22 @@ while {GRLIB_endgame == 0} do {
                 _eligibleAI = _eligibleAI + _aiCount;
             } else {
                 if (_key == "2") then {
-                    if (_x getVariable ["HPC_hcManaged",false]) then {_serverProtected = _serverProtected + _aiCount} else {_serverUnmarked = _serverUnmarked + _aiCount};
+                    private _units = units _x;
+                    switch (true) do {
+                        case (_x getVariable ["HPC_hcManaged",false]): {_serverProtected = _serverProtected + _aiCount};
+                        // Ambient pedestrians are steered by a server loop and stay there by design.
+                        case (_units findIf {!isNil {_x getVariable "HPC_ambientKind"}} >= 0): {_serverAmbient = _serverAmbient + _aiCount};
+                        default {
+                            _serverUnmarked = _serverUnmarked + _aiCount;
+                            private _kind = switch (true) do {
+                                case (_units findIf {_x getVariable ["GRLIB_in_building",false]} >= 0): {0};
+                                case (_units findIf {_x getVariable ["GRLIB_mission_AI",false]} >= 0): {1};
+                                case (!isNull objectParent leader _x): {2};
+                                default {3};
+                            };
+                            _unmarkedKinds set [_kind,(_unmarkedKinds select _kind) + _aiCount];
+                        };
+                    };
                 };
             };
         };
@@ -43,13 +61,24 @@ while {GRLIB_endgame == 0} do {
             _counts set [_key,_row];
         };
     } forEach vehicles;
+    // Ping and desync are only reported to the server; keyed by machine owner ID.
+    private _net = createHashMap;
+    {
+        private _info = getUserInfo _x;
+        if (_info isEqualType [] && {count _info > 9}) then {
+            private _network = _info select 9;
+            if (_network isEqualType [] && {count _network > 2}) then {_net set [str (_info select 1),[_network select 0,_network select 2]]};
+        };
+    } forEach allUsers;
+    HPC_netPing = (keys _net) apply {[parseNumber _x] + (_net get _x)};
+    publicVariable "HPC_netPing";
     group_owners = _machines apply {_x + ((_counts get str (_x select 2)) select [0,3])};
     publicVariable "group_owners";
     // Status reports AI counts, never player names or account identifiers.
     private _server = _counts get "2";
     // First five columns remain compatible with the previous status reader.
-    // name, owner, FPS, groups, AI, managed AI, other AI, AI vehicles, low FPS, SQF scripts, heartbeat age.
-    HPC_hcStatus = [["Server",2,diag_fps,_server select 3,_server select 4,_server select 5,(_server select 4)-(_server select 5),_server select 6,diag_fpsMin,count diag_activeSQFScripts,0]];
+    // name, owner, FPS, groups, AI, managed AI, other AI, AI vehicles, low FPS, SQF scripts, heartbeat age, ping ms.
+    HPC_hcStatus = [["Server",2,diag_fps,_server select 3,_server select 4,_server select 5,(_server select 4)-(_server select 5),_server select 6,diag_fpsMin,count diag_activeSQFScripts,0,-1]];
     {
         private _unit = _x;
         private _id = owner _unit;
@@ -57,7 +86,7 @@ while {GRLIB_endgame == 0} do {
         private _heartbeat = HPC_hcRegistry getOrDefault [str _id,[_unit,0,0,0,0]];
         private _label = vehicleVarName _unit;
         if (_label == "") then {_label = format ["HC %1",_id]};
-        HPC_hcStatus pushBack [_label,_id,_heartbeat select 2,_row select 3,_row select 4,_row select 5,(_row select 4)-(_row select 5),_row select 6,_heartbeat param [3,0],_heartbeat param [4,0],(diag_tickTime-(_heartbeat select 1)) max 0];
+        HPC_hcStatus pushBack [_label,_id,_heartbeat select 2,_row select 3,_row select 4,_row select 5,(_row select 4)-(_row select 5),_row select 6,_heartbeat param [3,0],_heartbeat param [4,0],(diag_tickTime-(_heartbeat select 1)) max 0,(_net getOrDefault [str _id,[-1]]) select 0];
     } forEach _readyClients;
     publicVariable "HPC_hcStatus";
     HPC_hcTelemetryStamp = serverTime;
@@ -69,7 +98,7 @@ while {GRLIB_endgame == 0} do {
             _playerAI = _playerAI + ((_counts get str (_x select 2)) select 4);
         };
     } forEach (_machines select [1]);
-    HPC_hcSummary = [_totalAI,_totalGroups,_eligibleAI,_playerAI,_serverUnmarked,_serverProtected,count _readyClients,count (missionNamespace getVariable ["HPC_ambientCivilians",[]])];
+    HPC_hcSummary = [_totalAI,_totalGroups,_eligibleAI,_playerAI,_serverUnmarked,_serverProtected,count _readyClients,_serverAmbient,_unmarkedKinds];
     publicVariable "HPC_hcSummary";
     private _keys = HPC_hcStatus apply {str (_x select 1)};
     {if !(_x in _keys) then {_history deleteAt _x}} forEach (keys _history);
