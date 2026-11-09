@@ -67,4 +67,5 @@ while {true} do {
 
     GRLIB_IsVoteInProgress = false;
     GRLIB_Sector_Votes = createHashMap;
+    publicVariable "GRLIB_Sector_Votes";
 };

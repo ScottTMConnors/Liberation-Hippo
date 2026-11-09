@@ -191,6 +191,7 @@ if (GRLIB_Commander_mode) then {
 	// Commander mode
 	GRLIB_connectMarkers = createHashMap;
 	GRLIB_Sector_Votes = createHashMap;
+	publicVariable "GRLIB_Sector_Votes";
 	[] spawn manage_sectors_commander;
 	[] spawn commander_voteHandler;
 };
