@@ -37,6 +37,7 @@ private _wording = createHashMapFromArray [
 ["AirSupport", ["Air-support menu", "Allow players to request the mission air-support services, subject to their costs and availability. Requires a mission restart."]],
 ["CivPenaltiesOptIn", ["Civilian casualty penalty", "Base score penalty for killing civilians. Also enables reputation loss, hostile civilians at low reputation and the FOB-loss penalty. Rank, reputation and the circumstances of the kill can change the final penalty. Disabled by default. Requires a mission restart."]],
 ["Alarms", ["Enemy base alarms", "Allow alarm sounds during attacks on enemy military sectors. Requires a mission restart."]],
+["TownWalls", ["Town walls", "Surround active town sectors with breakable walls, road checkpoints and manned guard towers. Requires a mission restart."]],
 ["MineProbability", ["Post-capture mine chance", "Set the chance of mines being left after a sector is captured. Requires a mission restart."]],
 ["ModPresetWest", ["Friendly faction", "Choose the faction used for friendly troops, vehicles and AI Warfare. Only factions with loaded infantry classes are offered. Requires a mission restart."]],
 ["ModPresetEast", ["Enemy faction", "Choose the faction used for sector defenders, reinforcements and enemy AI Warfare squads. Only factions with loaded infantry classes are offered. Requires a mission restart."]],

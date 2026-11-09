@@ -1,6 +1,7 @@
 // LRX Selectable
 
 GRLIB_alarms_enabled = [GRLIB_PARAM_Alarms] call lrx_getParamValue;
+GRLIB_town_walls = [GRLIB_PARAM_TownWalls] call lrx_getParamValue;
 GRLIB_allow_redeploy = [GRLIB_PARAM_Redeploy] call lrx_getParamValue;
 GRLIB_civ_penalties = [GRLIB_PARAM_CivPenalties] call lrx_getParamValue;
 GRLIB_tk_mode = [GRLIB_PARAM_TK_mode] call lrx_getParamValue;
@@ -83,6 +84,7 @@ GRLIB_force_english = (GRLIB_force_english == 1);
 GRLIB_enable_drones = (GRLIB_enable_drones == 1);
 GRLIB_Commander_mode = true;
 GRLIB_alarms_enabled = (GRLIB_alarms_enabled == 1);
+GRLIB_town_walls = (GRLIB_town_walls == 1);
 GRLIB_Commander_VoteEnabled = (GRLIB_Commander_VoteEnabled == 1);
 
 // Overide sector radius

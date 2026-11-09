@@ -315,6 +315,9 @@ _sector setMarkerText format ["%2 - Loading %1%%", 80, _sectorName];
 if (isNull (missionNamespace getVariable ["HPC_sectorCommander_"+_sector,objNull])) exitWith {
     diag_log format ["--- Hippos Conquest: sector %1 loader aborted; commander creation failed",_sector];
 };
+_sector setMarkerText format ["%2 - Loading %1%%", 85, _sectorName];
+[_sector,"loading",85,-1,-1,_sectorName,_local_capture_size] call HPC_fnc_sectorState;
+[_sector] call HPC_fnc_sectorWalls;
 _static_count = _static_count max (if (_sector in sectors_military) then {4} else {2});
 
 // Create static weapons

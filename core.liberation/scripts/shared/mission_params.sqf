@@ -114,6 +114,7 @@ GRLIB_PARAM_CommanderVoteTimeout = "CommVoteTimeout";
 GRLIB_PARAM_CommanderAutoStart = "CommAutoStart";
 GRLIB_PARAM_CommPlayerVote = "CommPlayerVote";
 GRLIB_PARAM_Alarms = "Alarms";
+GRLIB_PARAM_TownWalls = "TownWalls";
 GRLIB_PARAM_MineProbability = "MineProbability";
 GRLIB_PARAM_ArtyMaxShot = "ArtyMaxShot";
 GRLIB_PARAM_A3WCount = "A3WCount";
@@ -611,6 +612,18 @@ _Mission_Params = [
         [GRLIB_PARAM_OptionDescriptionKey, [
             localize "STR_ALARMS_OPT0",
             localize "STR_ALARMS_OPT1"
+        ]]
+    ]],
+    [GRLIB_PARAM_TownWalls, createHashMapFromArray [
+        [GRLIB_PARAM_ValueKey, 1],
+        [GRLIB_PARAM_NameKey, "Town walls"],
+        [GRLIB_PARAM_OptionLabelKey, [localize "STR_PARAMS_DISABLED", localize "STR_PARAMS_ENABLED"]],
+        [GRLIB_PARAM_OptionValuesKey, [0,1]],
+        [GRLIB_PARAM_CategoryKey, GRLIB_PARAM_MiscCatKey],
+        [GRLIB_PARAM_DescriptionKey, "Surround active town sectors with breakable walls, road checkpoints and guard towers."],
+        [GRLIB_PARAM_OptionDescriptionKey, [
+            "Towns have no perimeter wall",
+            "Towns are walled, with checkpoints at roads and manned guard towers"
         ]]
     ]],
     [GRLIB_PARAM_MineProbability, createHashMapFromArray [

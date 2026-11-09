@@ -74,3 +74,50 @@ diag_log ["HPC_FORT_CHECK",_fortSector,markerPos _fortSector,_props apply {[type
 ["sector.fortifications",count _props > 0 && {_props isEqualTo _again} && {_props findIf {surfaceIsWater getPosATL _x || {count (_x nearRoads 10) > 0} || {_x distance2D (markerPos _fortSector) > 350}} < 0}] call _assert;
 {deleteVehicle _x} forEach _props;
 missionNamespace setVariable ["HPC_sectorProps_"+_fortSector,nil];
+private _wallSector = (sectors_bigtown + sectors_capture) param [0,""];
+private _wallsBefore = GRLIB_town_walls;
+GRLIB_town_walls = true;
+missionNamespace setVariable [format ["LRX_sector_%1_units",_wallSector],[]];
+private _wallStart = diag_tickTime;
+private _wallProps = [_wallSector] call HPC_fnc_sectorWalls;
+private _wallTime = diag_tickTime - _wallStart;
+private _wallGuards = missionNamespace getVariable [format ["LRX_sector_%1_units",_wallSector],[]];
+private _wallPieces = _wallProps select {typeOf _x in ["Land_ConcreteWall_01_l_8m_F","Land_Wall_IndCnc_4_F"]};
+private _sample = _wallPieces param [0,objNull];
+// No wall section may stand on a vehicle road (sampled along its length).
+private _onRoadWalls = _wallPieces select {
+    private _wall = _x;
+    (boundingBoxReal _wall) params ["_rA","_rB"];
+    private _alongX = abs ((_rB select 0) - (_rA select 0)) >= abs ((_rB select 1) - (_rA select 1));
+    private _half = ((abs ((_rB select 0) - (_rA select 0))) max (abs ((_rB select 1) - (_rA select 1)))) / 2;
+    ([-0.9,-0.45,0,0.45,0.9] findIf {
+        private _p = _wall modelToWorld ([[0,_x * _half,0],[_x * _half,0,0]] select _alongX);
+        private _road = roadAt [_p select 0, _p select 1, 0];
+        !isNull _road && {((getRoadInfo _road) select 0) in ["ROAD","MAIN ROAD","TRACK"]}
+    }) >= 0
+};
+diag_log ["HPC_WALL_ON_ROAD",count _onRoadWalls,_onRoadWalls apply {getPosATL _x}];
+{
+    diag_log ["HPC_WALL_CONFIG",_x,getNumber (configFile >> "CfgVehicles" >> _x >> "armor"),getText (configFile >> "CfgVehicles" >> _x >> "destrType"),getNumber (configFile >> "CfgVehicles" >> _x >> "damageResistance")];
+} forEach ["Land_ConcreteWall_01_l_8m_F","Land_BarGate_F","Land_Cargo_Patrol_V1_F"];
+// One stock demo charge against the wall face must knock the section down.
+(boundingBoxReal _sample) params ["_bbA","_bbB"];
+private _faceOffset = if (abs ((_bbB select 0) - (_bbA select 0)) >= abs ((_bbB select 1) - (_bbA select 1))) then {[0,(_bbA select 1) - 0.4,0]} else {[(_bbA select 0) - 0.4,0,0]};
+private _chargePos = _sample modelToWorld _faceOffset;
+private _charge = createVehicle ["DemoCharge_Remote_Ammo", [_chargePos select 0, _chargePos select 1, 0.2], [], 0, "CAN_COLLIDE"];
+sleep 0.5;
+_charge setDamage 1;
+private _breachDeadline = diag_tickTime + 5;
+waitUntil {sleep 0.1; !alive _sample || diag_tickTime > _breachDeadline};
+diag_log ["HPC_WALL_BREACH",damage _sample,alive _sample];
+private _breakable = !isNull _sample && {!alive _sample};
+diag_log ["HPC_WALL_CHECK",_wallSector,markerPos _wallSector,_wallTime,count _wallProps,count _wallPieces,count _wallGuards,_breakable,
+    _wallProps select {!(_x in _wallPieces)} apply {[typeOf _x,getPosATL _x,getDir _x]}];
+GRLIB_town_walls = false;
+private _disabled = [_wallSector] call HPC_fnc_sectorWalls;
+["sector.walls",_wallSector != "" && {count _wallPieces > 10} && {_breakable} && {_disabled isEqualTo []} && {_onRoadWalls isEqualTo []} && {_wallProps findIf {surfaceIsWater getPosATL _x || {_x distance2D (markerPos _wallSector) > 360}} < 0} && {_wallGuards findIf {!alive _x} < 0}] call _assert;
+{deleteVehicle _x} forEach _wallGuards;
+{deleteVehicle _x} forEach _wallProps;
+missionNamespace setVariable ["HPC_sectorProps_"+_wallSector,nil];
+missionNamespace setVariable [format ["LRX_sector_%1_units",_wallSector],nil];
+GRLIB_town_walls = _wallsBefore;

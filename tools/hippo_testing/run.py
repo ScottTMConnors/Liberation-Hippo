@@ -125,7 +125,7 @@ def main():
     tag=subprocess.check_output(['git','describe','--tags','upstream/master'],cwd=ROOT).decode().strip()
     (stage/'build_info.sqf').write_text(f'GRLIB_build_date="{run_id}"; GRLIB_build_time="test"; GRLIB_build_version="{tag}-hippo-test";\n')
     tests=stage/'hippo_tests'; tests.mkdir()
-    cases=['engine.compile','startup.server','telemetry.ownership','civilians.ambient','civilians.traffic','sector.fortifications','settings.defaults','factions.available','settings.english','skills.toggle','damage.civilian','catalog.classification','catalog.order','catalog.unlockFilter','objects.simple','cargo.restore','vehicles.emptyPools','warfare.armedPool']
+    cases=['engine.compile','startup.server','telemetry.ownership','civilians.ambient','civilians.traffic','sector.fortifications','sector.walls','settings.defaults','factions.available','settings.english','skills.toggle','damage.civilian','catalog.classification','catalog.order','catalog.unlockFilter','objects.simple','cargo.restore','vehicles.emptyPools','warfare.armedPool']
     if args.targeted: cases+=['placement.pier','placement.small','placement.building']
     if args.movement: cases+=['civilians.displacement','outpost.commanderInterior','outpost.defenders']
     if args.scenario: cases+=['warfare.spawn','sector.commanderGate','sector.capture','warfare.cleanup']
@@ -140,7 +140,7 @@ def main():
     if args.targeted:
         shutil.copy2(ROOT/'tools/hippo_testing/placement.sqf',tests/'placement.sqf')
         p=tests/'run.sqf'
-        p.write_text(p.read_text(encoding='utf-8').replace('[format ["RUN_DONE|%1",', 'call compile preprocessFileLineNumbers "hippo_tests\\placement.sqf";\n[format ["RUN_DONE|%1",').replace('18 + (if (HPC_testScenario)', '21 + (if (HPC_testScenario)'),encoding='utf-8')
+        p.write_text(p.read_text(encoding='utf-8').replace('[format ["RUN_DONE|%1",', 'call compile preprocessFileLineNumbers "hippo_tests\\placement.sqf";\n[format ["RUN_DONE|%1",').replace('19 + (if (HPC_testScenario)', '22 + (if (HPC_testScenario)'),encoding='utf-8')
         p=stage/'scripts/shared/functions/HPC_sectorFortifications.sqf'
         text=p.read_text(encoding='utf-8')
         text=text.replace('if (count _candidate >= 2 &&', 'if (!(missionNamespace getVariable ["HPC_testRejectLarge",false]) && count _candidate >= 2 &&')
@@ -162,7 +162,7 @@ def main():
     if args.movement:
         shutil.copy2(ROOT/'tools/hippo_testing/movement.sqf',tests/'movement.sqf')
         p=tests/'run.sqf'
-        p.write_text(p.read_text(encoding='utf-8').replace('[format [\"RUN_DONE|%1\",', 'call compile preprocessFileLineNumbers \"hippo_tests\\movement.sqf\";\n[format [\"RUN_DONE|%1\",').replace('18 + (if (HPC_testScenario)', '21 + (if (HPC_testScenario)'),encoding='utf-8')
+        p.write_text(p.read_text(encoding='utf-8').replace('[format [\"RUN_DONE|%1\",', 'call compile preprocessFileLineNumbers \"hippo_tests\\movement.sqf\";\n[format [\"RUN_DONE|%1\",').replace('19 + (if (HPC_testScenario)', '22 + (if (HPC_testScenario)'),encoding='utf-8')
     if args.scenario:
         shutil.copy2(ROOT/'tools/hippo_testing/scenario.sqf',tests/'scenario.sqf')
         p=stage/'scripts/server/game/defenderattackersystem.sqf'
