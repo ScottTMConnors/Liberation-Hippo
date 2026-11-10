@@ -23,13 +23,12 @@ _unit enableWeaponDisassembly false;
 // Player Event Handlers
 if (_unit == player) then {
 	// Backup Weapon state
-	_unit removeAllEventHandlers "WeaponChanged";
-	_unit addEventHandler ["WeaponChanged", {
+	[_unit, "WeaponChanged", {
 		params ["_unit", "_oldWeapon", "_newWeapon", "_oldMode", "_newMode", "_oldMuzzle", "_newMuzzle", "_turretIndex"];
 		if (isNull objectParent _unit) then {
 			if (_newWeapon == primaryWeapon _unit) then {
 				PAR_weapons_state = [_newWeapon, _newMuzzle, _newMode];
 			};
 		};
-	}];
+	}] call F_addManagedEH;
 };

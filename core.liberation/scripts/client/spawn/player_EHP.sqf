@@ -98,14 +98,14 @@ if (_unit == player) then {
 	"];
 
 	// Player killed EH
-	_unit removeAllEventHandlers "Killed";
-	_unit addEventHandler ["Killed", { _this spawn PAR_fn_death }];
+	[_unit, "Killed", { _this spawn PAR_fn_death }] call F_addManagedEH;
 
 	// Player respawn EH
-	_unit removeAllEventHandlers "Respawn";
-	_unit addEventHandler ["Respawn", { _this spawn player_respawn }];
+	[_unit, "Respawn", { _this spawn player_respawn }] call F_addManagedEH;
 
 	// Player Handle Damage EH
+	// Revive must be the only scripted HandleDamage: the last returned value wins,
+	// so this one still clears handlers added by mods.
 	if (PAR_revive != 0) then {
 		_unit removeAllEventHandlers "HandleDamage";
 		_unit addEventHandler ["HandleDamage", {
@@ -170,8 +170,7 @@ if (_unit == player) then {
 	};
 
 	// Get in Vehicle
-	_unit removeAllEventHandlers "GetInMan";
-	_unit addEventHandler ["GetInMan", {
+	[_unit, "GetInMan", {
 		params ["_unit", "_role", "_vehicle"];
 		private _my_dog = _unit getVariable ["my_dog", nil];
 		if (_vehicle isKindOf "ParachuteBase") then {
@@ -189,7 +188,7 @@ if (_unit == player) then {
 					if (GRLIB_vehicle_defense) then {
 						[_vehicle] spawn F_vehicleDefense;
 					} else {
-						_vehicle removeAllEventHandlers "IncomingMissile";
+						[_vehicle, "IncomingMissile"] call F_removeManagedEH;
 					};
 					if (isNil {_vehicle getVariable "GREUH_vehicle_damage_he"}) then {
 						_vehicle addEventHandler ["HandleDamage", { _this call damage_manager_friendly }];
@@ -209,11 +208,10 @@ if (_unit == player) then {
 				[true] call player_vehicle_actions;
 			};
 		};
-	}];
+	}] call F_addManagedEH;
 
 	// Get out Vehicle
-	_unit removeAllEventHandlers "GetOutMan";
-	_unit addEventHandler ["GetOutMan", {
+	[_unit, "GetOutMan", {
 		params ["_unit", "_role", "_vehicle"];
 		private _my_dog = _unit getVariable ["my_dog", nil];
 		if (_vehicle isKindOf "ParachuteBase") then {
@@ -250,15 +248,13 @@ if (_unit == player) then {
 				[_msg, 0, 0, 5, 0, 0, 90] spawn BIS_fnc_dynamicText;
 			};
 		};
-	}];
+	}] call F_addManagedEH;
 
 	// Switch seat
-	_unit removeAllEventHandlers "SeatSwitchedMan";
-	_unit addEventHandler ["SeatSwitchedMan", { _this call vehicle_perm }];
+	[_unit, "SeatSwitchedMan", { _this call vehicle_perm }] call F_addManagedEH;
 } else {
 	// AI killed EH
-	_unit removeAllEventHandlers "Killed";
-	_unit addEventHandler ["Killed", { _this spawn PAR_fn_death }];
+	[_unit, "Killed", { _this spawn PAR_fn_death }] call F_addManagedEH;
 
 	// AI Handle Damage EH
 	if (PAR_revive != 0) then {
@@ -285,8 +281,7 @@ if (_unit == player) then {
 	};
 
 	// Get in Vehicle
-	_unit removeAllEventHandlers "GetInMan";
-	_unit addEventHandler ["GetInMan", {
+	[_unit, "GetInMan", {
 		params ["_unit", "_role", "_vehicle"];
 		if (_vehicle isKindOf "ParachuteBase") exitWith {};
 		private _eject = [_unit, _role, _vehicle] call vehicle_perm;
@@ -295,7 +290,7 @@ if (_unit == player) then {
 				if (GRLIB_vehicle_defense) then {
 					[_vehicle] spawn F_vehicleDefense;
 				} else {
-					_vehicle removeAllEventHandlers "IncomingMissile";
+					[_vehicle, "IncomingMissile"] call F_removeManagedEH;
 				};
 				if (isNil {_vehicle getVariable "GREUH_vehicle_damage_he"}) then {
 					_vehicle addEventHandler ["HandleDamage", { _this call damage_manager_friendly }];
@@ -303,21 +298,19 @@ if (_unit == player) then {
 				};
 			};
 		};
-	}];
+	}] call F_addManagedEH;
 
 	// Get out Vehicle
-	_unit removeAllEventHandlers "GetOutMan";
-	_unit addEventHandler ["GetOutMan", {
+	[_unit, "GetOutMan", {
 		params ["_unit", "_role", "_vehicle"];
 		if (_vehicle == getConnectedUAV player) then {
 			objNull remoteControl _unit;
 			player switchCamera cameraView;
 		};
-	}];
+	}] call F_addManagedEH;
 
 	// Switch seat
-	_unit removeAllEventHandlers "SeatSwitchedMan";
-	_unit addEventHandler ["SeatSwitchedMan", { _this call vehicle_perm }];
+	[_unit, "SeatSwitchedMan", { _this call vehicle_perm }] call F_addManagedEH;
 
 	// Add heal capabilities to player's group's medic when ACE is present
 	if (GRLIB_ACE_medical_enabled && ([_unit] call PAR_is_medic)) then {

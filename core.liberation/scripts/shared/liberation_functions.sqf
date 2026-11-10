@@ -1,3 +1,5 @@
+F_addManagedEH = compileFinal preprocessFileLineNumbers "scripts\shared\functions\F_addManagedEH.sqf";
+F_removeManagedEH = compileFinal preprocessFileLineNumbers "scripts\shared\functions\F_removeManagedEH.sqf";
 F_aceInitVehicle = compileFinal preprocessFileLineNumbers "scripts\shared\functions\F_aceInitVehicle.sqf";
 F_aceLockVehicle = compileFinal preprocessFileLineNumbers "scripts\shared\functions\F_aceLockVehicle.sqf";
 F_aceMedicHeal = compileFinal preprocessFileLineNumbers "scripts\shared\functions\F_aceMedicHeal.sqf";

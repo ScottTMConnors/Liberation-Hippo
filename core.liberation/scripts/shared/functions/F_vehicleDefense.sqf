@@ -5,8 +5,7 @@ if (isNull _vehicle) exitWith {};
 
 if (isNil {_vehicle getVariable "GREUH_vehicle_defense"}) then {
 	_vehicle setVariable ["GREUH_vehicle_defense", true, true];
-	_vehicle removeAllEventHandlers "IncomingMissile";
-	_vehicle addEventHandler ["IncomingMissile", {
+	[_vehicle, "IncomingMissile", {
 		params ["_target", "_ammo", "_vehicle", "_instigator"];
 
 		if (count (crew _target) == 0) exitWith {};
@@ -42,5 +41,5 @@ if (isNil {_vehicle getVariable "GREUH_vehicle_defense"}) then {
 				};
 			};
 		};
-	}];
+	}] call F_addManagedEH;
 };
