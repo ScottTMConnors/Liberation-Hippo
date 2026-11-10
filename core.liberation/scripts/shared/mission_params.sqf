@@ -97,7 +97,6 @@ GRLIB_PARAM_SectorDespawn = "SectorDespawn";
 GRLIB_PARAM_BuildingRatio = "BuildingRatio";
 GRLIB_PARAM_KeepScore = "KeepScore";
 GRLIB_PARAM_KeepContext = "KeepContext";
-GRLIB_PARAM_Permissions = "Permissions";
 GRLIB_PARAM_CleanupVehicles = "CleanupVehicles";
 GRLIB_PARAM_AutoSave = "AutoSave";
 GRLIB_PARAM_TFRadioRange = "TFRadioRange";
@@ -1276,18 +1275,6 @@ _Mission_Params = [
         [GRLIB_PARAM_OptionDescriptionKey, [
             localize "STR_KEEP_CONTEXT_OPT0",
             localize "STR_KEEP_CONTEXT_OPT1"
-        ]]
-    ]],
-    [GRLIB_PARAM_Permissions, createHashMapFromArray [
-        [GRLIB_PARAM_ValueKey, 1],
-        [GRLIB_PARAM_NameKey, localize "STR_PERMISSIONS_PARAM"],
-        [GRLIB_PARAM_OptionLabelKey, [localize "STR_PARAMS_DISABLED", localize "STR_PARAMS_ENABLED"]],
-        [GRLIB_PARAM_OptionValuesKey, [0,1]],
-        [GRLIB_PARAM_CategoryKey, GRLIB_PARAM_SystemCatKey],
-        [GRLIB_PARAM_DescriptionKey, localize "STR_PERMISSIONS_PARAM_DESC"],
-        [GRLIB_PARAM_OptionDescriptionKey, [
-            localize "STR_PERMISSIONS_PARAM_OPT0",
-            localize "STR_PERMISSIONS_PARAM_OPT1"
         ]]
     ]],
     [GRLIB_PARAM_CleanupVehicles, createHashMapFromArray [

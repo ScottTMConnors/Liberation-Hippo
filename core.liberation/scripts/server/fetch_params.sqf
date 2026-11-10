@@ -236,3 +236,7 @@ GRLIB_LRX_server_params_loaded = true;
 publicVariable "GRLIB_LRX_server_params_loaded";
 
 diag_log "--- LRX: Server settings loaded ---";
+// lobby parameter "Log Mission Settings at startup"
+if ((missionNamespace getVariable ["GRLIB_log_settings", 0]) == 1) then {
+	{ diag_log format ["--- LRX setting: %1 = %2", _x, _y getOrDefault [GRLIB_PARAM_ValueKey, "?"]] } forEach GRLIB_LRX_params;
+};

@@ -34,7 +34,6 @@ GRLIB_introduction = [GRLIB_PARAM_introductionKey] call lrx_getParamValue;
 GRLIB_kick_idle = [GRLIB_PARAM_KickIdle] call lrx_getParamValue;
 GRLIB_max_fobs = [GRLIB_PARAM_MaxFobs] call lrx_getParamValue;
 GRLIB_max_outpost = [GRLIB_PARAM_MaxOutpost] call lrx_getParamValue;
-GRLIB_permissions_param = [GRLIB_PARAM_Permissions] call lrx_getParamValue;
 GRLIB_respawn_cooldown = [GRLIB_PARAM_RespawnCD] call lrx_getParamValue;
 GRLIB_show_blufor = [GRLIB_PARAM_ShowBlufor] call lrx_getParamValue;
 GRLIB_thermic = [GRLIB_PARAM_Thermic] call lrx_getParamValue;
@@ -64,7 +63,6 @@ GRLIB_deployment_cinematic = (GRLIB_deployment_cinematic == 1);
 GRLIB_vehicle_defense = (GRLIB_vehicle_defense == 1);
 GRLIB_disable_death_chat = (GRLIB_disable_death_chat == 1);
 GRLIB_fatigue = (GRLIB_fatigue == 1);
-GRLIB_permissions_param = (GRLIB_permissions_param == 1);
 GRLIB_air_support = (GRLIB_air_support == 1);
 GRLIB_admin_menu = (GRLIB_admin_menu == 1);
 

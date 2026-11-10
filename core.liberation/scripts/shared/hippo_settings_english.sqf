@@ -82,7 +82,6 @@ private _wording = createHashMapFromArray [
 ["UndercoverMode", ["Civilian disguise and detection", "Enable the mission undercover system and enemy detection of players using a civilian identity. Requires a mission restart."]],
 ["KeepScore", ["Keep progression after campaign reset", "Preserve basic player score and permissions when the campaign resets. Reset-time resource and rank caps still apply. Requires a mission restart."]],
 ["KeepContext", ["Keep player assets after campaign reset", "Preserve saved squads, arsenals and garage data when the campaign resets. Requires a mission restart."]],
-["Permissions", ["Commander action permissions", "Allow permission management for supported player actions. Hippo vehicle seat access remains unrestricted. Requires a mission restart."]],
 ["CleanupVehicles", ["Unused vehicle cleanup delay", "Time before eligible unused vehicles are removed. Disabled prevents this automatic vehicle cleanup. Requires a mission restart."]],
 ["AutoSave", ["Campaign autosave interval", "Time between automatic campaign saves. Disabled turns off periodic saves. Requires a mission restart."]],
 ["TFRadioRange", ["TFAR radio relay range", "Range in metres for the mission radio relay when Task Force Radio is loaded. Disabled turns off the relay. Requires a mission restart."]],
