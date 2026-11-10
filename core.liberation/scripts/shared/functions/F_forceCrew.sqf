@@ -9,6 +9,7 @@ if (count crew _vehicle > 0) exitWith { grpNull };
 
 private _vehicle_class = typeOf _vehicle;
 private _grp =_side createVehicleCrew _vehicle;
+if (!isNull _grp) then { _grp deleteGroupWhenEmpty true }; // created here, so local
 uiSleep 0.5;
 private _crew = crew _vehicle;
 if (count _crew == 0) exitWith { diag_log format ["--- LRX can't create crew for vehicle %1", _vehicle_class]; grpNull };

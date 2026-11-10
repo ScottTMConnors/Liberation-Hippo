@@ -2,7 +2,7 @@ params ["_unit"];
 
 private _color = "#808080";
 private _text = "Neutral";
-private _reputation = [player] call F_getReput;
+private _reputation = [_unit] call F_getReput;
 if ( _reputation <= -25 ) then { _color = "#808000"; _text = "Unfriendly" };
 if ( _reputation <= -50 ) then { _color = "#806000"; _text = "Bad" };
 if ( _reputation <= -75 ) then { _color = "#804000"; _text = "Very Bad" };

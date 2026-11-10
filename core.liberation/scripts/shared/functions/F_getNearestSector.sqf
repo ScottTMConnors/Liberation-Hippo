@@ -2,7 +2,7 @@ params ["_radius", ["_postosearch", getPosATL player], ["_sector_list", sectors_
 
 private _close_sectors = [];
 if (_check_water) then {
-    _close_sectors = _sector_list select { (markerPos _x) distance2D _postosearch <= _radius && !([_postosearch, (markerPos _x)] call F_isWaterBetween) };
+    _close_sectors = _sector_list select { (markerPos _x) distance2D _postosearch <= _radius && {!([_postosearch, (markerPos _x)] call F_isWaterBetween)} };
 } else {
     _close_sectors = _sector_list select { (markerPos _x) distance2D _postosearch <= _radius};
 };

@@ -12,7 +12,7 @@ if (isNil "_sectorpos" || isNil "_classname") exitWith { objNull };
 
 private _classname_bak = _classname;
 private _vehicle = objNull;
-private _spawn_pos = _sectorpos;
+private _spawn_pos = +_sectorpos; // copy: set [2, ...] below must not change the caller's array
 private _airveh_alt = 300;
 private _water_mode = 0;
 private _sea_deep = 0;

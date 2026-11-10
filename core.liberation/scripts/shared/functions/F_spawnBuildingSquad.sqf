@@ -4,11 +4,11 @@ params [
 	"_sector_pos",
 	["_building_range", GRLIB_capture_size],
 	["_building", objNull],
-	["_mission_ai", true]
+	["_mission_ai", true],
+	["_used", []]	// buildings already taken by this caller (shared array, updated here)
 ];
 
 if (_building_ai_max == 0) exitWith {[]};
-if (isNil "GRLIB_building_used") then { GRLIB_building_used = [] };
 
 private _side = GRLIB_side_enemy;
 private _squad_comp = [];
@@ -58,14 +58,15 @@ if (_mission_ai) then { _keep_position = true };
 private _building_pos = [];
 if (isNull _building) then {
 	private _allbuildings = (nearestObjects [_sector_pos, _building_classname, _building_range]) select { alive _x  && !(typeOf _x in _building_blacklist) };
-	_allbuildings = (_allbuildings - GRLIB_building_used);
+	_allbuildings = (_allbuildings - _used);
 	{
 		_building = _x;
-		_building_pos = (_building buildingPos -1);
-		if (count _building_pos >= _building_ai_max) exitWith { GRLIB_building_used pushBack _building };
+		_building_pos = (_building buildingPos -1) - [[0,0,0]];
+		if (count _building_pos >= _building_ai_max) exitWith {};
 	} foreach (_allbuildings call BIS_fnc_arrayShuffle);
+	if (!isNull _building) then { _used pushBackUnique _building }; // also the fallback, so it is not stacked again
 } else {
-	_building_pos = (_building buildingPos -1);
+	_building_pos = (_building buildingPos -1) - [[0,0,0]];
 };
 
 private _position_count = count _building_pos min _building_ai_max;
@@ -79,7 +80,6 @@ diag_log format ["Spawn building squad(%1) type %2 in building %3 at %4", _posit
 private _unitclass = [];
 while { count _unitclass < _position_count } do { _unitclass pushback (selectRandom _squad_comp) };
 
-_building_pos = _building_pos - [[0,0,0]];
 _building_pos = (_building_pos call BIS_fnc_arrayShuffle);
 private _grp = [_building_pos select 0, _unitclass, _side, "building", _mission_ai] call F_libSpawnUnits;
 {

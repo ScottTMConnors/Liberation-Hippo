@@ -9,4 +9,4 @@ if (!GRLIB_permission_vehicles) exitWith { true };
 private _unit_id = getPlayerUID (leader _unit);
 private _list_owner = ["", _unit_id];
 if (_strict) then { _list_owner = [_unit_id] };
-(_owner_id in _list_owner || group _unit == group (_owner_id call BIS_fnc_getUnitByUID))
+(_owner_id in _list_owner || {group _unit == group (_owner_id call BIS_fnc_getUnitByUID)})

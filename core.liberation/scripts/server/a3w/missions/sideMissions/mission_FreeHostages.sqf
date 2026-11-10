@@ -15,7 +15,6 @@ _setupObjects = {
 	_sector = (selectRandom blufor_sectors);
 	_missionPos = markerPos _sector;
 	_managed_units = (["militia", 8, _missionPos, 150] call F_spawnBuildingSquad);
-	GRLIB_building_used = nil;
 	if (count _managed_units < 8) exitWith {
 		diag_log format ["--- LRX Error: side mission %1, cannot create hostages at %2!", localize _missionType, _sector];
 		{ [_x] call HPC_fnc_deleteUnit } forEach _managed_units;
