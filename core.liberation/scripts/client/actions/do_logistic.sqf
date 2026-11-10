@@ -64,12 +64,15 @@ private _timeout = [_transport, _driver, halo_position] call ai_logistic_dest;
 if (_timeout) exitWith { [_driver, "collect"] call ai_logistic_failed };
 GRLIB_AI_logistic_travel = true;
 
+// a CONTINUE order runs the next trip in its own script: this one must stop then
+// (exitWith inside the if only left the if, so two scripts drove the same truck)
+private _handover = false;
 if (halo_position distance2D _origin < GRLIB_fob_range) then {
     [_transport, _driver] call ai_logistic_unload;
     private _timeout = call _fnc_waitOrder;
-    if (_timeout || !GRLIB_AI_logistic_new_order) exitWith { [_driver] call ai_logistic_end };
+    if (_timeout || !GRLIB_AI_logistic_new_order) then { [_driver] call ai_logistic_end } else { _handover = true };
 };
-if (isNull _driver) exitWith {};
+if (_handover || isNull _driver) exitWith {};
 
 // if transport full, go back
 private _full = [_transport] call ai_logistic_collect;
