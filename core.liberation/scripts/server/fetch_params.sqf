@@ -18,19 +18,29 @@ publicVariable "GRLIB_LRX_Template_version";
 // Load Mission settings
 _savedParams = profileNamespace getVariable [GRLIB_paramsV2_save_key, nil];
 // Reject unavailable saved factions before cleaning or writing saved settings.
+// Profile keys are shared with Liberation RX, so saved settings may name factions
+// from another mod set. Block only when a kept campaign needs them.
 private _missingFactions = [];
+private _campaign = profileNamespace getVariable [GRLIB_save_key,[]];
+private _keepCampaign = !(GRLIB_param_wipe_savegame_1 == 1 && GRLIB_param_wipe_savegame_2 == 1) && {_campaign isEqualType []} && {count _campaign > 8};
 if (!isNil "_savedParams" && {_savedParams isEqualType createHashMap}) then {
     {
         _x params ["_key","_role"];
         private _row = _savedParams get _key;
         if (!isNil "_row" && {_row isEqualType createHashMap}) then {
             private _faction = _row getOrDefault [GRLIB_PARAM_ValueKey,""];
-            if (_faction isEqualType "" && {_faction != ""} && {!([_faction,_role] call HPC_fnc_templateAvailable)}) then {_missingFactions pushBackUnique _faction};
+            if (_faction isEqualType "" && {_faction != ""} && {!([_faction,_role] call HPC_fnc_templateAvailable)}) then {
+                if (_keepCampaign) then {
+                    _missingFactions pushBackUnique _faction;
+                } else {
+                    diag_log format ["--- LRX: saved faction %1 unavailable, using default ---", _faction];
+                    _savedParams deleteAt _key;
+                };
+            };
         };
     } forEach [[GRLIB_PARAM_ModPresetWest,"west"],[GRLIB_PARAM_ModPresetEast,"east"]];
 };
-private _campaign = profileNamespace getVariable [GRLIB_save_key,[]];
-if (!(GRLIB_param_wipe_savegame_1 == 1 && GRLIB_param_wipe_savegame_2 == 1) && {_campaign isEqualType []} && {count _campaign > 8}) then {
+if (_keepCampaign) then {
     {
         _x params ["_index","_role"];
         private _faction = _campaign select _index;
