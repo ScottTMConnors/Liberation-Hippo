@@ -5,26 +5,63 @@ Convertit le format SQF en structures Python exploitables
 
 import re
 
+_SQF_TOKEN = re.compile(r'''
+    \s*(?:
+      (?P<open>\[) | (?P<close>\]) | (?P<comma>,)
+    | (?P<dq>"(?:[^"]|"")*") | (?P<sq>'(?:[^']|'')*')
+    | (?P<num>[-+]?(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?)
+    | (?P<word>[A-Za-z_][A-Za-z0-9_]*)
+    )''', re.X)
+
+
 def parse_sqf_array(sqf_string):
     """
-    Convertit une string SQF (format Arma 3) en structure Python
-    Gère les arrays imbriqués et les différents types de données
+    Convertit une string SQF (format Arma 3) en structure Python.
+    Parser dedie (pas d'eval) : tableaux, nombres, chaines "..." / '...' avec
+    guillemets doubles echappes, true/false/nil ; un autre mot reste une chaine.
     """
-    # Remplace les valeurs spéciales SQF
-    sqf_string = sqf_string.strip()
-    sqf_string = re.sub(r'\btrue\b', 'True', sqf_string)
-    sqf_string = re.sub(r'\bfalse\b', 'False', sqf_string)
-    sqf_string = re.sub(r'\bnil\b', 'None', sqf_string)
-    
-    # Nettoie les notations scientifiques invalides
-    sqf_string = re.sub(r'(\d+)e-0?(\d+)', r'\1e-\2', sqf_string)
-    
-    try:
-        # Utilise eval() de manière contrôlée (seulement pour les structures de données)
-        result = eval(sqf_string)
-        return result
-    except Exception as e:
-        raise ValueError(f"Erreur lors du parsing SQF: {e}\nContenu: {sqf_string[:200]}...")
+    text = sqf_string.strip()
+    pos = 0
+
+    def token():
+        nonlocal pos
+        m = _SQF_TOKEN.match(text, pos)
+        if not m or m.end() == pos:
+            raise ValueError(f"Erreur lors du parsing SQF a la position {pos}: {text[pos:pos + 40]!r}")
+        pos = m.end()
+        return m
+
+    def value(m):
+        kind = m.lastgroup
+        if kind == 'open':
+            items = []
+            m = token()
+            if m.lastgroup == 'close':
+                return items
+            while True:
+                items.append(value(m))
+                m = token()
+                if m.lastgroup == 'close':
+                    return items
+                if m.lastgroup != 'comma':
+                    raise ValueError(f"Erreur lors du parsing SQF: ',' ou ']' attendu a la position {pos}")
+                m = token()
+        if kind == 'dq':
+            return m.group('dq')[1:-1].replace('""', '"')
+        if kind == 'sq':
+            return m.group('sq')[1:-1].replace("''", "'")
+        if kind == 'num':
+            n = float(m.group('num'))
+            return int(n) if n.is_integer() and re.fullmatch(r'[-+]?\d+', m.group('num')) else n
+        if kind == 'word':
+            word = m.group('word')
+            return {'true': True, 'false': False, 'nil': None}.get(word.lower(), word)
+        raise ValueError(f"Erreur lors du parsing SQF: valeur attendue a la position {pos}")
+
+    result = value(token())
+    if text[pos:].strip():
+        raise ValueError(f"Erreur lors du parsing SQF: contenu en trop a la position {pos}")
+    return result
 
 
 class LRXSavegameParser:

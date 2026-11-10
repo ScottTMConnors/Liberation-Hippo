@@ -87,7 +87,7 @@ GRLIB_taxi_marker setMarkerTextlocal "Taxi PickUp";
 private _timeout = [_vehicle, _dest, "STR_TAXI_MOVE"] call taxi_dest;
 if (_timeout) exitWith {
 	deleteMarkerLocal "taxi_lz";
-	{deletevehicle _x} forEach (crew _vehicle);
+	deleteVehicleCrew _vehicle;
 	deleteVehicle _vehicle;
 	deleteGroup _air_grp;
 	player setVariable ["GRLIB_taxi_called", nil, true];
@@ -155,7 +155,7 @@ hintSilent localize "STR_TAXI_RETURN";
 [_vehicle, _spawn_pos, ""] call taxi_dest;
 
 // Cleanup
-{deletevehicle _x} forEach (crew _vehicle);
+deleteVehicleCrew _vehicle;
 deleteVehicle _vehicle;
 deleteGroup _air_grp;
 player setVariable ["GRLIB_taxi_called", nil, true];

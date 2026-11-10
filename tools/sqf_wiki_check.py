@@ -106,7 +106,7 @@ def lex(text):
             line += value.count('\n')
             yield 'str', value, start
             i = j + 1
-        elif c.isalpha() or c == '_':
+        elif (c.isascii() and c.isalpha()) or c == '_':
             m = IDENT.match(text, i)
             yield 'ident', m.group(0), line
             i = m.end()
@@ -125,7 +125,7 @@ def lex(text):
 
 
 def check_file(path, rel, cmds, events, game_version, report, usage, defined, read_globals):
-    text = path.read_text(encoding='utf8', errors='replace')
+    text = path.read_text(encoding='utf8', errors='replace').replace('\r\n', '\n')
     if text.startswith('﻿'):
         text = text[1:]
     if PREPROC.match(text):
@@ -150,13 +150,29 @@ def check_file(path, rel, cmds, events, game_version, report, usage, defined, re
                 if not stack or stack[-1][0] != pairs[val]:
                     opened = f' (open {stack[-1][0]} from line {stack[-1][1]})' if stack else ''
                     report['lexical'].append(f'{rel}:{line}: unexpected {val}{opened}')
-                    return
+                    if not any(o == pairs[val] for o, _ in stack):
+                        prev = [(kind, val), prev[0], prev[1]]
+                        continue  # stray closer: keep checking the rest of the file
+                    while stack[-1][0] != pairs[val]:
+                        stack.pop()
                 stack.pop()
                 if prev[0] and prev[0][0] == 'punct' and prev[0][1] == ',' and val in ')]':
                     report['lexical'].append(f'{rel}:{line}: trailing comma before {val}')
         elif kind == 'ident':
             low = val.lower()
             nxt = toks[idx + 1] if idx + 1 < len(toks) else ('', '', 0)
+            nxt2 = toks[idx + 2] if idx + 2 < len(toks) else ('', '', 0)
+            # sleep 5 + random 10 parses as (sleep 5) + random 10: no delay, then a script error
+            if low in ('sleep', 'uisleep') and nxt[0] in ('num', 'ident') and nxt2[0] == 'punct' and nxt2[1] in '+-*/':
+                report['bugs'].append(f'{rel}:{line}: {val} {nxt[1]} {nxt2[1]} ... needs parentheses: {val} ({nxt[1]} {nxt2[1]} ...)')
+            # { deleteVehicle _x } forEach crew ...: leaves ghost crew (use deleteVehicleCrew)
+            if low == 'deletevehicle' and nxt[1].lower() == '_x':
+                j = idx + 2
+                if j < len(toks) and toks[j][1] == ';':
+                    j += 1
+                tail = [t[1].lower() for t in toks[j:j + 4]]
+                if tail[:2] == ['}', 'foreach'] and 'crew' in tail[2:4]:
+                    report['bugs'].append(f'{rel}:{line}: deleteVehicle on crew members leaves ghost crew; use deleteVehicleCrew')
             is_local = val.startswith('_')
             if low in cmds and not is_local:
                 usage[low].append(f'{rel}:{line}')
@@ -233,8 +249,10 @@ def main():
         sys.exit(f'wiki cache not found at {args.wiki}; run the arma3-wiki MCP once or pass --wiki')
     cmds, events = load_wiki(args.wiki)
     gv = tuple(int(x) for x in args.game_version.split('.')) if args.game_version else None
-    files = args.paths or subprocess.run(['git', 'ls-files', '*.sqf'], cwd=ROOT, capture_output=True,
-                                         text=True, check=True).stdout.split()
+    all_sqf = subprocess.run(['git', 'ls-files', '*.sqf'], cwd=ROOT, capture_output=True,
+                             text=True, check=True).stdout.split()
+    files = [Path(p).resolve().relative_to(ROOT).as_posix() if Path(p).is_absolute() or Path(p).exists() else p
+             for p in args.paths] or all_sqf
     report = collections.defaultdict(list)
     usage = collections.defaultdict(list)
     defined = set()
@@ -243,6 +261,14 @@ def main():
         if rel.lower().endswith('cba_settings.sqf'):
             continue  # CBA settings syntax, not SQF
         check_file(ROOT / rel, rel, cmds, events, gv, report, usage, defined, read_globals)
+    if args.paths:
+        # Subset mode: still collect definitions from every other file, so functions
+        # compiled elsewhere are not reported as unknown remoteExec targets or globals.
+        scratch = collections.defaultdict(list)
+        for rel in set(all_sqf) - set(files):
+            if not rel.lower().endswith('cba_settings.sqf'):
+                check_file(ROOT / rel, rel, cmds, events, gv, collections.defaultdict(list),
+                           collections.defaultdict(list), defined, scratch)
     tracked = subprocess.run(['git', 'ls-files', '*.sqf', '*.hpp', '*.ext', '*.h', '*.inc', '*.cpp', '*.sqm'],
                              cwd=ROOT, capture_output=True, text=True, check=True).stdout.split()
     cfg, fn_files = config_names([ROOT / f for f in tracked])
@@ -264,6 +290,7 @@ def main():
         out.append(f'\n== {title} ({len(items)}) ==')
         out.extend(sorted(items))
     section('Lexical errors', report['lexical'])
+    section('Likely bugs (sleep precedence, deleteVehicle on crew)', report['bugs'])
     section('Unknown event handler names', report['unknown_eh'])
     section('remoteExec targets that are neither commands nor defined functions', bad_targets)
     section(f'Commands newer than Arma 3 {args.game_version}', report['too_new'])
@@ -284,7 +311,7 @@ def main():
         rows += [f'{cmds[c]["name"]}\t{cmds[c]["arg"]}\t{cmds[c]["eff"]}\t{cmds[c]["server"]}\t{cmds[c]["problem"]}\t{len(usage[c])}'
                  for c in sorted(usage)]
         args.inventory.write_text('\n'.join(rows), encoding='utf8')
-    return 1 if report['lexical'] or report['unknown_eh'] or bad_targets else 0
+    return 1 if report['lexical'] or report['unknown_eh'] or report['bugs'] or bad_targets else 0
 
 
 if __name__ == '__main__':

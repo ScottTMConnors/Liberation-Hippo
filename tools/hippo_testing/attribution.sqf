@@ -52,7 +52,7 @@ _deadline = diag_tickTime+6;
 waitUntil {sleep 0.1; count (_tank getVariable ["HPC_lastVehicleHit",[]]) > 0 || diag_tickTime > _deadline};
 ["reward.projectile",((_tank getVariable ["HPC_lastVehicleHit",[objNull]]) select 0) == _shooter] call _assert;
 diag_log ["HPC_REWARD_PROJECTILE",owner _tank,owner _recipient,damage _tank,_tank getVariable ["HPC_lastVehicleHit",[]]];
-{deleteVehicle _x} forEach crew _tank;
+deleteVehicleCrew _tank;
 deleteVehicle _tank; deleteGroup _crew;
 deleteVehicle _shooter;deleteGroup _group;
 deleteVehicle _enemy;deleteGroup _enemyGroup;

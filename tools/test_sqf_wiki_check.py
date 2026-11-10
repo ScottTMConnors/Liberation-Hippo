@@ -52,6 +52,29 @@ class CheckerTests(unittest.TestCase):
         self.assertIn('case.sqf:1: unterminated string', run('x = "open;\n')[0]['lexical'])
         self.assertIn('case.sqf:1: unclosed {', run('x = {\n')[0]['lexical'])
 
+    def test_likely_bugs(self):
+        bugs = '\n'.join(run('sleep 5 + random 10;\n'
+                             'uiSleep _t * 2;\n'
+                             'sleep (5 + random 10);\n'
+                             '{ deleteVehicle _x } forEach crew _veh;\n'
+                             '{deleteVehicle _x;} forEach (crew _veh);\n'
+                             '{ deleteVehicle _x } forEach units _grp;\n')[0]['bugs'])
+        self.assertIn('case.sqf:1: sleep 5 +', bugs)
+        self.assertIn('case.sqf:2: uiSleep _t *', bugs)
+        self.assertNotIn('case.sqf:3:', bugs)
+        self.assertIn('case.sqf:4: deleteVehicle on crew', bugs)
+        self.assertIn('case.sqf:5: deleteVehicle on crew', bugs)
+        self.assertNotIn('case.sqf:6:', bugs)
+
+    def test_lexer_robustness(self):
+        # CRLF macro continuation, non-ASCII letter, and a stray closer that must not stop the scan
+        report = run('#define FOO(a) \\\r\n{ a }\r\nx = 1;\r\n')[0]
+        self.assertEqual(report['lexical'], [])
+        run('x = "ok"; ä = 1;\n')
+        report, defined, _ = run('x = 1);\ny = 2;\n')
+        self.assertIn('case.sqf:1: unexpected )', '\n'.join(report['lexical']))
+        self.assertIn('y', defined)
+
     @unittest.skipUnless((DEFAULT_WIKI / 'commands').is_dir(), 'arma3-wiki-mcp cache not present')
     def test_wiki_cache_loads(self):
         cmds, events = load_wiki(DEFAULT_WIKI)
