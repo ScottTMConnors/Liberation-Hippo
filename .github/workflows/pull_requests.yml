@@ -5,8 +5,13 @@ on:
   # Triggers the workflow on push or pull request events but only for the master branch
   # push:
   #   branches: [ master ]
-  pull_request_target:
+  # pull_request (not pull_request_target): build the PR's own code, without
+  # repository secrets or a write token.
+  pull_request:
     branches: [ master ]
+
+permissions:
+  contents: read
 
   # # Allows you to run this workflow manually from the Actions tab
   # push:
@@ -27,7 +32,14 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v6.0.3
+        with:
+          persist-credentials: false
+
+      - name: Tool unit tests (SQF checker, compaction)
+        run: |
+          cd tools
+          python3 -m unittest test_sqf_wiki_check test_mission_compact
 
       - name: Install dependencies
         run: sudo apt-get install -y liblzo2-2 libvorbis0a libvorbisfile3 libvorbisenc2 libogg0 libuchardet0 wget
