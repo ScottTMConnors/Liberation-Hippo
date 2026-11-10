@@ -33,6 +33,22 @@ def classify_errors(content):
 
 def sha(path): return hashlib.sha256(path.read_bytes()).hexdigest()
 
+
+def bump_run_done(text, extra):
+    """Add `extra` expected server results to the RUN_DONE total in server.sqf, whatever
+    other options already added (fixed-string replaces broke option combinations)."""
+    new, count = re.subn(r'(\[format \["RUN_DONE\|%1", )(\d+)( \+ \(if \(HPC_testScenario\))',
+                         lambda m: f'{m.group(1)}{int(m.group(2)) + extra}{m.group(3)}', text)
+    if count != 1: raise RuntimeError('server.sqf RUN_DONE total not found')
+    return new
+
+
+def stop_process(child):
+    if child.poll() is None:
+        child.terminate()
+        try: child.wait(timeout=8)
+        except subprocess.TimeoutExpired: child.kill(); child.wait(timeout=5)
+
 class SteamChild:
     """Track the isolated game process created asynchronously by Steam."""
     def __init__(self, pid):
@@ -140,7 +156,7 @@ def main():
     if args.targeted:
         shutil.copy2(ROOT/'tools/hippo_testing/placement.sqf',tests/'placement.sqf')
         p=tests/'run.sqf'
-        p.write_text(p.read_text(encoding='utf-8').replace('[format ["RUN_DONE|%1",', 'call compile preprocessFileLineNumbers "hippo_tests\\placement.sqf";\n[format ["RUN_DONE|%1",').replace('19 + (if (HPC_testScenario)', '22 + (if (HPC_testScenario)'),encoding='utf-8')
+        p.write_text(bump_run_done(p.read_text(encoding='utf-8').replace('[format ["RUN_DONE|%1",', 'call compile preprocessFileLineNumbers "hippo_tests\\placement.sqf";\n[format ["RUN_DONE|%1",'),3),encoding='utf-8')
         p=stage/'scripts/shared/functions/HPC_sectorFortifications.sqf'
         text=p.read_text(encoding='utf-8')
         text=text.replace('if (count _candidate >= 2 &&', 'if (!(missionNamespace getVariable ["HPC_testRejectLarge",false]) && count _candidate >= 2 &&')
@@ -162,7 +178,7 @@ def main():
     if args.movement:
         shutil.copy2(ROOT/'tools/hippo_testing/movement.sqf',tests/'movement.sqf')
         p=tests/'run.sqf'
-        p.write_text(p.read_text(encoding='utf-8').replace('[format [\"RUN_DONE|%1\",', 'call compile preprocessFileLineNumbers \"hippo_tests\\movement.sqf\";\n[format [\"RUN_DONE|%1\",').replace('19 + (if (HPC_testScenario)', '22 + (if (HPC_testScenario)'),encoding='utf-8')
+        p.write_text(bump_run_done(p.read_text(encoding='utf-8').replace('[format [\"RUN_DONE|%1\",', 'call compile preprocessFileLineNumbers \"hippo_tests\\movement.sqf\";\n[format [\"RUN_DONE|%1\",'),3),encoding='utf-8')
     if args.scenario:
         shutil.copy2(ROOT/'tools/hippo_testing/scenario.sqf',tests/'scenario.sqf')
         p=stage/'scripts/server/game/defenderattackersystem.sqf'
@@ -227,7 +243,7 @@ addMissionEventHandler ["MPEnded",{
             cases.append('compaction.leaves')
             shutil.copy2(ROOT/'tools/hippo_testing/compact.sqf',tests/'compact.sqf')
             p=tests/'run.sqf'
-            p.write_text(p.read_text(encoding='utf-8').replace('["settings.defaults",', '[] call compile preprocessFileLineNumbers "hippo_tests\\compact.sqf";\n["settings.defaults",').replace(('22' if args.targeted else '19') + ' + (if (HPC_testScenario)', ('23' if args.targeted else '20') + ' + (if (HPC_testScenario)'),encoding='utf-8')
+            p.write_text(bump_run_done(p.read_text(encoding='utf-8').replace('["settings.defaults",', '[] call compile preprocessFileLineNumbers "hippo_tests\\compact.sqf";\n["settings.defaults",'),1),encoding='utf-8')
         # Include all delivered SQF in the native syntax check.
         scripts=sorted(p.relative_to(stage).as_posix().replace('/','\\') for p in stage.rglob('*.sqf') if 'hippo_tests' not in p.parts)
         p=stage/'initServer.sqf'
@@ -242,6 +258,9 @@ addMissionEventHandler ["MPEnded",{
     installed=GAME/'MPMissions'/pbo.name
     if installed.exists(): raise FileExistsError(installed)
     shutil.copy2(pbo,installed)
+    # The main try/finally below starts later; never leave the test PBO in the game folder.
+    import atexit
+    atexit.register(lambda: installed.exists() and sha(installed)==sha(pbo) and installed.unlink())
     with socket.socket(socket.AF_INET,socket.SOCK_DGRAM) as sock:
         sock.bind(('127.0.0.1',0)); port=sock.getsockname()[1]
     if args.headless:
@@ -350,14 +369,14 @@ addMissionEventHandler ["MPEnded",{
                             hc_last_connect[role]=time.monotonic()
                         except OSError:pass
                 if '|HC_DROP|hc1' in rpt and not hc_dropped:
-                    headless['hc1'][0].terminate();headless['hc1'][0].wait(timeout=8);hc_dropped=True
+                    stop_process(headless['hc1'][0]);hc_dropped=True
                 if '|HC_REJOIN|hc1' in rpt and 'hc1_rejoin' not in headless:
                     launch_hc('hc1_rejoin')
                     connect_hc('hc1_rejoin')
                 if '|HC_DROP_ALL|' in rpt and not hc_stop_all:
                     hc_stop_all=True
                     for child,_ in headless.values():
-                        if child.poll() is None:child.terminate();child.wait(timeout=8)
+                        stop_process(child)
                 if any(p.poll() is not None for role,(p,_) in headless.items() if not hc_stop_all and not (role=='hc1' and hc_dropped)):
                     stop_reason='headless_early_exit';break
             if any(child.poll() is not None or 'Error creating Direct3D' in logs(folder) for child,folder,_ in clients.values()):
