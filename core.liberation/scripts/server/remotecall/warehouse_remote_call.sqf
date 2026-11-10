@@ -13,14 +13,19 @@ if (_cmd == 0) exitWith {
 
 // Add
 if (_cmd == 1) then {
+    if (isNull _box || {!([_unit] call HPC_fnc_rcCaller)}) exitWith {};
     private _box_class = typeOf _box;
     _count = GRLIB_warehouse getOrDefault [_box_class, -1];
     if (_count >= 0) then {
+        // claim the box atomically: two requests for one box must not both count and pay
+        private _claimed = false;
+        isNil { if !(_box getVariable ["HPC_whsAdded", false]) then { _box setVariable ["HPC_whsAdded", true]; _claimed = true } };
+        if (!_claimed) exitWith {};
         _price = [_box_class, support_vehicles] call F_getObjectPrice;
         _msg = format ["Player %1 Add %2 to WareHouse.", name _unit, [_box] call F_getLRXName];
-        [_unit, _price, 0] call ammo_add_remote_call;
-        GRLIB_warehouse set [_box_class, _count + 1];
+        GRLIB_warehouse set [_box_class, (GRLIB_warehouse getOrDefault [_box_class, 0]) + 1];
         deleteVehicle _box;
+        [_unit, _price, 0] call ammo_add_remote_call; // may wait: pay last
     };
 };
 

@@ -1,9 +1,10 @@
 if (!isServer && hasInterface) exitWith {};
 params ["_player", "_classname", "_veh_pos", "_veh_dir", "_veh_vup"];
 
-if (_veh_pos distance2D ([_veh_pos] call F_getNearestFob) <= GRLIB_fob_range) exitWith {};
+// HPC_fobBuildResult tells the caller the outcome: 1 built, 2 refused
+if (_veh_pos distance2D ([_veh_pos] call F_getNearestFob) <= GRLIB_fob_range) exitWith { _player setVariable ["HPC_fobBuildResult", 2, true] };
 
-if (!isNil "GRLIB_fob_inuse") exitWith {};
+if (!isNil "GRLIB_fob_inuse") exitWith { _player setVariable ["HPC_fobBuildResult", 2, true] };
 GRLIB_fob_inuse = true;
 
 private _vehicle = objNull;
@@ -63,6 +64,7 @@ if (_classname in ["fob_water1"]) then {
 if (isNull _vehicle) exitWith {
 	diag_log format ["--- LRX Error: Cannot create FOB %1 at %2", _classname, _veh_pos];
 	GRLIB_fob_inuse = nil;
+	_player setVariable ["HPC_fobBuildResult", 2, true];
 };
 
 private _sign = [_vehicle, getPlayerUID _player] call fob_init;
@@ -78,6 +80,7 @@ GRLIB_all_fobs = GRLIB_all_fobs + [_fob_pos];
 if (_classname == FOB_outpost) then { GRLIB_all_outposts pushBack _fob_pos };
 publicVariable "GRLIB_all_fobs";
 publicVariable "GRLIB_all_outposts";
+_player setVariable ["HPC_fobBuildResult", 1, true];
 
 private _fob_name = [_fob_pos] call F_getFobName;
 diag_log format ["FOB %1 (%2) created at %3", _fob_name, _fob_pos, time];

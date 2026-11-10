@@ -421,7 +421,6 @@ while {true} do {
 			// FOB
 			if (_buildtype in [99,98,97]) exitWith {
 				[player, "Land_Carrier_01_blast_deflector_up_sound"] remoteExec ["sound_range_remote_call", 2];
-				private _count_fobs = count GRLIB_all_fobs;
 				if (_buildtype == 97) then {
 					_classname = FOB_carrier;
 					private _fob_text = ((["NavalFobType"] call lrx_getParamData) select 1) select (["NavalFobType"] call lrx_getParamValue);
@@ -437,9 +436,13 @@ while {true} do {
 					};
 				};
 				sleep 0.5;
+				// wait for the server's answer (a count compare after 3 s misjudged slow builds
+				// and other players' FOBs: box kept as well as the FOB, or deleted for nothing)
+				player setVariable ["HPC_fobBuildResult", 0, true];
 				[player, _classname, _veh_pos, _veh_dir, _veh_vup] remoteExec ["build_fob_remote_call", 2];
-				sleep 3;
-				if (count GRLIB_all_fobs == _count_fobs) then {
+				private _fob_timeout = time + 30;
+				waitUntil { sleep 0.2; (player getVariable ["HPC_fobBuildResult", 0]) != 0 || time > _fob_timeout };
+				if ((player getVariable ["HPC_fobBuildResult", 0]) != 1) then {
 					build_confirmed = 3;
 					dobuild = 0;
 					sleep 3;
