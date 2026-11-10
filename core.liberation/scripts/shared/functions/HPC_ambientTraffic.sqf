@@ -19,11 +19,12 @@ HPC_ambientTraffic = _kept;
 if (_areas isEqualTo [] || {GRLIB_civilian_activity <= 0}) exitWith {};
 private _density = GRLIB_civilian_activity;
 private _carTarget = (ceil (3*_density*count _areas)) min 16;
-private _airTarget = ceil _density;
+// Air traffic is rare: at most one aircraft (two at high density), only once road traffic is full.
+private _airTarget = [1,2] select (_density > 2);
 private _kind = "";
-if ({_x isKindOf "Car"} count _kept < _carTarget) then {_kind = "car"};
-if ({_x isKindOf "Helicopter"} count _kept < _airTarget) then {_kind = "heli"};
-if ({_x isKindOf "Plane"} count _kept < _airTarget) then {_kind = "plane"};
+if ({_x isKindOf "Car"} count _kept < _carTarget) then {_kind = "car"} else {
+    if ({_x isKindOf "Air"} count _kept < _airTarget && {random 1 < 0.25}) then {_kind = selectRandom ["heli","plane"]};
+};
 if (_kind == "") exitWith {};
 private _home = (selectRandom _areas) select 0;
 private _roads = _home nearRoads 1000;
