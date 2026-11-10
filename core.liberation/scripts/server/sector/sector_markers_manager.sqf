@@ -31,6 +31,15 @@ private _dist = 0;
 private _ticks = 0;
 sleep 5;
 
+// global marker commands broadcast the whole marker: only send real changes
+private _fnc_paint = {
+	params ["_marker", "_type", "_color"];
+	if (markerType _marker != _type || {markerColor _marker != _color}) then {
+		_marker setMarkerTypeLocal _type;
+		_marker setMarkerColor _color;
+	};
+};
+
 while { GRLIB_endgame == 0 } do {
 	if ((count blufor_sectors + count GRLIB_all_fobs) != _sector_count || _ticks % 60 == 0) then {
 		opfor_sectors = (sectors_allSectors - blufor_sectors);
@@ -41,33 +50,29 @@ while { GRLIB_endgame == 0 } do {
 				_close_sectors = (blufor_sectors select { (markerPos _x) distance2D _sector_pos < GRLIB_radiotower_size });
 				_close_sectors append (GRLIB_all_fobs select { _x distance2D _sector_pos < GRLIB_radiotower_size });
 				if (count _close_sectors > 0) then {
-					_x setMarkerTypeLocal ([_x] call _getMarkerType);
-					_x setMarkerColor GRLIB_color_enemy;
+					[_x, [_x] call _getMarkerType, GRLIB_color_enemy] call _fnc_paint;
 				} else {
-					_x setMarkerType "Empty";
+					if (markerType _x != "Empty") then { _x setMarkerType "Empty" };
 				};
 			} foreach opfor_sectors;
 			{
-				_x setMarkerTypeLocal ([_x] call _getMarkerType);
-				_x setMarkerColor GRLIB_color_friendly;
+				[_x, [_x] call _getMarkerType, GRLIB_color_friendly] call _fnc_paint;
 			} foreach blufor_sectors;
 		} else {
 			{
-				_x setMarkerTypeLocal ([_x] call _getMarkerType);
-				_x setMarkerColor GRLIB_color_enemy;
+				[_x, [_x] call _getMarkerType, GRLIB_color_enemy] call _fnc_paint;
 			} foreach opfor_sectors;
 			{
-				_x setMarkerTypeLocal ([_x] call _getMarkerType);
-				_x setMarkerColor GRLIB_color_friendly;
+				[_x, [_x] call _getMarkerType, GRLIB_color_friendly] call _fnc_paint;
 			} foreach blufor_sectors;
 		};
 
 		if (count _vehicle_unlock_markers > 0) then {
 			{
 				if ((_x select 1) in blufor_sectors) then {
-					(_x select 0) setMarkerColor GRLIB_color_friendly;
+					if (markerColor (_x select 0) != GRLIB_color_friendly) then { (_x select 0) setMarkerColor GRLIB_color_friendly };
 				} else {
-					(_x select 0) setMarkerColor GRLIB_color_enemy;
+					if (markerColor (_x select 0) != GRLIB_color_enemy) then { (_x select 0) setMarkerColor GRLIB_color_enemy };
 				};
 			} foreach _vehicle_unlock_markers;
 		};

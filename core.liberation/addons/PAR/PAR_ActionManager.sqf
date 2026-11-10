@@ -3,10 +3,17 @@
 if (PAR_revive == 0) exitWith {};
 
 // Grave Name
+// the per-frame handler only draws; a slow loop finds the nearest grave
+HPC_PAR_nearGrave = objNull;
+[] spawn {
+	while {true} do {
+		HPC_PAR_nearGrave = (nearestObjects [player, PAR_graves, 2]) param [0, objNull];
+		sleep 0.5;
+	};
+};
 addMissionEventHandler ["Draw3D",{
-	private _near_grave = nearestObjects [player, PAR_graves, 2];
-	if (count (_near_grave) > 0) then {
-		private _grave = _near_grave select 0;
+	if (!isNull HPC_PAR_nearGrave) then {
+		private _grave = HPC_PAR_nearGrave;
 		private _grave_pos = ASLToAGL getPosASL _grave;
 		drawIcon3D [getMissionPath "res\skull.paa", [1,1,1,1], _grave_pos vectorAdd [0, 0, 1], 2, 2, 0, (_grave getVariable ["PAR_grave_message", ""]), 2, 0.05, "RobotoCondensed", "center"];
 	};

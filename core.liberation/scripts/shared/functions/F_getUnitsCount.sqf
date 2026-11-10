@@ -5,8 +5,8 @@ if (_distance <= 0) exitWith {0};
 private _count = 0;
 
 if (_side == GRLIB_side_friendly) exitWith {
-	private _list = units GRLIB_side_friendly;
-	_list = _list + (units GRLIB_side_civilian);
+	// engine-side area prefilter: this runs often, over every unit of the side
+	private _list = (units GRLIB_side_friendly + units GRLIB_side_civilian) inAreaArray [_position, _distance, _distance, 0, false];
 	{
 		if (
 			alive _x &&
@@ -24,7 +24,7 @@ if (_side == GRLIB_side_friendly) exitWith {
 };
 
 if (_side == GRLIB_side_enemy) exitWith {
-	private _list = units GRLIB_side_enemy;
+	private _list = (units GRLIB_side_enemy) inAreaArray [_position, _distance, _distance, 0, false];
 	{
 		if (
 			alive _x &&
@@ -45,7 +45,7 @@ if (_side == GRLIB_side_enemy) exitWith {
 };
 
 if (_side == GRLIB_side_civilian) exitWith {
-	private _list = units GRLIB_side_civilian;
+	private _list = (units GRLIB_side_civilian) inAreaArray [_position, _distance, _distance, 0, false];
 	{
 		if (
 			alive _x &&
