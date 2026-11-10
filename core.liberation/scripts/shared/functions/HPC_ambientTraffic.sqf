@@ -6,7 +6,9 @@ private _kept = [];
     private _vehicle = _x;
     private _near = _players findIf {_x distance2D _vehicle < 1500} >= 0;
     private _expired = time > (_vehicle getVariable ["HPC_trafficExpires",0]);
-    if (alive _vehicle && {alive driver _vehicle} && {!(_expired && !_near)} && {!(_areas isEqualTo [] && !_near)}) then {
+    // Cars driving between towns are removed once they leave the action (no player or active town nearby).
+    private _away = !_near && {_vehicle isKindOf "LandVehicle"} && {_areas findIf {(_x select 0) distance2D _vehicle < 2000} < 0};
+    if (alive _vehicle && {alive driver _vehicle} && {!(_expired && !_near)} && {!_away}) then {
         _kept pushBack _vehicle;
     } else {
         private _group = group driver _vehicle;
@@ -27,7 +29,15 @@ if ({_x isKindOf "Car"} count _kept < _carTarget) then {_kind = "car"} else {
 };
 if (_kind == "") exitWith {};
 private _home = (selectRandom _areas) select 0;
-private _roads = _home nearRoads 1000;
+// Towns cars can come from or drive to: any town around the action, away from military sites.
+private _military = GRLIB_all_fobs + (sectors_military apply {markerPos _x});
+private _towns = (nearestLocations [_home,["NameCityCapital","NameCity","NameVillage"],4000]) apply {locationPosition _x} select {
+    private _town = _x;
+    _military findIf {_x distance2D _town < 600} < 0 && {!((_town nearRoads 250) isEqualTo [])}
+};
+if (_towns isEqualTo []) then {_towns = [_home]};
+private _origin = selectRandom _towns;
+private _roads = _origin nearRoads 250;
 private _class = switch (_kind) do {
     case "heli": {"C_Heli_Light_01_civil_F"};
     case "plane": {"C_Plane_Civil_01_F"};
@@ -45,7 +55,7 @@ if (_kind != "car") then {_position set [2,if (_kind == "plane") then {450} else
 private _vehicle = createVehicle [_class,_position,[],0,if (_kind == "car") then {"NONE"} else {"FLY"}];
 if (isNull _vehicle) exitWith {};
 _vehicle setVariable ["GRLIB_vehicle_init",true,true];
-_vehicle setVariable ["HPC_trafficExpires",time+1800];
+_vehicle setVariable ["HPC_trafficExpires",time+2700];
 _vehicle setVariable ["HPC_ambientTraffic",true,true];
 private _group = civilian createVehicleCrew _vehicle;
 if (isNull _group || {isNull driver _vehicle}) exitWith {deleteVehicleCrew _vehicle; deleteVehicle _vehicle};
@@ -72,8 +82,12 @@ if (_kind == "car") then {
     _vehicle flyInHeight (if (_kind == "plane") then {450} else {250});
     if (_kind == "plane") then {_vehicle setVelocityModelSpace [0,65,0]};
 };
+// Cars tour several towns and return to where they started.
+private _stops = (_towns - [_origin]) call BIS_fnc_arrayShuffle;
+_stops = (_stops select [0,3]) + [_origin];
+if (_kind == "car" && {count _stops < 2}) then {_stops = [_origin,_origin]};
 for "_i" from 0 to 3 do {
-    private _destination = if (_kind == "car") then {getPosATL selectRandom _roads} else {if (_i == 1) then {+_home} else {_home getPos [if (_kind == "plane") then {2200} else {900},_i*90]}};
+    private _destination = if (_kind == "car") then {getPosATL selectRandom ((_stops select (_i min (count _stops - 1))) nearRoads 250)} else {if (_i == 1) then {+_home} else {_home getPos [if (_kind == "plane") then {2200} else {900},_i*90]}};
     if (_kind != "car") then {_destination set [2,if (_kind == "plane") then {450} else {250}]};
     private _wp = _group addWaypoint [_destination,0];
     _wp setWaypointType "MOVE";
