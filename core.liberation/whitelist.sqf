@@ -11,6 +11,11 @@
 GRLIB_whitelisted_steamids = [
 ];
 
+// Server command password (the serverCommandPassword of the server config). Lets the
+// admin menu kick and the idle timeout actually kick players instead of only sending
+// them back to the lobby. Server-only: never broadcast. Leave empty in the repository.
+HPC_serverCommandPassword = "";
+
 // Allow player to use the Light Admin Menu (aka Moderators)
 GRLIB_whitelisted_moderators = [
 ];

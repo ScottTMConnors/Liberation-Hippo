@@ -26,7 +26,7 @@ if (!$c.adminPassword -or $c.adminPassword -eq 'change-me') {
 if (!$c.bindAddress) { $c.bindAddress = Get-HippoBindAddress }
 if (!(Test-HippoPrivateAddress $c.bindAddress)) { throw 'bindAddress must be a private LAN IPv4 address.' }
 if (!(Get-NetIPAddress -AddressFamily IPv4 | Where-Object IPAddress -eq $c.bindAddress)) { throw "LAN address is not assigned to this host: $($c.bindAddress)" }
-foreach ($value in @($c.adminPassword, $c.password, $c.serverName, $c.runtimeDirectory, $c.gameDirectory)) {
+foreach ($value in @($c.adminPassword, $c.password, $c.serverCommandPassword, $c.serverName, $c.runtimeDirectory, $c.gameDirectory)) {
     if ("$value" -match '["\r\n]') { throw 'Config values must not contain double quotes or line breaks.' }
 }
 
@@ -87,6 +87,7 @@ $cfg = Join-Path $c.runtimeDirectory 'server.cfg'
 hostname = "$($c.serverName)";
 password = "$($c.password)";
 passwordAdmin = "$($c.adminPassword)";
+$(if ($c.serverCommandPassword) { "serverCommandPassword = ""$($c.serverCommandPassword)"";" })
 // Network mode: loopback test mode rejects players on other PCs.
 loopback = 0;
 maxPlayers = $($c.maxPlayers);

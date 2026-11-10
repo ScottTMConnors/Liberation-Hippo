@@ -179,3 +179,4 @@ HPC_fnc_hcInstallDamage = compileFinal preprocessFileLineNumbers "scripts\shared
 HPC_fnc_rcFobAllowed = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_rcFobAllowed.sqf";
 HPC_fnc_patrolSlot = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_patrolSlot.sqf";
 HPC_fnc_undercoverReport = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_undercoverReport.sqf";
+HPC_fnc_kickPlayer = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_kickPlayer.sqf";

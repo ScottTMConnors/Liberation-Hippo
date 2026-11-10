@@ -78,6 +78,7 @@ also accepts `-BindAddress`, `-Port`, `-HeadlessCount`, `-AdminPassword`,
 | Setting | Default | Meaning |
 | --- | --- | --- |
 | `adminPassword` | (required) | Password for `#login`. |
+| `serverCommandPassword` | empty | `serverCommandPassword` written to `server.cfg`. Put the same value in `HPC_serverCommandPassword` in your private `whitelist.sqf` so the admin-menu kick and the idle timeout really kick (without it they only return the player to the lobby). |
 | `serverName` | `Hippos Conquest` | Name shown in the server browser. |
 | `password` | empty | Join password. |
 | `maxPlayers` | `40` | |

@@ -66,7 +66,7 @@ function Get-HippoServerConfig([string]$ConfigPath) {
     $settings = [ordered]@{
         gameDirectory = ''; workshopDirectory = ''; runtimeDirectory = 'mybuild/lan-server'
         missionPackage = ''; missionName = 'Hippos_Conquest.Malden'
-        bindAddress = ''; port = 2302; serverName = 'Hippos Conquest'; password = ''; adminPassword = ''
+        bindAddress = ''; port = 2302; serverName = 'Hippos Conquest'; password = ''; adminPassword = ''; serverCommandPassword = ''
         maxPlayers = 40; headlessClients = 2; creatorDlc = @(); modPreset = ''; useMimalloc = $false
     }
     if (!$ConfigPath) { $ConfigPath = $HippoDefaultConfigPath }

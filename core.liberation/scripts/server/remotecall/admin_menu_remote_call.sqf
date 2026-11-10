@@ -39,8 +39,7 @@ if (_cmd == "kick") exitWith {
     private _kicked = _data call BIS_fnc_getUnitByUID;
     if (isPlayer _kicked) then {
         private _name = name _kicked;
-        ["LOSER"] remoteExec ["endMission", owner _kicked];
-        serverCommand format ["#kick %1", _name];
+        [_kicked] call HPC_fnc_kickPlayer;
         private _msg = format [localize "STR_ADMIN_KICK_PLAYER", _name];
         [gamelogic, _msg] remoteExec ["globalChat", -2];
     };

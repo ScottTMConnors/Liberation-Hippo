@@ -18,8 +18,7 @@ while { hasInterface } do {
 			disableUserInput false;
 			disableUserInput true;
 			disableUserInput false;
-			endMission "LOSER";
-			("#kick " + name player) remoteExec ["serverCommand", 2];
+			[player] remoteExec ["HPC_fnc_kickPlayer", 2]; // ends the mission here and kicks if the server can
 		};
 		_timer = _timer + 1;
         sleep _sleep;
