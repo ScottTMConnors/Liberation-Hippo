@@ -61,7 +61,12 @@ while {true} do {
 				_kills_armor = _nextplayer getVariable ["GREUH_kills_armor", 0];
 				_kills_air = _nextplayer getVariable ["GREUH_kills_air", 0];
 				_killed = _nextplayer getVariable ["GREUH_killed", 0];
-				_nextplayer addPlayerScores [_kills_inf, _kills_soft, _kills_armor, _kills_air, _killed];
+				// the engine scoreboard keeps a player's kills for the session: add the saved totals once
+				if (isNil "HPC_scoreboardApplied") then { HPC_scoreboardApplied = [] };
+				if !(_nextplayer_uid in HPC_scoreboardApplied) then {
+					_nextplayer addPlayerScores [_kills_inf, _kills_soft, _kills_armor, _kills_air, _killed];
+					HPC_scoreboardApplied pushBack _nextplayer_uid;
+				};
 				_nextplayer addScore (_score - score _nextplayer);
 				[_score] remoteExec ["set_rank", owner _nextplayer];
 				_rank = ([_score] call F_getRank) select 0;

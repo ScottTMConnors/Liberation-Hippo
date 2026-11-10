@@ -11,22 +11,12 @@ waitUntil { uiSleep 0.1; !isNil "GRLIB_player_group" };
 
 private _unit = objNull;
 
-// Player Init
-if (GRLIB_side_friendly == WEST) then {
-    _unit = _newUnit;
-    [_unit] joinSilent GRLIB_player_group;
-} else {
-    private _class = typeOf player;
-    if (GRLIB_side_friendly == EAST) then { _class = "O" + (_class select [1]) };
-    if (GRLIB_side_friendly == INDEPENDENT) then { _class = "I" + (_class select [1]) };
-    _unit = GRLIB_player_group createUnit [_class, position player, [], 1, "NONE"];
-    [_unit] joinSilent GRLIB_player_group;
-    [_unit] call clean_unit;
-    [_unit, [profileName,profileName,profileName]] remoteExec ["setName", 0];
-    _unit switchMove "";
-    selectPlayer _unit;
+// Carry the player state over to the new unit (WEST respawns get a new unit too)
+private _fnc_copyState = {
+    params ["_unit", "_oldUnit"];
     if (!isNull _oldUnit) then {
         // Set player variables
+        _unit setVariable ["GRLIB_score_set", (_oldUnit getVariable ["GRLIB_score_set", 0]), true]; // server must not re-apply the 5 s old snapshot
         _unit setVariable ["GRLIB_is_Commander", (_oldUnit getVariable ["GRLIB_is_Commander", false]), true];
         _unit setVariable ["GRLIB_player_context_loaded", (_oldUnit getVariable ["GRLIB_player_context_loaded", false]), true];
         _unit setVariable ["GRLIB_squad_context_loaded", (_oldUnit getVariable ["GRLIB_squad_context_loaded", false]), true];
@@ -49,6 +39,24 @@ if (GRLIB_side_friendly == WEST) then {
         _unit setVariable ["my_dog", (_oldUnit getVariable ["my_dog", nil])];
         _unit setVariable ["my_squad", (_oldUnit getVariable ["my_squad", nil])];
     };
+};
+
+// Player Init
+if (GRLIB_side_friendly == WEST) then {
+    _unit = _newUnit;
+    [_unit] joinSilent GRLIB_player_group;
+    [_unit, _oldUnit] call _fnc_copyState;
+} else {
+    private _class = typeOf player;
+    if (GRLIB_side_friendly == EAST) then { _class = "O" + (_class select [1]) };
+    if (GRLIB_side_friendly == INDEPENDENT) then { _class = "I" + (_class select [1]) };
+    _unit = GRLIB_player_group createUnit [_class, position player, [], 1, "NONE"];
+    [_unit] joinSilent GRLIB_player_group;
+    [_unit] call clean_unit;
+    [_unit, [profileName,profileName,profileName]] remoteExec ["setName", 0];
+    _unit switchMove "";
+    selectPlayer _unit;
+    [_unit, _oldUnit] call _fnc_copyState;
     [_unit] call player_EHP;
     [] spawn compile preprocessFileLineNumbers "GREUH\scripts\GREUH_version.sqf";
     uiSleep 0.2;
