@@ -111,6 +111,22 @@ if (!isNull _medic) then {
     diag_log ["HPC_REVIVE_RESULT", _callEnabled, [player] call PAR_is_wounded, captive player, isNull findDisplay 5566, leader group player == player, _medic checkAIFeature "PATH", player getVariable ["PAR_myMedic",objNull]];
 };
 ["revive.manual", _reviveOk] call _assert;
+// Mod handlers must survive the mission re-adding its own (respawn/revive path),
+// and revive's HandleDamage must still run last.
+HPC_testModHits = 0;
+private _modIds = [
+    ["Killed", player addEventHandler ["Killed", {}]],
+    ["Respawn", player addEventHandler ["Respawn", {}]],
+    ["GetInMan", player addEventHandler ["GetInMan", {}]],
+    ["HandleDamage", player addEventHandler ["HandleDamage", {HPC_testModHits = HPC_testModHits + 1; nil}]]
+];
+[player] call player_EHP;
+[player] call player_EH;
+[player] call player_EHP;
+private _modKept = (_modIds findIf {!((player getEventHandlerInfo _x) select 0)}) == -1;
+private _reviveInfo = player getEventHandlerInfo ["HandleDamage", player getVariable ["HPC_EH_HandleDamage", -1]];
+diag_log ["HPC_MOD_EH", _modIds apply {player getEventHandlerInfo _x}, _reviveInfo];
+["mods.handlers", _modKept && {PAR_revive == 0 || {(_reviveInfo select 0) && (_reviveInfo select 1)}}] call _assert;
 // Leave a regular catalog view available for visual inspection.
 closeDialog 0;
 buildtype = GRLIB_TransportVehicleBuildType;
@@ -248,7 +264,23 @@ diag_log ["HPC_COMMAND_WINDOW",!isNull _command,if (isNull _command) then {-1} e
 if (!isNull _command) then {_command closeDisplay 1};
 player setVariable ["GRLIB_is_Commander",false,true];
 GRLIB_player_commander = false;
-["RUN_DONE|16"] call _emit;
+// A lethal hit with a mod HandleDamage present must still leave the player wounded, not dead.
+private _woundOk = PAR_revive == 0;
+if (!_woundOk) then {
+    closeDialog 0;
+    player allowDamage true;
+    player setCaptive false;
+    for "_i" from 1 to 5 do {
+        if ([player] call PAR_is_wounded || !alive player) exitWith {};
+        private _round = createVehicle ["B_127x99_Ball", (player modelToWorld [0,0,3]), [], 0, "CAN_COLLIDE"];
+        _round setVelocity [0,0,-900];
+        sleep 1;
+    };
+    _woundOk = alive player && {[player] call PAR_is_wounded} && {HPC_testModHits > 0};
+    diag_log ["HPC_MOD_DAMAGE", alive player, [player] call PAR_is_wounded, damage player, HPC_testModHits];
+};
+["mods.damage", _woundOk] call _assert;
+["RUN_DONE|18"] call _emit;
 // --hold only: a staged firefight for visual inspection of the map overlay and command window.
 if (missionNamespace getVariable ["HPC_testHold", false]) then {
     player allowDamage false;

@@ -104,11 +104,10 @@ if (_unit == player) then {
 	[_unit, "Respawn", { _this spawn player_respawn }] call F_addManagedEH;
 
 	// Player Handle Damage EH
-	// Revive must be the only scripted HandleDamage: the last returned value wins,
-	// so this one still clears handlers added by mods.
+	// Revive returns a capped damage value; mod handlers that return nothing
+	// stack safely, so they are no longer cleared.
 	if (PAR_revive != 0) then {
-		_unit removeAllEventHandlers "HandleDamage";
-		_unit addEventHandler ["HandleDamage", {
+		[_unit, "HandleDamage", {
 			params ["_unit", "", "_damage", "_killer", "", "", "_instigator"];
 			if (!isNull _instigator) then {
 				if (isNull (getAssignedCuratorLogic _instigator)) then {
@@ -151,7 +150,7 @@ if (_unit == player) then {
 				};
 			};
 			(_damage min 0.86);
-		}];
+		}] call F_addManagedEH;
 	};
 
 	// ACE specific
@@ -258,8 +257,7 @@ if (_unit == player) then {
 
 	// AI Handle Damage EH
 	if (PAR_revive != 0) then {
-		_unit removeAllEventHandlers "HandleDamage";
-		_unit addEventHandler ["HandleDamage", {
+		[_unit, "HandleDamage", {
 			params ["_unit","","_damage"];
 			private _veh_unit = objectParent _unit;
 			if (time > (_unit getVariable ["GRLIB_isProtected", 0]) && _damage > 0) then {
@@ -277,7 +275,7 @@ if (_unit == player) then {
 				};
 			};
 			(_damage min 0.86);
-		}];
+		}] call F_addManagedEH;
 	};
 
 	// Get in Vehicle
