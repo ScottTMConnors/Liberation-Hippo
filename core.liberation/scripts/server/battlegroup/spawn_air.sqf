@@ -73,7 +73,7 @@ if (_side == GRLIB_side_friendly) exitWith {
 // After this handover the group may be remote: local-only commands below go to its owner.
 private _hc = [] call F_lessLoadedHC;
 if (isDedicated && !isNull _hc) then {
-	_grp setGroupOwner (owner _hc);
+	if (_grp setGroupOwner (owner _hc)) then { [_grp] remoteExec ["HPC_fnc_hcInstallDamage", owner _hc] };
 };
 
 diag_log format ["Spawn Air Squad %1 objective %2 at %3", typeOf _vehicle, _targetpos, time];

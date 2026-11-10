@@ -175,3 +175,4 @@ vehicle_perm = compileFinal preprocessFileLineNumbers "scripts\client\misc\vehic
 HPC_fnc_rcCaller = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_rcCaller.sqf";
 HPC_fnc_rcAdmin = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_rcAdmin.sqf";
 HPC_fnc_lockTowed = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_lockTowed.sqf";
+HPC_fnc_hcInstallDamage = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_hcInstallDamage.sqf";

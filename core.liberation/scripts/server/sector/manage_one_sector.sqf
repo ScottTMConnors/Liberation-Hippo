@@ -2,15 +2,18 @@ params ["_sector"];
 
 if (GRLIB_sector_spawning) exitWith {
 	diag_log format ["--- LRX Manage Sector: Another Sector %1 is already spawning, aborting.", _sector];
+	[_sector,"aborted",0] call HPC_fnc_sectorState; // not a loader failure
 };
 
 if (_sector in active_sectors + blufor_sectors) exitWith {
 	diag_log format ["--- LRX Manage Sector: Sector %1 already active, aborting.", _sector];
+	[_sector,"aborted",0] call HPC_fnc_sectorState; // not a loader failure
 };
 
 private _sector_pos = markerPos _sector;
 if (([_sector_pos, (GRLIB_sector_size * 2), GRLIB_side_friendly, 1] call F_getUnitsCount) == 0 && !GRLIB_Commander_mode) exitWith {
 	diag_log format ["--- LRX Manage Sector: Sector %1 have no more enemy, aborting.", _sector];
+	[_sector,"aborted",0] call HPC_fnc_sectorState; // not a loader failure
 };
 
 private _usableMilitia = (missionNamespace getVariable ["militia_squad",[]]) select {isClass (configFile >> "CfgVehicles" >> _x)};
