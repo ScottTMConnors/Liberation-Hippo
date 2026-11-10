@@ -21,7 +21,7 @@ _setupObjects = {
 		private _next_objective = [(GRLIB_sector_size * 2), _sector_pos, blufor_sectors, true] call F_getNearestSector;
 		if (_next_objective != "") then {
 			private _angle = 0;
-			while { _angle < 360 } do {
+			while { !_found && _angle < 360 } do {
 				private _pos_check = (markerPos _next_objective) getPos [GRLIB_sector_size, _angle];
 				if ((!isOnRoad _pos_check) && (!surfaceIsWater _pos_check)) then {
 					private _roads = (_pos_check nearRoads 13) select { (getRoadInfo _x select 0) in ["TRACK","ROAD","MAIN ROAD"] };
@@ -125,7 +125,7 @@ _waitUntilCondition = nil;
 
 _failedExec = {
 	// Mission failed
-	{ deleteVehicle _x } forEach (units _guard_grp);
+	{ [_x] call HPC_fnc_deleteUnit } forEach (units _guard_grp);
 };
 
 _successExec = {

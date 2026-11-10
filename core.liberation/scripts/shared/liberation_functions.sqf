@@ -169,3 +169,4 @@ HPC_fnc_civilianTick = compileFinal preprocessFileLineNumbers "scripts\shared\fu
 HPC_fnc_ambientTraffic = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_ambientTraffic.sqf";
 HPC_fnc_sectorFortifications = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_sectorFortifications.sqf";
 HPC_fnc_sectorWalls = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_sectorWalls.sqf";
+HPC_fnc_deleteUnit = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_deleteUnit.sqf";

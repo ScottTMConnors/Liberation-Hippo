@@ -16,7 +16,7 @@ publicVariable "GRLIB_secondary_in_progress";
 GRLIB_global_stop = 1;
 publicVariable "GRLIB_global_stop";
 
-{ deleteVehicle _x } foreach (units GRLIB_side_enemy);
+{ [_x] call HPC_fnc_deleteUnit } foreach (units GRLIB_side_enemy);
 { deleteVehicle (agent _x) } foreach agents;
 
 // weather cloudy
@@ -30,7 +30,7 @@ publicVariable "GRLIB_global_stop";
 };
 
 skipTime ((10 - dayTime + 24) % 24);
-setTimeMultiplier 0;
+setTimeMultiplier 0.1; // engine minimum (range 0.1 - 120)
 
 private _nb_player = count (AllPlayers - (entities "HeadlessClient_F"));
 if (GRLIB_difficulty_modifier >= 2) then { _nb_player = 4 };
@@ -47,7 +47,8 @@ _marker setMarkerTypeLocal "EmptyIcon";
 _marker setMarkerText "FINAL FIGHT";
 [_marker, 1] remoteExec ["remote_call_sector", 0];
 
-private _backup_allSectors = sectors_allSectors;
+private _backup_allSectors = +sectors_allSectors;
+private _backup_blufor = +blufor_sectors;
 sectors_allSectors = [_marker];
 blufor_sectors = [_marker];
 GRLIB_secondary_used_positions pushbackUnique _marker;
@@ -176,7 +177,7 @@ while { _continue } do {
 deleteMarker _marker;
 
 sectors_allSectors = _backup_allSectors;
-blufor_sectors = _backup_allSectors;
+blufor_sectors = _backup_blufor;
 
 if (_success) then {
 	{ _x setDamage 1 } foreach (units GRLIB_side_enemy);
@@ -187,9 +188,9 @@ if (_success) then {
 	sleep 5;
 	[] spawn blufor_victory;
 } else {
-	{ if (count crew _x > 0) then {deleteVehicle _x} } foreach vehicles;
-	{ deleteVehicle _x } foreach (units GRLIB_side_enemy);
-	{ deleteVehicle _x } foreach (units GRLIB_side_friendly);
+	{ if (count crew _x > 0) then { deleteVehicleCrew _x; deleteVehicle _x } } foreach vehicles;
+	{ [_x] call HPC_fnc_deleteUnit } foreach (units GRLIB_side_enemy);
+	{ [_x] call HPC_fnc_deleteUnit } foreach (units GRLIB_side_friendly);
 	sleep 3;
 	opfor_target hideObjectGlobal true;
 	opfor_target_assembled setPosWorld _savedpos;

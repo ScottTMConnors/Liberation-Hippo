@@ -90,7 +90,7 @@ _waitUntilCondition = { {alive _x} count (units _patrol_grp) == 0 };
 
 _failedExec = {
 	// Mission failed
-	{deleteVehicle _x} forEach (units _patrol_grp);
+	{ [_x] call HPC_fnc_deleteUnit } forEach (units _patrol_grp);
     { [_x, -10] call F_addReput } forEach (AllPlayers - (entities "HeadlessClient_F"));
 	private _msg = format [localize "STR_SIDE_FAILED_REPUT", -10];
 	[gamelogic, _msg] remoteExec ["globalChat", 0];
@@ -108,7 +108,7 @@ _successExec = {
 	[_missionPos, (units _patrol_grp)] spawn {
 		params ["_pos", "_list"];
 		waitUntil { sleep 30; ([_pos, GRLIB_sector_size, GRLIB_side_friendly, 1] call F_getUnitsCount == 0) };
-		{ deleteVehicle _x } forEach _list;
+		{ [_x] call HPC_fnc_deleteUnit } forEach _list;
 	};
 	_successHintMessage = "STR_DEFPATROL_MESSAGE2";
 };

@@ -62,7 +62,8 @@ _setupObjects = {
 
 	// create final house
 	private _house = createVehicle ["Land_i_House_Small_01_V1_F", _missionEnd, [], 2, "None"];
-	_house setVectorDirAndUp [[0, 0, 0] vectorCrossProduct surfaceNormal _missionEnd, surfaceNormal _missionEnd];
+	private _house_dir = random 360;
+	_house setVectorDirAndUp [[-cos _house_dir, sin _house_dir, 0] vectorCrossProduct surfaceNormal _missionEnd, surfaceNormal _missionEnd];
 	_man4 setPosATL (getposATL _house);
 
 	// quest item

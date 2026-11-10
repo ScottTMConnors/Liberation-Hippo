@@ -25,7 +25,7 @@ while {true} do {
 		// _availableMissions = SideMissions; // If you want to allow multiple missions of the same type running along, uncomment this line and comment the one above
 
 		if (count _availableMissions > 0 && diag_fps > 35.0) then {
-			if (A3W_delivery_failed >= 3 && count blufor_sectors >= 10) then {
+			if (A3W_delivery_failed >= 3 && count blufor_sectors >= 10 && {!("mission_TownInvasion" in A3W_running_missions)}) then {
 				_nextMission = "mission_TownInvasion";
 				A3W_delivery_failed = 0;
 			} else {
@@ -49,10 +49,12 @@ while {true} do {
 	};
 
 	// Wait for players (exiting here would stop this controller for the rest of the session)
-	waitUntil { sleep 10; (count AllPlayers > 0 || GRLIB_endgame == 1 || GRLIB_global_stop == 1) };
+	waitUntil { sleep 10; (count (AllPlayers - (entities "HeadlessClient_F")) > 0 || GRLIB_endgame == 1 || GRLIB_global_stop == 1) };
 	if (GRLIB_endgame == 1 || GRLIB_global_stop == 1) exitWith {};
 
-	// Mission start + lock
+	// Mission start + lock (another controller may have started it while we waited)
+	if (_nextMission in A3W_running_missions) then { continue };
+	A3W_running_missions pushBack _nextMission;
 	[SideMissions, _nextMission, true] call setMissionState;
 
 	// these should be defined in the mission script
@@ -76,7 +78,7 @@ while {true} do {
 	private _timer = round (time + _missionDelay);
 	waitUntil {sleep 1; (time > _timer)};
 
-	// Mission unlock
-	[SideMissions, _nextMission, false] call setMissionState;
+	// Mission unlock (availability is re-evaluated by updateMissionsList)
+	A3W_running_missions = A3W_running_missions - [_nextMission];
 	sleep 30;
 };

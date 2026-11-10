@@ -52,7 +52,7 @@ _waitUntilCondition = {
 _waitUntilSuccessCondition = { ({side group _x == GRLIB_side_friendly} count _prisoners) == ({alive _x} count _prisoners) };
 
 _failedExec = {
-	{ deleteVehicle _x } forEach _prisoners + (units _grp_defenders) + (units _grp_sentry);
+	{ [_x] call HPC_fnc_deleteUnit } forEach _prisoners + (units _grp_defenders) + (units _grp_sentry);
 	[_missionPos] call clearlandmines;
 };
 

@@ -59,14 +59,16 @@ private _vehicle_list = [];
 secondary_objective_position_marker = getpos _helowreck;
 publicVariable "secondary_objective_position_marker";
 
+// time limit so a stuck pilot cannot block secondary missions for the whole session
+private _timeout = time + (90 * 60);
 waitUntil {
 	sleep 5;
-	({alive _x  && !([_x, "FOB", 50] call F_check_near && isNull objectParent _x)} count _pilotUnits == 0)
+	({alive _x  && !([_x, "FOB", 50] call F_check_near && isNull objectParent _x)} count _pilotUnits == 0) || time > _timeout
 };
 
 sleep 5;
 
-private _alive_crew_count = { alive _x } count _pilotUnits;
+private _alive_crew_count = { alive _x && {[_x, "FOB", 50] call F_check_near} } count _pilotUnits;
 if ( _alive_crew_count == 0 ) then {
 	// failed
 	[ 7 ] remoteExec ["remote_call_intel", 0];

@@ -124,14 +124,14 @@ _waitUntilCondition = { !(alive _tank) };
 _failedExec = {
 	// Mission failed
 	deleteVehicle _smoke;
-	{deleteVehicle _x} forEach _managed_units;
+	{ [_x] call HPC_fnc_deleteUnit } forEach _managed_units;
 	if (alive _tank) then { deleteVehicle _tank };
 };
 
 _successExec = {
 	// Mission completed
 	deleteVehicle _smoke;
-	{deleteVehicle _x} forEach _managed_units;
+	{ [_x] call HPC_fnc_deleteUnit } forEach _managed_units;
 	[_tank, "abandon"] call F_vehicleLock;
 	_successHintMessage = ["STR_VEHICLEREP_MESSAGE2", _vehicleName];
 };

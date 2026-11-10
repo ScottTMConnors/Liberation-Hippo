@@ -7,6 +7,7 @@ _setupVars = {
 	_missionType = "STR_INVASION";
 	_locationsArray = [LRX_MissionMarkersCap] call checkSpawn;
 	_missionTimeout = (30 * 60);
+	_ignoreAiDeaths = true; // success requires every group dead, not just _aiGroup
 };
 
 _setupObjects = {
@@ -60,8 +61,8 @@ _waitUntilSuccessCondition = { ({ alive _x } count (units _aiGroup + _managed_un
 _failedExec = {
 	// Mission failed
 	_failedHintMessage = ["STR_INVASION_FAILED", sideMissionColor, _townName];
-	{ deleteVehicle _x } forEach _managed_units;
-	{ deleteVehicle _x } forEach (units _grp_civ);
+	{ [_x] call HPC_fnc_deleteUnit } forEach _managed_units;
+	{ [_x] call HPC_fnc_deleteUnit } forEach (units _grp_civ);
 	[_missionPos] call clearlandmines;
 };
 
@@ -79,8 +80,8 @@ _successExec = {
 	} forEach ([_missionPos, GRLIB_sector_size] call F_getNearbyPlayers);
 
 	_successHintMessage = ["STR_INVASION_MESSAGE2", sideMissionColor, _townName];
-	{ deleteVehicle _x } forEach _managed_units;
-	{ deleteVehicle _x } forEach (units _grp_civ);
+	{ [_x] call HPC_fnc_deleteUnit } forEach _managed_units;
+	{ [_x] call HPC_fnc_deleteUnit } forEach (units _grp_civ);
 	[_missionPos] spawn {
 		params ["_pos"];
 		[_pos] call showlandmines;

@@ -29,7 +29,7 @@ _setupObjects = {
 	//_aiGroup setCombatMode "WHITE"; // Defensive behaviour
 	_aiGroup setCombatMode "YELLOW"; // Agressive behaviour
 	_aiGroup setBehaviourStrong "AWARE";
-	_speedMode = if (count AllPlayers > 2) then { "FULL" } else { "NORMAL" };
+	_speedMode = if (count (AllPlayers - (entities "HeadlessClient_F")) > 2) then { "FULL" } else { "NORMAL" };
 	_aiGroup setSpeedMode _speedMode;
 
 	// behaviour on waypoints
@@ -61,7 +61,7 @@ _waitUntilCondition = nil;
 _waitUntilSuccessCondition = { !alive _vehicle };
 
 _failedExec = {
-	{ deleteVehicle _x } forEach (crew _vehicle);
+	deleteVehicleCrew _vehicle;
 	deleteVehicle _vehicle;
 };
 

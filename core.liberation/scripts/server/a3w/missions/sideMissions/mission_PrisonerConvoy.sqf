@@ -120,8 +120,8 @@ _failedExec = {
 	// Mission failed
 	private _intel = (10 + floor random 15); 
 	_failedHintMessage = ["STR_PRI_CONV_MESSAGE2", sideMissionColor, _intel];
-	{ deleteVehicle _x } foreach _prisoners;
-	{ deleteVehicle _x } foreach _troops;
+	{ [_x] call HPC_fnc_deleteUnit } foreach _prisoners;
+	{ [_x] call HPC_fnc_deleteUnit } foreach _troops;
 	resources_intel = resources_intel - _intel;
 	if (resources_intel < 0) then { resources_intel = 0 };
 	publicVariable "resources_intel";

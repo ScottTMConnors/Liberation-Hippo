@@ -7,7 +7,7 @@ params [
 ];
 
 
-if (isNil "_pos") exitWith {};
+if (isNil "_pos") exitWith { grpNull };
 diag_log format [ "Spawn SideMission squad type %1 (%2) at %3", _type, _nbUnits, time ];
 
 private _unitTypes = opfor_infantry;

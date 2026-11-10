@@ -18,7 +18,7 @@ _setupObjects = {
 	GRLIB_building_used = nil;
 	if (count _managed_units < 8) exitWith {
 		diag_log format ["--- LRX Error: side mission %1, cannot create hostages at %2!", localize _missionType, _sector];
-		{ deleteVehicle _x } forEach _managed_units;
+		{ [_x] call HPC_fnc_deleteUnit } forEach _managed_units;
 		false;
 	};
 
@@ -112,10 +112,10 @@ _waitUntilSuccessCondition = {
 _failedExec = {
 	// Mission failed
 	_failedHintMessage = ["STR_FREE_HOSTAGES_MESSAGE3", sideMissionColor];
-	{ deleteVehicle _x } forEach _hostages;
-	{ deleteVehicle _x } forEach _bombers;
-	{ deleteVehicle _x } forEach _managed_units;
-	{ deleteVehicle _x } forEach _civilians;
+	{ [_x] call HPC_fnc_deleteUnit } forEach _hostages;
+	{ [_x] call HPC_fnc_deleteUnit } forEach _bombers;
+	{ [_x] call HPC_fnc_deleteUnit } forEach _managed_units;
+	{ [_x] call HPC_fnc_deleteUnit } forEach _civilians;
 	{ [_x, -15] call F_addReput } forEach (AllPlayers - (entities "HeadlessClient_F"));
 	private _msg = format [localize "STR_SIDE_FAILED_REPUT", -15];
 	[gamelogic, _msg] remoteExec ["globalChat", 0];
@@ -124,9 +124,9 @@ _failedExec = {
 _successExec = {
 	// Mission completed
 	_successHintMessage = "STR_FREE_HOSTAGES_MESSAGE2";
-	{ deleteVehicle _x } forEach _hostages;
-	{ deleteVehicle _x } forEach _bombers;
-	{ deleteVehicle _x } forEach _civilians;
+	{ [_x] call HPC_fnc_deleteUnit } forEach _hostages;
+	{ [_x] call HPC_fnc_deleteUnit } forEach _bombers;
+	{ [_x] call HPC_fnc_deleteUnit } forEach _civilians;
 	if (combat_readiness > 50) then { combat_readiness = combat_readiness - 7 };
 	{ [_x, 10] call F_addReput } forEach (AllPlayers - (entities "HeadlessClient_F"));
 };

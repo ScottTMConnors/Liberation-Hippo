@@ -40,6 +40,7 @@ A3W_mission_success = 0;
 A3W_mission_failed = 0;
 A3W_Mission_timeout = 60*60;
 A3W_sectors_in_use = [];
+A3W_running_missions = [];
 publicVariable "A3W_sectors_in_use";
 
 if (A3W_Mission_count == 0) exitWith {};

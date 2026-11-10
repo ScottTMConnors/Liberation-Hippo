@@ -5,7 +5,7 @@ private ["_intels", "_managed_units", "_grp_civ1", "_grp_civ2", "_mission_marker
 
 _setupVars = {
 	_missionType = "STR_SEARCH_INTEL";
-	_locationsArray = [SpawnMissionMarkers] call checkSpawn;
+	_locationsArray = nil; // position is found by F_findFlatPlace in _setupObjects
 	_ignoreAiDeaths = true;
 };
 
@@ -148,8 +148,8 @@ _waitUntilCondition = {
 _failedExec = {
 	// Mission failed
 	{ deleteVehicle _x } forEach _intels;
-	{ deleteVehicle _x } forEach (units _grp_civ1) + (units _grp_civ2);
-	{ deleteVehicle _x } forEach _managed_units;
+	{ [_x] call HPC_fnc_deleteUnit } forEach (units _grp_civ1) + (units _grp_civ2);
+	{ [_x] call HPC_fnc_deleteUnit } forEach _managed_units;
 	{ deleteMarker _x } forEach _mission_markers;
 	[_missionPos] call clearlandmines;
 };
@@ -164,8 +164,8 @@ _successExec = {
 	} forEach ([_missionPos, GRLIB_sector_size] call F_getNearbyPlayers);
 
 	_successHintMessage = "STR_SEARCH_INTEL_MESSAGE2";
-	{ deleteVehicle _x } forEach (units _grp_civ1) + (units _grp_civ2);
-	{ deleteVehicle _x } forEach _managed_units;
+	{ [_x] call HPC_fnc_deleteUnit } forEach (units _grp_civ1) + (units _grp_civ2);
+	{ [_x] call HPC_fnc_deleteUnit } forEach _managed_units;
 	{ deleteMarker _x } forEach _mission_markers;
 	[_missionPos] spawn {
 		params ["_pos"];

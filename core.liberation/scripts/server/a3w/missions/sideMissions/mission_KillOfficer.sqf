@@ -78,14 +78,14 @@ _waitUntilSuccessCondition = { !(alive _hvt) };
 
 _failedExec = {
 	// Mission failed
-	{ deleteVehicle _x } forEach (units _grp_civ);
-	{ deleteVehicle _x } forEach (units _grp_hvt);
+	{ [_x] call HPC_fnc_deleteUnit } forEach (units _grp_civ);
+	{ [_x] call HPC_fnc_deleteUnit } forEach (units _grp_hvt);
 };
 
 _successExec = {
 	// Mission completed
 	_successHintMessage = "STR_HOSTILE_OFFICER_MESSAGE2";
-	{ deleteVehicle _x } forEach (units _grp_civ);
+	{ [_x] call HPC_fnc_deleteUnit } forEach (units _grp_civ);
 	if (combat_readiness > 20) then { combat_readiness = combat_readiness - 7 };
 };
 

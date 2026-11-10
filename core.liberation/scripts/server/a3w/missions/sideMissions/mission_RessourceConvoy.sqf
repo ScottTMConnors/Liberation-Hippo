@@ -115,7 +115,7 @@ _failedExec = {
 	// Mission failed
 	_failedHintMessage = ["STR_RSC_CONV_MESSAGE2", sideMissionColor];
 	{ deleteVehicle _x } foreach _ressources;
-	{ deleteVehicle _x } foreach _troops;
+	{ [_x] call HPC_fnc_deleteUnit } foreach _troops;
 };
 
 _successExec = {

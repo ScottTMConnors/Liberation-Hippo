@@ -29,15 +29,20 @@ secondary_objective_position_marker = _missionPos;
 publicVariable "secondary_objective_position_marker";
 sleep 1;
 
+// time limit so an unreachable objective cannot block secondary missions for the whole session
+private _timeout = time + (90 * 60);
 waitUntil {
 	sleep 5;
-	( { alive _x } count _base_objectives == 0 )
+	( { alive _x } count _base_objectives == 0 ) || time > _timeout
 };
-
-[3] remoteExec ["remote_call_intel", 0];
-
-combat_readiness = 15 max round (combat_readiness * GRLIB_secondary_objective_impact);
-stats_secondary_objectives = stats_secondary_objectives + 1;
+if ({ alive _x } count _base_objectives > 0) then {
+	diag_log "--- LRX Secondary FOB hunting: time limit reached, mission aborted";
+	[gamelogic, "Secondary mission: the enemy FOB has been relocated (time limit reached)."] remoteExec ["globalChat", 0];
+} else {
+	[3] remoteExec ["remote_call_intel", 0];
+	combat_readiness = 15 max round (combat_readiness * GRLIB_secondary_objective_impact);
+	stats_secondary_objectives = stats_secondary_objectives + 1;
+};
 
 {
 	if (_x isKindof "AllVehicles") then {
@@ -53,8 +58,8 @@ private _vehicles = (_base_objectives + _base_objects);
 [_vehicles, true] call cleanMissionVehicles;
 
 { deleteVehicle _x } forEach ((nearestObjects [_missionPos, ["Ruins_F"], 100]) select { getObjectType _x == 8 });
-{ deleteVehicle _x } forEach (units _grp_defenders);
-{ deleteVehicle _x } forEach (units _grp_sentry);
+{ [_x] call HPC_fnc_deleteUnit } forEach (units _grp_defenders);
+{ [_x] call HPC_fnc_deleteUnit } forEach (units _grp_sentry);
 { if (side group _x != GRLIB_side_friendly) then {deleteVehicle _x} } forEach _prisoners;
 
 GRLIB_secondary_in_progress = -1;

@@ -7,6 +7,7 @@ _setupVars = {
 	_missionType = "STR_BARON_ROUGE";
 	_locationsArray = nil; // locations are generated on the fly from towns
 	_missionTimeout = (30 * 60);
+	_ignoreAiDeaths = true; // the plane is usually shot down far from any player
 };
 
 _setupObjects = {
@@ -70,11 +71,11 @@ _setupObjects = {
 
 _waitUntilMarkerPos = { getPosATL (leader _aiGroup) };
 _waitUntilExec = nil;
-_waitUntilCondition = nil;
+_waitUntilCondition = { !alive _vehicle && isNull (_vehicle getVariable ["GRLIB_last_killer", objNull]) };
 _waitUntilSuccessCondition = { !alive _vehicle && !isNull (_vehicle getVariable ["GRLIB_last_killer", objNull])};
 
 _failedExec = {
-	{ deleteVehicle _x } forEach (crew _vehicle);
+	deleteVehicleCrew _vehicle;
 	deleteVehicle _vehicle;
 };
 

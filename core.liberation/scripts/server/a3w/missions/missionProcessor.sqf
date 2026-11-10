@@ -194,7 +194,7 @@ if (_count_blu == 0) then {
 	if (!isNil "_vehicles") then {
 		[_vehicles, true] spawn cleanMissionVehicles;
 	};
-	{ deleteVehicle _x; sleep 0.1 } forEach (units _aiGroup);
+	{ [_x] call HPC_fnc_deleteUnit; sleep 0.1 } forEach (units _aiGroup);
 	deleteGroup _aiGroup;
 } else {
 	if (!isNil "_vehicle") then {
@@ -206,7 +206,7 @@ if (_count_blu == 0) then {
 	[_lastPos, _aiGroup] spawn {
 		params ["_pos", "_grp"];
 		waitUntil { sleep 30; (GRLIB_global_stop == 1 || [_pos, GRLIB_sector_size, GRLIB_side_friendly, 1] call F_getUnitsCount == 0) };
-		{ deleteVehicle _x; sleep 0.1 } forEach (units _grp);
+		{ [_x] call HPC_fnc_deleteUnit; sleep 0.1 } forEach (units _grp);
 		deleteGroup _grp;
 	};
 };
