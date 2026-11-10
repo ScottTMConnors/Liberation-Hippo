@@ -1685,7 +1685,7 @@ try {
                         diag_log format ["--- LRX: Parameter %1 option description is not a string ---", str _key];
                         throw "ERROR: Malformed parameters - a parameter option description is not a string";
                     } else {
-                        if (_description isEqualTo "") then {
+                        if (_x isEqualTo "") then {
                             diag_log format ["--- LRX: Parameter %1 option description is too short ---", str _key];
                             throw "ERROR: Malformed parameters - a parameter option description is too short";
                         };

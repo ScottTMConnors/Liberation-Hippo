@@ -153,8 +153,8 @@ if (isServer) then {
 						if (_owner_id in ["", "server"]) then {
 							_owner_id = (_killer getVariable ["PAR_Grp_ID", "0_0"]) splitString "_" select 1;
 						};
-						if (_owner_id != "0" && GRLIB_civ_penalties > 0) then {
-							_owner_player = _owner_id call BIS_fnc_getUnitByUID;
+						private _owner_player = _owner_id call BIS_fnc_getUnitByUID;
+						if (_owner_id != "0" && GRLIB_civ_penalties > 0 && {!isNull _owner_player}) then { // owner may be offline
 							[_owner_player, -GRLIB_civ_penalties] call F_addScore;
 							[_owner_player, -1] call F_addReput;
 							_msg = format ["%1, Your AI killed a civilian !!", name _owner_player];

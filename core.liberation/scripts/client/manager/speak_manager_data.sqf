@@ -205,7 +205,7 @@ speak_mission_sdelivery1 = {
 	private _suitcase_far = (_unit distance2D _suitcase > 20);
 	if (_suitcase_far) exitWith {[_unit] call speak_another_time};
 	private _next_unit = (GRLIB_A3W_Mission_SD select 1) select (GRLIB_A3W_Mission_SD select 0);
-	if (_unit != _next_unit && _suitcase_far) exitWith {[_unit] call speak_another_time};
+	if (_unit != _next_unit) exitWith {[_unit] call speak_another_time}; // contacts must be met in order
 	_suitcase setVariable ["R3F_LOG_disabled", false, true];
 	_unit globalChat localize "STR_SPEAKMANAGER13";
 	sleep 3;
@@ -227,7 +227,7 @@ speak_mission_sdelivery2 = {
 	private _suitcase_far = (_unit distance2D _suitcase > 20);
 	if (_suitcase_far) exitWith {[_unit] call speak_another_time};
 	private _next_unit = (GRLIB_A3W_Mission_SD select 1) select (GRLIB_A3W_Mission_SD select 0);
-	if (_unit != _next_unit && _suitcase_far) exitWith {[_unit] call speak_another_time};
+	if (_unit != _next_unit) exitWith {[_unit] call speak_another_time}; // contacts must be met in order
 	_unit globalChat localize "STR_SPEAKMANAGER20";
 	sleep 3;
 	_unit globalChat format [localize "STR_SPEAKMANAGER21", name _next_unit];
@@ -246,7 +246,7 @@ speak_mission_sdelivery3 = {
 	private _suitcase_far = (_unit distance2D _suitcase > 20);
 	if (_suitcase_far) exitWith {[_unit] call speak_another_time};
 	private _next_unit = (GRLIB_A3W_Mission_SD select 1) select (GRLIB_A3W_Mission_SD select 0);
-	if (_unit != _next_unit && _suitcase_far) exitWith {[_unit] call speak_another_time};
+	if (_unit != _next_unit) exitWith {[_unit] call speak_another_time}; // contacts must be met in order
 	_unit globalChat localize "STR_SPEAKMANAGER17";
 	sleep 3;
 	_unit globalChat localize "STR_SPEAKMANAGER18";
@@ -265,7 +265,7 @@ speak_mission_sdelivery4 = {
 	private _suitcase_far = (_unit distance2D _suitcase > 20);
 	if (_suitcase_far) exitWith {[_unit] call speak_another_time};
 	private _next_unit = (GRLIB_A3W_Mission_SD select 1) select (GRLIB_A3W_Mission_SD select 0);
-	if (_unit != _next_unit && _suitcase_far) exitWith {[_unit] call speak_another_time};
+	if (_unit != _next_unit) exitWith {[_unit] call speak_another_time}; // contacts must be met in order
 	if (_unit distance2D _suitcase <= 3) then {
 		_unit switchMove "AmovPercMstpSnonWnonDnon_Salute";
 		_unit playMoveNow "AmovPercMstpSnonWnonDnon_Salute";

@@ -36,9 +36,13 @@ do_kill = 0;
 if (isNil "lrx_admin_watchdog") then {
 	lrx_admin_watchdog = true;
 	[] spawn {
+		// re-enable damage only when god mode is switched off: other scripts make the
+		// player invulnerable for a while (unconscious, spawn protection, para drop)
+		private _last_mode = do_admin;
 		while {true} do {
-			if (do_admin == 0 && !(isDamageAllowed player)) then { player allowDamage true };
+			if (do_admin == 0 && _last_mode == 1) then { player allowDamage true };
 			if (do_admin == 1 && (isDamageAllowed player)) then { player allowDamage false };
+			_last_mode = do_admin;
 			sleep 0.5;
 		};
 	};

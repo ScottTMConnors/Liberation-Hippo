@@ -10,13 +10,18 @@ if (goggles _unit == "G_Blindfold_01_black_F") exitWith {
     [player, 5] remoteExec ["F_addReput", 2];
 };
 
+// end on group membership: the unit becomes local to the group leader, which is
+// not this machine when the capturer is not the leader (the old test never ended)
+private _timeout = time + 30;
 waitUntil {
-    [_unit] joinSilent (group player);
-    gamelogic globalChat format [localize "STR_PRISONER_CAPTURING", name _unit];
+    if !(_unit in (units player)) then {
+        [_unit] joinSilent (group player);
+        gamelogic globalChat format [localize "STR_PRISONER_CAPTURING", name _unit];
+    };
     sleep 2;
-    ((!alive _unit) || (local _unit && _unit in (units player)));
+    ((!alive _unit) || (_unit in (units player)) || time > _timeout);
 };
-if (!alive _unit) exitWith {};
+if (!alive _unit || {!(_unit in (units player))}) exitWith {};
 
 _unit removeAllEventHandlers "GetInMan";
 _unit removeAllEventHandlers "SeatSwitchedMan";
