@@ -33,7 +33,13 @@ while { alive _wnded && alive _medic && ([_wnded] call PAR_is_wounded) && !([_me
 	if (_dist > 500 || vehicle _medic != _medic || vehicle _wnded != _wnded) exitWith {};
 	_new_medic = [_wnded] call PAR_fn_nearestMedic;
 	if (!isNil "_new_medic" && _dist > 20) then {
-		if ((_new_medic distance2D _wnded) + 6 < (_medic distance2D _wnded)) then { _wnded setVariable ["PAR_myMedic", nil] };
+		if ((_new_medic distance2D _wnded) + 6 < (_medic distance2D _wnded)) then {
+			_wnded setVariable ["PAR_myMedic", nil];
+			// AI wounded are re-dispatched by their unconscious loop; players are not: send the nearer medic now
+			if (isPlayer _wnded) then {
+				[_wnded] spawn { params ["_w"]; sleep 1; if (isNil {_w getVariable "PAR_myMedic"} && {[_w] call PAR_is_wounded}) then { [_w] call PAR_fn_medic } };
+			};
+		};
 	};
 	if (isNil {_wnded getVariable "PAR_myMedic"}) exitWith {};
 	if ([_medic] call PAR_is_wounded) exitWith {};
