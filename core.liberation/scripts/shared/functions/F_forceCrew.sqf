@@ -13,6 +13,40 @@ if (!isNull _grp) then { _grp deleteGroupWhenEmpty true }; // created here, so l
 uiSleep 0.5;
 private _crew = crew _vehicle;
 if (count _crew == 0) exitWith { diag_log format ["--- LRX can't create crew for vehicle %1", _vehicle_class]; grpNull };
+
+// createVehicleCrew uses the vehicle's own crew class: a captured enemy vehicle or a
+// static from another faction gets enemy or independent soldiers in our group.
+// Swap any crew member whose faction differs from the group side, seat for seat.
+if (!unitIsUAV _vehicle) then {
+	private _swapClass = switch (_side) do {
+		case GRLIB_side_friendly: { [crewman_classname, pilot_classname] select (_vehicle_class isKindOf "Air") };
+		case GRLIB_side_enemy: { opfor_crew };
+		case GRLIB_side_civilian: { selectRandom civilians };
+		default { "" };
+	};
+	if (_swapClass == "") exitWith {};
+	{
+		private _old = _x;
+		private _sideNum = getNumber (configOf _old >> "side");
+		private _unitSide = if (_sideNum in [0,1,2,3]) then {[EAST, WEST, INDEPENDENT, CIVILIAN] select _sideNum} else {_side};
+		if (_unitSide != _side) then {
+			private _role = assignedVehicleRole _old;
+			_vehicle deleteVehicleCrew _old;
+			private _new = _grp createUnit [_swapClass, getPosATL _vehicle, [], 5, "NONE"];
+			if (!isNull _new) then {
+				[_new] joinSilent _grp;
+				switch (toLower (_role param [0, ""])) do {
+					case "driver": { _new moveInDriver _vehicle };
+					case "turret": { _new moveInTurret [_vehicle, _role select 1] };
+					case "cargo": { _new moveInCargo _vehicle };
+					default { _new moveInAny _vehicle };
+				};
+				if (isNull objectParent _new) then { deleteVehicle _new };
+			};
+		};
+	} forEach (crew _vehicle);
+	_crew = crew _vehicle;
+};
 if (_vehicle_class isKindOf "Air" || _vehicle_class in (uavs_vehicles + list_static_weapons + static_vehicles_AI)) then {
     {[_x] call HPC_fnc_applyEasyAI} forEach _crew;
 };

@@ -682,6 +682,16 @@ militia_vehicles = militia_vehicles select { [_x] call F_checkClass };
 all_hostile_classnames = all_hostile_classnames select { [_x] call F_checkClass };
 elite_vehicles = elite_vehicles select { [_x] call F_checkClass };
 opfor_vehicles = opfor_vehicles select { [_x] call F_checkClass };
+// Some mod templates (RHS AFRF) keep the vanilla CSAT crewman: use the faction's own vehicle crew.
+if (!(["A3_", GRLIB_mod_east, true] call F_startsWith) && {(toLower opfor_crew) select [0,2] == "o_"}) then {
+	{
+		private _modCrew = getText (configFile >> "CfgVehicles" >> _x >> "crew");
+		if (_modCrew != "" && {isClass (configFile >> "CfgVehicles" >> _modCrew)} && {(toLower _modCrew) select [0,2] != "o_"}) exitWith {
+			if (opfor_pilot == opfor_crew) then { opfor_pilot = _modCrew };
+			opfor_crew = _modCrew;
+		};
+	} forEach opfor_vehicles;
+};
 opfor_vehicles_low_intensity = opfor_vehicles_low_intensity select { [_x] call F_checkClass };
 opfor_battlegroup_vehicles = opfor_battlegroup_vehicles select { [_x] call F_checkClass };
 opfor_battlegroup_vehicles_low_intensity = opfor_battlegroup_vehicles_low_intensity select { [_x] call F_checkClass };

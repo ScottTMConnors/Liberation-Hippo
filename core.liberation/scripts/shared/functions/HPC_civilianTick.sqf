@@ -22,8 +22,12 @@ private _kept = [];
     private _home = _unit getVariable ["HPC_ambientHome",getPosATL _unit];
     private _kind = _unit getVariable ["HPC_ambientKind","civilian"];
     private _wanted = _areas findIf {(_x select 0) distance2D _home < 350 && {(_x select 2) == _kind}} >= 0;
+    // The area now belongs to another side (base captured, FOB built, sector lost).
+    private _stale = !_wanted && {_areas findIf {(_x select 0) distance2D _home < 350} >= 0};
     private _near = _players findIf {_x distance2D _unit < 1200} >= 0;
-    if (!isNull _unit && {alive _unit} && {_wanted || _near}) then {
+    // A unit moved into another group (captured, recruited) is no longer ambient: stop managing it.
+    if (!isNull _unit && {alive _unit} && {(group _unit) getVariable ["HPC_ambientGroup",""] != _kind}) then {continue};
+    if (!isNull _unit && {alive _unit} && {!_stale} && {_wanted || _near}) then {
         _kept pushBack _unit;
         if (_near != (_unit getVariable ["HPC_ambientAwake",true])) then {
             _unit enableSimulationGlobal true;
@@ -61,9 +65,13 @@ private _kept = [];
                 private _index = _kept findIf {
                     (_x getVariable ["HPC_ambientHome",[0,0,0]]) distance2D _home < 350 &&
                     {(_x getVariable ["HPC_ambientKind","civilian"]) == _kind} &&
-                    {!isNull group _x} && {count units group _x < 4}
+                    {!isNull group _x} && {count units group _x < 4} &&
+                    {side group _x == _side} && {(group _x) getVariable ["HPC_ambientGroup",""] == _kind}
                 };
-                if (_index >= 0) then {_group = group (_kept select _index)} else {_group = createGroup [_side,true]};
+                if (_index >= 0) then {_group = group (_kept select _index)} else {
+                    _group = createGroup [_side,true];
+                    if (!isNull _group) then {_group setVariable ["HPC_ambientGroup",_kind]};
+                };
                 private _unit = if (isNull _group) then {objNull} else {_group createUnit [selectRandom _classes,_position,[],0,"NONE"]};
                 if (!isNull _unit) then {
                     _unit setVariable ["HPC_ambientKind",_kind,true];
