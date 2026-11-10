@@ -2,8 +2,7 @@ params ["_level"];
 
 diag_log format ["--- LRX Enemy Patrol - trigger alert %1", _level];
 
-GRLIB_patrol_current = GRLIB_patrol_current + 1;
-publicVariable "GRLIB_patrol_current";
+// the patrol slot was taken by the server when it dispatched this patrol (enemy_patrols.sqf)
 
 waitUntil { sleep 1; combat_readiness >= _level };
 
@@ -15,8 +14,7 @@ private _patrol_sectors_list = _search_sectors_all select {
 };
 
 if (count _patrol_sectors_list == 0) exitWith {
-	GRLIB_patrol_current = (GRLIB_patrol_current - 1) max 0;
-	publicVariable "GRLIB_patrol_current";
+	["release", "", [clientOwner, 2] select isServer] remoteExecCall ["HPC_fnc_patrolSlot", 2];
 };
 
 private _sector = selectRandom _patrol_sectors_list;
@@ -46,12 +44,10 @@ if (floor random 100 > 50 && count militia_vehicles > 0) then {
 sleep 1;
 if (isNull _opfor_grp || count (units _opfor_grp) == 0) exitWith {
 	deleteVehicle _opfor_veh;
-	GRLIB_patrol_current = (GRLIB_patrol_current - 1) max 0;
-	publicVariable "GRLIB_patrol_current";
+	["release", "", [clientOwner, 2] select isServer] remoteExecCall ["HPC_fnc_patrolSlot", 2];
 };
 
-GRLIB_patrol_sectors pushBackUnique _sector;
-publicVariable "GRLIB_patrol_sectors";
+["addSector", _sector, [clientOwner, 2] select isServer] remoteExecCall ["HPC_fnc_patrolSlot", 2];
 
 // Waiting
 private _unit_ttl = round (time + 1800);
@@ -95,8 +91,5 @@ if (isNull _opfor_veh) then {
 deleteGroup _opfor_grp;
 
 sleep 600;
-GRLIB_patrol_sectors = GRLIB_patrol_sectors - [_sector];
-publicVariable "GRLIB_patrol_sectors";
-
-GRLIB_patrol_current = (GRLIB_patrol_current - 1) max 0;
-publicVariable "GRLIB_patrol_current";
+["removeSector", _sector, [clientOwner, 2] select isServer] remoteExecCall ["HPC_fnc_patrolSlot", 2];
+["release", "", [clientOwner, 2] select isServer] remoteExecCall ["HPC_fnc_patrolSlot", 2];

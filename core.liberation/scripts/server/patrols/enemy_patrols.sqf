@@ -13,9 +13,11 @@ GRLIB_patrol_sectors = [];
 publicVariable "GRLIB_patrol_sectors";
 
 while {true} do {
+	["prune"] call HPC_fnc_patrolSlot; // free the slots of headless clients that left
 	if (GRLIB_patrol_current < GRLIB_patrol_amount && diag_fps > 15) then {
 		private _level = (20 + floor random 70);
 		private _hc = [] call F_lessLoadedHC;
+		["take", "", [2, owner _hc] select (!isNull _hc)] call HPC_fnc_patrolSlot;
 		if (isNull _hc) then {
 			[_level] spawn manage_one_enemy_patrol;
 		} else {
