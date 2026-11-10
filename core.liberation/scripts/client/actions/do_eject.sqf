@@ -5,8 +5,9 @@ if (isNull _vehicle) exitWith {};
 
 gamelogic globalChat format [localize "STR_EJECT_ALL_CREW", [_vehicle] call F_getLRXName];
 
-_vehicle setVehicleLock "UNLOCKED";
-_vehicle lockCargo false;
+// local-argument commands: run them where the vehicle is local (another player may drive)
+[_vehicle, "UNLOCKED"] remoteExec ["setVehicleLock", _vehicle];
+[_vehicle, false] remoteExec ["lockCargo", _vehicle];
 
 private _eject_list = (crew _vehicle - (_vehicle getVariable ["GRLIB_taxi_crew", []]));
 if (count _eject_list == 0) exitWith {};

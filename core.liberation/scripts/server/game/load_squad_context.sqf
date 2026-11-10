@@ -42,7 +42,8 @@ if (count (_context select 2) >= 1) then {
             _grp setGroupOwner _owner;
             sleep 0.5;
             [_grp] remoteExec ["remote_call_load_context", _owner];
-            waitUntil {sleep 1; (_player getVariable ["GRLIB_squad_context_loaded", false])};
+            private _timeout = time + 60; // the client may leave or respawn before confirming
+            waitUntil {sleep 1; isNull _player || {!alive _player} || {_player getVariable ["GRLIB_squad_context_loaded", false]} || {time > _timeout}};
         } else {
             if (_player distance2D (markerPos GRLIB_respawn_marker) > 100) then {
                 [localize "$STR_SQUAD_WAIT"] remoteExec ["hintSilent", _owner];

@@ -61,10 +61,12 @@ addMissionEventHandler ["OnUserAdminStateChanged", {
 	if (_uid == "")  exitWith {};
 	if (_loggedIn) then {
 		[true] remoteExec ["player_admin_actions", owner _player];
-		_player assignCurator (allCurators select 0);
+		if (count allCurators > 0) then { _player assignCurator (allCurators select 0) };
 	} else {
 		[false] remoteExec ["player_admin_actions", owner _player];
-		{unassignCurator _x} forEach allCurators;
+		// only this admin's curator: others (host, other admins) keep Zeus
+		private _curator = getAssignedCuratorLogic _player;
+		if (!isNull _curator) then { unassignCurator _curator };
 	};
 }];
 

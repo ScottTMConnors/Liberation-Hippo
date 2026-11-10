@@ -64,7 +64,8 @@ GRLIB_permissions = [["Default",[true,false,false,true,false,true]]];
 GRLIB_player_context = [];
 GRLIB_player_scores = [];
 if (GRLIB_param_wipe_context == 0) then {
-	if (!isNil "_lrx_liberation_savegame") then {
+	// short/corrupt saves are rejected further down; do not read past their end here
+	if (!isNil "_lrx_liberation_savegame" && {_lrx_liberation_savegame isEqualType [] && {count _lrx_liberation_savegame > 16}}) then {
 		GRLIB_permissions = _lrx_liberation_savegame select 13;
 		GRLIB_player_context = _lrx_liberation_savegame select 14;
 		GRLIB_player_scores = _lrx_liberation_savegame select 16;

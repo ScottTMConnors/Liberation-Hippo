@@ -109,10 +109,14 @@ sleep 45;
 
 if (_liberated_sector in sectors_tower) then {
 	_pos = markerPos _liberated_sector;
-	_nextower = Radio_tower createVehicle _pos;
-	_nextower setpos _pos;
-	_nextower setVectorUp [0,0,1];
-	_nextower setVariable ["GRLIB_Radio_Tower", true, true];
+	// the tower spawned at start may still stand (capture does not require destroying it)
+	_nextower = [_pos] call F_getNearestRadioTower;
+	if (isNil "_nextower") then {
+		_nextower = Radio_tower createVehicle _pos;
+		_nextower setpos _pos;
+		_nextower setVectorUp [0,0,1];
+		_nextower setVariable ["GRLIB_Radio_Tower", true, true];
+	};
 	if (GRLIB_TFR_enabled) then {
 		[_nextower, GRLIB_TFR_radius] call TFAR_antennas_fnc_initRadioTower;
 	};

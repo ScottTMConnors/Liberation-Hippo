@@ -37,6 +37,8 @@ while {true} do {
 	_my_squad = player getVariable ["my_squad", nil];
 	if (!isNil "_my_squad") then { { _unitList pushBack _x } forEach units _my_squad };
 	{_unitList append units _x} foreach hcAllGroups player;
+	// same filter for every source: local commands below, and never stand up an unconscious unit
+	_unitList = (_unitList arrayIntersect _unitList) select { local _x && {lifeState _x != "INCAPACITATED"} };
 
 	if (count _unitList >= 1) then {
 		_needammo1 = false;

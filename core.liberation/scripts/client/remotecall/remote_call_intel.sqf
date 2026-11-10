@@ -14,8 +14,8 @@ if (_notif_type == 1) exitWith {
 };
 
 if (_notif_type == 2) exitWith {
-	waitUntil { !isNil "secondary_objective_position_marker" };
-	waitUntil { secondary_objective_position_marker distance2D zeropos > 300 };
+	waitUntil { sleep 0.5; !isNil "secondary_objective_position_marker" };
+	waitUntil { sleep 0.5; secondary_objective_position_marker distance2D zeropos > 300 };
 
 	private _location_name = [secondary_objective_position_marker] call F_getLocationName;
 	["lib_intel_fob", [_location_name]] call BIS_fnc_showNotification;
@@ -57,9 +57,9 @@ if (_notif_type == 5) exitWith {
 };
 
 if (_notif_type == 6) exitWith {
-	waitUntil {!isNil "secondary_objective_position_marker" };
-	waitUntil {count secondary_objective_position_marker > 0 };
-	waitUntil {secondary_objective_position_marker distance2D zeropos > 300 };
+	waitUntil {sleep 0.5; !isNil "secondary_objective_position_marker" };
+	waitUntil {sleep 0.5; count secondary_objective_position_marker > 0 };
+	waitUntil {sleep 0.5; secondary_objective_position_marker distance2D zeropos > 300 };
 
 	private _location_name = [secondary_objective_position_marker] call F_getLocationName;
 	["lib_intel_sar", [_location_name]] call BIS_fnc_showNotification;
