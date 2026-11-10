@@ -11,7 +11,7 @@ if (_fuel >= 0.25) then {
 
 		waitUntil { sleep 0.5; dobuild == 0 };
 		if (build_confirmed == 0) then {
-			[_vehicle, _fuel - 0.25] remoteExec ["setFuel", 0];
+			[_vehicle, _fuel - 0.25] remoteExec ["setFuel", _vehicle];
 			hintSilent localize "STR_FUEL_READY";
 		};
 	};

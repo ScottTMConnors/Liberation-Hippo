@@ -105,7 +105,7 @@ while { dialog && alive player && _membercount > 0 } do {
 				gamelogic globalChat format [localize "STR_LOG_SOLDIER_REFUND_SIMPLE",_refund];
 			};
 			PAR_AI_bros = PAR_AI_bros - [_selectedmember];
-			deleteVehicle _selectedmember;
+			[_selectedmember] call HPC_fnc_deleteUnit;
 			hint localize 'STR_REMOVE_OK';
 			_update = true;
 		};

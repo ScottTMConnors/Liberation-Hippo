@@ -89,7 +89,7 @@ while {true} do {
 			if (_undetected) then {
 				_timer_bonus = _timer_bonus - 3;
 				if (_timer_bonus <= 0) then {
-					[player, 1] call F_addReput;
+					[player, 1] remoteExec ["F_addReput", 2]; // F_addReput is server-only
 					_timer_bonus = 60;
 				};
 			} else {

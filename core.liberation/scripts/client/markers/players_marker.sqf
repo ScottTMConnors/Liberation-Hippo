@@ -87,6 +87,7 @@ while {true} do {
 
 	if (count _players_markers > 0) then {
 		{ deleteMarkerLocal _x } foreach _players_markers;
+		_players_markers = []; // recreate them when the option is turned back on
 	};
 	sleep 1;
 };

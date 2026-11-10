@@ -20,7 +20,7 @@ GRLIB_check_Dog = {
 GRLIB_check_DogOnDuty = {
 	private _my_dog = player getVariable ["my_dog", nil];
 	if (isNil "_my_dog") exitWith { false };
-	(GRLIB_player_is_menuok && !isNil {_my_dog getVariable ["do_find", nil]} || stopped _my_dog);
+	(GRLIB_player_is_menuok && {!isNil {_my_dog getVariable ["do_find", nil]} || {stopped _my_dog}});
 };
 
 GRLIB_check_DogRelax = {

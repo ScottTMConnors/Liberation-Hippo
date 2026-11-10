@@ -22,7 +22,7 @@ if (count _nearest_cargo > 0) then {
 		sleep 0.1;
 	} forEach (nearestObjects [_target, ["GroundWeaponHolder", "WeaponHolderSimulated"], 4]);
 	[_cargo_veh, _target] call save_loadout_cargo;
-	hidebody _target;
+	[_target] remoteExec ["hideBody", _target]; // local argument: run where the body is local
 	sleep 5;
 	deleteVehicle _target;
 } else {

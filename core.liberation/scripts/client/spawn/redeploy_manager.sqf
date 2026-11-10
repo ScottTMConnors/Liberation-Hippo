@@ -167,10 +167,15 @@ if (deploy == 1) then {
 	// choosen loadout
 	if (GRLIB_player_spawned && _loadoutchoice > 0) then {
 		private _ammo_collected = player getVariable ["GREUH_ammo_count", 0];
-		private _loadout = lbText [203, _loadoutchoice];
+		// the list text is "name - (price)": take the loadout from GRLIB_saved_loadouts (as open_arsenal does)
+		private _entry = GRLIB_saved_loadouts select (_loadoutchoice - 1);
 		private _loadout_price = lbValue [203, _loadoutchoice];
 		if (_ammo_collected >= _loadout_price) then {
-			[player, [profileNamespace, _loadout]] call bis_fnc_loadInventory;
+			if (GRLIB_ACE_enabled) then {
+				[player, _entry select 2] call CBA_fnc_setLoadout;
+			} else {
+				[player, [profileNamespace, _entry select 0]] call bis_fnc_loadInventory;
+			};
 			[player] call F_filterLoadout;
 			[player] call F_payLoadout;
 		} else {

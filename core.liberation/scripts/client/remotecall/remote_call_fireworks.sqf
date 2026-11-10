@@ -12,7 +12,7 @@ private _colors = [
 ];
 
 _pos = _pos vectorAdd [0,0, 25];
-playSound3D [getMissionPath "res\launch01.ogg", objNull, false, ATLtoASL _pos, 5, 1, 600];
+playSound3D [getMissionPath "res\launch01.ogg", objNull, false, ATLtoASL _pos, 5, 1, 600, 0, true]; // every client plays its own copy
 
 private _launcher = "CMflare_Chaff_Ammo" createVehicleLocal _pos;
 private _light = "#lightpoint" createVehicleLocal [0,0,0];
@@ -30,7 +30,7 @@ private _laucher_pos = getPosATL _launcher;
 for "_i" from 1 to _rounds do {
 	[_laucher_pos, selectRandom _colors] spawn {
 		params ["_pos", "_color"];
-		playSound3D [getMissionPath "res\bang01.ogg", objNull, false, ATLToASL _pos, 5, 1, 1800];
+		playSound3D [getMissionPath "res\bang01.ogg", objNull, false, ATLToASL _pos, 5, 1, 1800, 0, true];
 		sleep 0.5;
 
 		private _flare = "CMflare_Chaff_Ammo" createVehicleLocal _pos;

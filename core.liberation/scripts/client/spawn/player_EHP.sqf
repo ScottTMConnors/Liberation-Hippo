@@ -73,8 +73,9 @@ _unit addEventHandler ["FiredMan", {
 // Player Event Handlers
 if (_unit == player) then {
 	// ACE specific
-	if (GRLIB_ACE_enabled) then {
-		["ace_arsenal_displayClosed", {
+	// CBA events are global and survive respawn: register once per client
+	if (GRLIB_ACE_enabled && {isNil "HPC_aceArsenalEH"}) then {
+		HPC_aceArsenalEH = ["ace_arsenal_displayClosed", {
 			[player] call F_filterLoadout;
 			[player] spawn F_payLoadout;
 		}] call CBA_fnc_addEventHandler;
@@ -156,8 +157,8 @@ if (_unit == player) then {
 	// ACE specific
 	if (GRLIB_ACE_medical_enabled) then {
 		private _enabled = ((["PAR_Revive"] call lrx_getParamValue) != 0);
-		if (_enabled) then {
-			["ace_unconscious", {
+		if (_enabled && {isNil "HPC_aceUnconsciousEH"}) then {
+			HPC_aceUnconsciousEH = ["ace_unconscious", {
 				params ["_unit", "_isUnconsious"];
 				if (_isUnconsious && _unit == player) then {
 					_unit setVariable ["PAR_BleedOutTimer", round(time + PAR_bleedout), true];

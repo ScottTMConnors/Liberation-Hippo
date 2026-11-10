@@ -9,7 +9,7 @@ dobuild = 1;
 
 waitUntil { sleep 0.5; dobuild == 0 };
 if (build_confirmed == 0) then {
-	if !([_price] call F_pay) then {
+	if !([_price] call F_pay) exitWith {
 		deleteVehicle build_vehicle;
 	};
 	hintSilent localize "STR_FUEL_READY";

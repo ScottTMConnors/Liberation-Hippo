@@ -64,7 +64,7 @@ if (!isNil "_my_squad") then {
 			private _msg = format [localize "STR_DO_SQUAD"];
 			private _result = [_msg, localize "STR_WARNING", true, true] call BIS_fnc_guiMessage;
 			if (_result) then {
-				{deleteVehicle _x} forEach (units _my_squad);
+				{ [_x] call HPC_fnc_deleteUnit } forEach (units _my_squad);
 				[false] call player_squad_actions;
 			};
 		};

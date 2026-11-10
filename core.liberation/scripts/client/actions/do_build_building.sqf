@@ -7,6 +7,7 @@ params [
 ];
 
 private _public = false;
+private _allow_damage = true;
 private _vehicle = [_classname, _veh_pos] call HPC_fnc_createBuilding;
 _vehicle setVectorDirAndUp [_veh_dir, _veh_vup];
 _vehicle setPosATL _veh_pos;
@@ -76,6 +77,8 @@ if (_classname == medic_heal_typename && _classname isKindOf "Land_MedicalTent_0
 if ([_classname, GRLIB_quick_delete] call F_itemIsInClass) then {
     _vehicle addMPEventHandler ["MPKilled", {_this spawn kill_manager}];
 };
+
+if (!_allow_damage) then { _vehicle allowDamage false }; // object is local to the builder here
 
 if (_public) then {
 	GRLIB_redraw_marker_fob = true;

@@ -51,14 +51,14 @@ if (_rank in ["Major"]) then {_list_perm = [1605]};
 
 private _ammo_collected = player getVariable ["GREUH_ammo_count", 0];
 if (GRLIB_mod_taxi == 3 || GRLIB_AirDrop_Taxi_cost > _ammo_collected) then { ctrlEnable [1607, false] };
-if (count blufor_air == 0 || _AirDrop_8_cost > _ammo_collected) then { ctrlEnable [1605, false] };
+if (count blufor_air == 0 || _AirDrop_7_cost > _ammo_collected) then { ctrlEnable [1605, false] };
 if (count GRLIB_AirDrop_1 == 0 || _AirDrop_1_cost > _ammo_collected) then { ctrlEnable [1600, false] };
 if (count GRLIB_AirDrop_2 == 0 || _AirDrop_2_cost > _ammo_collected) then { ctrlEnable [1601, false] };
 if (count GRLIB_AirDrop_3 == 0 || _AirDrop_3_cost > _ammo_collected) then { ctrlEnable [1602, false] };
 if (count GRLIB_AirDrop_4 == 0 || _AirDrop_4_cost > _ammo_collected) then { ctrlEnable [1603, false] };
 if (count GRLIB_AirDrop_5 == 0 || _AirDrop_5_cost > _ammo_collected) then { ctrlEnable [1604, false] };
 if (count GRLIB_AirDrop_6 == 0 || _AirDrop_6_cost > _ammo_collected) then { ctrlEnable [1606, false] };
-if (_AirDrop_7_cost > _ammo_collected) then { ctrlEnable [1608, false] };
+if (_AirDrop_8_cost > _ammo_collected) then { ctrlEnable [1608, false] };
 
 while { dialog && (alive player) && do_action == 0 } do {
 	sleep 0.1;

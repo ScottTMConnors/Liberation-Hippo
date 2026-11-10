@@ -28,7 +28,7 @@ private _radius = 30;
 	// dead body
 	[(getCorpse  _x)] spawn {
 		params ["_body"];
-		hidebody _body;
+		[_body] remoteExec ["hideBody", _body];
 		sleep 5;
 		deleteVehicle _body;
 	};

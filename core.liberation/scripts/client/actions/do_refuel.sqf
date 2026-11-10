@@ -9,7 +9,7 @@ if (!isNil "_jerycan") then {
 	if (_jerycan isKindOf fuelbarrel_typename) then {_max_fuel = 0.40};
 	deleteVehicle _jerycan;
 
-	[_vehicle, (fuel _vehicle) + _max_fuel] remoteExec ["setFuel", 0];
+	[_vehicle, (fuel _vehicle) + _max_fuel] remoteExec ["setFuel", _vehicle];
 	playSound3D ["a3\sounds_f\sfx\ui\vehicles\vehicle_refuel.wss", _vehicle];
 	hintSilent localize "STR_DO_REFUEL";
 };

@@ -44,17 +44,17 @@ while {true} do {
 	{
 		_vehicle = _x;
 		_class = typeOf _vehicle;
-		GRLIB_ActionDist_5 = 5;
+		private _dist5 = 5; // local: the global GRLIB_ActionDist_5 is used by other action checks
 		if ([_vehicle, vehicle_big_units] call F_itemIsInClass) then {
-			GRLIB_ActionDist_5 = GRLIB_ActionDist_5 * 3;
+			_dist5 = 15;
 		};
 		if (_class in civilian_vehicles) then {
-			_vehicle addAction ["<t color='#00AA00'>" + localize "STR_MAN_MANAGER" + "</t> <img size='1' image='\a3\Ui_F_Curator\Data\Displays\RscDisplayCurator\modeGroups_ca.paa'/>","scripts\client\actions\do_speak.sqf","",-504,false,true,"","[_target, _this] call GRLIB_checkAction_Speak", GRLIB_ActionDist_5];
+			_vehicle addAction ["<t color='#00AA00'>" + localize "STR_MAN_MANAGER" + "</t> <img size='1' image='\a3\Ui_F_Curator\Data\Displays\RscDisplayCurator\modeGroups_ca.paa'/>","scripts\client\actions\do_speak.sqf","",-504,false,true,"","[_target, _this] call GRLIB_checkAction_Speak", _dist5];
 		};
 		_vehicle addAction ["<t color='#FFFF00'>" + localize "STR_UN_FLIP" + "</t> <img size='1' image='res\ui_flipveh.paa'/>","scripts\client\actions\do_unflip.sqf","",-505,false,true,"","[_target, _this] call GRLIB_checkAction_Flip", GRLIB_ActionDist_10];
-		_vehicle addAction ["<t color='#800000'>" + localize "STR_DE_FUEL" + "</t> <img size='1' image='R3F_LOG\icons\r3f_fuel.paa'/>", "scripts\client\actions\do_defuel.sqf","",-506,false,true,"","[_target, _this] call GRLIB_checkAction_DeFuel", GRLIB_ActionDist_5];
-		_vehicle addAction ["<t color='#009000'>" + localize "STR_RE_FUEL" + "</t> <img size='1' image='R3F_LOG\icons\r3f_fuel.paa'/>", "scripts\client\actions\do_refuel.sqf","",-506,false,true,"","[_target, _this] call GRLIB_checkAction_ReFuel", GRLIB_ActionDist_5];
-		_vehicle addAction ["<t color='#009F00'>" + localize "STR_REPAIR_VEH" + "</t> <img size='1' image='res\ui_rotation.paa'/>", "scripts\client\actions\do_repair.sqf","",-508,false,true,"","[_target, _this] call GRLIB_checkAction_Repair", GRLIB_ActionDist_5];
+		_vehicle addAction ["<t color='#800000'>" + localize "STR_DE_FUEL" + "</t> <img size='1' image='R3F_LOG\icons\r3f_fuel.paa'/>", "scripts\client\actions\do_defuel.sqf","",-506,false,true,"","[_target, _this] call GRLIB_checkAction_DeFuel", _dist5];
+		_vehicle addAction ["<t color='#009000'>" + localize "STR_RE_FUEL" + "</t> <img size='1' image='R3F_LOG\icons\r3f_fuel.paa'/>", "scripts\client\actions\do_refuel.sqf","",-506,false,true,"","[_target, _this] call GRLIB_checkAction_ReFuel", _dist5];
+		_vehicle addAction ["<t color='#009F00'>" + localize "STR_REPAIR_VEH" + "</t> <img size='1' image='res\ui_rotation.paa'/>", "scripts\client\actions\do_repair.sqf","",-508,false,true,"","[_target, _this] call GRLIB_checkAction_Repair", _dist5];
 		_vehicle addAction ["<t color='#BC884C'>" + localize "STR_STICKY_BOMB" + "</t> <img size='1' image='res\skull.paa'/>", "scripts\client\actions\do_sticky_bomb.sqf","",-509,false,true,"","[_target, _this] call GRLIB_checkAction_Sticky", GRLIB_ActionDist_3];
 
 		if ([_vehicle, ["LandVehicle","Ship"]] call F_itemIsInClass) then {
@@ -69,20 +69,20 @@ while {true} do {
 		};
 
 		if (_class == FOB_truck_typename) then {
-			_vehicle addAction ["<t color='#FF6F00'>" + localize "STR_FOB_ACTION" + "</t> <img size='1' image='res\ui_deployfob.paa'/>","scripts\client\actions\do_build_fob.sqf","",-981,false,true,"","[_target, _this] call GRLIB_checkBuildFOB", GRLIB_ActionDist_5];
+			_vehicle addAction ["<t color='#FF6F00'>" + localize "STR_FOB_ACTION" + "</t> <img size='1' image='res\ui_deployfob.paa'/>","scripts\client\actions\do_build_fob.sqf","",-981,false,true,"","[_target, _this] call GRLIB_checkBuildFOB", _dist5];
 		};
 
 		if (!([_vehicle, GRLIB_vehicle_blacklist] call F_itemIsInClass) && !([_vehicle] call is_public)) then {
-			_vehicle addAction ["<t color='#00FF00'>" + localize "STR_LOCK" + "</t> <img size='1' image='R3F_LOG\icons\r3f_lock.paa'/>","scripts\client\actions\do_lock.sqf","",-504,false,true,"","[_target, _this] call GRLIB_checkAction_Lock", GRLIB_ActionDist_5];
-			_vehicle addAction ["<t color='#FF0000'>" + localize "STR_UNLOCK" + "</t> <img size='1' image='R3F_LOG\icons\r3f_unlock.paa'/>","scripts\client\actions\do_unlock.sqf","",-504,true,true,"","[_target, _this] call GRLIB_checkAction_Unlock", GRLIB_ActionDist_5];
-			_vehicle addAction ["<t color='#555555'>" + localize "STR_ABANDON" + "</t> <img size='1' image='res\ui_veh.paa'/>","scripts\client\actions\do_abandon.sqf","",-505,false,true,"","[_target, _this] call GRLIB_checkAction_Abandon", GRLIB_ActionDist_5];
-			_vehicle addAction ["<t color='#00F0F0'>" + localize "STR_PAINT_SHOP" + "</t> <img size='1' image='res\ui_veh.paa'/>", "addons\VAM\fn_repaintMenu.sqf","",-985,false,true,"","[_target, _this] call GRLIB_checkAction_Paint", GRLIB_ActionDist_5];
+			_vehicle addAction ["<t color='#00FF00'>" + localize "STR_LOCK" + "</t> <img size='1' image='R3F_LOG\icons\r3f_lock.paa'/>","scripts\client\actions\do_lock.sqf","",-504,false,true,"","[_target, _this] call GRLIB_checkAction_Lock", _dist5];
+			_vehicle addAction ["<t color='#FF0000'>" + localize "STR_UNLOCK" + "</t> <img size='1' image='R3F_LOG\icons\r3f_unlock.paa'/>","scripts\client\actions\do_unlock.sqf","",-504,true,true,"","[_target, _this] call GRLIB_checkAction_Unlock", _dist5];
+			_vehicle addAction ["<t color='#555555'>" + localize "STR_ABANDON" + "</t> <img size='1' image='res\ui_veh.paa'/>","scripts\client\actions\do_abandon.sqf","",-505,false,true,"","[_target, _this] call GRLIB_checkAction_Abandon", _dist5];
+			_vehicle addAction ["<t color='#00F0F0'>" + localize "STR_PAINT_SHOP" + "</t> <img size='1' image='res\ui_veh.paa'/>", "addons\VAM\fn_repaintMenu.sqf","",-985,false,true,"","[_target, _this] call GRLIB_checkAction_Paint", _dist5];
 		};
 
 		if (maxLoad _vehicle > 1500) then {
-			_vehicle addAction ["<t color='#0080F0'>" + localize "STR_SEND_ARSENAL" + "</t> <img size='1' image='res\ui_arsenal.paa'/>","scripts\client\actions\add_personal_arsenal.sqf","",-508,false,true,"","[_target, _this] call GRLIB_checkAction_SendArsenal", GRLIB_ActionDist_5];
-			_vehicle addAction ["<t color='#00FFFF'>" + localize "STR_ARSENAL_PICKUP" + "</t> <img size='1' image='res\ui_arsenal.paa'/>","scripts\client\actions\do_loot_veh.sqf","",-504,false,true,"","[_target, _this] call GRLIB_checkAction_Pickup_Weapons", GRLIB_ActionDist_5];
-			_vehicle addAction ["<t color='#00FFFF'>" + localize "STR_INVENTORY_UNPACK" + "</t> <img size='1' image='res\ui_arsenal.paa'/>","scripts\client\actions\unpack_inventory.sqf","",-505,false,true,"","[_target, _this] call GRLIB_checkAction_UnpackInventory", GRLIB_ActionDist_5];
+			_vehicle addAction ["<t color='#0080F0'>" + localize "STR_SEND_ARSENAL" + "</t> <img size='1' image='res\ui_arsenal.paa'/>","scripts\client\actions\add_personal_arsenal.sqf","",-508,false,true,"","[_target, _this] call GRLIB_checkAction_SendArsenal", _dist5];
+			_vehicle addAction ["<t color='#00FFFF'>" + localize "STR_ARSENAL_PICKUP" + "</t> <img size='1' image='res\ui_arsenal.paa'/>","scripts\client\actions\do_loot_veh.sqf","",-504,false,true,"","[_target, _this] call GRLIB_checkAction_Pickup_Weapons", _dist5];
+			_vehicle addAction ["<t color='#00FFFF'>" + localize "STR_INVENTORY_UNPACK" + "</t> <img size='1' image='res\ui_arsenal.paa'/>","scripts\client\actions\unpack_inventory.sqf","",-505,false,true,"","[_target, _this] call GRLIB_checkAction_UnpackInventory", _dist5];
 		};
 		_vehicle setVariable ["GRLIB_vehicle_action", true];
 	} forEach _nearveh;
@@ -101,7 +101,7 @@ while {true} do {
 	_neardead = allDeadMen select {!([_x, "LHD", GRLIB_sector_size, false] call F_check_near) && (_x distance2D player < _searchradius) && isNil {_x getVariable "GRLIB_dead_action"}};
 	{
 		_unit = _x;
-		_unit addAction ["<t color='#0080F0'>" + localize "STR_REMOVE_BODY" + "</t>",{ [_this select 0] remoteExec ["hidebody", 0]},"",100,false,true,"","", GRLIB_ActionDist_3];
+		_unit addAction ["<t color='#0080F0'>" + localize "STR_REMOVE_BODY" + "</t>",{ [_this select 0] remoteExec ["hideBody", _this select 0]},"",100,false,true,"","", GRLIB_ActionDist_3];
 		_unit addAction ["<t color='#00F0F0'>" + localize "STR_LOOT_BODY" + "</t>","scripts\client\actions\do_loot.sqf","",101,false,true,"","(loadAbs _target > 120)",GRLIB_ActionDist_3];
 		_unit setVariable ["GRLIB_dead_action", true];
 	} forEach _neardead;
