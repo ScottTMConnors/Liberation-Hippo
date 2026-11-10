@@ -80,6 +80,15 @@ if ((Test-Path -LiteralPath $mission) -and (Get-FileHash -LiteralPath $mission).
     Copy-Item -LiteralPath $mission -Destination (Join-Path $c.runtimeDirectory ('mission-backup-'+(Get-Date -Format yyyyMMdd-HHmmss)+'.pbo'))
 }
 if ([IO.Path]::GetFullPath($package) -ne [IO.Path]::GetFullPath($mission)) { Copy-Item -LiteralPath $package -Destination $mission -Force }
+# Extra missions (e.g. Dynamic CAS): copied to MPMissions and whitelisted for #missions.
+$extraNames = @()
+foreach ($x in @($c.extraMissions | Where-Object { $_ })) {
+    $xp = Resolve-HippoPath $x
+    if (!(Test-Path -LiteralPath $xp)) { throw "Extra mission not found: $xp" }
+    Copy-Item -LiteralPath $xp -Destination (Join-Path (Split-Path $mission) (Split-Path $xp -Leaf)) -Force
+    $extraNames += [IO.Path]::GetFileNameWithoutExtension($xp)
+}
+$whitelist = (@($c.missionName) + $extraNames | ForEach-Object { '"' + $_ + '"' }) -join ','
 if ($manifest) { Copy-Item -LiteralPath $manifestPath -Destination (Join-Path $c.runtimeDirectory 'deployed-manifest.json') }
 
 $cfg = Join-Path $c.runtimeDirectory 'server.cfg'
@@ -119,7 +128,7 @@ onUserKicked = "diag_log 'HIPPO_CONNECT|KICK'; diag_log _this;";
 onUserConnected = "diag_log 'HIPPO_CONNECT|CONNECTED'; diag_log _this;";
 // Empty rotation: only the logged-in admin selects/starts the mission with #missions.
 class Missions {};
-missionWhitelist[] = {"$($c.missionName)"};
+missionWhitelist[] = {$whitelist};
 "@ | ForEach-Object { [IO.File]::WriteAllText($cfg, $_, (New-Object Text.UTF8Encoding $false)) }
 $basic = Join-Path $c.runtimeDirectory 'basic.cfg'
 @'
