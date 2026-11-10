@@ -2,18 +2,23 @@ params ["_liberated_sector"];
 if (GRLIB_endgame == 1 || GRLIB_global_stop == 1) exitWith {};
 if (opforcap_max) exitWith { diag_log "Spawn Direct BattleGroup aborted, opfor max units reached." };
 
+// The cooldown is owned by the server (random_battlegroups reads it there), so
+// wait and stamp it before handing the spawn to a headless client.
+if (isServer) then {
+	waitUntil {
+		sleep 5;
+		(serverTime > (GRLIB_last_battlegroup + GRLIB_battlegroup_timer));
+	};
+	GRLIB_last_battlegroup = round serverTime;
+	stats_hostile_battlegroups = stats_hostile_battlegroups + 1;
+	publicVariable "stats_hostile_battlegroups";
+};
+
 private _hc = [] call F_lessLoadedHC;
 if (isDedicated && !isNull _hc) exitWith {
 	diag_log format ["Spawn BattleGroup on %1 at %2", _hc, time];
 	[_liberated_sector] remoteExec ["spawn_battlegroup", owner _hc];
 };
-
-waitUntil {
-	sleep 5;
-	(time > (GRLIB_last_battlegroup + GRLIB_battlegroup_timer));
-};
-
-GRLIB_last_battlegroup = round time;
 
 private _spawn_marker = "";
 private _objective_pos = [];
@@ -53,7 +58,7 @@ if (count _spawn_pos == 0) exitWith {
 		[_para_pos] spawn send_paratroopers;
 		sleep 20;
 		[_para_pos] spawn spawn_halo_vehicle;
-		combat_readiness = combat_readiness - 15;
+		combat_readiness = (combat_readiness - 15) max 0;
 		diag_log format ["Done Spawning Paratrooper BattleGroup at %1", time];
 	};
 };
@@ -129,7 +134,5 @@ if (GRLIB_difficulty_modifier >= 2 && combat_readiness > 70 && _current_players 
 combat_readiness = combat_readiness - (10 + (_target_size * 1.75));
 if ( combat_readiness < 0 ) then { combat_readiness = 0 };
 publicVariable "combat_readiness";
-stats_hostile_battlegroups = stats_hostile_battlegroups + 1;
-publicVariable "stats_hostile_battlegroups";
 
 diag_log format ["Done Spawning BattleGroup (%1) objective %2 at %3", _target_size, _objective_pos, time];

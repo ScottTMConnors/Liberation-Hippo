@@ -77,6 +77,7 @@ private _units = [];
 			[_unit] spawn loadout_militia;
 			_unit addMPEventHandler ["MPKilled", {
 				params ["_unit", "_killer", "_instigator", "_useEffects"];
+				if (!isServer) exitWith {}; // MPKilled fires on every machine: roll the drop once
 				if (side group _killer != GRLIB_side_friendly || !(isNull objectParent _killer)) exitWith {};
 				if (floor random 3 == 0) then { money_typename createVehicle getPos _unit };
 			}];

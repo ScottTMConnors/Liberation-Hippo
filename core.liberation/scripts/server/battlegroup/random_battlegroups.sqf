@@ -29,7 +29,7 @@ while { GRLIB_endgame == 0 && GRLIB_global_stop == 0 } do {
 			count GRLIB_all_fobs >= 1 &&
 			count blufor_sectors >= 5 &&
 			combat_readiness >= 50 &&
-			time >= (GRLIB_last_battlegroup + GRLIB_battlegroup_timer) &&
+			serverTime >= (GRLIB_last_battlegroup + GRLIB_battlegroup_timer) &&
 			time >= (GRLIB_last_active_sectors + GRLIB_battlegroup_timer)
 		)
 	};
@@ -74,8 +74,6 @@ while { GRLIB_endgame == 0 && GRLIB_global_stop == 0 } do {
 			};
 			sleep 10;
 			[] spawn spawn_battlegroup;
-			stats_hostile_battlegroups = stats_hostile_battlegroups + 1;
-			publicVariable "stats_hostile_battlegroups";
 		};
 	};
 

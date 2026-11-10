@@ -4,13 +4,13 @@ private _vehicle = if (_static) then {createVehicle [_classname, _veh_pos, [], 0
 if (isNull _vehicle) exitWith {};
 _vehicle setVectorDirAndUp [_veh_dir, _veh_vup];
 _vehicle setPosATL _veh_pos;
-_vehicle setVariable ["GRLIB_counter_TTL", time + 600, true];
+_vehicle setVariable ["GRLIB_counter_TTL", serverTime + 600, true];
 _vehicle setVariable ["R3F_LOG_disabled", true, true];
 GRLIB_current_trenches = GRLIB_current_trenches + 1;
 [_vehicle] spawn {
     params ["_object"];
     // vehicle_perm clears the TTL when someone mans the static: keep it then.
-    waitUntil {sleep 5; isNull _object || {isNil {_object getVariable "GRLIB_counter_TTL"}} || {time >= (_object getVariable ["GRLIB_counter_TTL", 0])}};
+    waitUntil {sleep 5; isNull _object || {isNil {_object getVariable "GRLIB_counter_TTL"}} || {serverTime >= (_object getVariable ["GRLIB_counter_TTL", 0])}};
     if (!isNull _object && {!isNil {_object getVariable "GRLIB_counter_TTL"}}) then {deleteVehicle _object};
     GRLIB_current_trenches = (GRLIB_current_trenches - 1) max 0;
 };

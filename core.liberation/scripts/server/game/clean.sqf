@@ -78,7 +78,7 @@ private _delete_LRX_TTL = {
 		{
 			private _ttl = _x getVariable "GRLIB_counter_TTL";
 			if (!isNil "_ttl") then {
-				if ([_x, GRLIB_sector_size, _hidden_from] call _isHidden && time > _ttl) then {
+				if ([_x, GRLIB_sector_size, _hidden_from] call _isHidden && serverTime > _ttl) then {
 					_x setDamage [1, false];
 					deleteVehicle _x;
 					sleep 0.1;
@@ -204,14 +204,18 @@ while {GRLIB_run_cleanup} do {
 					};
 				} count allDeadMen;
 				sleep 0.1;
-				while {(((count allDeadMen) - _deadMenLimitMax) > 0)} do {
-					deleteVehicle (selectRandom allDeadMen);
-					_stats = _stats + 1;
+				private _excess = count allDeadMen - _deadMenLimitMax;
+				if (_excess > 0) then {
+					private _pool = allDeadMen call BIS_fnc_arrayShuffle; // deleteVehicle takes effect next frame: pick the excess once
+					deleteVehicle (_pool select [0, _excess]);
+					_stats = _stats + _excess;
 				};
 			} else {
-				while {(((count allDeadMen) - _deadMenLimit) > 0)} do {
-					deleteVehicle (selectRandom allDeadMen);
-					_stats = _stats + 1;
+				private _excess = count allDeadMen - _deadMenLimit;
+				if (_excess > 0) then {
+					private _pool = allDeadMen call BIS_fnc_arrayShuffle; // deleteVehicle takes effect next frame: pick the excess once
+					deleteVehicle (_pool select [0, _excess]);
+					_stats = _stats + _excess;
 				};
 			};
 			sleep 1;
@@ -369,9 +373,10 @@ while {GRLIB_run_cleanup} do {
 					};
 				} count allMines;
 			} else {
-				while {(((count allMines) - _minesLimit) > 0)} do {
-					deleteVehicle (selectRandom allMines);
-					_stats = _stats + 1;
+				private _excess = count allMines - _minesLimit;
+				if (_excess > 0) then {
+					deleteVehicle ((allMines call BIS_fnc_arrayShuffle) select [0, _excess]);
+					_stats = _stats + _excess;
 				};
 			};
 			sleep 1;

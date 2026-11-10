@@ -1,6 +1,6 @@
 params ["_vehicle", "_ttl"];
 
-_ttl = round (time + _ttl);
+_ttl = round (serverTime + _ttl); // serverTime: TTLs are set on HCs and checked on the server
 if (typeName _vehicle == "GROUP") exitWith {
     {
         _x setVariable ["GRLIB_counter_TTL", _ttl, true];

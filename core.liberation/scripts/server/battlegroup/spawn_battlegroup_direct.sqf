@@ -31,7 +31,7 @@ if (_intensity == 0) then {
 
 private ["_vehicle", "_driver", "_nextgrp"];
 
-for "_i" from 0 to _target_size do {
+for "_i" from 1 to _target_size do {
 	_vehicle = [_spawn_pos, (selectRandom _vehicle_pool), 15] call F_libSpawnVehicle;
 	_driver = driver _vehicle;
 	_nextgrp = group _driver;

@@ -38,5 +38,7 @@ spawn_camera = compileFinal preprocessFileLineNumbers "scripts\client\spawn\spaw
 speak_manager = compileFinal preprocessFileLineNumbers "scripts\client\manager\speak_manager.sqf";
 vehicle_fuel = compileFinal preprocessFileLineNumbers "scripts\client\misc\vehicle_fuel.sqf";
 vehicle_info = compileFinal preprocessFileLineNumbers "scripts\client\misc\vehicle_info.sqf";
-vehicle_perm = compileFinal preprocessFileLineNumbers "scripts\client\misc\vehicle_perm.sqf";
 write_credit_line = compileFinal preprocessFileLineNumbers "scripts\client\ui\write_credit_line.sqf";
+
+// MPKilled handlers fire on every machine; kill_manager is only compiled on the server and HCs
+if (!isServer && isNil "kill_manager") then { kill_manager = {} };

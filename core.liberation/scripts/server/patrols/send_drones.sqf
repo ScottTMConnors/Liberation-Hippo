@@ -61,7 +61,7 @@ while {alive _vehicle} do {
 	if (_uav_role == 0) then {
 		_target = [_targetpos, 300] call F_getNearestBlufor;
 		if (isNull _target) then {
-			{deleteVehicle _x} forEach (crew _vehicle);
+			deleteVehicleCrew _vehicle;
 			deleteVehicle _vehicle;
 		} else {
 			deleteWaypoint [_grp, 0];

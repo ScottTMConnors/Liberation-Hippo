@@ -18,7 +18,7 @@ if (_damage >= 0.8 && (time >= (_unit getVariable ["GRLIB_isProtected", 0]))) th
 	if (hasInterface && side _unit == GRLIB_side_friendly) then {
 		systemchat format ["%1 damaged to %2%%.", [_unit] call F_getLRXName, (_newDamage * 100)];
 	};
-	_unit setVariable ["GRLIB_unitDamage", _newDamage, true];
+	_unit setVariable ["GRLIB_unitDamage", _newDamage]; // only read where the unit is local
 };
 
 _newDamage;

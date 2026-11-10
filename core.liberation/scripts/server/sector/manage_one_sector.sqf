@@ -505,6 +505,11 @@ while {true} do {
 		diag_log format ["Sector %1 mission failed.", _sector];
 		_sector setMarkerText _sectorName;
 		[_task,"FAILED"] call BIS_fnc_taskSetState;
+		[_task] spawn {
+			params ["_task"];
+			sleep 120;
+			[_task, true, true] call BIS_fnc_deleteTask;
+		};
 		{
 			if (alive _x) then {
 				[_x, -5] call F_addReput;
@@ -545,7 +550,7 @@ diag_log format ["End Defend Sector %1 at %2", _sector, time];
 waitUntil { sleep 30; (GRLIB_global_stop == 1 || [_sector_pos, GRLIB_sector_size, GRLIB_side_friendly, 1] call F_getUnitsCount == 0) };
 diag_log format ["Cleanup Defend Sector %1 at %2", _sector, time];
 private _managed_units = missionNamespace getVariable [format ["LRX_sector_%1_units", _sector], []];
-{ deleteVehicle _x } forEach _managed_units;
+{ [_x] call HPC_fnc_deleteUnit } forEach _managed_units;
 private _managed_civils = missionNamespace getVariable [format ["LRX_sector_%1_civils", _sector], []];
 { deleteVehicle _x } forEach _managed_civils;
 private _managed_vehicles = missionNamespace getVariable [format ["LRX_sector_%1_vehicles", _sector], []];

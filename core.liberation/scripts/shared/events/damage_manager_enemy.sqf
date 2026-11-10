@@ -16,7 +16,9 @@ private _veh_unit = objectParent _unit;
 if (_unit isKindOf "CAManBase" && isNull _veh_unit) exitWith {
 	private _newDamage = _unit getVariable ["GRLIB_unitDamage", 0];
 	if (time > (_unit getVariable ["GRLIB_isProtected", 0])) then {
-		private _lucky = _unit getVariable ["GRLIB_isLucky", (floor random 3)];
+		// roll luck once per unit (HandleDamage fires once per hit selection)
+		private _lucky = _unit getVariable ["GRLIB_isLucky", -1];
+		if (_lucky < 0) then { _lucky = floor random 3; _unit setVariable ["GRLIB_isLucky", _lucky] };
 		if (alive _unit && _damage >= 1 && _damage <= 2 && _lucky == 0 && (missionNamespace getVariable ["HPC_SecondChance", false])) then {
 			_unit setVariable ["GRLIB_isProtected", round(time + 3)];
 			[_unit] spawn F_unitSemiWounded;
@@ -27,12 +29,12 @@ if (_unit isKindOf "CAManBase" && isNull _veh_unit) exitWith {
 	} else {
 		_newDamage = 0.85;
 	};
-	_unit setVariable ["GRLIB_unitDamage", _newDamage, true];
+	_unit setVariable ["GRLIB_unitDamage", _newDamage]; // only read here, where the unit is local
 	_newDamage;
 };
 
 // Vehicle
-if (isPlayer _killer) then {
+if (isPlayer _killer && {(_unit getVariable ["GRLIB_last_killer", objNull]) != _killer}) then {
 	_unit setVariable ["GRLIB_last_killer", _killer, true];
 };
 
@@ -53,8 +55,11 @@ if (isPlayer _killer && _unit != _killer) then {
 	private _veh_killer = objectParent _killer;
 	// OpFor in vehicle
 	if (!isNull _veh_unit && isNull _veh_killer && round (_killer distance2D _unit) <= 2) then {
+		_damage = 0;
+		if (time < (_unit getVariable ["HPC_cheatWarnAt", 0])) exitWith {}; // warn and retaliate at most every 5 s
+		_unit setVariable ["HPC_cheatWarnAt", time + 5];
 		private _msg = format ["%1 Stop Cheating !!", name _killer];
-		[gamelogic, _msg] remoteExec ["globalChat", owner _killer];
+		[gamelogic, _msg] remoteExec ["globalChat", _killer]; // owner returns 0 on an HC
 		[_unit, _killer] spawn {
 			params ["_unit", "_killer"];
 			_unit reveal [_killer, 4];

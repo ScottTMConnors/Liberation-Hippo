@@ -36,8 +36,9 @@ lib_unsim = ["Land_CncWall4_F","Land_PillboxBunker_01_big_F"];
 disableMapIndicators [false,true,false,false];
 setGroupIconsVisible [false,false];
 
-abort_loading = false;
-abort_loading_msg = "Unknown startup error";
+// keep a server abort already received through JIP sync
+if (isNil "abort_loading") then { abort_loading = false };
+if (isNil "abort_loading_msg") then { abort_loading_msg = "Unknown startup error" };
 GRLIB_ACE_enabled = false;
 //GRLIB_LRX_debug = true;
 
@@ -83,10 +84,13 @@ if (!isDedicated && hasInterface) then {
 };
 
 if (abort_loading) exitWith {
-	GRLIB_init_server = false;
-	publicVariable "GRLIB_init_server";
-	publicVariable "abort_loading";
-	publicVariable "abort_loading_msg";
+	// only the server may declare the session broken (a client with a bad template must not)
+	if (isServer) then {
+		GRLIB_init_server = false;
+		publicVariable "GRLIB_init_server";
+		publicVariable "abort_loading";
+		publicVariable "abort_loading_msg";
+	};
 	diag_log "--- LRX Startup Error ---";
 	diag_log abort_loading_msg;
 };
@@ -107,10 +111,13 @@ if (isServer) then {
 };
 
 if (abort_loading) exitWith {
-	GRLIB_init_server = false;
-	publicVariable "GRLIB_init_server";
-	publicVariable "abort_loading";
-	publicVariable "abort_loading_msg";
+	// only the server may declare the session broken (a client with a bad template must not)
+	if (isServer) then {
+		GRLIB_init_server = false;
+		publicVariable "GRLIB_init_server";
+		publicVariable "abort_loading";
+		publicVariable "abort_loading_msg";
+	};
 	diag_log "--- LRX Startup Error ---";
 	diag_log abort_loading_msg;
 };

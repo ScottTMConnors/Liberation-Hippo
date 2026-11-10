@@ -39,7 +39,7 @@ while { (({ alive _x } count (units _grp)) > 0) } do {
 				_attack = true;
 			} else {
 				diag_log format ["Delete Group %1 (%2) - No more objectives", _grp, _veh_type];
-				{ deleteVehicle _x } forEach (units _grp);
+				{ [_x] call HPC_fnc_deleteUnit } forEach (units _grp);
 				[_vehicle, true] spawn cleanMissionVehicles;
 				_attack = false;
 			};
@@ -90,11 +90,11 @@ while { (({ alive _x } count (units _grp)) > 0) } do {
 	sleep _sleep;
 
 	// TTL
-	if ({ (_x getVariable ["GRLIB_battlegroup", false]) && (time > _x getVariable ["GRLIB_counter_TTL", 0]) } count (units _grp) > 0) exitWith { diag_log format ["Group %1 (%2) - TTL expired!", _grp, _veh_type];};
+	if ({ (_x getVariable ["GRLIB_battlegroup", false]) && (serverTime > _x getVariable ["GRLIB_counter_TTL", 0]) } count (units _grp) > 0) exitWith { diag_log format ["Group %1 (%2) - TTL expired!", _grp, _veh_type];};
 };
 
 // Cleanup
 waitUntil { sleep 30; (GRLIB_global_stop == 1 || [_last_pos, GRLIB_sector_size, GRLIB_side_friendly, 1] call F_getUnitsCount == 0) };
 [_vehicle, true] spawn cleanMissionVehicles;
-{ deleteVehicle _x } forEach (units _grp);
+{ [_x] call HPC_fnc_deleteUnit } forEach (units _grp);
 deleteGroup _grp;

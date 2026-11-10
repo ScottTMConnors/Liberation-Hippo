@@ -170,3 +170,5 @@ HPC_fnc_ambientTraffic = compileFinal preprocessFileLineNumbers "scripts\shared\
 HPC_fnc_sectorFortifications = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_sectorFortifications.sqf";
 HPC_fnc_sectorWalls = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_sectorWalls.sqf";
 HPC_fnc_deleteUnit = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_deleteUnit.sqf";
+// shared: also used by GetInMan EHs on server/HC-local prisoners and kamikazes
+vehicle_perm = compileFinal preprocessFileLineNumbers "scripts\client\misc\vehicle_perm.sqf";

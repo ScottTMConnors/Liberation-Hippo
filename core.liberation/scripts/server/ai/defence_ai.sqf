@@ -90,5 +90,5 @@ while { local _grp && {GRLIB_endgame == 0} && {({alive _x} count (units _grp) > 
 if (!local _grp) exitWith {};
 waitUntil { sleep 30; !local _grp || (GRLIB_global_stop == 1 || [_flagpos, GRLIB_sector_size, GRLIB_side_friendly, 1] call F_getUnitsCount == 0) };
 if (!local _grp) exitWith {};
-{ deleteVehicle _x } forEach (units _grp);
+{ [_x] call HPC_fnc_deleteUnit } forEach (units _grp);
 deleteGroup _grp;

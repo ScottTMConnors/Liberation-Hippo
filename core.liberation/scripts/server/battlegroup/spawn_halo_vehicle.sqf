@@ -22,7 +22,7 @@ _vehicle setVariable ["GRLIB_vehicle_reward", true, true];
 [_vehicle, 3600] call F_setUnitTTL;
 
 diag_log format ["Server Air Drop Vehicle %1 at %2", _vehicle_class, time];
-[_pos, "parasound"] spawn sound_range_remote_call;
+[_pos, "parasound"] remoteExec ["sound_range_remote_call", 2]; // server-only function; this may run on an HC
 [_vehicle, objNull, false] spawn F_addParachute;
 
 sleep 30;
