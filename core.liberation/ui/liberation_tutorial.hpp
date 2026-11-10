@@ -1,6 +1,6 @@
 class liberation_tutorial {
 	idd = 5353;
-    onLoad = "_this call compile preprocessFileLineNumbers 'scripts\client\misc\HPC_scaleDialog.sqf';";
+    onLoad = "if (isNil 'HPC_fnc_scaleDialog') then {_this call compile preprocessFileLineNumbers 'scripts\client\misc\HPC_scaleDialog.sqf'} else {_this call HPC_fnc_scaleDialog};";
 	movingEnable = false;
 	controlsBackground[] = {};
 

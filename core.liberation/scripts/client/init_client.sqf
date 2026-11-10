@@ -218,7 +218,7 @@ LRX_init_done = true;
 uiSleep 1;
 
 HPC_clientLoadingStage = [1,"Ready"];
-[] call HPC_fnc_loadingEnd;
+[true] call HPC_fnc_loadingEnd; // stay black until the intro camera takes over
 
 // Start intro
 diag_log "--- Client Intro start ---";

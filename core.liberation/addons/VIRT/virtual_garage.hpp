@@ -1,6 +1,6 @@
 class VIRT_vehicle_garage {
   	idd = 2301;
-    onLoad = "_this call compile preprocessFileLineNumbers 'scripts\client\misc\HPC_scaleDialog.sqf';";
+    onLoad = "if (isNil 'HPC_fnc_scaleDialog') then {_this call compile preprocessFileLineNumbers 'scripts\client\misc\HPC_scaleDialog.sqf'} else {_this call HPC_fnc_scaleDialog};";
 	name = "VIRT_vehicle_garage";
 	movingEnable = false;
 	enableSimulation = true;

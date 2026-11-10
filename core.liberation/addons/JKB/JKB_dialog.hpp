@@ -1,6 +1,6 @@
 class JKB_dialog {
   	idd = 2306;
-    onLoad = "_this call compile preprocessFileLineNumbers 'scripts\client\misc\HPC_scaleDialog.sqf';";
+    onLoad = "if (isNil 'HPC_fnc_scaleDialog') then {_this call compile preprocessFileLineNumbers 'scripts\client\misc\HPC_scaleDialog.sqf'} else {_this call HPC_fnc_scaleDialog};";
 	name = "JKB_dialog";
 	movingEnable = false;
 	enableSimulation = true;

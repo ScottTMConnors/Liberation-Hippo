@@ -17,7 +17,7 @@
 class par_deathscreen {
 
 	idd = 5651;
-    onLoad = "_this call compile preprocessFileLineNumbers 'scripts\client\misc\HPC_scaleDialog.sqf';";
+    onLoad = "if (isNil 'HPC_fnc_scaleDialog') then {_this call compile preprocessFileLineNumbers 'scripts\client\misc\HPC_scaleDialog.sqf'} else {_this call HPC_fnc_scaleDialog};";
 	movingEnable = false;
 	controls[] = {
 		"OuterBackground", "Skull", "WoundedLabel"
@@ -66,7 +66,7 @@ class par_deathscreen {
 
 class par_respawn {
 	idd = 5566;
-    onLoad = "_this call compile preprocessFileLineNumbers 'scripts\client\misc\HPC_scaleDialog.sqf';";
+    onLoad = "if (isNil 'HPC_fnc_scaleDialog') then {_this call compile preprocessFileLineNumbers 'scripts\client\misc\HPC_scaleDialog.sqf'} else {_this call HPC_fnc_scaleDialog};";
 	movingEnable = false;
 	controlsBackground[] = {};
 	controls[] = {"PAR_BleedoutBar","DetectionFrame","PAR_Respawn","PAR_RecallMedic","PAR_ReviveLabel","PAR_WoundedLabel","PAR_LRX_Tips"};

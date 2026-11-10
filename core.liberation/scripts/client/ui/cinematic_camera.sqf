@@ -17,6 +17,11 @@ _cinematic_pointer hideObject true;
 _cinematic_camera camSetTarget _cinematic_pointer;
 _cinematic_camera cameraEffect ["internal","back"];
 _cinematic_camera camcommit 0;
+// the startup backdrop is kept black after the loading screen until this camera is live
+if (missionNamespace getVariable ["HPC_startupBackdropHeld", false]) then {
+	HPC_startupBackdropHeld = false;
+	"HPC_StartupBackdrop" cutText ["", "BLACK IN", 1];
+};
 if ( isNil "first_camera_round" ) then { first_camera_round = true; };
 
 while { cinematic_camera_started } do {
