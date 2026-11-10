@@ -22,7 +22,23 @@ while {true} do {
             };
             sleep 0.1;
         } forEach _opfor_groups;
-        _unit setVariable ["GRLIB_unit_detected", _current, true];
+        // enemy AI on headless clients (local groups only are visible to knowsAbout here)
+        if (!isNil "HPC_undercoverReports") then {
+            {
+                _y params ["_report", "_at"];
+                if (diag_tickTime - _at < 10) then {
+                    { if ((_x select 0) == _unit) then { _current = _current max (_x select 1) } } forEach _report;
+                };
+            } forEach HPC_undercoverReports;
+            _stored = _unit getVariable ["GRLIB_unit_detected", 0];
+            if (_msg == "" && {_current >= 1.5 && _stored < _current}) then {
+                _msg = format ["%1 has been detected by the enemy (%2)", name _unit, _current];
+            };
+        };
+        // public: only when the value changes
+        if (_current != (_unit getVariable ["GRLIB_unit_detected", 0])) then {
+            _unit setVariable ["GRLIB_unit_detected", _current, true];
+        };
         if (_msg != "") then {
             [gamelogic, _msg] remoteExec ["globalChat", owner _unit];
         };

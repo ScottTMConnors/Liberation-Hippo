@@ -178,3 +178,4 @@ HPC_fnc_lockTowed = compileFinal preprocessFileLineNumbers "scripts\shared\funct
 HPC_fnc_hcInstallDamage = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_hcInstallDamage.sqf";
 HPC_fnc_rcFobAllowed = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_rcFobAllowed.sqf";
 HPC_fnc_patrolSlot = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_patrolSlot.sqf";
+HPC_fnc_undercoverReport = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_undercoverReport.sqf";
