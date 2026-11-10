@@ -1,4 +1,5 @@
 params ["_uid", "_ammo"];
+if !(call HPC_fnc_rcAdmin) exitWith {}; // admin menu only
 
 private _cur_ammo = 0;
 private _p1 = _uid call BIS_fnc_getUnitByUID;

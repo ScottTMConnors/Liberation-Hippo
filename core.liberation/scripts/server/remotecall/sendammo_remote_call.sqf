@@ -1,5 +1,10 @@
 if (!isServer && hasInterface) exitWith {};
 params ["_src", "_dst_id", "_ammo", "_fuel"];
+if !([_src] call HPC_fnc_rcCaller) exitWith { diag_log format ["--- LRX Security: sendammo rejected from owner %1", remoteExecutedOwner] };
+if !(_ammo isEqualType 0 && {_fuel isEqualType 0}) exitWith {};
+_ammo = floor (_ammo max 0);
+_fuel = floor (_fuel max 0);
+if (_ammo + _fuel == 0) exitWith {};
 
 private _dst = _dst_id call BIS_fnc_getUnitByUID;
 if (isNull _dst || !isPlayer _src || !isPlayer _dst || _src == _dst) exitWith {};

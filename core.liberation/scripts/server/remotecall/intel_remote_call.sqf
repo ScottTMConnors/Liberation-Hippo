@@ -2,6 +2,8 @@ if (!isServer && hasInterface) exitWith {};
 params ["_intel", "_unit_owner"];
 
 if (isNil "_intel") exitWith {};
+if (isNull _intel || {!(typeOf _intel in GRLIB_intel_items + GRLIB_ide_traps)}) exitWith {};
+if !([_unit_owner] call HPC_fnc_rcCaller) exitWith {};
 
 private _found = 0;
 private _rwd_intel = 0;

@@ -172,3 +172,5 @@ HPC_fnc_sectorWalls = compileFinal preprocessFileLineNumbers "scripts\shared\fun
 HPC_fnc_deleteUnit = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_deleteUnit.sqf";
 // shared: also used by GetInMan EHs on server/HC-local prisoners and kamikazes
 vehicle_perm = compileFinal preprocessFileLineNumbers "scripts\client\misc\vehicle_perm.sqf";
+HPC_fnc_rcCaller = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_rcCaller.sqf";
+HPC_fnc_rcAdmin = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_rcAdmin.sqf";

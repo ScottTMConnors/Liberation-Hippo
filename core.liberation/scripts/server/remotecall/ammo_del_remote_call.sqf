@@ -3,6 +3,9 @@ params ["_unit", "_ammo", "_fuel"];
 
 if (isNil "_unit") exitWith {};
 if (isNull _unit) exitWith {};
+if (!(_ammo isEqualType 0) || {!(_fuel isEqualType 0)} || {_ammo < 0} || {_fuel < 0} || {!([_unit] call HPC_fnc_rcCaller)}) exitWith {
+    _unit setVariable ["trx_complete", 3, true];
+};
 
 private _ammo_collected = _unit getVariable ["GREUH_ammo_count", 0];
 private _fuel_collected = _unit getVariable ["GREUH_fuel_count", 0];

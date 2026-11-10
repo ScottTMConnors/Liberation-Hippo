@@ -61,7 +61,7 @@ _wnded switchmove "AidlPpneMstpSnonWnonDnon_AI";
 
 if (_wnded == player) then {
 	group _wnded selectLeader _wnded;
-	private _bounty_ok = (([(GRLIB_capture_size * 2), getPosATL _medic] call F_getNearestSector) in opfor_sectors && _medic getVariable ["PAR_lastRevive",0] < time);
+	private _bounty_ok = (([(GRLIB_capture_size * 2), getPosATL _medic] call F_getNearestSector) in opfor_sectors && _medic getVariable ["PAR_lastRevive",0] < serverTime);
 	if (isPlayer _medic && _bounty_ok) then {
 		private _bonus = 5;
 		[_medic, _wnded, _bonus] remoteExec ["PAR_remote_bounty", 2];
