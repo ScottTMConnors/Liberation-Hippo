@@ -22,7 +22,7 @@ if (isNil "AR_active") then { AR_active = false };
 
 // Earplug
 (findDisplay 46) displayAddEventHandler ["KeyDown", {
-	if (_this select 1 == (actionKeys 'User12') select 0) then { [] spawn NRE_earplugs };
+	if (_this select 1 == (actionKeys 'User12') select 0 && {!isNil "NRE_earplugs"}) then { [] spawn NRE_earplugs }; // NRE is not loaded with ACE
 }];
 
 // Quick Eject

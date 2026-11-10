@@ -30,7 +30,6 @@ RPT_colorList = [
 	["Digital Desert 2", "./digi_desert2.paa"],
 	["Digital Woodland", "./digi_wood.paa"],
 	["Forest 1", "./foret1.paa"],
-	["Forest 2", "./raven.paa"],
 	["Jungle", "./jungle.paa"],
 	["Panzer Grey", "./panzergris.paa"],
 	["Urban", "./urban.paa"],

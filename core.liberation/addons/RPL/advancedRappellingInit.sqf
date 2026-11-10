@@ -241,7 +241,7 @@ AR_Get_Heli_Rappel_Points = {
 AR_Rappel_AI_From_Heli = {
 	params ["_player","_heli"];
 	{
-		if (!isNull objectParent _x && {((assignedVehicleRole _x) param [0, ""]) == "cargo"}) then {
+		if (vehicle _x == _heli && {((assignedVehicleRole _x) param [0, ""]) == "cargo"}) then { // only AI in this helicopter
 			sleep 1;
 			[_x, vehicle _x] call AR_Rappel_From_Heli;
 		};
@@ -580,7 +580,7 @@ AR_Rappel_AI_Units_From_Heli_Action_Check = {
 	if (count units _player <= 1) exitWith {false};
 	private _canRappelOne = false;
 	{
-		if (!isNull objectParent _x && assignedVehicleRole _x select 0 == "cargo") exitWith {_canRappelOne = true};
+		if (vehicle _x == _vehicle && {((assignedVehicleRole _x) param [0, ""]) == "cargo"}) exitWith {_canRappelOne = true};
 	} forEach (units player - [player]);
 	_canRappelOne;
 };

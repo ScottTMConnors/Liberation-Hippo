@@ -80,5 +80,5 @@ if (_unit == player) then {
 	removeAllWeapons _unit;
 	hideBody _unit;
 	sleep 10;
-	deleteVehicle _unit;
+	[_unit] call HPC_fnc_deleteUnit; // dead crew must leave the vehicle first
 };

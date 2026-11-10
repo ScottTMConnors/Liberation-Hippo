@@ -21,7 +21,11 @@ if (_unit == player) then {
 // The low-effects UI no longer has a cinematic delay to hide initialization.
 _unit setVariable ["HPC_woundReady", true];
 
-waitUntil { sleep 0.1; isNull objectParent _unit };
+// wait to be unloaded; the bleed-out clock is paused while carried in a vehicle
+private _inVehicleSince = time;
+waitUntil { sleep 0.1; !alive _unit || isNull objectParent _unit };
+if (!alive _unit) exitWith { [_unit] call HPC_fnc_restoreOrders; [(_unit getVariable ["PAR_myMedic", objNull]), _unit] call PAR_fn_medicRelease };
+_unit setVariable ["PAR_BleedOutTimer", (_unit getVariable ["PAR_BleedOutTimer", time]) + (time - _inVehicleSince), true];
 sleep 3;
 _unit switchMove "AinjPpneMstpSnonWrflDnon_rolltoback";
 _unit playMoveNow "AinjPpneMstpSnonWrflDnon_rolltoback";

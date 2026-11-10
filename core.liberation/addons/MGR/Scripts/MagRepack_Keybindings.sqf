@@ -47,7 +47,7 @@ outlw_MR_applyKeybinding =
 	}
 	else
 	{
-		_systemString = localize "STR_MGR_KEYBINDING_RESET";
+		_systemString = localize "STR_MGR_KEYBINDING_UPDATED";
 		closeDialog 0;
 	};
 	

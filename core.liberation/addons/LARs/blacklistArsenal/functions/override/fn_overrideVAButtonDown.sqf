@@ -40,7 +40,7 @@ switch (true) do {
 	case (_key == DIK_3);
 	case (_key == DIK_4);
 	case (_key == DIK_5);
-	case (_key == DIK_1);
+	case (_key == DIK_6);
 	case (_key == DIK_7);
 	case (_key == DIK_8);
 	case (_key == DIK_9);

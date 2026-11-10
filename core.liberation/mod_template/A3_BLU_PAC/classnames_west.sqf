@@ -47,7 +47,7 @@ units_loadout_overide = [
 ];
 
 // *** RESISTANCE - FIA Blu
-resistance_squad = [
+a3w_resistance_squad = [
 	"B_G_Soldier_AR_F",
 	"B_G_Soldier_GL_F",
 	"B_G_engineer_F",

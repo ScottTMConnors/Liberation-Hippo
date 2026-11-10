@@ -38,6 +38,8 @@ private _objects_to_build = [];
 while { dialog && alive player } do {
     if (build_action != 0) then {
         _selected_item = lbCurSel 110;
+        // no row selected: select -1 would pick the last template with an empty (free) price
+        if (_selected_item < 0) exitWith { build_action = 0 };
         _defense_name = (_display displayCtrl (110)) lnbText [_selected_item, 0];
         _defense_price = (_display displayCtrl (110)) lnbText [_selected_item, 1];
         _defense_path = GRLIB_FOB_Defense select _selected_item select 1;

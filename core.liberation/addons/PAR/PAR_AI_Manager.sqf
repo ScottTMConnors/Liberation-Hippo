@@ -23,7 +23,7 @@ while {true} do {
 			private _ai_score = _unit getVariable ["PAR_AI_score", nil];
 			private _ai_skill = skill _unit;
 			if (!isNil "_ai_score") then {
-				if (_ai_score <= 0 && _ai_skill < 0.85) then {
+				if (_ai_score <= 0 && _ai_skill < 0.85 && {rank _unit != "COLONEL"}) then {
 					private _ai_rank = GRLIB_rank_level select (GRLIB_rank_level find (rank _unit)) + 1;
 					_unit setSkill (_ai_skill + 0.05);
 					_unit setUnitRank _ai_rank;
