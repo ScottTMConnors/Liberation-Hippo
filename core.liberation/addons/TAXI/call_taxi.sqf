@@ -18,7 +18,7 @@ build_unit = [taxi_helipad_type,[],1,[],[],[],[]];
 dobuild = 1;
 
 waitUntil { sleep 0.5; dobuild == 0};
-if (build_confirmed == 3) exitWith {};
+if (build_confirmed == 3 || {isNull build_vehicle}) exitWith {};
 
 GRLIB_taxi_helipad = build_vehicle;
 GRLIB_taxi_helipad_created = true;

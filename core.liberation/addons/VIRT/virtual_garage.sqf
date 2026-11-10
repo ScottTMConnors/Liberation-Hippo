@@ -142,7 +142,7 @@ while { dialog && alive player } do {
 				dobuild = 1;
 
 				waitUntil {sleep 0.5; dobuild == 0};
-				if (build_confirmed == 0) then {
+				if (build_confirmed == 0 && {!isNull build_vehicle}) then { // build_vehicle is null when the build failed
 					hintSilent (format ["Vehicle %1\nUnloaded from Garage.", [(_vehicle select 0)] call F_getLRXName]);
 					GRLIB_virtual_garage deleteAt _selected_item;
 					player setVariable ["GRLIB_virtual_garage", GRLIB_virtual_garage, true];

@@ -1,6 +1,7 @@
 params ["_fob_pos"];
 
-if (!isNil "GRLIB_fob_inuse") exitWith {};
+// wait for a FOB build/upgrade in progress instead of skipping the destruction
+waitUntil { sleep 0.5; isNil "GRLIB_fob_inuse" };
 GRLIB_fob_inuse = true;
 
 private _fob_name = [_fob_pos] call F_getFobName;

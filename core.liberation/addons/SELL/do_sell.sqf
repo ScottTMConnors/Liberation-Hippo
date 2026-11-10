@@ -21,6 +21,16 @@ if (_nearfob) then {
 sell_action = 0;
 private _refresh = true;
 private _price = 0;
+private _fnc_sellPrice = {
+	params ["_obj"];
+	private _p = [_obj] call F_loadoutPrice;
+	if (_nearfob || typeOf _obj in GRLIB_Ammobox_temp) then {
+		_p = round (_p * GRLIB_recycling_percentage);
+	} else {
+		_p = round (_p / GRLIB_recycling_percentage);
+	};
+	_p
+};
 
 while { dialog && alive player } do {
 	if (_refresh) then {
@@ -38,12 +48,7 @@ while { dialog && alive player } do {
 
 		private _sell_list_dlg = [];
 		{
-			_price = [_x] call F_loadoutPrice;
-			if (_nearfob || typeOf _x in GRLIB_Ammobox_temp) then {
-				_price = round (_price * GRLIB_recycling_percentage);
-			} else {
-				_price = round (_price / GRLIB_recycling_percentage);
-			};
+			_price = [_x] call _fnc_sellPrice;
 			if (_price > 0) then { _sell_list_dlg pushBack [(typeOf _x), _price, _x] };
 		} forEach _sell_list;
 		// keep object list aligned with the dialog rows (zero-price objects are not listed)
@@ -79,6 +84,12 @@ while { dialog && alive player } do {
 				private _vehicle = _sell_list select _selected_item;
 				private _msg = format [localize "STR_SELL_CONFIRM", _vehicle_name, _price];
 				private _result = [_msg, localize "STR_SELL_BUTTON", true, true] call BIS_fnc_guiMessage;
+				// the cargo may have changed while the confirmation was open (emptied by
+				// another player, or sold by someone else): price it again before paying
+				if (_result && {isNull _vehicle || {!alive _vehicle} || {_vehicle distance2D player > 50} || {(([_vehicle] call _fnc_sellPrice) min 999) != _price}}) then {
+					_result = false;
+					gamelogic globalChat localize "STR_NOTHING_TO_SELL";
+				};
 				if (_result) then {
 					[_vehicle] call F_clearCargo;
 					[player, _price, 0] remoteExec ["ammo_add_remote_call", 2];

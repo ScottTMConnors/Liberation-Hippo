@@ -145,7 +145,8 @@ while {alive _unit && _continue} do {
 				sleep 3;
 				["a3\sounds_f\sfx\ui\vehicles\vehicle_repair.wss", _target, false, getPosASL _target, 3, 1, 250] call F_playSound;
 				sleep 3;
-				{ _target setHitPointDamage [_x, 0] } forEach (getAllHitPointsDamage _target select 0);
+				// setHitPointDamage takes a local argument: player vehicles are local to their owner
+				{ [_target, [_x, 0]] remoteExec ["setHitPointDamage", _target] } forEach (getAllHitPointsDamage _target select 0);
 				_unit stop false;
 				_unit switchMove "AmovPercMwlkSnonWnonDf";
 				_unit playMoveNow "AmovPercMwlkSnonWnonDf";
@@ -226,7 +227,7 @@ while {alive _unit && _continue} do {
 				sleep 3;
 				if (_target isKindOf "AllVehicles") then {
 					_hit_index = selectRandom ["HitBody", "HitEngine", "HitFuel", "HitLFWheel", "HitLBWheel", "HitRFWheel", "HitRBWheel"];
-					_target setHitPointDamage [_hit_index, 1];
+					[_target, [_hit_index, 1]] remoteExec ["setHitPointDamage", _target];
 				} else {
 					_damage = damage _target;
 					_target setDamage (_damage + 0.25);

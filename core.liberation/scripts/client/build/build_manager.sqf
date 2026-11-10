@@ -92,6 +92,7 @@ while {true} do {
 
 	build_confirmed = 1;
 	build_valid = true;
+	build_vehicle = objNull; // callers test it: stays null when this build fails
 	_classname = "";
 	_fob_box = objNull;
 	_buildtype = buildtype;
@@ -503,8 +504,8 @@ while {true} do {
 				if (_ammo > 0) then {
 					_vehicle setVehicleAmmo _ammo;
 				};
-				// Preset Inventory
-				[_vehicle] call F_vehiclePreset;
+				// Preset Inventory (not over a restored inventory: that already holds it)
+				if (count _lst_a3 == 0) then { [_vehicle] call F_vehiclePreset };
 			};
 
 			// A3 / R3F Inventory
