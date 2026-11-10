@@ -148,7 +148,7 @@ try {
     Start-Sleep -Seconds 5
     if ($p.HasExited) { throw 'Server exited during startup; inspect the server RPT.' }
 } finally {
-    [pscustomobject]@{bindAddress=$c.bindAddress;port=$c.port;gameDirectory=$c.gameDirectory;workshopDirectory=$c.workshopDirectory;runtime=$c.runtimeDirectory;
+    [pscustomobject]@{configPath=$c.configPath;bindAddress=$c.bindAddress;port=$c.port;gameDirectory=$c.gameDirectory;workshopDirectory=$c.workshopDirectory;runtime=$c.runtimeDirectory;
         missionVersion=$(if($manifest){$manifest.version}else{$null});missionSHA256=$packageHash;sourceCommit=$(if($manifest){$manifest.source_commit}else{$null});
         mallocArgs=$mallocArgs;creatorDlc=$c.creatorDlc;mods=$preset;headlessCount=$c.headlessClients;headlessState='waiting_for_manual_start';processes=$owned} |
         ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $c.runtimeDirectory 'session.json')

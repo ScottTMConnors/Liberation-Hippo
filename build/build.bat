@@ -13,12 +13,14 @@ echo GRLIB_build_version = "%GRLIB_version%";>> %GRLIB_file%
 for /f %%i in ('dir /B /A:D ..\maps\liberation_RX*') do (
 	echo.
 	echo Building PBO for map %%i 
+	if exist .\%%i\ rmdir /S /Q %%i
 	xcopy /Q /E /Y ..\core.liberation .\%%i\
 	xcopy /Q /E /Y ..\maps\%%i .\%%i\
 	if exist .\custom\ xcopy /Q /E /Y .\custom .\%%i\
 	python ..\tools\mission_compact.py .\%%i --report .\%%i.compaction.json
 	if errorlevel 1 exit /b 1
 	bin\PBOConsole.exe -pack %%i .\%%i.pbo  > nul 2>&1
+	if errorlevel 1 exit /b 1
 	rmdir /S /Q %%i
 	echo Done.
 )

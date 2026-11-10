@@ -105,6 +105,11 @@ function Get-HippoSessionArgs($Session) {
     $mods = @($Session.creatorDlc | Where-Object { $_ } | ForEach-Object { Join-Path $game $_ }) + @($Session.mods | Where-Object { $_ } | ForEach-Object { Join-Path $workshop $_.id })
     $common = @('-noSplash','-skipIntro','-noPause','-world=empty','-noSound','-enableHT','-exThreads=1') + $malloc
     if ($mods.Count) { $common += ('-mod="'+($mods -join ';')+'"') }
+    # The join password is not stored in session.json: read it from the server config.
+    if ($Session.PSObject.Properties['configPath'] -and $Session.configPath -and (Test-Path -LiteralPath $Session.configPath)) {
+        $password = (Get-HippoServerConfig $Session.configPath).password
+        if ($password) { $common += ('-password="'+$password+'"') }
+    }
     return $common
 }
 
