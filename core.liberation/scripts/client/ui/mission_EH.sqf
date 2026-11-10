@@ -25,7 +25,7 @@ private _fnc_ownerName = {
 				};
 			};
 
-			if (dobuild == 0) then {
+			if ((missionNamespace getVariable ["dobuild", 0]) == 0) then { // build_manager defines dobuild later
 				private _box = (nearestObjects [player, [playerbox_typename], 3]) param [0, objNull];
 				if (!isNull _box) then {
 					private _name = [_box getVariable ["GRLIB_vehicle_owner", ""]] call _fnc_ownerName;
