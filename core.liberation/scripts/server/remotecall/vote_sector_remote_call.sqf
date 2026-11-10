@@ -1,4 +1,5 @@
 params ["_caller", "_sector"];
+if (isNil "_caller" || {!([_caller] call HPC_fnc_rcCaller)}) exitWith {}; // one vote per player, cast by that player
 
 if (alive _caller && GRLIB_Commander_VoteEnabled && _sector in GRLIB_AvailAttackSectors) then {
     GRLIB_Sector_Votes set [getPlayerUID _caller, _sector];

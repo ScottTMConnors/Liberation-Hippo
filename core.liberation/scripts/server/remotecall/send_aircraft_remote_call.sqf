@@ -3,6 +3,7 @@ params ["_unit"];
 
 if (isNil "_unit") exitWith {};
 if (isNull _unit) exitWith {};
+if !([_unit] call HPC_fnc_rcCaller) exitWith {}; // the caller pays on its own client: it must be that player
 
 private _plane_count = 3 + (floor random 4);
 private _target = [sectors_allSectors, _unit] call F_nearestPosition;

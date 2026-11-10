@@ -3,6 +3,7 @@ params ["_unit", "_position"];
 
 if (isNil "_unit") exitWith {};
 if (isNull _unit) exitWith {};
+if !([_unit] call HPC_fnc_rcCaller) exitWith {}; // the caller pays on its own client: it must be that player
 
 _targetsector = [300, _position ] call F_getNearestSector;
 _msg = format ["Commander <t color='#00008f'>%1</t>, ask for<br/><br/>

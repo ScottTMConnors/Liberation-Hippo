@@ -1,7 +1,15 @@
 if (!isServer && hasInterface) exitWith {};
 params ["_fob_pos", "_owner"];
+if !([_fob_pos] call HPC_fnc_rcFobAllowed) exitWith { diag_log format ["--- LRX Security: upgrade FOB rejected from owner %1", remoteExecutedOwner] };
 
-if (!isNil "GRLIB_fob_inuse") exitWith {};
+// another FOB operation is running: refund the 1000 the client already paid
+if (!isNil "GRLIB_fob_inuse") exitWith {
+	private _payer = _owner call BIS_fnc_getUnitByUID;
+	if (!isNull _payer) then {
+		[_payer, 1000, 0] call ammo_add_remote_call;
+		[gamelogic, "Another FOB operation is in progress, upgrade refunded. Try again in a few seconds."] remoteExec ["globalChat", owner _payer];
+	};
+};
 GRLIB_fob_inuse = true;
 
 [_fob_pos, "Land_Carrier_01_blast_deflector_up_sound"] spawn sound_range_remote_call;
@@ -10,6 +18,7 @@ private _sector = [_fob_pos] call F_getFobMarker;
 [_sector, 0] call sector_defenses_remote_call;
 
 private _outpost = nearestObjects [_fob_pos, [FOB_outpost], 30] select 0;
+if (isNil "_outpost") exitWith { GRLIB_fob_inuse = nil; diag_log format ["--- LRX Error: no outpost to upgrade at %1", _fob_pos] };
 private _outpost_sign = nearestObjects [_fob_pos, [FOB_sign], 30] select 0;
 private _outpost_dir = getDir _outpost;
 { deleteVehicle _x } forEach [_outpost, _outpost_sign] + (_fob_pos nearEntities ["LandVehicle", 20]);
