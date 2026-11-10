@@ -174,3 +174,4 @@ HPC_fnc_deleteUnit = compileFinal preprocessFileLineNumbers "scripts\shared\func
 vehicle_perm = compileFinal preprocessFileLineNumbers "scripts\client\misc\vehicle_perm.sqf";
 HPC_fnc_rcCaller = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_rcCaller.sqf";
 HPC_fnc_rcAdmin = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_rcAdmin.sqf";
+HPC_fnc_lockTowed = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_lockTowed.sqf";

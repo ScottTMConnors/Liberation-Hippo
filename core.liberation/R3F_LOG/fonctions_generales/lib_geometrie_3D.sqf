@@ -627,6 +627,8 @@ R3F_LOG_FNCT_3D_cursorTarget_virtuel = {
 
 	_liste_ingores = if (!isNil "_this" && {typeName _this == "ARRAY" && {count _this > 0}}) then {_this select 0} else {[]};
 	_distance_max = if (!isNil "_this" && {typeName _this == "ARRAY" && {count _this > 1}}) then {_this select 1} else {10};
+	// callers pass the carried object itself; "obj in obj" is the crew test, so wrap it in a list
+	if (_liste_ingores isEqualType objNull) then {_liste_ingores = [_liste_ingores]};
 	_joueur = player;
 
 	_objet_pointe = objNull;

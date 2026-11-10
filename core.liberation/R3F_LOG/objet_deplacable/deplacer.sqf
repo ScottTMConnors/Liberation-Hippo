@@ -140,10 +140,10 @@ else
 					if (handgunWeapon _joueur != "") then
 					{
 						_restaurer_arme = false;
-						for [{_idx_muzzle = 0}, {currentWeapon _joueur != handgunWeapon _joueur}, {_idx_muzzle = _idx_muzzle+1}] do
-						{
-							_joueur action ["SWITCHWEAPON", _joueur, _joueur, _idx_muzzle];
-						};
+						// bounded: an unbounded switch loop could hold R3F_LOG_mutex_local_verrou forever
+						_joueur selectWeapon (handgunWeapon _joueur);
+						private _switch_timeout = time + 3;
+						waitUntil {sleep 0.05; currentWeapon _joueur == handgunWeapon _joueur || time > _switch_timeout || !alive _joueur};
 					}
 					// Sinon pas d'arme dans les mains
 					else
@@ -455,14 +455,7 @@ else
 				// Reprise de l'arme et restauration de son mode de tir, si n�cessaire
 				if (alive _joueur && !surfaceIsWater getPos _joueur && _restaurer_arme) then
 				{
-					for [{_idx_muzzle = 0},
-						{currentWeapon _joueur != _arme_courante ||
-						currentMuzzle _joueur != _muzzle_courant ||
-						currentWeaponMode _joueur != _mode_muzzle_courant},
-						{_idx_muzzle = _idx_muzzle+1}] do
-					{
-						_joueur action ["SWITCHWEAPON", _joueur, _joueur, _idx_muzzle];
-					};
+					_joueur selectWeapon [_arme_courante, _muzzle_courant, _mode_muzzle_courant];
 				};
 
 				sleep 5;

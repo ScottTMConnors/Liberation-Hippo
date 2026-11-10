@@ -63,7 +63,7 @@ else
 								if (typeOf _objet in uavs_vehicles) then {
 									player disableUAVConnectability [_objet, true];
 									player connectTerminalToUAV objNull;
-									{ deleteVehicle _x } foreach (crew _objet);
+									[_objet] remoteExec ["deleteVehicleCrew", _objet]; // UAV crew: delete where the vehicle is local
 								};
 
 								systemChat format [STR_R3F_LOG_action_charger_fait,

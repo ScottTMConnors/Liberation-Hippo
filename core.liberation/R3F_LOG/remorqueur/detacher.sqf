@@ -43,10 +43,7 @@ if (R3F_LOG_mutex_local_verrou) then {
 
 		// Unlock Vehicles
 		if (_objet isKindOf "AllVehicles") then {
-			_objet lockCargo false;
-			_objet lockDriver false;
-			for "_i" from 0 to (_objet emptyPositions ["Cargo", true]) do { _objet lockCargo [_i, false] };
-			{ _objet lockTurret [_x, false] } forEach (allTurrets [_objet, true]);
+			[_objet, false] call HPC_fnc_lockTowed; // runs where the vehicle is local
 			[_objet] spawn F_vehicleUnflip;	
 		};
 		

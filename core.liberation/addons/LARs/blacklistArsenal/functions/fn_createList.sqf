@@ -35,7 +35,7 @@ switch ( toLower _listType ) do {
 				//if we passed a side
 				case ( typeName sideUnknown ) : {
 					//Add sides gear to the list
-					_newList = _newList + ( LARs_sideGear select ( _x call BIS_fnc_sideID ));
+					_newList = _newList + (( missionNamespace getVariable ["LARs_sideGear", []] ) param [( _x call BIS_fnc_sideID ), []]); // side gear lists are not generated in this mission
 				};
 
 				//if we passed an item classname or a global var or CfgPatches class
@@ -73,7 +73,7 @@ switch ( toLower _listType ) do {
 					{
 						//foreach item in the array recall this script
 						_newList = [ _listType, _x, _newlist ] call LARs_fnc_createList;
-					}forEach _list;
+					}forEach _x; // the nested array, not the whole outer list
 				};
 
 			};
