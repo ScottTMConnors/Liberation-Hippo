@@ -1,6 +1,29 @@
 private _deadline = diag_tickTime + 130;
 waitUntil {sleep 0.5; count (missionNamespace getVariable ["HPC_headlessClients",[]]) == 2 || diag_tickTime > _deadline};
 ["hc.connected",count (missionNamespace getVariable ["HPC_headlessClients",[]]) == 2] call _assert;
+// Enemy patrol on an HC. The server picks the sector and passes its position:
+// A3W_mission_sectors and the dyn_mission markers exist only on the server.
+// A dispatch without a sector must still give its patrol slot back.
+if (isNil "GRLIB_patrol_current") then {GRLIB_patrol_current = 0; GRLIB_patrol_sectors = []};
+private _hcOwner = owner (HPC_headlessClients select 0);
+private _dynSectors = (missionNamespace getVariable ["A3W_mission_sectors",[]]) select {_x find "dyn_mission" == 0};
+private _patrolSector = if (_dynSectors isEqualTo []) then {sectors_allSectors select 0} else {_dynSectors select 0};
+private _patrolPos = markerPos _patrolSector;
+private _slotsBefore = GRLIB_patrol_current;
+["take","",_hcOwner] call HPC_fnc_patrolSlot;
+[_patrolSector,_patrolPos] remoteExec ["manage_one_enemy_patrol",_hcOwner];
+["take","",_hcOwner] call HPC_fnc_patrolSlot;
+[] remoteExec ["manage_one_enemy_patrol",_hcOwner];
+private _patrolGroups = [];
+_deadline = diag_tickTime + 40;
+waitUntil {
+    sleep 1;
+    _patrolGroups = allGroups select {side _x == GRLIB_side_enemy && {groupOwner _x > 2} && {(leader _x) distance2D _patrolPos < 2500}};
+    (_patrolSector in GRLIB_patrol_sectors && {GRLIB_patrol_current == _slotsBefore + 1} && {_patrolGroups isNotEqualTo []}) || diag_tickTime > _deadline
+};
+diag_log ["HPC_PATROL_EVIDENCE",_patrolSector,_patrolPos,_hcOwner,GRLIB_patrol_current,GRLIB_patrol_sectors,_patrolGroups apply {[netId _x,groupOwner _x,count units _x]},(allGroups select {side _x == GRLIB_side_enemy}) apply {[groupOwner _x,getPosATL leader _x]}];
+["hc.patrol",_dynSectors isNotEqualTo [] && {_patrolSector in GRLIB_patrol_sectors} && {GRLIB_patrol_current == _slotsBefore + 1} && {_patrolGroups isNotEqualTo []}] call _assert;
+{private _g = _x; {if (vehicle _x != _x) then {deleteVehicle vehicle _x}; deleteVehicle _x} forEach units _g} forEach _patrolGroups;
 // Legacy sector defenders and native waypoint patrols must now leave the server
 // and retain a live behaviour controller on their new owner.
 private _legacyPos = (markerPos "base_chimera") vectorAdd [300,300,0];

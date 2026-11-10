@@ -1,24 +1,13 @@
-params ["_level"];
+// Runs on the server or a headless client. The server took the patrol slot and
+// chose the sector (enemy_patrols.sqf); the position is passed because mission
+// sector markers are local to the server.
+params [["_sector", "", [""]], ["_sector_pos", [], [[]]]];
 
-diag_log format ["--- LRX Enemy Patrol - trigger alert %1", _level];
-
-// the patrol slot was taken by the server when it dispatched this patrol (enemy_patrols.sqf)
-
-waitUntil { sleep 1; combat_readiness >= _level };
-
-private _search_sectors_all = (sectors_allSectors + sectors_opforSpawn + A3W_mission_sectors) - (active_sectors + GRLIB_patrol_sectors);
-private _patrol_sectors_list = _search_sectors_all select {
-	([markerPos _x, GRLIB_spawn_max, GRLIB_side_friendly, 1] call F_getUnitsCount > 0) &&
-	([markerPos _x, GRLIB_sector_size, GRLIB_side_friendly, 1] call F_getUnitsCount == 0) &&
-	([markerPos _x, GRLIB_spawn_min, GRLIB_side_enemy, 11] call F_getUnitsCount < 10)
-};
-
-if (count _patrol_sectors_list == 0) exitWith {
+if (_sector == "" || count _sector_pos < 2) exitWith {
+	diag_log format ["--- LRX Enemy Patrol - bad arguments %1", _this];
 	["release", "", [clientOwner, 2] select isServer] remoteExecCall ["HPC_fnc_patrolSlot", 2];
 };
 
-private _sector = selectRandom _patrol_sectors_list;
-private _sector_pos = markerPos _sector;
 private _opfor_veh = objNull;
 private _opfor_grp = grpNull;
 

@@ -146,7 +146,7 @@ def main():
     if args.movement: cases+=['civilians.displacement','outpost.commanderInterior','outpost.defenders']
     if args.scenario: cases+=['warfare.spawn','sector.commanderGate','sector.capture','warfare.cleanup']
     if args.commander: cases+=['commander.emptyRoster','commander.townLoaded','commander.progress','warfare.enemyFOB','commander.orders','commander.guardLocked','commander.returnFlag','intel.merge']
-    if args.headless: cases+=['hc.connected','hc.legacy','hc.warfare','hc.balanced','hc.weighted','hc.playerSafe','hc.orders','hc.recovered','hc.rejoined','hc.serverFallback','hc.cleanup']
+    if args.headless: cases+=['hc.connected','hc.patrol','hc.legacy','hc.warfare','hc.balanced','hc.weighted','hc.playerSafe','hc.orders','hc.recovered','hc.rejoined','hc.serverFallback','hc.cleanup']
     if args.attribution: cases=['engine.compile','startup.server','reward.squad','reward.vehicleHistory','reward.vehicleBounty','reward.projectile']
     if args.control: cases=['control']
     if args.baseline: cases=['startup.server']
