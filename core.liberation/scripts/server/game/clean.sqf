@@ -156,8 +156,9 @@ while {GRLIB_run_cleanup} do {
 		_deadVehicleDistCheck = false;
 	};
 
+	private _tick = 0; // every 5 minutes, whatever the cycle length (_sleep is not always a multiple of 300)
 	waitUntil {
-		if (_sleep % 300 == 0) then {
+		if (_tick % 5 == 0) then {
 			// FORCE DELETE
 			{ deleteVehicle _x } forEach (entities [GRLIB_force_cleanup_classnames, []]);
 
@@ -170,6 +171,7 @@ while {GRLIB_run_cleanup} do {
 			} forEach allDeadMen;
 		};
 		sleep 60;
+		_tick = _tick + 1;
 		_sleep = _sleep - 60;
 		(_sleep <= 0 || GRLIB_force_cleanup)
 	};

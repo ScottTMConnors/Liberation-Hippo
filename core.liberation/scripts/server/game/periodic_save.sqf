@@ -8,6 +8,11 @@ while { GRLIB_endgame == 0 && GRLIB_global_stop == 0 } do {
 	// check for disconnected players every 2 minutes
 	if (_ticks % 2 == 0) then {
 		_current_uid = (allPlayers select {!(_x isKindOf "HeadlessClient_F")}) apply { getPlayerUID _x };
+		// players still connected without a unit (lobby, loading) have not left
+		private _connected_uid = +_current_uid;
+		if (isMultiplayer) then {
+			_connected_uid = ((allUsers apply { getUserInfo _x }) select { count _x > 7 && {!(_x select 7)} }) apply { _x select 2 };
+		};
 		{
 		    _uid = _x;
 			if (_uid != "") then {
@@ -17,8 +22,9 @@ while { GRLIB_endgame == 0 && GRLIB_global_stop == 0 } do {
 					[_uid] call cleanup_uid;
 				};
 			};
-		} forEach (GRLIB_players_known_uid - _current_uid);
-		GRLIB_players_known_uid = _current_uid;
+		} forEach (GRLIB_players_known_uid - _connected_uid);
+		GRLIB_players_known_uid = GRLIB_players_known_uid arrayIntersect _connected_uid;
+		{ GRLIB_players_known_uid pushBackUnique _x } forEach _current_uid;
 	};
 
 	// save player contexts every 10 minutes

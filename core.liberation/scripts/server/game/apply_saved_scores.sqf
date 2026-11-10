@@ -11,7 +11,7 @@ private [
 ];
 
 while {true} do {
-	_newscores = GRLIB_player_scores;
+	_newscores = +GRLIB_player_scores; // copy: changes are published only when something changed
 	_knownplayers = GRLIB_player_scores apply { _x select 0 };
 
 	{
@@ -92,7 +92,9 @@ while {true} do {
 		};
 	} foreach (AllPlayers - (entities "HeadlessClient_F"));
 
-	GRLIB_player_scores = _newscores;
-	publicVariable "GRLIB_player_scores";
+	if !(_newscores isEqualTo GRLIB_player_scores) then {
+		GRLIB_player_scores = _newscores;
+		publicVariable "GRLIB_player_scores";
+	};
 	uiSleep 5;
 };

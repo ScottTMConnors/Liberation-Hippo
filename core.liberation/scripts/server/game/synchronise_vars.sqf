@@ -1,6 +1,7 @@
 waitUntil {sleep 1; !isNil "GRLIB_init_server"};
 
 private _blufor_sectors = [];
+private _last_published = createHashMap;
 
 if (isNil "active_sectors") then {active_sectors = []};
 publicVariable "active_sectors";
@@ -16,17 +17,19 @@ while { _loop } do {
 	opfor_sectors = (sectors_allSectors - blufor_sectors);
 
 	if !(blufor_sectors isEqualTo _blufor_sectors) then {
-		_blufor_sectors = blufor_sectors;
+		_blufor_sectors = +blufor_sectors; // copy: callers change blufor_sectors in place
 		publicVariable "blufor_sectors";
 	};
 
 	opforcap_max = (opforcap >= GRLIB_opforcap);
 
-	publicVariable "civcap";
-	publicVariable "unitcap";
-	publicVariable "opforcap_max";
-	publicVariable "combat_readiness";
-	publicVariable "resources_intel";
+	// publish only the values that changed (each publicVariable is a broadcast)
+	{
+		if !((missionNamespace getVariable _x) isEqualTo (_last_published getOrDefault [_x, "<none>"])) then {
+			_last_published set [_x, missionNamespace getVariable _x];
+			publicVariable _x;
+		};
+	} forEach ["civcap", "unitcap", "opforcap_max", "combat_readiness", "resources_intel"];
 
 	sleep 5;
 	stats_playtime = stats_playtime + 5;
