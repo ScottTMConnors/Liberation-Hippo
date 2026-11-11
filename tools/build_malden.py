@@ -17,6 +17,9 @@ GAME=Path(os.environ.get('ARMA3_DIR', 'C:/Program Files (x86)/Steam/steamapps/co
 
 def sha(path): return hashlib.sha256(path.read_bytes()).hexdigest()
 
+# Mission browser / lobby description (written into each map's mission.sqm).
+OVERVIEW_TEXT='Hippos Conquest: a Liberation RX fork. Capture the island sector by sector with your squad: build FOBs, command AI forces and manage manpower, ammo and fuel.'
+
 # Map folder suffix -> terrain name shown in Arma.
 MAPS={'Malden':'Malden 2035','Tanoa':'Tanoa'}
 
@@ -54,6 +57,13 @@ def stamp_identity(stage, version):
         text=decoded.read_text(encoding='utf-8-sig')
         text,count=re.subn(r'\bbriefingName\s*=\s*"[^"]*";',lambda m:f'briefingName="{title}";',text)
         if count!=1: raise RuntimeError('Expected one Intel briefingName in mission.sqm')
+        # The server browser and lobby read picture, text and author from ScenarioData
+        # (description.ext is only parsed once the mission loads).
+        overview=('\tauthor="TheHungryHippo";\n\toverviewPicture="res\\overview.paa";\n\toverviewText="'
+                  +OVERVIEW_TEXT+'";\n\tloadScreen="res\\liberation.paa";\n\tonLoadName="'+title+'";\n\tonLoadMission="'+OVERVIEW_TEXT+'";\n')
+        text=re.sub(r'(?m)^\t(author|overviewPicture|overviewText|loadScreen|onLoadName|onLoadMission)=.*;\r?\n','',text)
+        text,count=re.subn(r'(class ScenarioData\r?\n\{\r?\n)',lambda m:m[1]+overview,text,count=1)
+        if count!=1: raise RuntimeError('Expected a ScenarioData class in mission.sqm')
         decoded.write_text(text,encoding='utf-8')
         subprocess.run([str(converter),'-bin','-dst',str(stage/'mission.sqm'),str(decoded)],check=True,capture_output=True)
         verified=Path(folder)/'verified.cpp'
