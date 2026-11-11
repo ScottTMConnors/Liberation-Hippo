@@ -85,6 +85,25 @@ while {true} do {
 			(_overlay displayCtrl 105) ctrlSetText format ["%1%2", round combat_readiness, "%"];
 			(_overlay displayCtrl 106) ctrlSetText str (round resources_intel);
 
+			// Rank strip: insignia, rank name, XP toward the next rank.
+			private _xp = player getVariable ["GREUH_score_count", 0];
+			([_xp] call HPC_fnc_rankInfo) params ["_rankName", "_rankIcon", "_rankFloor", "_rankNext", "_nextName", "_rankTint"];
+			(_overlay displayCtrl 531) ctrlSetText _rankIcon;
+			(_overlay displayCtrl 531) ctrlSetTextColor _rankTint;
+			(_overlay displayCtrl 532) ctrlSetText toUpper _rankName;
+			private _barBG = ctrlPosition (_overlay displayCtrl 534);
+			private _ratio = 1;
+			if (_rankNext > 0) then {
+				_ratio = linearConversion [_rankFloor, _rankNext, _xp, 0, 1, true];
+				(_overlay displayCtrl 533) ctrlSetText format ["%1 / %2 XP", _xp, _rankNext];
+				(_overlay displayCtrl 533) ctrlSetTooltip format ["Next rank: %1", _nextName];
+			} else {
+				(_overlay displayCtrl 533) ctrlSetText format ["%1 XP  -  top rank", _xp];
+			};
+			private _bar = _overlay displayCtrl 535;
+			_bar ctrlSetPosition [_barBG select 0, _barBG select 1, (_barBG select 2) * _ratio, _barBG select 3];
+			_bar ctrlCommit 0.4;
+
 			_color_readiness = [0.85,0.88,0.9,1];
 			if (combat_readiness >= 25) then { _color_readiness = [0.95,0.88,0.35,1] };
 			if (combat_readiness >= 50) then { _color_readiness = [0.98,0.70,0.30,1] };

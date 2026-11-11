@@ -50,7 +50,7 @@ private _buy_list_dlg = [];
 {
 	private _price = [_x select 0, _buy_list_veh] call F_getObjectPrice;
 	_price = round (_price * (1 + _ratio));
-	if (_rank == "Super Colonel") then { _price = round (_price / 2)};
+	if (_rank == "General") then { _price = round (_price / 2)};
 	_buy_list_dlg pushBack [_x select 0, _price];
 } forEach _buy_list_veh;
 

@@ -124,7 +124,7 @@ private _xp = [
 	["+1", "Kill enemy infantry", _cGood] call _row
 ];
 private _losses = [
-	["-250", "A FOB is lost while you are Captain+ and away from it", _cBad] call _row,
+	["-250", "A FOB is lost while you are Lieutenant or above and away from it", _cBad] call _row,
 	["-10", "Respawn above Sergeant + 50 XP", _cBad] call _row
 ];
 if (GRLIB_civ_penalties > 0) then {
@@ -143,17 +143,28 @@ if (GRLIB_tk_mode > 0) then {
 _xp append (["Losses" call _sub] + _losses);
 ["HPC_Guide", "XP Rewards", _xp] call _add;
 
-// Ranks (top)
-["HPC_Guide", "Ranks", [
+// Ranks (top): the game's own insignia next to each rank.
+// Unlocks are attached to the ranks that start a new tier (F_getRank thresholds).
+private _unlockKeys = createHashMapFromArray [
+	["Private", "STR_RANK_LVL1"], ["Corporal", "STR_RANK_LVL2"], ["Sergeant", "STR_RANK_LVL3"],
+	["Lieutenant", "STR_RANK_LVL4"], ["Major", "STR_RANK_LVL5"], ["Colonel", "STR_RANK_LVL6"], ["General", "STR_RANK_LVL7"]
+];
+private _ranks = [
 	"Ranks" call _h,
-	("XP unlocks ranks; each rank opens more of the build menu and support." call _mut), "<br/>",
-	format ["<br/><font color='#7FA8FF'>%1+</font>  SUPER COLONEL<br/>%2<br/>", GRLIB_perm_max * 2, localize "STR_RANK_LVL7"],
-	format ["<br/><font color='#7FA8FF'>%1+</font>  COLONEL<br/>%2<br/>", GRLIB_perm_max, localize "STR_RANK_LVL6"],
-	format ["<br/><font color='#5FB0FF'>%1+</font>  MAJOR<br/>%2<br/>", GRLIB_perm_air, localize "STR_RANK_LVL5"],
-	format ["<br/><font color='#00E5E5'>%1+</font>  CAPTAIN<br/>%2<br/>", GRLIB_perm_tank, localize "STR_RANK_LVL4"],
-	format ["<br/><font color='%3'>%1+</font>  SERGEANT<br/>%2<br/>", GRLIB_perm_log, localize "STR_RANK_LVL3", _cGood],
-	format ["<br/><font color='#FFE066'>%1+</font>  CORPORAL<br/>%2<br/>", GRLIB_perm_inf, localize "STR_RANK_LVL2"],
-	format ["<br/><font color='%2'>0+</font>  PRIVATE<br/>%1<br/>", localize "STR_RANK_LVL1", _cKey],
+	("Earn XP to climb 13 ranks. Ranks marked UNLOCKS open new vehicles, support and catalog items; the ranks in between mark your progress. Your rank and XP to the next one show on the HUD." call _mut), "<br/>"
+];
+// Highest rank first. reverse works in place and returns nothing, so reverse a copy first.
+private _ladder = +("ladder" call HPC_fnc_rankInfo);
+reverse _ladder;
+{
+	_x params ["_title", "_xp", "_icon"];
+	private _key = _unlockKeys getOrDefault [_title, ""];
+	private _line = format ["<br/><img image='%1' height='22'/>  <font color='%2'>%3</font>  <font color='%5'>%4 XP</font>", _icon, ["#FFFFFF", _cAcc] select (_key != ""), toUpper _title, _xp, _cMut];
+	if (_key != "") then { _line = _line + format ["  <font color='%1'>UNLOCKS</font><br/>%2", _cKey, localize _key] };
+	_ranks pushBack (_line + "<br/>");
+} forEach _ladder;
+["HPC_Guide", "Ranks", _ranks +
+[
 	format ["<br/><font color='%2'>below 0</font>  NO RANK<br/>%1<br/>", localize "STR_RANK_LVL0", _cBad],
 	format ["<br/><font color='%3'>%1</font>  BANNED<br/>%2<br/>", GRLIB_perm_ban, localize "STR_RANK_LVLBAN", _cBad]
 ]] call _add;

@@ -33,7 +33,7 @@ private _msg = "";
 private _score = [player] call F_getScore;
 private _rank = player getVariable ["GRLIB_Rank", "Private"];
 private _iscommandant = false;
-if (_rank in ["Colonel", "Super Colonel"]) then { _iscommandant = true };
+if (_rank in ["Colonel", "General"]) then { _iscommandant = true };
 
 ctrlSetText [1011, format ["%1 - %2", _title, _rank]];
 ctrlShow [ 108, true ];

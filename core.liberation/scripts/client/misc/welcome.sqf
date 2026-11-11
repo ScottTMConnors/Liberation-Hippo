@@ -44,7 +44,10 @@ private _reput = [player] call F_getReputText;
 private _color = _reput select 0;
 private _text = _reput select 1;
 
-private _msg = format [localize "STR_UI_WELCOME_MSG", name player, _rank, _score, _ammo_collected, _color, _text, _prefix_tag];
+// Rank title and insignia (the title ladder is finer than the unlock tiers).
+([_score] call HPC_fnc_rankInfo) params ["_title", "_icon"];
+private _msg = format [localize "STR_UI_WELCOME_MSG", name player, _title, _score, _ammo_collected, _color, _text, _prefix_tag];
+_msg = format ["<img image='%1' size='1.6'/> ", _icon] + _msg;
 [localize "STR_UI_WELCOME_TITLE", _msg, "info", 10] call HPC_fnc_toast;
 
 // Load Player Suad Context

@@ -10,12 +10,28 @@ if (_rank == "Colonel") then {
 	player setUnitTrait ["Medic", true];
 };
 
-if (_rank == "Super Colonel") then {
+if (_rank == "General") then {
 	player setUnitTrait ["Medic", true];
 	player setUnitTrait ["Engineer", true];
 	_rank = "Colonel" 
 };
 
-player setUnitRank _rank;
+// The game rank (shown on nametags and the squad bar) follows the rank title.
+private _title = ([_score] call HPC_fnc_rankInfo) select 0;
+private _gameRank = switch (_title) do {
+	case "Corporal";
+	case "Specialist": { "CORPORAL" };
+	case "Sergeant";
+	case "Staff Sergeant": { "SERGEANT" };
+	case "Lieutenant": { "LIEUTENANT" };
+	case "Captain": { "CAPTAIN" };
+	case "Major";
+	case "Lieutenant Colonel": { "MAJOR" };
+	case "Colonel";
+	case "Brigadier General";
+	case "General": { "COLONEL" };
+	default { "PRIVATE" };
+};
+player setUnitRank _gameRank;
 sleep 1;
 player addRating _rating;

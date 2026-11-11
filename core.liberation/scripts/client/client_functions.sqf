@@ -45,5 +45,6 @@ if (!isServer && isNil "kill_manager") then { kill_manager = {} };
 HPC_fnc_scaleDialog = compileFinal preprocessFileLineNumbers "scripts\client\misc\HPC_scaleDialog.sqf"; // dialog onLoad (was recompiled on every open)
 HPC_fnc_toast = compileFinal preprocessFileLineNumbers "scripts\client\ui\HPC_toast.sqf"; // top-right news/alert cards
 HPC_fnc_toastWorker = compileFinal preprocessFileLineNumbers "scripts\client\ui\HPC_toastWorker.sqf";
-HPC_fnc_notify = compileFinal preprocessFileLineNumbers "scripts\client\ui\HPC_notify.sqf"; // CfgNotifications as cards
+HPC_fnc_promotion = compileFinal preprocessFileLineNumbers "scripts\client\ui\HPC_promotion.sqf"; // rank change card
+HPC_fnc_notify =compileFinal preprocessFileLineNumbers "scripts\client\ui\HPC_notify.sqf"; // CfgNotifications as cards
 HPC_fnc_escPause =compileFinal preprocessFileLineNumbers "scripts\client\ui\HPC_escPause.sqf"; // ESC -> pause menu over must-stay screens

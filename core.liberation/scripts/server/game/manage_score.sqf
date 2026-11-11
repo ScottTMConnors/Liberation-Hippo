@@ -38,6 +38,17 @@ while {true} do {
 					_x setVariable ["GRLIB_Rank", _new_rank, true];
 				};
 
+				// Ranks between unlock tiers: a card with the XP left to the next unlock.
+				private _titleNow = ([_cur] call HPC_fnc_rankInfo) select 6;
+				private _titleBefore = ([_last] call HPC_fnc_rankInfo) select 6;
+				if (_cur >= 0 && {_new_rank == _rank} && {_titleNow != _titleBefore}) then {
+					private _unlocks = [GRLIB_perm_inf, GRLIB_perm_log, GRLIB_perm_tank, GRLIB_perm_air, GRLIB_perm_max, GRLIB_perm_max * 4] select {_x > _cur};
+					private _note = if (_unlocks isEqualTo []) then {""} else {
+						format ["%1 more XP to the next unlock.", (_unlocks select 0) - _cur]
+					};
+					[_cur, _note, _titleNow > _titleBefore] remoteExec ["HPC_fnc_promotion", owner _x];
+				};
+
 				if (_cur >= 0 && _new_rank != _rank) then {
 					// new rank for player _x
 					_firework = true;
@@ -73,33 +84,22 @@ while {true} do {
 							[_uid, [true,true,true,true,true,true]] call CHG_Perm;
 							_rounds = 8;
 						};
-						case "Super Colonel" : {
+						case "General" : {
 							_msg2 = localize "STR_RANK_LVL7";
 							[_uid, [true,true,true,true,true,true]] call CHG_Perm;
 							_firework = false;
 						};
 					};
 
-					if (_x getVariable ["GRLIB_player_last_notif", 0] < time) then {
-						_msg = format ["Congratulation <t color='#00ff00'>%1</t> !!<br />You have been promoted to : <t color='#ff0000'>%2</t>.<br /><br />%3", name _x, _new_rank, _msg2];
-						["Promotion", _msg, "good", 8, true] remoteExec ["HPC_fnc_toast", owner _x];
-						["FD_Finish_F"] remoteExec ["playSound", owner _x];
-					} else {
-						_msg = format ["You have been promoted to %1.", _new_rank];
-						[gamelogic, _msg] remoteExec ["globalChat", owner _x];
-						_firework = false;
-					};
-					_x setVariable ["GRLIB_player_last_notif", round (time + 5*60)];
-					// if rank colonel global greet
-					if (_new_rank == "Colonel") then {
+					// Promotion or demotion: a rank card with the insignia and what the rank unlocks.
+					private _order = ["None", "Private", "Corporal", "Sergeant", "Captain", "Major", "Colonel", "General"];
+					private _promoted = (_order find _new_rank) > (_order find _rank);
+					if (!_promoted) then { _firework = false };
+					[_cur, _msg2, _promoted] remoteExec ["HPC_fnc_promotion", owner _x];
+					// Everyone hears about a new Colonel or General.
+					if (_promoted && {_new_rank in ["Colonel", "General"]}) then {
 						["FD_Finish_F"] remoteExec ["playSound", 0];
-						_text = "Good news soldiers...";
-						[gamelogic, _text] remoteExec ["globalChat", 0];
-						_text = "We have a new Colonel !!";
-						[gamelogic, _text] remoteExec ["globalChat", 0];
-						_text = format ["Congratulations to %1 on reaching Colonel!", name _x];
-						[gamelogic, _text] remoteExec ["globalChat", 0];
-						_text = "Over.";
+						_text = format ["Congratulations to %1 on reaching %2!", name _x, _new_rank];
 						[gamelogic, _text] remoteExec ["globalChat", 0];
 					};
 

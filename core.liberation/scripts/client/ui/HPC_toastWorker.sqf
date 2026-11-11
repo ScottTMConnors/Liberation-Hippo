@@ -4,7 +4,7 @@ private _gx = safezoneH * 0.75 / 54;
 private _gy = safezoneH / 54;
 private _top = safezoneY + 8 * _gy; // below the vanilla weapon panel
 private _gap = 0.45 * _gy;
-private _bottom = safezoneY + 0.45 * safezoneH; // top of the HUD card
+private _bottom = safezoneY + 0.39 * safezoneH; // top of the HUD rank strip
 private _accents = createHashMapFromArray [
 	["info", [0.46,0.80,0.72,1]],
 	["good", [0.48,0.86,0.48,1]],

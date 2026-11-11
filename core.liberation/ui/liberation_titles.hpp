@@ -215,6 +215,7 @@ class RscTitles
 			ResourcesBG, PictureScore, LabelScore, PictureAmmo, LabelAmmo, PictureFuel, LabelFuel, PictureManpower, LabelManpower,
 			PictureCap, LabelCap, PictureCombatReadiness, LabelCombatReadiness, PictureIntel, LabelIntel,
 			AlertBGPicture, AlertAccent, AlertLabel, AlertTimer, ObjectiveBG, ObjectivePanel, ObjectiveAccent,
+			RankBG, RankIcon, RankName, RankXP, RankBarBG, RankBar,
 			DetectionLabel, DetectionFrame, DetectionLevel, ActiveSectors, CentralShadow, CentralLabel
 		};
 		class ResourcesBG : HPC_Text {
@@ -291,9 +292,44 @@ class RscTitles
 			colorBackground[] = HPC_C_ACCENT;
 		};
 
+		// Rank strip above the resources: insignia, rank, XP and progress to the next rank.
+		class RankBG : HPC_Text {
+			idc = 530;
+			x = HUD_X; y = HUD_Y - 3.4 * HPC_GY; w = HUD_W; h = 3.0 * HPC_GY;
+			colorBackground[] = {0.035,0.045,0.05,0.55};
+		};
+		class RankIcon : HPC_Picture {
+			idc = 531;
+			x = HUD_X + 0.4 * HPC_GX; y = HUD_Y - 3.0 * HPC_GY; w = 2.2 * HPC_GX; h = 2.2 * HPC_GY;
+			text = "\A3\Ui_f\data\GUI\Cfg\Ranks\private_gs.paa";
+		};
+		class RankName : HPC_Text {
+			idc = 532;
+			x = HUD_X + 3.0 * HPC_GX; y = HUD_Y - 3.25 * HPC_GY; w = 6.5 * HPC_GX; h = 1.5 * HPC_GY;
+			font = "PuristaSemibold";
+			sizeEx = 0.95 * HPC_GY;
+			shadow = 1;
+		};
+		class RankXP : HPC_Text {
+			idc = 533;
+			style = ST_RIGHT;
+			x = HUD_X + HUD_W - 8.6 * HPC_GX; y = HUD_Y - 3.25 * HPC_GY; w = 8.2 * HPC_GX; h = 1.5 * HPC_GY;
+			sizeEx = 0.8 * HPC_GY;
+			colorText[] = HPC_C_MUTED;
+			shadow = 1;
+		};
+		class RankBarBG : HPC_Text {
+			idc = 534;
+			x = HUD_X + 3.0 * HPC_GX; y = HUD_Y - 1.55 * HPC_GY; w = HUD_W - 3.4 * HPC_GX; h = 0.45 * HPC_GY;
+			colorBackground[] = {1,1,1,0.12};
+		};
+		class RankBar : RankBarBG {
+			idc = 535;
+			colorBackground[] = HPC_C_ACCENT;
+		};
 		class DetectionLabel : HPC_Label {
 			idc = 247;
-			x = HUD_X; y = HUD_Y - 2.8 * HPC_GY; w = HUD_W; h = 1.2 * HPC_GY;
+			x = HUD_X; y = HUD_Y - 6.3 * HPC_GY; w = HUD_W; h = 1.2 * HPC_GY;
 			style = ST_RIGHT;
 			colorText[] = {1,0.82,0.80,1};
 			shadow = 1;
@@ -301,7 +337,7 @@ class RscTitles
 		};
 		class DetectionFrame : HPC_Text {
 			idc = 245;
-			x = HUD_X; y = HUD_Y - 1.4 * HPC_GY; w = HUD_W; h = 0.55 * HPC_GY;
+			x = HUD_X; y = HUD_Y - 4.9 * HPC_GY; w = HUD_W; h = 0.55 * HPC_GY;
 			colorBackground[] = {0,0,0,0.45};
 		};
 		class DetectionLevel : DetectionFrame {
@@ -329,6 +365,56 @@ class RscTitles
 			shadow = 1;
 		};
 	};
+
+
+   // Promotion / demotion card, top centre (HPC_fnc_promotion).
+   #define PRO_W (30 * HPC_GX)
+   #define PRO_X (safezoneX + (safezoneW - PRO_W) / 2)
+   #define PRO_Y (safezoneY + 11 * HPC_GY)
+   class HPC_Promotion
+   {
+		name = "HPC_Promotion";
+		duration = 8;
+		idd = -1;
+		fadeIn = 0.3;
+		fadeOut = 0.8;
+		movingEnable = false;
+		onLoad = "uiNamespace setVariable ['HPC_PromotionDisplay', _this select 0];";
+		controls[] = {Bg, Accent, Icon, Label, Rank, Perks};
+		class Bg : HPC_Text {
+			idc = 9300;
+			x = PRO_X; y = PRO_Y; w = PRO_W; h = 10 * HPC_GY;
+			colorBackground[] = {0.035,0.045,0.05,0.82};
+		};
+		class Accent : HPC_Text {
+			idc = 9305;
+			x = PRO_X; y = PRO_Y; w = 0.3 * HPC_GX; h = 10 * HPC_GY;
+			colorBackground[] = HPC_C_ACCENT;
+		};
+		class Icon : HPC_Picture {
+			idc = 9301;
+			x = PRO_X + 1.4 * HPC_GX; y = PRO_Y + 1.2 * HPC_GY; w = 5 * HPC_GX; h = 5 * HPC_GY;
+		};
+		class Label : HPC_Label {
+			idc = 9302;
+			x = PRO_X + 7.6 * HPC_GX; y = PRO_Y + 1.1 * HPC_GY; w = PRO_W - 8.6 * HPC_GX; h = 1.4 * HPC_GY;
+			font = "PuristaSemibold";
+			sizeEx = 0.9 * HPC_GY;
+			colorText[] = HPC_C_ACCENT;
+			text = "PROMOTED";
+		};
+		class Rank : HPC_Heading {
+			idc = 9303;
+			x = PRO_X + 7.6 * HPC_GX; y = PRO_Y + 2.4 * HPC_GY; w = PRO_W - 8.6 * HPC_GX; h = 2.6 * HPC_GY;
+			sizeEx = 2.2 * HPC_GY;
+		};
+		class Perks : HPC_StructuredText {
+			idc = 9304;
+			x = PRO_X + 7.6 * HPC_GX; y = PRO_Y + 5.2 * HPC_GY; w = PRO_W - 8.6 * HPC_GX; h = 4.6 * HPC_GY;
+			size = 0.85 * HPC_GY;
+			class Attributes { font = "RobotoCondensed"; color = "#C9D3D7"; align = "left"; valign = "top"; shadow = 0; };
+		};
+   };
 
    // News and alerts: up to three translucent cards stacked on the right.
    #define TOAST_W (19 * HPC_GX)

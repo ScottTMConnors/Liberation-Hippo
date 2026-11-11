@@ -4485,60 +4485,32 @@
 			<Czech>NEMÁTE ŽÁDNÁ oprávnění!&lt;br/&gt;NEMÁTE přístup k žádné podpoře!</Czech>
 		</Key>
 		<Key ID="STR_RANK_LVL1">
-			<Original>You can build infantry and light vehicles.&lt;br/&gt;You have limited access to infantry and logistics.</Original>
-			<Russian>Вы можете нанять Пехоту.&lt;br/&gt;Вы можете создавать легкий транспорт&lt;br/&gt;Вы Ограничены в доступе к Пехоте и Логистике.</Russian>
-			<French>Vous pouvez construire de l'Infanterie.&lt;br/&gt;Vous pouvez construire des véhicules légers.&lt;br/&gt;Vous avez un accès limité à l'Infanterie et au Support.</French>
-			<Chinesesimp>您可以雇佣部分步兵。&lt;br/&gt;您可以制造轻型车辆&lt;br/&gt;您具有对步兵和后勤的有限访问权限。</Chinesesimp>
-			<Chinese>您可以僱傭部分步兵。 &lt;br/&gt;您可以製造輕型車輛&lt;br/&gt;您具有對步兵和後勤的有限訪問權限。</Chinese>
-			<Japanese>あなたは一部の歩兵をビルド出来ます&lt;br/&gt;あなたは軽車両をビルド出来ます&lt;br/&gt;あなたは歩兵とロジスティックに限定的なアクセス権を持っています。</Japanese>
-			<Portuguese>Você pode construir Infantaria.&lt;br/&gt;Você pode construir veículos leves&lt;br/&gt;Você tem acesso limitado à Infantaria e Logística.</Portuguese>
-			<Czech>Můžete stavět pěchotu.&lt;br/&gt;Můžete stavět lehká vozidla&lt;br/&gt;Máte omezený přístup k pěchotě a logistice.</Czech>
+			<Original>Drive light vehicles and build.&lt;br/&gt;Basic catalog items.&lt;br/&gt;Airdrops: quad bike and helicopter taxi.</Original>
+			<English>Drive light vehicles and build.&lt;br/&gt;Basic catalog items.&lt;br/&gt;Airdrops: quad bike and helicopter taxi.</English>
 		</Key>
 		<Key ID="STR_RANK_LVL2">
-			<Original>You have full access to infantry.&lt;br/&gt;You can use tanks.&lt;br/&gt;You get an extra AI.&lt;br/&gt;You have access to the Virtual Garage.</Original>
-			<Russian>Вы имеете полный доступ к Пехоте.&lt;br/&gt;Вы можете использовать Танки.&lt;br/&gt;У вас есть дополнительные ИИ.&lt;br/&gt;Вы имеете доступ к Виртуальному Гаражу.</Russian>
-			<French>Vous avez un accès complet à l'Infanterie.&lt;br/&gt;Vous pouvez utiliser les Tanks.&lt;br/&gt;Vous avez une unité en plus.&lt;br/&gt;Vous avez accès au Garage Virtuel.</French>
-			<Chinesesimp>您可以雇佣所有步兵。&lt;br/&gt;您可以驾驶坦克。&lt;br/&gt;您可以额外招募一个AI。&lt;br/&gt;您可以使用虚拟车库。</Chinesesimp>
-			<Chinese>您可以僱傭所有步兵。 &lt;br/&gt;您可以駕駛坦克。 &lt;br/&gt;您可以額外招募一個AI。 &lt;br/&gt;您可以使用虛擬車庫。</Chinese>
-			<Japanese>あなたは全ての歩兵にアクセス出来ます。&lt;br/&gt;あなたは戦車を使用出来ます。&lt;br/&gt;あなたはより多くの分隊AIを使えます。&lt;br/&gt;あなたはバーチャルガレージを使えます。</Japanese>
-			<Portuguese>Você tem Acesso Total à Infantaria.&lt;br/&gt;Você pode usar Tanques.&lt;br/&gt;Você tem uma IA extra.&lt;br/&gt;Você tem acesso à Garagem Virtual.</Portuguese>
-			<Czech>Máte plný přístup k pěchotě.&lt;br/&gt;Můžete použít Tanky.&lt;br/&gt;Máte navíc AI.&lt;br/&gt;Máte přístup do virtuální garáže.</Czech>
+			<Original>Drive armored vehicles.&lt;br/&gt;+1 squad member and a higher manpower cap.&lt;br/&gt;More catalog items. Airdrop: armed offroad.</Original>
+			<English>Drive armored vehicles.&lt;br/&gt;+1 squad member and a higher manpower cap.&lt;br/&gt;More catalog items. Airdrop: armed offroad.</English>
 		</Key>
 		<Key ID="STR_RANK_LVL3">
-			<Original>You have full access to static weapons.&lt;br/&gt;You can use aircraft.&lt;br/&gt;You can build outposts.&lt;br/&gt;You get an extra AI.</Original>
-			<Russian>У вас есть полный доступ к Стаковому Оружию&lt;br/&gt;Вы можете использовать Авиацию.&lt;br/&gt;Вы можете построить Аванпост.&lt;br/&gt;У вас есть дополнительные ИИ.</Russian>
-			<French>Vous avez un accès complet aux Défense Statique.&lt;br/&gt;Vous pouvez utiliser les unitées Aerienne.&lt;br/&gt;Vous pouvez construire des Outposts.&lt;br/&gt;Vous avez une unité en plus.</French>
-			<Chinesesimp>您可以使用所有静态武器&lt;br/&gt;您可以驾驶飞行器。&lt;br/&gt;您可以建造前哨。&lt;br/&gt;您可以额外招募一个AI。</Chinesesimp>
-			<Chinese>您可以使用所有靜態武器&lt;br/&gt;您可以駕駛飛行器。 &lt;br/&gt;您可以建造前哨。 &lt;br/&gt;您可以額外招募一個AI。</Chinese>
-			<Japanese>あなたはすべての固定武器にアクセス出来ます。&lt;br/&gt;あなたは航空機を使用出来ます。&lt;br/&gt;あなたは前哨基地をビルド出来ます。&lt;br/&gt;あなたはより多くの分隊AIを使えます。</Japanese>
-			<Portuguese>Você tem Acesso Total a Armas Estáticas&lt;br/&gt;Você pode usar Aeronaves.&lt;br/&gt;Você pode construir Posto Avançado.&lt;br/&gt;Você tem uma IA extra.</Portuguese>
-			<Czech>Máte plný přístup ke statickým zbraním&lt;br/&gt;Můžete použít letadlo.&lt;br/&gt;Můžete postavit základnu.&lt;br/&gt;Máte navíc AI.</Czech>
+			<Original>Fly aircraft.&lt;br/&gt;+1 squad member and a higher manpower cap.&lt;br/&gt;More catalog items. Airdrops: MRAP and boat.&lt;br/&gt;Medium sector garrisons.</Original>
+			<English>Fly aircraft.&lt;br/&gt;+1 squad member and a higher manpower cap.&lt;br/&gt;More catalog items. Airdrops: MRAP and boat.&lt;br/&gt;Medium sector garrisons.</English>
 		</Key>
 		<Key ID="STR_RANK_LVL4">
-			<Original>You can build tanks.&lt;br/&gt;You have full access to buildings and logistics.&lt;br/&gt;You can recycle vehicles.&lt;br/&gt;You get an extra AI.</Original>
-			<Russian>Вы можете построить Танковый юнит&lt;br/&gt;У вас есть Полный Доступ к Строительству и Логистике&lt;br/&gt;Вы можете Перерабатывать юниты.&lt;br/&gt;У вас есть дополнительные ИИ.</Russian>
-			<French>Vous pouvez construire des Tanks.&lt;br/&gt;Vous avez un accès complet aux Batiments et au Support.&lt;br/&gt;Vous pouvez recycler les objets.&lt;br/&gt;Vous avez une unité en plus.</French>
-			<Chinesesimp>你可以建造坦克单位&lt;br/&gt;您拥有对建筑和物流的完全访问权限&lt;br/&gt;您可以回收单位。&lt;br/&gt;您还可以额外招募一个AI。</Chinesesimp>
-			<Chinese>你可以建造坦克單位&lt;br/&gt;您擁有對建築和物流的完全訪問權限&lt;br/&gt;您可以回收單位。 &lt;br/&gt;您還可以額外招募一個AI。</Chinese>
-			<Japanese>あなたは戦車をビルド出来ます。&lt;br/&gt;あなたは建物とロジスティックの全てにアクセス出来ます。&lt;br/&gt;あなたは歩兵をリサイクル出来ます。&lt;br/&gt;あなたはより多くの分隊AIを使えます。</Japanese>
-			<Portuguese>Você pode construir a unidade Tank&lt;br/&gt;Você tem acesso total à construção e logística&lt;br/&gt;Você pode reciclar a unidade.&lt;br/&gt;Você tem uma IA extra.</Portuguese>
-			<Czech>Můžete postavit tankovou jednotku&lt;br/&gt;Máte plný přístup ke stavbě a logistice&lt;br/&gt;Jednotku můžete recyklovat.&lt;br/&gt;Máte navíc AI.</Czech>
+			<Original>Recycle vehicles.&lt;br/&gt;+1 squad member and a higher manpower cap.&lt;br/&gt;Tanks and heavy fortifications in the catalog. Airdrop: truck.</Original>
+			<English>Recycle vehicles.&lt;br/&gt;+1 squad member and a higher manpower cap.&lt;br/&gt;Tanks and heavy fortifications in the catalog. Airdrop: truck.</English>
 		</Key>
 		<Key ID="STR_RANK_LVL5">
-			<Original>You can build aircraft.&lt;br/&gt;You can start special side missions at HQ.&lt;br/&gt;You get an extra AI.</Original>
-			<Russian>Вы можете построить Воздушный юнит&lt;br/&gt;Вы можете начать Специальные Побочные Миссии в штабе.&lt;br/&gt;У вас есть дополнительные ИИ.</Russian>
-			<French>Vous pouvez construire des unitées Aerienne.&lt;br/&gt;Vous pouvez démarrer des Missions Spéciales à la FOB.&lt;br/&gt;Vous avez une unité en plus.</French>
-			<Chinesesimp>您可以建造空军单位&lt;br/&gt;您可以在总部开始特殊支线任务。&lt;br/&gt;您还可以额外招募一个AI。</Chinesesimp>
-			<Chinese>您可以建造空軍單位&lt;br/&gt;您可以在總部開始特殊支線任務。 &lt;br/&gt;您還可以額外招募一個AI。</Chinese>
-			<Japanese>あなたは航空機をビルドできます。&lt;br/&gt;あなたはセカンダリーミッションを開始することができます。&lt;br/&gt;あなたはより多くの分隊AIを使えます。</Japanese>
-			<Portuguese>Você pode construir uma unidade aérea&lt;br/&gt;Você pode iniciar missões secundárias especiais no QG.&lt;br/&gt;Você tem uma IA extra.</Portuguese>
-			<Czech>Můžete postavit Leteckou jednotku&lt;br/&gt;Speciální vedlejší mise můžete spustit v HQ.&lt;br/&gt;Máte navíc AI.</Czech>
+			<Original>+1 squad member and a higher manpower cap.&lt;br/&gt;Aircraft in the catalog. Airdrops: APC and artillery.&lt;br/&gt;Heavy sector garrisons.</Original>
+			<English>+1 squad member and a higher manpower cap.&lt;br/&gt;Aircraft in the catalog. Airdrops: APC and artillery.&lt;br/&gt;Heavy sector garrisons.</English>
 		</Key>
 		<Key ID="STR_RANK_LVL6">
-			<Original>You can build and repackage FOBs.&lt;br/&gt;You have access to special heavy vehicles.&lt;br/&gt;You can build a support team.</Original>
+			<Original>Full squad size and a much higher manpower cap.&lt;br/&gt;The complete catalog. Airdrop: air superiority.</Original>
+			<English>Full squad size and a much higher manpower cap.&lt;br/&gt;The complete catalog. Airdrop: air superiority.</English>
 		</Key>
 		<Key ID="STR_RANK_LVL7">
-			<Original>You have more manpower.&lt;br/&gt;The traders' shop is cheaper.&lt;br/&gt;Air support is cheaper.</Original>
+			<Original>The highest manpower cap.&lt;br/&gt;Half price at the trader and on all airdrops.</Original>
+			<English>The highest manpower cap.&lt;br/&gt;Half price at the trader and on all airdrops.</English>
 		</Key>
 
 		<!-- Added in v0.928 -->

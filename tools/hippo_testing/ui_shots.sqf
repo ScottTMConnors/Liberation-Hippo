@@ -80,6 +80,11 @@ if (count _hudSectors == 2) then {
     missionNamespace setVariable ["HPC_sectorState_" + (_hudSectors select 1),["loading",75,-1,-1,"Coastal outpost",500]];
 };
 ["05_hud",3] call HPC_uiShot;
+if (!isNil "HPC_fnc_promotion") then {
+    [GRLIB_perm_tank, localize "STR_RANK_LVL4", true] call HPC_fnc_promotion;
+    ["05b_promotion",1] call HPC_uiShot;
+    "HPC_PromotionLayer" cutText ["", "PLAIN", 0];
+};
 
 // News / alert card.
 if (!isNil "HPC_fnc_toast") then {

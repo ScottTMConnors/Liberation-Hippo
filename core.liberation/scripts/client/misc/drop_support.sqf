@@ -19,7 +19,7 @@ private _AirDrop_7_cost = GRLIB_AirDrop_7_cost;
 private _AirDrop_8_cost = GRLIB_AirDrop_8_cost;
 
 private _rank = player getVariable ["GRLIB_Rank", "Private"];
-if (_rank == "Super Colonel") then {
+if (_rank == "General") then {
 	_AirDrop_1_cost = round (GRLIB_AirDrop_1_cost / 2);
 	_AirDrop_2_cost = round (GRLIB_AirDrop_2_cost / 2);
 	_AirDrop_3_cost = round (GRLIB_AirDrop_3_cost / 2);
