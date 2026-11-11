@@ -146,6 +146,16 @@ if (_tutoOpen) then {
 private _end = diag_tickTime + 5;
 waitUntil {uiSleep 0.1; scriptDone _tuto || diag_tickTime > _end};
 ["uishots.inputFree",!userInputDisabled] call _assert;
+// Game rank follows the rank title (First Lieutenant -> LIEUTENANT, Master Sergeant -> SERGEANT).
+private _rankChecks = [];
+{
+    _x params ["_xp", "_expected"];
+    private _h = [_xp] spawn set_rank;
+    waitUntil {uiSleep 0.1; scriptDone _h};
+    _rankChecks pushBack [_xp, rank player, _expected];
+} forEach [[round (GRLIB_perm_tank + (GRLIB_perm_air - GRLIB_perm_tank) / 3), "LIEUTENANT"], [round (GRLIB_perm_log + 3 * (GRLIB_perm_tank - GRLIB_perm_log) / 5), "SERGEANT"], [GRLIB_perm_max * 3, "COLONEL"]];
+diag_log ["HPC_UISHOT_RANKS", _rankChecks];
+[[player] call F_getScore] spawn set_rank;
 diag_log ["HPC_UISHOT_INPUT",userInputDisabled];
 if (userInputDisabled) then {disableUserInput false};
 

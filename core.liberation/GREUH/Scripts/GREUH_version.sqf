@@ -124,7 +124,7 @@ private _xp = [
 	["+1", "Kill enemy infantry", _cGood] call _row
 ];
 private _losses = [
-	["-250", "A FOB is lost while you are Lieutenant or above and away from it", _cBad] call _row,
+	["-250", "A FOB is lost while you are Second Lieutenant or above and away from it", _cBad] call _row,
 	["-10", "Respawn above Sergeant + 50 XP", _cBad] call _row
 ];
 if (GRLIB_civ_penalties > 0) then {
@@ -147,11 +147,11 @@ _xp append (["Losses" call _sub] + _losses);
 // Unlocks are attached to the ranks that start a new tier (F_getRank thresholds).
 private _unlockKeys = createHashMapFromArray [
 	["Private", "STR_RANK_LVL1"], ["Corporal", "STR_RANK_LVL2"], ["Sergeant", "STR_RANK_LVL3"],
-	["Lieutenant", "STR_RANK_LVL4"], ["Major", "STR_RANK_LVL5"], ["Colonel", "STR_RANK_LVL6"], ["General", "STR_RANK_LVL7"]
+	["Second Lieutenant", "STR_RANK_LVL4"], ["Major", "STR_RANK_LVL5"], ["Colonel", "STR_RANK_LVL6"], ["General", "STR_RANK_LVL7"]
 ];
 private _ranks = [
 	"Ranks" call _h,
-	("Earn XP to climb 13 ranks. Ranks marked UNLOCKS open new vehicles, support and catalog items; the ranks in between mark your progress. Your rank and XP to the next one show on the HUD." call _mut), "<br/>"
+	("Earn XP to climb 18 ranks. Ranks marked UNLOCKS open new vehicles, support and catalog items; the ranks in between mark your progress. Your rank and XP to the next one show on the HUD." call _mut), "<br/>"
 ];
 // Highest rank first. reverse works in place and returns nothing, so reverse a copy first.
 private _ladder = +("ladder" call HPC_fnc_rankInfo);

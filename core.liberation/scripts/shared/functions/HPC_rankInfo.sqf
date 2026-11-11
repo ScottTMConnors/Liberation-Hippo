@@ -1,23 +1,34 @@
-// Rank ladder. Unlock tiers (F_getRank: Private ... General) stay at the GRLIB_perm_* thresholds;
-// the extra ranks in between are titles on the way to the next unlock.
+// Rank ladder (US Army style). Unlock tiers (F_getRank: Private ... General) stay at the
+// GRLIB_perm_* thresholds; the ranks in between are titles on the way to the next unlock.
 // Returns [title, insignia, rank floor XP, next rank XP (-1 at the top), next title, insignia colour, ladder index].
 params [["_score", 0]];
 private _r = "\A3\Ui_f\data\GUI\Cfg\Ranks\";
+private _m = { getMissionPath ("res\ranks\" + _this + ".paa") };
 private _white = [1,1,1,1];
+private _silver = [0.82,0.84,0.86,1];
+private _gold = [0.95,0.78,0.35,1];
+private _nco = (GRLIB_perm_tank - GRLIB_perm_log) / 5;
+private _lt = (GRLIB_perm_air - GRLIB_perm_tank) / 3;
+private _gen = GRLIB_perm_max * 2 / 3;
 private _ladder = [
-	["Private", 0, _r + "private_gs.paa", _white],
-	["Private First Class", round (GRLIB_perm_inf / 2), getMissionPath "res\ranks\pfc.paa", _white],
-	["Corporal", GRLIB_perm_inf, _r + "corporal_gs.paa", _white],
-	["Specialist", round ((GRLIB_perm_inf + GRLIB_perm_log) / 2), getMissionPath "res\ranks\specialist.paa", _white],
-	["Sergeant", GRLIB_perm_log, _r + "sergeant_gs.paa", _white],
-	["Staff Sergeant", round ((GRLIB_perm_log + GRLIB_perm_tank) / 2), getMissionPath "res\ranks\staffsergeant.paa", _white],
-	["Lieutenant", GRLIB_perm_tank, _r + "lieutenant_gs.paa", [0.82,0.84,0.86,1]],
-	["Captain", round ((GRLIB_perm_tank + GRLIB_perm_air) / 2), _r + "captain_gs.paa", [0.82,0.84,0.86,1]],
-	["Major", GRLIB_perm_air, _r + "major_gs.paa", [0.95,0.78,0.35,1]],
-	["Lieutenant Colonel", round ((GRLIB_perm_air + GRLIB_perm_max) / 2), _r + "major_gs.paa", [0.82,0.84,0.86,1]],
-	["Colonel", GRLIB_perm_max, _r + "colonel_gs.paa", [0.82,0.84,0.86,1]],
-	["Brigadier General", GRLIB_perm_max * 2, getMissionPath "res\ranks\brigadier.paa", [0.82,0.84,0.86,1]],
-	["General", GRLIB_perm_max * 4, getMissionPath "res\ranks\general4.paa", [0.82,0.84,0.86,1]]
+	["Private", 0, "private" call _m, _white],
+	["Private First Class", round (GRLIB_perm_inf / 2), "pfc" call _m, _white],
+	["Corporal", GRLIB_perm_inf, "corporal" call _m, _white],
+	["Sergeant", GRLIB_perm_log, "sergeant" call _m, _white],
+	["Staff Sergeant", round (GRLIB_perm_log + _nco), "staffsergeant" call _m, _white],
+	["Sergeant First Class", round (GRLIB_perm_log + 2 * _nco), "sergeantfirstclass" call _m, _white],
+	["Master Sergeant", round (GRLIB_perm_log + 3 * _nco), "mastersergeant" call _m, _white],
+	["Sergeant Major", round (GRLIB_perm_log + 4 * _nco), "sergeantmajor" call _m, _white],
+	["Second Lieutenant", GRLIB_perm_tank, _r + "lieutenant_gs.paa", _gold],
+	["First Lieutenant", round (GRLIB_perm_tank + _lt), _r + "lieutenant_gs.paa", _silver],
+	["Captain", round (GRLIB_perm_tank + 2 * _lt), _r + "captain_gs.paa", _silver],
+	["Major", GRLIB_perm_air, _r + "major_gs.paa", _gold],
+	["Lieutenant Colonel", round ((GRLIB_perm_air + GRLIB_perm_max) / 2), _r + "major_gs.paa", _silver],
+	["Colonel", GRLIB_perm_max, _r + "colonel_gs.paa", _silver],
+	["Brigadier General", GRLIB_perm_max * 2, _r + "general_gs.paa", _silver],
+	["Major General", round (GRLIB_perm_max * 2 + _gen), "majorgeneral" call _m, _silver],
+	["Lieutenant General", round (GRLIB_perm_max * 2 + 2 * _gen), "lieutenantgeneral" call _m, _silver],
+	["General", GRLIB_perm_max * 4, "general4" call _m, _silver]
 ];
 if (_score isEqualTo "ladder") exitWith { _ladder };
 private _index = 0;

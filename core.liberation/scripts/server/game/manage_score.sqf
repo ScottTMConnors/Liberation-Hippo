@@ -47,6 +47,8 @@ while {true} do {
 						format ["%1 more XP to the next unlock.", (_unlocks select 0) - _cur]
 					};
 					[_cur, _note, _titleNow > _titleBefore] remoteExec ["HPC_fnc_promotion", owner _x];
+					// keep the character's game rank in step with the title (e.g. First Lieutenant -> LIEUTENANT)
+					[_cur] remoteExec ["set_rank", owner _x];
 				};
 
 				if (_cur >= 0 && _new_rank != _rank) then {

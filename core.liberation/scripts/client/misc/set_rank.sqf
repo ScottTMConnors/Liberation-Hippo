@@ -19,16 +19,21 @@ if (_rank == "General") then {
 // The game rank (shown on nametags and the squad bar) follows the rank title.
 private _title = ([_score] call HPC_fnc_rankInfo) select 0;
 private _gameRank = switch (_title) do {
-	case "Corporal";
-	case "Specialist": { "CORPORAL" };
+	case "Corporal": { "CORPORAL" };
 	case "Sergeant";
-	case "Staff Sergeant": { "SERGEANT" };
-	case "Lieutenant": { "LIEUTENANT" };
+	case "Staff Sergeant";
+	case "Sergeant First Class";
+	case "Master Sergeant";
+	case "Sergeant Major": { "SERGEANT" };
+	case "Second Lieutenant";
+	case "First Lieutenant": { "LIEUTENANT" };
 	case "Captain": { "CAPTAIN" };
 	case "Major";
 	case "Lieutenant Colonel": { "MAJOR" };
 	case "Colonel";
 	case "Brigadier General";
+	case "Major General";
+	case "Lieutenant General";
 	case "General": { "COLONEL" };
 	default { "PRIVATE" };
 };
