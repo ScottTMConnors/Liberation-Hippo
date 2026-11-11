@@ -268,8 +268,9 @@ GRLIB_TipsText = [];
 } forEach (((localize "STR_TUTO_TEXT12") regexReplace ["<[^>]*>/g", "|"]) splitString "|");
 GRLIB_LastNews = 0;
 
-// Draw Zeus
-{ [_x] call BIS_fnc_drawCuratorLocations } foreach allCurators;
+// Zeus: limited per-player curator, Master Zeus from the admin menu
+[] execVM "scripts\client\misc\zeus_limited_client.sqf";
+[] spawn { waitUntil { sleep 1; !isNil "HPC_masterCurator" }; if (!isNull HPC_masterCurator) then { [HPC_masterCurator] call BIS_fnc_drawCuratorLocations } };
 
 // Draw3D Mission EventHandler
 [] execVM "scripts\client\ui\mission_EH.sqf";

@@ -64,9 +64,7 @@ if (GRLIB_side_friendly == WEST) then {
 };
 
 // Zeus
-if ([] call is_admin) then {
-	[player, (allCurators select 0)] remoteExec ["assignCurator", 2];
-};
+[player, false] remoteExec ["zeus_assign_remote_call", 2];
 
 // Remove old unit
 removeAllWeapons _oldUnit;

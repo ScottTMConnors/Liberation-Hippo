@@ -97,6 +97,7 @@ ammo_del_remote_call = compileFinal preprocessFileLineNumbers "scripts\server\re
 bomber_remote_call = compileFinal preprocessFileLineNumbers "scripts\server\remotecall\bomber_remote_call.sqf";
 build_cutter_remote_call = compileFinal preprocessFileLineNumbers "scripts\server\remotecall\build_cutter_remote_call.sqf";
 build_fob_remote_call = compileFinal preprocessFileLineNumbers "scripts\server\remotecall\build_fob_remote_call.sqf";
+zeus_assign_remote_call = compileFinal preprocessFileLineNumbers "scripts\server\remotecall\zeus_assign_remote_call.sqf";
 command_ai_remote_call = compileFinal preprocessFileLineNumbers "scripts\server\remotecall\command_ai_remote_call.sqf";
 call_artillery_remote_call = compileFinal preprocessFileLineNumbers "scripts\server\remotecall\call_artillery_remote_call.sqf";
 destroy_fob_remote_call = compileFinal preprocessFileLineNumbers "scripts\server\remotecall\destroy_fob_remote_call.sqf";

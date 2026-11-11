@@ -89,7 +89,7 @@ if (do_admin == 1) then { (_display displayCtrl 1607) ctrlSetChecked true };
 if (do_teleport == 1) then { (_display displayCtrl 1620) ctrlSetChecked true };
 
 // Zeus mode ?
-if (player in (call BIS_fnc_listCuratorPlayers)) then { ctrlEnable [1625, false] };
+if (!isNil "HPC_masterCurator" && {getAssignedCuratorLogic player isEqualTo HPC_masterCurator}) then { ctrlEnable [1625, false] };
 
 // Capture Sector ?
 private _sector = [GRLIB_sector_size, player] call F_getNearestSector;
@@ -337,10 +337,10 @@ while { alive player && {!isNull _display} } do {
 
 	if (do_zeus == 1) then {
 		do_zeus = 0;
-		[player, (allCurators select 0)] remoteExec ["assignCurator", 2];
+		[] spawn HPC_fnc_masterZeus;
 		_msg = localize "STR_YOU_ARE_ZEUS";
 		_admin_msg = format [localize "STR_ADMIN_BECOME_ZEUS", name player];
-		ctrlEnable [1625, false];
+		closeDialog 0;
 	};
 
 	if (do_capture == 1) then {

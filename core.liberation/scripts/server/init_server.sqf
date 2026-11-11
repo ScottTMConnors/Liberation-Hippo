@@ -61,12 +61,10 @@ addMissionEventHandler ["OnUserAdminStateChanged", {
 	if (_uid == "")  exitWith {};
 	if (_loggedIn) then {
 		[true] remoteExec ["player_admin_actions", owner _player];
-		if (count allCurators > 0) then { _player assignCurator (allCurators select 0) };
 	} else {
 		[false] remoteExec ["player_admin_actions", owner _player];
-		// only this admin's curator: others (host, other admins) keep Zeus
-		private _curator = getAssignedCuratorLogic _player;
-		if (!isNull _curator) then { unassignCurator _curator };
+		// leaving admin ends Master Zeus: back to the limited Zeus
+		if (!isNil "HPC_fnc_zeusAssign") then { [_player, false] spawn HPC_fnc_zeusAssign };
 	};
 }];
 
@@ -158,6 +156,7 @@ publicVariable "HPC_serverLoadingStage";
 [] execVM "scripts\server\game\manage_undercover.sqf";
 [] execVM "scripts\server\base\fob_markers.sqf";
 [] execVM "scripts\server\secondary\autostart.sqf";
+[] execVM "scripts\server\game\zeus_limited.sqf";
 [] execVM "scripts\server\game\zeus_synchro.sqf";
 [] execVM "scripts\server\game\clean.sqf";
 [] execVM "scripts\server\game\periodic_save.sqf";

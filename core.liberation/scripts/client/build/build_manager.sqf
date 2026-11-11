@@ -40,6 +40,7 @@ private _idactmode = -1;
 private _idactcancel = -1;
 private _idactplace = -1;
 private _idactplacebis = -1;
+private _zeus_place = false;
 
 GRLIB_build_force_mode = [
 	"VR_3DSelector_01_default_F",
@@ -196,7 +197,10 @@ while {true} do {
 			build_water = 1;
 		};
 
-		if (!repeatbuild) then {
+		// place with the Zeus camera (land builds, when the player has a curator)
+		_zeus_place = (build_water == 0) && {_buildtype != 97} && {!isNull getAssignedCuratorLogic player};
+
+		if (!repeatbuild && !_zeus_place) then {
 			if (build_water == 0) then {
 				if (_buildtype == GRLIB_BuildingBuildType && !(_classname in GRLIB_build_force_mode)) then {
 					_idactplacebis = player addAction [([localize "STR_PLACEMENT_BIS", "res\ui_confirm.paa", "accent"] call HPC_fnc_actionTitle),"scripts\client\build\build_place_bis.sqf","",750,true,false,"","build_valid && build_confirmed == 1"];
@@ -245,13 +249,23 @@ while {true} do {
 		} forEach (getObjectTextures _vehicle);
 		{ _x setObjectTexture [0, "#(rgb,8,8,3)color(0,1,0,1)"] } foreach GRLIB_preview_spheres;
 
+		if (_zeus_place) then { [_classname != FOB_typename] call HPC_fnc_zeusBuildOpen };
+
 		// Wait for building
 		while { build_confirmed == 1 && alive player } do {
-			_dir = getdir player;
-			_pos = getPosATL player;
-			if (surfaceIsWater _pos) then { _pos = getPosASL player };
-			_truedir = 90 - _dir;
-			_truepos = [(_pos select 0) + (build_distance * cos _truedir), (_pos select 1) + (build_distance * sin _truedir), (_pos select 2) + build_altitude];
+			if (_zeus_place) then {
+				if (isNull findDisplay 312) then { build_confirmed = 3 };
+				_dir = 0;
+				_pos = screenToWorld getMousePosition;
+				_truedir = 90;
+				_truepos = [_pos select 0, _pos select 1, build_altitude];
+			} else {
+				_dir = getdir player;
+				_pos = getPosATL player;
+				if (surfaceIsWater _pos) then { _pos = getPosASL player };
+				_truedir = 90 - _dir;
+				_truepos = [(_pos select 0) + (build_distance * cos _truedir), (_pos select 1) + (build_distance * sin _truedir), (_pos select 2) + build_altitude];
+			};
 			_actualdir = (_dir + build_rotation);
 			if (_classname in GRLIB_build_force_mode) then { build_mode = 1 };
 			_actualdir = _actualdir - (floor(_actualdir / 360)) * 360;
@@ -386,6 +400,7 @@ while {true} do {
 		};
 
 		if (!alive player) then { build_confirmed = 3 };
+		if (_zeus_place) then { call HPC_fnc_zeusBuildClose };
 		GRLIB_ui_notif = "";
 
 		{ _x setpos [ 0,0,0 ] } foreach GRLIB_preview_spheres;

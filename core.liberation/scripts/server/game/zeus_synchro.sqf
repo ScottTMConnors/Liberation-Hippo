@@ -9,7 +9,7 @@ private _units_to_remove = [];
 
 while {true} do {
 
-	waitUntil { sleep 1; count allCurators > 0 };
+	waitUntil { sleep 1; !isNil "HPC_masterCurator" && {!isNull HPC_masterCurator} };
 
 	// BLU / RED units
 	_zeusunits = [];
@@ -34,14 +34,14 @@ while {true} do {
 
 	_zeusunits = _zeusunits + switchableUnits;
 	_zeusunits = _zeusunits + playableUnits;
-	_zeusunits = _zeusunits - (curatorEditableObjects (allCurators select 0));
+	_zeusunits = _zeusunits - (curatorEditableObjects HPC_masterCurator);
 
 	_units_to_remove = [];
 	{
 		if ( !(alive _x) ) then {
 			_units_to_remove pushback _x;
 		};
-	} foreach (curatorEditableObjects (allCurators select 0));
+	} foreach (curatorEditableObjects HPC_masterCurator);
 
 	{
 		_zgm = _x;
@@ -52,7 +52,7 @@ while {true} do {
 		_zgm setCuratorCoef ["synchronize", 0];
 		_zgm setCuratorCoef ["delete", 0];
 		_zgm setCuratorCoef ["destroy", 0];
-	} foreach allCurators;
+	} foreach [HPC_masterCurator];
 
 	sleep 20;
 };
