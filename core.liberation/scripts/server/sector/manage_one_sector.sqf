@@ -344,11 +344,7 @@ if (_nearRadioTower) then {
 				[_sector_pos] spawn send_paratroopers;
 			};
 		};
-	} else {
-		[gamelogic, "A lucky day..."] remoteExec ["globalChat", 0];
 	};
-} else {
-	[gamelogic, "Enemy air support is unavailable: no radio tower nearby."] remoteExec ["globalChat", 0];
 };
 
 // Upgraded AI defense - now dynamic and reactive instead of time-based

@@ -5,10 +5,6 @@ if ([_unit] call PAR_is_wounded) exitWith {};
 //if (!alive _unit) exitWith {};
 //systemchat format ["semi wounded - unit: %1 - damage: %2 - protected: %3", name _unit, damage _unit, (_unit getVariable ["GRLIB_isProtected", 0])];
 
-if (side _unit == GRLIB_side_friendly) then {
-    gamelogic globalchat format ["Second chance for %1, lucky boy!", name _unit];
-};
-
 if (isPlayer _unit) exitWith {
     ["Second chance", "You were saved from a fatal hit.", "good", 5] call HPC_fnc_toast;
     _unit setUnconscious true;

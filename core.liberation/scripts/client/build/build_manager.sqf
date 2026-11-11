@@ -494,7 +494,10 @@ while {true} do {
 
 			// Crewed vehicle
 			if (manned) then {
-				player hcSetGroup [group _vehicle];
+				// the crew joins the builder's squad
+				private _crewGrp = group _vehicle;
+				(crew _vehicle) joinSilent (group player);
+				if (_crewGrp != group player) then { deleteGroup _crewGrp };
 			};
 
 			// UAVs

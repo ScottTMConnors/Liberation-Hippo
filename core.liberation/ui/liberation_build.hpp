@@ -353,7 +353,7 @@ class liberation_build {
 	class CostValue2 : CostValue1 { idc = 1732; y = BLD_PB - 10.5 * HPC_GY; };
 	class CostValue3 : CostValue1 { idc = 1733; y = BLD_PB - 8.9 * HPC_GY; };
 	class CostValue4 : CostValue1 { idc = 1734; y = BLD_PB - 7.3 * HPC_GY; };
-	// Build with AI crew: vehicle and defence pages; commanders only (enabled by script).
+	// Build with AI crew: vehicle and defence pages; anyone (enabled by script).
 	// Same CT_CHECKBOXES style as the admin menu toggles.
 	class CrewCheck {
 		idc = 121;
@@ -362,7 +362,7 @@ class liberation_build {
 		x = BLD_DIX; y = BLD_PB - 5.5 * HPC_GY; w = 3.4 * HPC_GX; h = 1.8 * HPC_GY;
 		columns = 1;
 		rows = 1;
-		strings[] = {""};
+		strings[] = {"OFF"};
 		checked_strings[] = {"ON"};
 		colorSelectedBg[] = {0,0,0,0};
 		colorText[] = HPC_C_MUTED;

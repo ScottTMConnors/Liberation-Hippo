@@ -68,7 +68,7 @@ private _buildpages = [
 private _categoryButtons = [102,103,104,105,106,109,107,108];
 {(_display displayCtrl _x) ctrlSetTooltip (_buildpages select _forEachIndex)} forEach _categoryButtons;
 (_display displayCtrl 120) ctrlSetTooltip "Purchase the selected item. Rank, resources and base restrictions apply.";
-(_display displayCtrl 121) ctrlSetTooltip "Build with an AI crew. No extra ammo or fuel; while the crew is alive the vehicle uses its manpower and the crew counts toward your active units.";
+(_display displayCtrl 121) ctrlSetTooltip "Build with an AI crew. No extra ammo or fuel; while the crew is alive the vehicle uses its manpower and the crew joins your squad and counts toward your active units.";
 private _crewTypes = [GRLIB_TransportVehicleBuildType,GRLIB_CombatVehicleBuildType,GRLIB_AerialBuildType,GRLIB_DefenceBuildType];
 private _manpowerTypes = [GRLIB_InfantryBuildType,GRLIB_SquadBuildType];
 
@@ -525,16 +525,16 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
 	// Crew checkbox: a crewed vehicle also needs its manpower free.
 	private _selItem = if (_selected_item >= 0 && {_selected_item < count _build_list}) then {_build_list select _selected_item} else {[]};
 	private _freeManpower = (infantry_cap - resources_infantry) max 0;
-	// Shown on every crew-capable page; only commanders can tick it.
+	// Shown on every crew-capable page; anyone can tick it.
 	private _crewShown = buildtype in _crewTypes;
 	if (_selItem isNotEqualTo [] && {(_selItem select 1) > _freeManpower}) then {_affordable_crew = false};
 	private _crewCtrl = _display displayCtrl 121;
 	_crewCtrl ctrlShow _crewShown;
 	(_display displayCtrl 122) ctrlShow _crewShown;
-	_crewCtrl ctrlEnable (_crewShown && GRLIB_player_commander && _affordable_crew && _linked_unlocked && dobuild == 0);
+	_crewCtrl ctrlEnable (_crewShown && _affordable_crew && _linked_unlocked && dobuild == 0);
 	if (!ctrlEnabled _crewCtrl && {ctrlChecked _crewCtrl}) then {_crewCtrl ctrlSetChecked false};
 	private _withCrew = _crewShown && {ctrlChecked _crewCtrl};
-	ctrlSetText [122, if (!GRLIB_player_commander) then {"Add AI crew (commander only)"} else {if (_selItem isEqualTo []) then {"Add AI crew (costs manpower)"} else {format ["Add AI crew (+%1 manpower)", _selItem select 1]}}];
+	ctrlSetText [122, if (_selItem isEqualTo []) then {"Add AI crew to your squad (costs manpower)"} else {format ["Add AI crew to your squad (+%1 manpower)", _selItem select 1]}];
 
 	// Cost grid: what the selection costs against what you have.
 	private _hasSel = _selItem isNotEqualTo [];

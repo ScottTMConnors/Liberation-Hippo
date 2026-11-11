@@ -100,8 +100,6 @@ if (GRLIB_endgame == 0 && GRLIB_global_stop == 0) then {
 				[_liberated_sector, 1] spawn spawn_battlegroup_direct;
 			};
 		};
-	} else {
-		[gamelogic, "A lucky day..."] remoteExec ["globalChat", 0];
 	};
 };
 
