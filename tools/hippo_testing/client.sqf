@@ -163,7 +163,7 @@ buildtype = GRLIB_CombatVehicleBuildType;
 sleep 1;
 private _lockedRow = -1;
 for "_i" from 0 to ((lnbSize _list select 0) - 1) do {
-    if ((_list lnbText [_i,0]) find "[Locked]" >= 0) exitWith {_lockedRow = _i};
+    if ((toLower (_list lnbPicture [_i,0])) find "sessions_locked" >= 0) exitWith {_lockedRow = _i};
 };
 _list lnbSetCurSelRow _lockedRow;
 sleep 0.5;
@@ -451,7 +451,33 @@ if (_zloggedIn) then {
     _zadminOk = _opened && _reverted && _limitedAgain;
 };
 ["zeus.master_admin", _zadminOk] call _assert;
-["RUN_DONE|27"] call _emit;
+
+// Action titles: old "-- SHOUTING" labels become sentence case, decorations stripped.
+private _titles = [
+    [localize "STR_BUILD_TRENCH_ACTION", "Build fortifications"],
+    ["-- REPACKAGE FOB", "Repackage FOB"],
+    ["-= READ  ME =-", "Read me"],
+    ["Rappel self", "Rappel self"]
+] apply {
+    _x params ["_in", "_want"];
+    private _out = [_in, "", "default"] call HPC_fnc_actionTitle;
+    [_in, _out, (_out find (">" + _want + "</t>")) >= 0]
+};
+diag_log ["HPC_ACTION_TITLES", _titles];
+["ui.actionTitle", (_titles findIf {!(_x select 2)}) < 0] call _assert;
+
+// Side-mission contacts: "Rank Surname", varied.
+private _names = [];
+for "_i" from 1 to 20 do { _names pushBackUnique ([] call HPC_fnc_contactName) };
+diag_log ["HPC_CONTACT_NAMES", _names];
+["missions.contactName", count _names > 3 && {(_names findIf {count (_x splitString " ") < 2}) < 0}] call _assert;
+
+// Mission popups format every extra value (the contact is the 3rd).
+private _hint = ["STR_SPECIALDELI_MESSAGE1", "#ff0000", "Town", "Captain Test"];
+private _hintText = format ([localize (_hint select 0)] + (_hint select [1]));
+diag_log ["HPC_HINT_FORMAT", _hintText];
+["missions.hintFormat", (_hintText find "Captain Test") >= 0 && {(_hintText find "Town") >= 0}] call _assert;
+["RUN_DONE|30"] call _emit;
 // --hold only: a staged firefight for visual inspection of the map overlay and command window.
 if (missionNamespace getVariable ["HPC_testHold", false]) then {
     player allowDamage false;

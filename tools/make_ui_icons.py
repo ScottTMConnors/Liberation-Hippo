@@ -224,14 +224,10 @@ def act(name):
         e = math.radians(30)
         x, y = 512 + 322 * math.cos(e), 512 + 322 * math.sin(e)
         d.polygon([(x - 120, y - 30), (x + 120, y - 30), (x, y + 130)], fill=w)
-    elif name == "wfuel":
-        c = (242, 193, 78, 255)
-        d.polygon([(512, 150), (760, 560), (264, 560)], fill=c)
-        d.ellipse((264, 400, 760, 896), fill=c)
     return im
 
 
-ACTIONS = ["confirm", "cancel", "build", "arsenal", "deployfob", "flipveh", "veh", "load", "unload", "redeploy", "recycle", "rotation", "wfuel"]
+ACTIONS = ["confirm", "cancel", "build", "arsenal", "deployfob", "flipveh", "veh", "load", "unload", "redeploy", "recycle", "rotation"]
 NOTIFS = ["sec_cap", "sec_los", "sec_saf", "sec_una", "fob_new", "fob_sec", "fob_und", "fob_los", "int", "ref", "sob", "bgp"]
 
 

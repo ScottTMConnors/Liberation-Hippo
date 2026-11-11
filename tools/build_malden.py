@@ -33,6 +33,24 @@ def next_version(base_version, manifest_paths):
         raise ValueError('Expected a major.minor.patch mission version')
     return f'{latest[0]}.{latest[1]}.{latest[2] + 1}'
 
+def stamp_scenario_data(text, title):
+    """Write picture, text and author into a decoded mission.sqm's ScenarioData.
+    The server browser and lobby read these from ScenarioData; description.ext is
+    only parsed once the mission loads."""
+    overview=('\tauthor="TheHungryHippo";\n\toverviewPicture="res\\overview.paa";\n\toverviewText="'
+              +OVERVIEW_TEXT+'";\n\tloadScreen="res\\liberation.paa";\n\tonLoadName="'+title+'";\n\tonLoadMission="'+OVERVIEW_TEXT+'";\n')
+    head=text.find('class ScenarioData')
+    if head<0: raise RuntimeError('Expected a ScenarioData class in mission.sqm')
+    # Only touch ScenarioData's own top-level entries (one tab deep).
+    end=re.search(r'(?m)^\};',text[head:])
+    if end is None: raise RuntimeError('ScenarioData in mission.sqm is not closed at column 0')
+    title=title.replace('"','""')
+    block=text[head:head+end.end()]
+    block=re.sub(r'(?m)^\t(author|overviewPicture|overviewText|loadScreen|onLoadName|onLoadMission)=.*;\r?\n','',block)
+    block,count=re.subn(r'(class ScenarioData\r?\n\{\r?\n)',lambda m:m[1]+overview,block,count=1)
+    if count!=1: raise RuntimeError('Expected a ScenarioData class in mission.sqm')
+    return text[:head]+block+text[head+end.end():]
+
 def stamp_identity(stage, version):
     """Show the same unique release ID in mission selection and loading UI."""
     title=f'Hippos Conquest v{version}'
@@ -57,13 +75,7 @@ def stamp_identity(stage, version):
         text=decoded.read_text(encoding='utf-8-sig')
         text,count=re.subn(r'\bbriefingName\s*=\s*"[^"]*";',lambda m:f'briefingName="{title}";',text)
         if count!=1: raise RuntimeError('Expected one Intel briefingName in mission.sqm')
-        # The server browser and lobby read picture, text and author from ScenarioData
-        # (description.ext is only parsed once the mission loads).
-        overview=('\tauthor="TheHungryHippo";\n\toverviewPicture="res\\overview.paa";\n\toverviewText="'
-                  +OVERVIEW_TEXT+'";\n\tloadScreen="res\\liberation.paa";\n\tonLoadName="'+title+'";\n\tonLoadMission="'+OVERVIEW_TEXT+'";\n')
-        text=re.sub(r'(?m)^\t(author|overviewPicture|overviewText|loadScreen|onLoadName|onLoadMission)=.*;\r?\n','',text)
-        text,count=re.subn(r'(class ScenarioData\r?\n\{\r?\n)',lambda m:m[1]+overview,text,count=1)
-        if count!=1: raise RuntimeError('Expected a ScenarioData class in mission.sqm')
+        text=stamp_scenario_data(text,title)
         decoded.write_text(text,encoding='utf-8')
         subprocess.run([str(converter),'-bin','-dst',str(stage/'mission.sqm'),str(decoded)],check=True,capture_output=True)
         verified=Path(folder)/'verified.cpp'

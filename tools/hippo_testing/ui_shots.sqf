@@ -280,4 +280,4 @@ if ([5201,15] call _waitDisplay) then {
 };
 uiSleep 2;
 diag_log format ["HPC_UISHOT_DONE|%1",HPC_testRun];
-["RUN_DONE|4"] call _emit;
+["RUN_DONE|7"] call _emit;

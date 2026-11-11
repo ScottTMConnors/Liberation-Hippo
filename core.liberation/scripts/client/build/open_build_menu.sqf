@@ -549,10 +549,11 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
 	} forEach [
 		[1731, _mpCost, _freeManpower, ""],
 		[1732, _ammoCost, player getVariable ["GREUH_ammo_count",0], ""],
-		[1733, _fuelCost, player getVariable ["GREUH_fuel_count",0], ""],
-		[1734, if (_unitcap >= GRLIB_blufor_cap) then {GRLIB_blufor_cap + 1} else {"-"}, GRLIB_blufor_cap, ""]
+		[1733, _fuelCost, player getVariable ["GREUH_fuel_count",0], ""]
 	];
+	// Active units: red when the cap is reached.
 	ctrlSetText [1734, format ["%1 / %2", _unitcap, GRLIB_blufor_cap]];
+	(_display displayCtrl 1734) ctrlSetTextColor (if (_unitcap >= GRLIB_blufor_cap) then {[0.9,0.4,0.36,1]} else {[0.92,0.94,0.95,1]});
 
 	_link_color = "#75CCB8";
 	_link_str = localize "STR_VEHICLE_UNLOCKED";
