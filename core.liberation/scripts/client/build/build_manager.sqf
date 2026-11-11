@@ -253,6 +253,8 @@ while {true} do {
 
 		// Wait for building
 		while { build_confirmed == 1 && alive player } do {
+			private _dir = 0;
+			private _truedir = 90;
 			if (_zeus_place) then {
 				if (isNull findDisplay 312) then { build_confirmed = 3 };
 				_dir = 0;

@@ -280,7 +280,130 @@ if (!_woundOk) then {
     diag_log ["HPC_MOD_DAMAGE", alive player, [player] call PAR_is_wounded, damage player, HPC_testModHits];
 };
 ["mods.damage", _woundOk] call _assert;
-["RUN_DONE|18"] call _emit;
+
+// ---- Limited Zeus ----
+_deadline = diag_tickTime + 20;
+waitUntil {sleep 0.5; diag_tickTime > _deadline || {(getAssignedCuratorLogic player) getVariable ["HPC_zeusLimited", false]}};
+private _zcur = getAssignedCuratorLogic player;
+["zeus.assigned", !isNull _zcur && {_zcur getVariable ["HPC_zeusLimited", false]} && {!(_zcur isEqualTo HPC_masterCurator)}] call _assert;
+
+// let the server refresh the owned set, then read it back from the server
+sleep 8;
+HPC_testZeus = nil;
+[[player], {
+    params ["_p"];
+    private _c = getAssignedCuratorLogic _p;
+    private _objs = curatorEditableObjects _c;
+    HPC_testZeus = [_objs, count curatorAddons _c, _c getVariable ["HPC_zeusAreas", 0], _c curatorCoef "place", _c curatorCoef "edit", _c curatorCoef "delete"];
+    (remoteExecutedOwner) publicVariableClient "HPC_testZeus";
+}] remoteExec ["call", 2];
+_deadline = diag_tickTime + 10;
+waitUntil {sleep 0.2; diag_tickTime > _deadline || {!isNil "HPC_testZeus"}};
+private _zinfo = missionNamespace getVariable ["HPC_testZeus", [[], -1, 0, 0, 0, 0]];
+_zinfo params ["_zobjs", "_zaddons", "_zareas", "_zplace", "_zedit", "_zdelete"];
+private _zowned = _zobjs findIf { !([_x] call HPC_fnc_zeusOwned) } < 0;
+diag_log ["HPC_ZEUS_INFO", count _zobjs, _zowned, _zaddons, _zareas, _zplace, _zedit, _zdelete, (units group player) - _zobjs];
+["zeus.owned_only", count _zobjs > 0 && _zowned && {player in _zobjs} && {(units group player) - _zobjs isEqualTo []} && {_zareas > 0}] call _assert;
+["zeus.no_cheats", _zaddons == 0 && {_zplace < -1e6} && {_zedit < -1e6} && {_zdelete < -1e6}] call _assert;
+
+// Zeus build placement: real build_manager path with the camera aimed 20 m ahead
+private _zbuildOk = false;
+private _zclass = "B_Quadbike_01_F";
+build_unit = [_zclass, [], 0, [], [], [], []];
+buildtype = GRLIB_BuildTypeDirect;
+dobuild = 1;
+_deadline = diag_tickTime + 15;
+waitUntil {sleep 0.2; diag_tickTime > _deadline || {!isNull findDisplay 312}};
+private _zopened = !isNull findDisplay 312;
+if (_zopened) then {
+    sleep 1;
+    curatorCamera setPosASL (AGLToASL (player modelToWorld [0, -5, 25]));
+    curatorCamera setVectorDirAndUp [vectorDir player vectorMultiply 0.5 vectorAdd [0, 0, -0.85], [0, 0, 1]];
+    setMousePosition [0.5, 0.5];
+    _deadline = diag_tickTime + 10;
+    waitUntil {sleep 0.2; diag_tickTime > _deadline || {build_valid && build_confirmed == 1}};
+    diag_log ["HPC_ZEUS_BUILD_PREVIEW", build_valid, build_confirmed, screenToWorld [0.5, 0.5], getPosATL player, GRLIB_ui_notif];
+    if (build_valid) then { build_confirmed = 2; repeatbuild = false };
+    _deadline = diag_tickTime + 15;
+    waitUntil {sleep 0.2; diag_tickTime > _deadline || {dobuild == 0}};
+    _zbuildOk = dobuild == 0 && {!isNull build_vehicle} && {typeOf build_vehicle == _zclass} && {isNull findDisplay 312} && {isNil "HPC_zeusBuildActive"};
+    diag_log ["HPC_ZEUS_BUILD", dobuild, build_vehicle, isNull findDisplay 312, build_vehicle distance2D player];
+};
+["zeus.build_place", _zopened && _zbuildOk] call _assert;
+
+// Escape cancels and closes Zeus
+build_unit = [_zclass, [], 0, [], [], [], []];
+buildtype = GRLIB_BuildTypeDirect;
+dobuild = 1;
+_deadline = diag_tickTime + 15;
+waitUntil {sleep 0.2; diag_tickTime > _deadline || {!isNull findDisplay 312}};
+private _zcancelOk = false;
+if (!isNull findDisplay 312) then {
+    sleep 1;
+    private _vehs = count vehicles;
+    build_confirmed = 3; repeatbuild = false;
+    _deadline = diag_tickTime + 15;
+    waitUntil {sleep 0.2; diag_tickTime > _deadline || {dobuild == 0}};
+    _zcancelOk = dobuild == 0 && {isNull findDisplay 312} && {count vehicles == _vehs};
+};
+["zeus.build_cancel", _zcancelOk] call _assert;
+
+// Remote control an owned AI, then return with the Zeus interface
+private _zrc = (units group player) select { alive _x && !isPlayer _x } param [0, objNull];
+private _zrcOk = false;
+if (!isNull _zrc) then {
+    openCuratorInterface;
+    _deadline = diag_tickTime + 10;
+    waitUntil {sleep 0.2; diag_tickTime > _deadline || {!isNull findDisplay 312}};
+    [_zrc] spawn HPC_fnc_zeusRemote;
+    _deadline = diag_tickTime + 10;
+    waitUntil {sleep 0.2; diag_tickTime > _deadline || {cameraOn isEqualTo _zrc}};
+    private _controlled = cameraOn isEqualTo _zrc;
+    sleep 1;
+    openCuratorInterface;
+    _deadline = diag_tickTime + 10;
+    waitUntil {sleep 0.2; diag_tickTime > _deadline || {cameraOn isEqualTo player && !isNull findDisplay 312}};
+    private _returned = cameraOn isEqualTo player;
+    findDisplay 312 closeDisplay 2;
+    diag_log ["HPC_ZEUS_RC", _zrc, _controlled, _returned, cameraOn];
+    _zrcOk = _controlled && _returned;
+};
+["zeus.remote_own", _zrcOk] call _assert;
+
+// Not owned: refused
+_deadline = diag_tickTime + 10;
+waitUntil {sleep 0.2; diag_tickTime > _deadline || {isNull findDisplay 312 && cameraOn isEqualTo player}};
+sleep 2;
+private _zciv = (createGroup civilian) createUnit ["C_man_1", player getPos [8, 0], [], 0, "NONE"];
+openCuratorInterface;
+_deadline = diag_tickTime + 10;
+waitUntil {sleep 0.2; diag_tickTime > _deadline || {!isNull findDisplay 312}};
+[_zciv] spawn HPC_fnc_zeusRemote;
+sleep 3;
+private _zrefuseOk = cameraOn isEqualTo player && !isNull findDisplay 312;
+diag_log ["HPC_ZEUS_REFUSE", cameraOn, isNull findDisplay 312, _zciv];
+findDisplay 312 closeDisplay 2;
+deleteVehicle _zciv;
+["zeus.remote_refused", _zrefuseOk] call _assert;
+
+// Master Zeus: admins get it for one session; non-admins are refused
+private _zadmin = (call BIS_fnc_admin) == 2;
+[] spawn HPC_fnc_masterZeus;
+_deadline = diag_tickTime + 10;
+waitUntil {sleep 0.2; diag_tickTime > _deadline || {getAssignedCuratorLogic player isEqualTo HPC_masterCurator && !isNull findDisplay 312}};
+private _zgotMaster = getAssignedCuratorLogic player isEqualTo HPC_masterCurator;
+private _zmasterOk = if (_zadmin) then {
+    findDisplay 312 closeDisplay 2;
+    _deadline = diag_tickTime + 10;
+    waitUntil {sleep 0.5; diag_tickTime > _deadline || {(getAssignedCuratorLogic player) getVariable ["HPC_zeusLimited", false]}};
+    _zgotMaster && {(getAssignedCuratorLogic player) getVariable ["HPC_zeusLimited", false]}
+} else {
+    sleep 2;
+    !_zgotMaster && {(getAssignedCuratorLogic player) getVariable ["HPC_zeusLimited", false]}
+};
+diag_log ["HPC_ZEUS_MASTER", _zadmin, _zgotMaster, getAssignedCuratorLogic player];
+["zeus.master", _zmasterOk] call _assert;
+["RUN_DONE|26"] call _emit;
 // --hold only: a staged firefight for visual inspection of the map overlay and command window.
 if (missionNamespace getVariable ["HPC_testHold", false]) then {
     player allowDamage false;
