@@ -1821,88 +1821,32 @@
 			<Czech>Obtížnost</Czech>
 		</Key>
 		<Key ID="STR_PARAMS_DIFFICULTY1">
-			<Original>Tourist</Original>
-			<French>Touriste</French>
-			<German>Tourist</German>
-			<Spanish>Turista</Spanish>
-			<Russian>Турист</Russian>
-			<Chinesesimp>观光游</Chinesesimp>
-			<Chinese>觀光遊</Chinese>
-			<Japanese>ツーリスト</Japanese>
-			<Portuguese>Turista</Portuguese>
-			<Czech>Turistický</Czech>
+			<Original>Baby Hippo (very easy)</Original>
+			<English>Baby Hippo (very easy)</English>
 		</Key>
 		<Key ID="STR_PARAMS_DIFFICULTY2">
-			<Original>Easy</Original>
-			<French>Facile</French>
-			<German>Einfach</German>
-			<Spanish>Fácil</Spanish>
-			<Russian>Легко</Russian>
-			<Chinesesimp>新兵入伍</Chinesesimp>
-			<Chinese>新兵入伍</Chinese>
-			<Japanese>イージー</Japanese>
-			<Portuguese>Fácil</Portuguese>
-			<Czech>Snadný</Czech>
+			<Original>Pygmy Hippo (easy)</Original>
+			<English>Pygmy Hippo (easy)</English>
 		</Key>
 		<Key ID="STR_PARAMS_DIFFICULTY3">
-			<Original>Normal</Original>
-			<French>Normale</French>
-			<German>Normal</German>
-			<Spanish>Normal</Spanish>
-			<Russian>Нормально</Russian>
-			<Chinesesimp>行伍匹夫</Chinesesimp>
-			<Chinese>行伍匹夫</Chinese>
-			<Japanese>ノーマル</Japanese>
-			<Portuguese>Normal</Portuguese>
-			<Czech>Normální</Czech>
+			<Original>River Hippo (normal)</Original>
+			<English>River Hippo (normal)</English>
 		</Key>
 		<Key ID="STR_PARAMS_DIFFICULTY4">
-			<Original>Moderate</Original>
-			<French>Modéré</French>
-			<German>Moderat</German>
-			<Spanish>Moderado</Spanish>
-			<Russian>Посложнее</Russian>
-			<Chinesesimp>久经沙场</Chinesesimp>
-			<Chinese>久經沙場</Chinese>
-			<Japanese>モデレート</Japanese>
-			<Portuguese>Moderado</Portuguese>
-			<Czech>Střední</Czech>
+			<Original>Grumpy Hippo (moderate)</Original>
+			<English>Grumpy Hippo (moderate)</English>
 		</Key>
 		<Key ID="STR_PARAMS_DIFFICULTY5">
-			<Original>Hard</Original>
-			<French>Difficile</French>
-			<German>Schwer</German>
-			<Spanish>Difícil</Spanish>
-			<Russian>Сложно</Russian>
-			<Chinesesimp>百炼成钢</Chinesesimp>
-			<Chinese>百煉成鋼</Chinese>
-			<Japanese>ハード</Japanese>
-			<Portuguese>Difícil</Portuguese>
-			<Czech>Silný</Czech>
+			<Original>Bull Hippo (hard)</Original>
+			<English>Bull Hippo (hard)</English>
 		</Key>
 		<Key ID="STR_PARAMS_DIFFICULTY6">
-			<Original>Extreme</Original>
-			<French>Extrême</French>
-			<German>Schwer</German>
-			<Spanish>Extremo</Spanish>
-			<Russian>Экстремально</Russian>
-			<Chinesesimp>很强很暴力</Chinesesimp>
-			<Chinese>很強很暴力</Chinese>
-			<Japanese>エクストリーム</Japanese>
-			<Portuguese>Extremo</Portuguese>
-			<Czech>Extrémní</Czech>
+			<Original>Badass Bull Hippo (extreme)</Original>
+			<English>Badass Bull Hippo (extreme)</English>
 		</Key>
 		<Key ID="STR_PARAMS_DIFFICULTY7">
-			<Original>Oh god oh god we're all gonna die</Original>
-			<French>Oh mon dieu, on va tous mourir</French>
-			<German>Mein Gott, wir werden alle sterben!</German>
-			<Spanish>Oh dios mío, vamos a morir!</Spanish>
-			<Russian>Боже мой, мы все умрём!</Russian>
-			<Chinesesimp>我们没有机会幸存！没有机会！</Chinesesimp>
-			<Chinese>我們沒有機會倖存！ 沒有機會！</Chinese>
-			<Japanese>おお神よ、我々は皆死ぬ。</Japanese>
-			<Portuguese>Oh deus oh deus todos nós vamos morrer</Portuguese>
-			<Czech>Oh bože, bože, všichni zemřeme</Czech>
+			<Original>Hungry Hungry Hippo (insane)</Original>
+			<English>Hungry Hungry Hippo (insane)</English>
 		</Key>
 		<Key ID="STR_PARAMS_RESOURCESMULTIPLIER">
 			<Original>Resources multiplier</Original>

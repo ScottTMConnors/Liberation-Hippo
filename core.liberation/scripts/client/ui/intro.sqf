@@ -35,7 +35,6 @@ waitUntil { dialog };
 private _noesckey = (findDisplay 5651) displayAddEventHandler ["KeyDown", {[_this select 0, _this select 1] call HPC_fnc_escPause}];
 private _timer = round (time + (3 * 60));
 waitUntil { startgame == 1 || howtoplay == 1 || !dialog || time > _timer };
-disableUserInput true;
 (findDisplay 5651) displayRemoveEventHandler ["KeyDown", _noesckey];
 closeDialog 0;
 

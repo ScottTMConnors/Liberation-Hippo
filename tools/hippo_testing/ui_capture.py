@@ -78,6 +78,28 @@ def capture(pid, path: Path):
     return True
 
 
+def key(pid, scan=0x1C):
+    """Bring the game forward and tap one key by scan code (default Enter; DirectInput reads scan codes)."""
+    hwnd = find_window(pid)
+    if not hwnd:
+        return False
+    user32.SetForegroundWindow(hwnd)
+    time.sleep(0.4)
+
+    class KEYBDINPUT(ctypes.Structure):
+        _fields_ = [('wVk', wintypes.WORD), ('wScan', wintypes.WORD), ('dwFlags', wintypes.DWORD),
+                    ('time', wintypes.DWORD), ('dwExtraInfo', ctypes.c_size_t)]
+
+    class INPUT(ctypes.Structure):
+        _fields_ = [('type', wintypes.DWORD), ('ki', KEYBDINPUT), ('pad', ctypes.c_ubyte * 8)]
+
+    for flags in (0x0008, 0x0008 | 0x0002):  # KEYEVENTF_SCANCODE, then key up
+        event = INPUT(1, KEYBDINPUT(0, scan, flags, 0, 0))
+        user32.SendInput(1, ctypes.byref(event), ctypes.sizeof(INPUT))
+        time.sleep(0.05)
+    return True
+
+
 def wheel(pid, clicks=-1):
     """Bring the game forward and send a mouse-wheel tick (opens the action menu)."""
     hwnd = find_window(pid)

@@ -99,6 +99,23 @@ diag_log format ["HPC_UIWHEEL|%1",HPC_testRun];
 ["07_actions",1.5] call HPC_uiShot;
 uiSleep 4; // let the action menu fade
 
+// Tutorial from the action menu: a real key press must close it, and input must stay free.
+[] call _closeDialogs;
+private _tuto = [] execVM "scripts\client\ui\tutorial_manager.sqf";
+private _tutoOpen = [5353,10] call _waitDisplay;
+if (_tutoOpen) then {
+    ["16_tutorial",1.5] call HPC_uiShot;
+    diag_log format ["HPC_UIKEY|%1|tutorial",HPC_testRun];
+    private _end = diag_tickTime + 8;
+    waitUntil {uiSleep 0.1; isNull findDisplay 5353 || diag_tickTime > _end};
+};
+["uishots.tutorialKey",_tutoOpen && {isNull findDisplay 5353}] call _assert;
+private _end = diag_tickTime + 5;
+waitUntil {uiSleep 0.1; scriptDone _tuto || diag_tickTime > _end};
+["uishots.inputFree",!userInputDisabled] call _assert;
+diag_log ["HPC_UISHOT_INPUT",userInputDisabled];
+if (userInputDisabled) then {disableUserInput false};
+
 // Dialogs opened through their real scripts.
 private _dialogs = [
     ["08_build",{[player,player,0,false] execVM "scripts\client\build\open_build_menu.sqf"}],
@@ -156,4 +173,4 @@ if ([5201,15] call _waitDisplay) then {
 };
 uiSleep 2;
 diag_log format ["HPC_UISHOT_DONE|%1",HPC_testRun];
-["RUN_DONE|2"] call _emit;
+["RUN_DONE|4"] call _emit;

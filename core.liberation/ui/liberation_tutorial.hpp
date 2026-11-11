@@ -14,7 +14,7 @@ class liberation_tutorial {
 	idd = 5353;
 	movingEnable = false;
 	controlsBackground[] = {"Panel", "ArticleBG"};
-	controls[] = {"Accent", "Header", "Subtitle", "ButtonX", "Divider", "LabelChapters", "TutorialList", "HeaderTuto", "TutoControlGroup", "CloseButton"};
+	controls[] = {"Accent", "Header", "Subtitle", "ButtonX", "Divider", "LabelChapters", "TutorialList", "HeaderTuto", "TutoControlGroup", "SkipHint", "CloseButton"};
 	objects[] = {};
 
 	class Panel : HPC_Panel {
@@ -115,5 +115,12 @@ class liberation_tutorial {
 		x = TUT_X + TUT_W - TUT_PAD - 14 * HPC_GX; y = TUT_Y + TUT_H - 4.4 * HPC_GY; w = 14 * HPC_GX; h = 3.2 * HPC_GY;
 		text = $STR_TUTO_GOTIT;
 		action = "howtoplay = 0";
+	};
+	class SkipHint : HPC_Text {
+		x = TUT_X + TUT_PAD; y = TUT_Y + TUT_H - 4.4 * HPC_GY; w = TUT_W - 2 * TUT_PAD - 15 * HPC_GX; h = 3.2 * HPC_GY;
+		colorBackground[] = {1,1,1,0.05};
+		colorText[] = {0.62,0.69,0.72,1};
+		sizeEx = 0.95 * HPC_GY;
+		text = "   Press any key to close the tutorial  -  click a chapter to keep reading";
 	};
 };

@@ -288,7 +288,7 @@ addMissionEventHandler ["MPEnded",{
     client_cases=['startup.client','player.abilities','catalog.filters','catalog.empty','purchase.filtered','reward.owner','services.cooldown','revive.manual','mods.handlers','catalog.groups','catalog.singleType','catalog.rankVisible','catalog.toggle','catalog.tools','map.overlay','map.remoteShots','commander.window','mods.damage']
     if args.targeted: client_cases=['startup.client','fortifications.build','fortifications.sound']
     if args.visual: client_cases=['startup.client','visual.objectivePanel','visual.civilianMovement','visual.commanderPost']
-    if args.ui_shots: client_cases=['uishots.spawned','uishots.dialogs']
+    if args.ui_shots: client_cases=['uishots.spawned','uishots.dialogs','uishots.tutorialKey','uishots.inputFree']
     shots_taken=set(); wheels_sent=set()
     manifest={'run_id':run_id,'map':args.map,'source_head':subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT).decode().strip(),'source_sha256':source_hash.hexdigest(),'baseline':args.baseline,'variant':args.variant,'control':args.control,'cases':cases,'client_cases':client_cases,'scripts':scripts,'package_sha256':sha(pbo),'argv':argv,'roles':roles,'port':port}
     (out/'manifest.json').write_text(json.dumps(manifest,indent=2),encoding='utf-8')
@@ -414,6 +414,9 @@ addMissionEventHandler ["MPEnded",{
                         print(json.dumps({'shot':name,'saved':ok}),flush=True)
                     if f'HPC_UIWHEEL|{run_id}' in content and role not in wheels_sent:
                         wheels_sent.add(role); ui_capture.wheel(child.pid)
+                    for tag in re.findall(re.escape(f'HPC_UIKEY|{run_id}|')+r'([\w-]+)',content):
+                        if ('key',tag) in wheels_sent: continue
+                        wheels_sent.add(('key',tag)); ui_capture.key(child.pid)
             if f'HPC_TEST|{run_id}|server|RUN_DONE|' in rpt and all(f'HPC_TEST|{run_id}|{role}|RUN_DONE|' in logs(folder) for role,(_,folder,_) in clients.items()) and (not args.headless or ((args.attribution or 'hc1_rejoin' in headless) and all(f'HPC_TEST|{run_id}|{role}|RUN_DONE|' in logs(folder) for role,(_,folder) in headless.items()))):
                 completed=True; stop_reason='protocol_complete'
                 if args.hold: time.sleep(min(args.hold,60))
