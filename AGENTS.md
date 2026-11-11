@@ -39,6 +39,9 @@ Every Workshop upload gets, for the commit it was built from:
 - the Steam change note on both Malden and Tanoa, from
   `python tools/release_notes.py VERSION MAP`.
 
+Follow the `hippo-release` project skill for the full build and upload steps;
+the uploader lives in the git-ignored `tools/workshop/`.
+
 # Offline checks
 
 Before engine runs, run `python tools/sqf_wiki_check.py` (lexical errors,
