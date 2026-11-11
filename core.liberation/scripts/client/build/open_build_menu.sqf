@@ -318,7 +318,7 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
             private _locked = ((_ordered select _itemIndex) select 1) == 1;
             _affordable = !_locked;
             if (_rankLocked) then {
-                private _required = format ["Requires %1 (%2 XP). Your XP: %3.", ([_x select 4] call F_getRank) select 0, _x select 4, _score];
+                private _required = format ["Requires %1 (%2 XP). Your XP: %3.", ([_x select 4] call HPC_fnc_rankInfo) select 0, _x select 4, _score];
                 lnbSetTooltip [110, [_row, 0], _required];
                 _reasons pushBack _required;
             };
@@ -534,7 +534,7 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
 	_crewCtrl ctrlEnable (_crewShown && _affordable_crew && _linked_unlocked && dobuild == 0);
 	if (!ctrlEnabled _crewCtrl && {ctrlChecked _crewCtrl}) then {_crewCtrl ctrlSetChecked false};
 	private _withCrew = _crewShown && {ctrlChecked _crewCtrl};
-	ctrlSetText [122, if (_selItem isEqualTo []) then {"Add AI crew to your squad (costs manpower)"} else {format ["Add AI crew to your squad (+%1 manpower)", _selItem select 1]}];
+	ctrlSetText [122, if (_selItem isEqualTo []) then {"Spawn with crew (costs manpower)"} else {format ["Spawn with crew (+%1 manpower)", _selItem select 1]}];
 
 	// Cost grid: what the selection costs against what you have.
 	private _hasSel = _selItem isNotEqualTo [];

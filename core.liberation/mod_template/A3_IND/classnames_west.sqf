@@ -30,22 +30,22 @@ chimera_vehicle_overide = [
 
 // [CLASSNAME, MANPOWER, AMMO, FUEL, RANK, DESC]
 infantry_units_west = [
-	["Alsatian_Random_F",0,0,0,GRLIB_perm_max],
+	["Alsatian_Random_F",0,0,0,GRLIB_perm_col],
 	["Fin_random_F",0,0,0,0],
 	["I_soldier_F",1,0,0,0],
 	["I_medic_F",1,0,0,0],
 	["I_engineer_F",1,0,0,0],
-	["I_soldier_GL_F",1,0,0,GRLIB_perm_inf],
-	["I_soldier_M_F",1,0,0,GRLIB_perm_inf],
+	["I_soldier_GL_F",1,0,0,GRLIB_perm_pfc],
+	["I_soldier_M_F",1,0,0,GRLIB_perm_cpl],
 	["I_soldier_LAT_F",1,0,0,0],
-	["I_Soldier_AR_F",1,0,0,GRLIB_perm_inf],
-	["I_diver_F",1,0,0,GRLIB_perm_inf],
-	["I_Soldier_exp_F",1,0,0,GRLIB_perm_log],
-	["I_soldier_AA_F",1,0,0,GRLIB_perm_log],
-	["I_soldier_AT_F",1,0,0,GRLIB_perm_log],
-	["I_sniper_F",1,0,0,GRLIB_perm_log],
-	[crewman_classname,1,0,0,GRLIB_perm_inf],
-	[pilot_classname,1,0,0,GRLIB_perm_log]
+	["I_Soldier_AR_F",1,0,0,GRLIB_perm_cpl],
+	["I_diver_F",1,0,0,GRLIB_perm_sgt],
+	["I_Soldier_exp_F",1,0,0,GRLIB_perm_cpl],
+	["I_soldier_AA_F",1,0,0,GRLIB_perm_sfc],
+	["I_soldier_AT_F",1,0,0,GRLIB_perm_sfc],
+	["I_sniper_F",1,0,0,GRLIB_perm_sgm],
+	[crewman_classname,1,0,0,GRLIB_perm_pfc],
+	[pilot_classname,1,0,0,GRLIB_perm_ssg]
 ];
 
 units_loadout_overide = [];
@@ -53,46 +53,46 @@ units_loadout_overide = [];
 light_vehicles = [
 	["I_Quadbike_01_F",1,5,1,0],
 	["I_Boat_Transport_01_F",1,5,1,0],
-	["C_Boat_Transport_02_F",2,25,2,GRLIB_perm_log],
-	["I_Boat_Armed_01_minigun_F",5,30,5,GRLIB_perm_log],
-	["I_SDV_01_F",5,30,5,GRLIB_perm_log],
+	["C_Boat_Transport_02_F",2,25,2,GRLIB_perm_cpl],
+	["I_Boat_Armed_01_minigun_F",5,30,5,GRLIB_perm_cpl],
+	["I_SDV_01_F",5,30,5,GRLIB_perm_cpl],
 	["C_Scooter_Transport_01_F",1,5,1,0],
 	["C_SUV_01_F",1,10,3,0],
 	["I_G_Offroad_01_F",1,10,5,0],
-	["I_G_Offroad_01_armed_F",1,50,5,GRLIB_perm_inf],
+	["I_G_Offroad_01_armed_F",1,50,5,GRLIB_perm_cpl],
 	["C_Van_01_transport_F",1,15,7,0],
 	["I_MRAP_03_F",2,25,12,0],
-	["I_MRAP_03_hmg_F",5,100,12,GRLIB_perm_inf],
-	["I_MRAP_03_gmg_F",5,125,12,GRLIB_perm_log],
-	["I_Truck_02_transport_F",5,30,15,GRLIB_perm_log],
-	["I_Truck_02_covered_F",5,30,15,GRLIB_perm_log],
-	["I_LT_01_cannon_F",2,200,12,GRLIB_perm_log],
-	["I_LT_01_AT_F",2,200,12,GRLIB_perm_tank],
-	["I_LT_01_AA_F",2,200,12,GRLIB_perm_air],
-	["I_UGV_01_F",5,10,5,GRLIB_perm_inf],
-	["I_UGV_01_rcws_F",5,250,5,GRLIB_perm_log]
+	["I_MRAP_03_hmg_F",5,100,12,GRLIB_perm_cpl],
+	["I_MRAP_03_gmg_F",5,125,12,GRLIB_perm_sgt],
+	["I_Truck_02_transport_F",5,30,15,GRLIB_perm_cpl],
+	["I_Truck_02_covered_F",5,30,15,GRLIB_perm_cpl],
+	["I_LT_01_cannon_F",2,200,12,GRLIB_perm_sgt],
+	["I_LT_01_AT_F",2,200,12,GRLIB_perm_sfc],
+	["I_LT_01_AA_F",2,200,12,GRLIB_perm_sfc],
+	["I_UGV_01_F",5,10,5,GRLIB_perm_pfc],
+	["I_UGV_01_rcws_F",5,250,5,GRLIB_perm_sgt]
 ];
 
 heavy_vehicles = [
-	["I_E_APC_tracked_03_cannon_F",10,500,20,GRLIB_perm_log],
-	["I_APC_Wheeled_03_cannon_F",10,500,20,GRLIB_perm_tank],
-	["I_APC_tracked_03_cannon_F",10,500,20,GRLIB_perm_tank],
-	["I_MBT_03_cannon_F",15,1000,25,GRLIB_perm_tank],
-	["I_Truck_02_MRL_F",15,4000,25,GRLIB_perm_max]
+	["I_E_APC_tracked_03_cannon_F",10,500,20,GRLIB_perm_sgt],
+	["I_APC_Wheeled_03_cannon_F",10,500,20,GRLIB_perm_msg],
+	["I_APC_tracked_03_cannon_F",10,500,20,GRLIB_perm_sgm],
+	["I_MBT_03_cannon_F",15,1000,25,GRLIB_perm_2lt],
+	["I_Truck_02_MRL_F",15,4000,25,GRLIB_perm_col]
 ];
 
 air_vehicles = [
-	["I_UAV_01_F",0,10,0,GRLIB_perm_log],
-	["I_UAV_06_F",0,30,0,GRLIB_perm_tank],
-	["I_UAV_02_dynamicLoadout_F",5,1000,5,GRLIB_perm_air],
-	["C_Plane_Civil_01_F",1,50,5,GRLIB_perm_air],
-	["I_Heli_light_03_unarmed_F",1,50,15,GRLIB_perm_tank],
-	["I_Heli_light_03_dynamicLoadout_F",1,150,15,GRLIB_perm_air],
-	["I_E_Heli_light_03_dynamicLoadout_F",1,150,15,GRLIB_perm_tank],
-	["I_Plane_Fighter_03_dynamicLoadout_F", 10,3500,50,GRLIB_perm_max],
-	["I_Plane_Fighter_03_Cluster_F",20,3000,50,GRLIB_perm_max],
-	["I_Plane_Fighter_04_F",20,4500,50,GRLIB_perm_max],
-	["I_Plane_Fighter_04_Cluster_F",20,4500,50,GRLIB_perm_max]
+	["I_UAV_01_F",0,10,0,GRLIB_perm_pfc],
+	["I_UAV_06_F",0,30,0,GRLIB_perm_cpl],
+	["I_UAV_02_dynamicLoadout_F",5,1000,5,GRLIB_perm_2lt],
+	["C_Plane_Civil_01_F",1,50,5,GRLIB_perm_sgt],
+	["I_Heli_light_03_unarmed_F",1,50,15,GRLIB_perm_sgt],
+	["I_Heli_light_03_dynamicLoadout_F",1,150,15,GRLIB_perm_sfc],
+	["I_E_Heli_light_03_dynamicLoadout_F",1,150,15,GRLIB_perm_sfc],
+	["I_Plane_Fighter_03_dynamicLoadout_F", 10,3500,50,GRLIB_perm_ltc],
+	["I_Plane_Fighter_03_Cluster_F",20,3000,50,GRLIB_perm_cpt],
+	["I_Plane_Fighter_04_F",20,4500,50,GRLIB_perm_col],
+	["I_Plane_Fighter_04_Cluster_F",20,4500,50,GRLIB_perm_col]
 ];
 
 blufor_air = [
@@ -106,16 +106,16 @@ blufor_air = [
 ];
 
 static_vehicles = [
-	["I_UGV_02_Demining_F",0,5,0,GRLIB_perm_inf],
-	["I_HMG_01_F",0,10,0,GRLIB_perm_log],
-	["I_HMG_01_high_F",0,10,0,GRLIB_perm_tank],
-	["I_GMG_01_F",0,20,0,GRLIB_perm_log],
-	["I_GMG_01_high_F",0,20,0,GRLIB_perm_tank],
-	["I_static_AA_F",0,50,0,GRLIB_perm_air],
-	["I_static_AT_F",0,50,0,GRLIB_perm_air],
-	["I_Mortar_01_F",0,500,0,GRLIB_perm_max],
-	["B_AAA_System_01_F",10,500,0,GRLIB_perm_max],
-	["I_E_SAM_System_03_F",10,800,0,GRLIB_perm_max]
+	["I_UGV_02_Demining_F",0,5,0,0],
+	["I_HMG_01_F",0,10,0,GRLIB_perm_pfc],
+	["I_HMG_01_high_F",0,10,0,GRLIB_perm_pfc],
+	["I_GMG_01_F",0,20,0,GRLIB_perm_cpl],
+	["I_GMG_01_high_F",0,20,0,GRLIB_perm_cpl],
+	["I_static_AA_F",0,50,0,GRLIB_perm_sgt],
+	["I_static_AT_F",0,50,0,GRLIB_perm_sgt],
+	["I_Mortar_01_F",0,500,0,GRLIB_perm_sgm],
+	["B_AAA_System_01_F",10,500,0,GRLIB_perm_sgm],
+	["I_E_SAM_System_03_F",10,800,0,GRLIB_perm_2lt]
 ];
 
 // *** Static Weapon with AI ***
@@ -125,14 +125,14 @@ static_vehicles_AI = [
 ];
 
 support_vehicles_west = [
-	[repair_offroad,5,15,5,GRLIB_perm_inf],
-	["I_G_Van_01_fuel_F",5,15,20,GRLIB_perm_inf]
+	[repair_offroad,5,15,5,GRLIB_perm_pfc],
+	["I_G_Van_01_fuel_F",5,15,20,GRLIB_perm_pfc]
 ];
 
 buildings_west = [
-	["Land_Cargo_Tower_V2_F",0,0,0,GRLIB_perm_tank],
-	["Land_Cargo_House_V2_F",0,0,0,GRLIB_perm_inf],
-	["Land_Cargo_Patrol_V2_F",0,0,0,GRLIB_perm_log]
+	["Land_Cargo_Tower_V2_F",0,0,0,GRLIB_perm_sfc],
+	["Land_Cargo_House_V2_F",0,0,0,GRLIB_perm_pfc],
+	["Land_Cargo_Patrol_V2_F",0,0,0,GRLIB_perm_sgt]
 ];
 
 // Boats
@@ -183,11 +183,11 @@ blufor_squad_mix = [
 ];
 
 squads = [
-	[blufor_squad_inf_light,10,300,0,GRLIB_perm_max],
-	[blufor_squad_inf,20,400,0,GRLIB_perm_max],
-	[blufor_squad_at,25,600,0,GRLIB_perm_max],
-	[blufor_squad_aa,25,600,0,GRLIB_perm_max],
-	[blufor_squad_mix,25,600,0,GRLIB_perm_max]
+	[blufor_squad_inf_light,10,300,0,GRLIB_perm_2lt],
+	[blufor_squad_inf,20,400,0,GRLIB_perm_1lt],
+	[blufor_squad_at,25,600,0,GRLIB_perm_cpt],
+	[blufor_squad_aa,25,600,0,GRLIB_perm_cpt],
+	[blufor_squad_mix,25,600,0,GRLIB_perm_maj]
 ];
 
 // Everything the AI troups should be able to resupply from

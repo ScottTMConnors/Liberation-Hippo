@@ -53,6 +53,7 @@ if (GRLIB_endgame >= 1 || GRLIB_global_stop == 1) then {
 		GRLIB_player_scores
 	];
 	profileNamespace setVariable [GRLIB_save_key, _savegame];
+	profileNamespace setVariable [format ["%1-xpcurve", GRLIB_save_key], 2]; // scores are on the current rank curve
 	saveProfileNamespace;
 } else {
 	buildings_to_save = [];
@@ -232,6 +233,7 @@ if (GRLIB_endgame >= 1 || GRLIB_global_stop == 1) then {
 	];
 
 	profileNamespace setVariable [GRLIB_save_key, _lrx_liberation_savegame];
+	profileNamespace setVariable [format ["%1-xpcurve", GRLIB_save_key], 2]; // scores are on the current rank curve
 	saveProfileNamespace;
 	diag_log format ["--- LRX Save %1 in Profile at %2", GRLIB_save_key, time];
 };

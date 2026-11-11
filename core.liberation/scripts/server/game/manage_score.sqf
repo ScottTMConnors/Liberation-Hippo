@@ -38,13 +38,13 @@ while {true} do {
 					_x setVariable ["GRLIB_Rank", _new_rank, true];
 				};
 
-				// Ranks between unlock tiers: a card with the XP left to the next unlock.
+				// Ranks between squad tiers: a card with the XP left to the next rank.
 				private _titleNow = ([_cur] call HPC_fnc_rankInfo) select 6;
 				private _titleBefore = ([_last] call HPC_fnc_rankInfo) select 6;
 				if (_cur >= 0 && {_new_rank == _rank} && {_titleNow != _titleBefore}) then {
-					private _unlocks = [GRLIB_perm_inf, GRLIB_perm_log, GRLIB_perm_tank, GRLIB_perm_air, GRLIB_perm_max, GRLIB_perm_max * 4] select {_x > _cur};
+					private _unlocks = (("ladder" call HPC_fnc_rankInfo) apply {_x select 1}) select {_x > _cur};
 					private _note = if (_unlocks isEqualTo []) then {""} else {
-						format ["%1 more XP to the next unlock.", (_unlocks select 0) - _cur]
+						format ["%1 more XP to the next rank and its unlocks.", (_unlocks select 0) - _cur]
 					};
 					[_cur, _note, _titleNow > _titleBefore] remoteExec ["HPC_fnc_promotion", owner _x];
 					// keep the character's game rank in step with the title (e.g. First Lieutenant -> LIEUTENANT)

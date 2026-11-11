@@ -70,6 +70,30 @@ if (GRLIB_param_wipe_context == 0) then {
 		GRLIB_player_context = _lrx_liberation_savegame select 14;
 		GRLIB_player_scores = _lrx_liberation_savegame select 16;
 	};
+	// One-time move of saved XP onto the rank curve introduced in 1.1.41: each score keeps
+	// its place on the rank ladder (same rank, same progress towards the next one).
+	private _curveKey = format ["%1-xpcurve", GRLIB_save_key];
+	if (profileNamespace getVariable [_curveKey, 0] < 2) then {
+		private _new = ("ladder" call HPC_fnc_rankInfo) apply {_x select 1};
+		private _old = GRLIB_xp_legacy_ladder;
+		private _last = count _old - 1;
+		{
+			private _score = _x select 1;
+			if (_score > 0) then {
+				private _i = 0;
+				{ if (_score >= _x) then {_i = _forEachIndex} } forEach _old;
+				private _moved = if (_i >= _last) then {
+					(_new select _last) + (_score - (_old select _last)) * ((_new select _last) / (_old select _last))
+				} else {
+					private _span = (_old select (_i + 1)) - (_old select _i);
+					(_new select _i) + ((_score - (_old select _i)) / _span) * ((_new select (_i + 1)) - (_new select _i))
+				};
+				_x set [1, round _moved];
+			};
+		} forEach GRLIB_player_scores;
+		// save_game_mp marks the save as converted when it writes these scores back
+		diag_log format ["--- LRX: moved %1 saved scores onto the new rank curve", count GRLIB_player_scores];
+	};
 } else {
 	// Wipe Context
 	diag_log format ["--- LRX Player Context Erased!", GRLIB_save_key];

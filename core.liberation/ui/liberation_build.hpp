@@ -377,7 +377,7 @@ class liberation_build {
 		idc = 122;
 		x = BLD_DIX + 4.0 * HPC_GX; y = BLD_PB - 5.5 * HPC_GY; w = BLD_DIW - 4.0 * HPC_GX; h = 1.8 * HPC_GY;
 		sizeEx = 0.95 * HPC_GY;
-		text = "Add AI crew (costs manpower)";
+		text = "Spawn with crew (costs manpower)";
 	};
 	class BuildButton : HPC_ButtonAccent {
 		idc = 120;

@@ -15,18 +15,18 @@ if (isServer) then {
             private _price = [];
             private _page = -1;
             switch (_type) do {
-                case "Infantry": {_page = 1; _price = [1,30,0,GRLIB_perm_inf]};
-                case "Cars": {_page = 2; _price = [2,75,12,GRLIB_perm_inf]};
-                case "Trucks": {_page = 2; _price = [5,50,15,GRLIB_perm_log]};
-                case "Boats": {_page = 2; _price = [2,50,5,GRLIB_perm_log]};
-                case "APCs": {_page = 3; _price = [10,500,20,GRLIB_perm_tank]};
-                case "Tanks": {_page = 3; _price = [15,1500,35,GRLIB_perm_air]};
-                case "Helicopters": {_page = 4; _price = [10,1500,25,GRLIB_perm_air]};
-                case "Planes": {_page = 4; _price = [20,3000,50,GRLIB_perm_max]};
-                case "Static weapons": {_page = 5; _price = [0,150,0,GRLIB_perm_log]};
+                case "Infantry": {_page = 1; _price = [1,30,0,GRLIB_perm_pfc]};
+                case "Cars": {_page = 2; _price = [2,75,12,GRLIB_perm_cpl]};
+                case "Trucks": {_page = 2; _price = [5,50,15,GRLIB_perm_sgt]};
+                case "Boats": {_page = 2; _price = [2,50,5,GRLIB_perm_sgt]};
+                case "APCs": {_page = 3; _price = [10,500,20,GRLIB_perm_msg]};
+                case "Tanks": {_page = 3; _price = [15,1500,35,GRLIB_perm_1lt]};
+                case "Helicopters": {_page = 4; _price = [10,1500,25,GRLIB_perm_2lt]};
+                case "Planes": {_page = 4; _price = [20,3000,50,GRLIB_perm_ltc]};
+                case "Static weapons": {_page = 5; _price = [0,150,0,GRLIB_perm_ssg]};
                 case "Drones": {
                     _page = if (_class isKindOf "Air") then {4} else {3};
-                    _price = [5,500,10,GRLIB_perm_tank];
+                    _price = [5,500,10,GRLIB_perm_sgm];
                     uavs_west pushBackUnique _class;
                 };
             };

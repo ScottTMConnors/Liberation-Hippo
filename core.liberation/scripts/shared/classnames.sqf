@@ -212,10 +212,10 @@ if (GRLIB_enable_arsenal == 1) then {
 			[Box_Ammo_typename,0,0,0,0],
 			[Box_Grenades_typename,0,100,0,0],
 			[Box_Explosives_typename,0,180,0,0],
-			[Box_Equipment_typename,0,250,0,GRLIB_perm_inf],
-			[Box_Support_typename,0,270,0,GRLIB_perm_inf],
-			[Box_Special_typename,0,365,0,GRLIB_perm_log],
-			[Box_Launcher_typename,0,370,0,GRLIB_perm_tank]
+			[Box_Equipment_typename,0,250,0,GRLIB_perm_cpl],
+			[Box_Support_typename,0,270,0,GRLIB_perm_cpl],
+			[Box_Special_typename,0,365,0,GRLIB_perm_sgt],
+			[Box_Launcher_typename,0,370,0,GRLIB_perm_sgm]
 		];
 		{ GRLIB_Ammobox_temp pushBackUnique (_x select 0) } forEach _personal_arsenal_boxes;
 		support_vehicles append _personal_arsenal_boxes;
@@ -229,24 +229,24 @@ support_vehicles append [
 	[mobile_respawn,10,50,0,0],
 	[canister_fuel_typename,0,25,0,0],
 	[repairbox_typename,0,50,0,0],
-	[respawn_truck_typename,10,750,15,GRLIB_perm_log],
-	[huron_typename,10,1550,35,GRLIB_perm_tank],
-	[medic_heal_typename,0,100,0,GRLIB_perm_log],
-	[Warehouse_typename,0,0,0,GRLIB_perm_inf],
-	[storage_medium_typename,0,50,0,GRLIB_perm_inf],
-	[storage_large_typename,0,150,0,GRLIB_perm_log],
-	[repair_sling_typename,0,200,0,GRLIB_perm_log],
-	[fuel_sling_typename,0,150,60,GRLIB_perm_log],
-	[ammo_sling_typename,0,400,0,GRLIB_perm_log],
-	[medic_sling_typename,0,200,0,GRLIB_perm_log],
-	[cargo_sling_typename,0,50,0,GRLIB_perm_log],
-	[ammo_truck_typename,5,400,10,GRLIB_perm_tank],
-	[repair_truck_typename,5,200,30,GRLIB_perm_tank],
-	[fuel_truck_typename,5,150,70,GRLIB_perm_tank],
-	[FOB_box_outpost,0,500,0,GRLIB_perm_log],
-	[FOB_box_typename,0,1500,0,GRLIB_perm_max],
-	[FOB_truck_typename,5,1500,10,GRLIB_perm_max],
-	[FOB_boat_typename,5,2500,10,GRLIB_perm_max],
+	[respawn_truck_typename,10,750,15,GRLIB_perm_sgt],
+	[huron_typename,10,1550,35,GRLIB_perm_2lt],
+	[medic_heal_typename,0,100,0,GRLIB_perm_sgt],
+	[Warehouse_typename,0,0,0,GRLIB_perm_cpl],
+	[storage_medium_typename,0,50,0,GRLIB_perm_cpl],
+	[storage_large_typename,0,150,0,GRLIB_perm_sgt],
+	[repair_sling_typename,0,200,0,GRLIB_perm_sgt],
+	[fuel_sling_typename,0,150,60,GRLIB_perm_sgt],
+	[ammo_sling_typename,0,400,0,GRLIB_perm_sgt],
+	[medic_sling_typename,0,200,0,GRLIB_perm_sgt],
+	[cargo_sling_typename,0,50,0,GRLIB_perm_sgt],
+	[ammo_truck_typename,5,400,10,GRLIB_perm_sgm],
+	[repair_truck_typename,5,200,30,GRLIB_perm_sfc],
+	[fuel_truck_typename,5,150,70,GRLIB_perm_sfc],
+	[FOB_box_outpost,0,500,0,GRLIB_perm_sgt],
+	[FOB_box_typename,0,1500,0,GRLIB_perm_1lt],
+	[FOB_truck_typename,5,1500,10,GRLIB_perm_1lt],
+	[FOB_boat_typename,5,2500,10,GRLIB_perm_maj],
 	[ammobox_b_typename,0,round(300/GRLIB_recycling_percentage),0,GRLIB_perm_hidden],
 	[ammobox_o_typename,0,round(300/GRLIB_recycling_percentage),0,GRLIB_perm_hidden],
 	[ammobox_i_typename,0,round(300/GRLIB_recycling_percentage),0,GRLIB_perm_hidden],
@@ -287,7 +287,7 @@ air_vehicles_classnames = air_vehicles_classnames arrayIntersect air_vehicles_cl
 opfor_troup_transports_truck = opfor_troup_transports_truck + [opfor_transport_truck];
 
 // *** ELITES ***
-elite_vehicles = ((heavy_vehicles + air_vehicles + static_vehicles) select {_x select 4 == GRLIB_perm_max}) apply { _x select 0 };
+elite_vehicles = ((heavy_vehicles + air_vehicles + static_vehicles) select {_x select 4 >= GRLIB_perm_ltc}) apply { _x select 0 };
 
 // *** Boats ***
 if (isNil "civilian_boats") then {

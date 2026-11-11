@@ -250,7 +250,8 @@ diag_log ["HPC_UISHOT_ADMIN_TABS",_tabChecks];
 ["uishots.adminTabs",_adminOk && {count _tabChecks == 4} && {_tabChecks findIf {!(_x select 1) || !(_x select 2)} < 0}] call _assert;
 [] call _closeDialogs;
 
-// Build menu vehicle page: the AI crew checkbox is visible.
+// Build menu vehicle page: the crew checkbox is visible and usable by a non-commander.
+GRLIB_player_commander = false;
 buildtype = GRLIB_CombatVehicleBuildType;
 [player,player,0,false] execVM "scripts\client\build\open_build_menu.sqf";
 private _buildOk = [5501,10] call _waitDisplay;
@@ -264,11 +265,37 @@ if (_buildOk) then {
     };
     if (_row >= 0) then {_list lnbSetCurSelRow _row};
     uiSleep 1;
-    _crewShown = ctrlShown ((findDisplay 5501) displayCtrl 121);
+    _crewShown = ctrlShown ((findDisplay 5501) displayCtrl 121) && {(ctrlText 122) find "Spawn with crew" == 0};
     ["08b_build_vehicles",0.5] call HPC_uiShot;
 };
 diag_log ["HPC_UISHOT_CREW",_buildOk,_crewShown];
 ["uishots.crewCheckbox",_buildOk && _crewShown] call _assert;
+[] call _closeDialogs;
+// A non-commander can tick it on an affordable, unlocked vehicle.
+private _oldAmmo = player getVariable ["GREUH_ammo_count",0];
+private _oldFuel = player getVariable ["GREUH_fuel_count",0];
+player setVariable ["GREUH_ammo_count",99999]; player setVariable ["GREUH_fuel_count",99999];
+waitUntil {uiSleep 0.2; isNull findDisplay 5501};
+uiSleep 1;
+buildtype = GRLIB_TransportVehicleBuildType;
+[player,player,0,false] execVM "scripts\client\build\open_build_menu.sqf";
+private _crewEnabled = false;
+if ([5501,10] call _waitDisplay) then {
+    uiSleep 1.5;
+    private _list = (findDisplay 5501) displayCtrl 110;
+    diag_log ["HPC_UISHOT_CREW_LIST",lnbSize _list,buildtype];
+    for "_r" from 0 to ((lnbSize _list select 0) - 1) do {
+        if (!_crewEnabled && {(_list lnbText [_r,1]) != ""}) then {
+            _list lnbSetCurSelRow _r; uiSleep 0.6;
+            _crewEnabled = ctrlEnabled ((findDisplay 5501) displayCtrl 121);
+            diag_log ["HPC_UISHOT_CREW_ROW",_r,_list lnbText [_r,1],_list lnbData [_r,0],ctrlShown ((findDisplay 5501) displayCtrl 121),_crewEnabled,dobuild,lnbCurSelRow _list,ctrlText 122,ctrlText 1731,ctrlText 1732];
+        };
+    };
+    if (_crewEnabled) then { ((findDisplay 5501) displayCtrl 121) ctrlSetChecked true; uiSleep 0.5; ["08c_build_crew_on",0.5] call HPC_uiShot };
+};
+player setVariable ["GREUH_ammo_count",_oldAmmo]; player setVariable ["GREUH_fuel_count",_oldFuel];
+diag_log ["HPC_UISHOT_CREW_ENABLED",_crewEnabled];
+["uishots.crewEnabledNonCommander",_crewEnabled] call _assert;
 [] call _closeDialogs;
 buildtype = GRLIB_InfantryBuildType;
 
@@ -280,4 +307,4 @@ if ([5201,15] call _waitDisplay) then {
 };
 uiSleep 2;
 diag_log format ["HPC_UISHOT_DONE|%1",HPC_testRun];
-["RUN_DONE|7"] call _emit;
+["RUN_DONE|8"] call _emit;

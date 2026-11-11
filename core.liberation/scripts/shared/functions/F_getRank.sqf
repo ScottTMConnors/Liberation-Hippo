@@ -53,7 +53,7 @@ if (_score >= GRLIB_perm_max) then {
 	_rating = 7500;
 };
 
-if (_score >= GRLIB_perm_max*4) then {
+if (_score >= GRLIB_perm_gen) then {
 	_rank = "General";
 	_squad_bonus = GRLIB_max_squad_size;
 	_infantry_cap = 100 * GRLIB_resources_multiplier;

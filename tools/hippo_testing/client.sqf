@@ -330,6 +330,35 @@ if (_zopened) then {
     diag_log ["HPC_ZEUS_BUILD", dobuild, build_vehicle, isNull findDisplay 312, build_vehicle distance2D player];
 };
 ["zeus.build_place", _zopened && _zbuildOk] call _assert;
+// Crewed build as a non-commander: the crew joins the player's squad
+GRLIB_player_commander = false;
+private _cclass = "B_MRAP_01_hmg_F";
+private _crewOk = false;
+build_unit = [_cclass, [], 0, [], [], [], []];
+buildtype = GRLIB_BuildTypeDirect;
+manned = true;
+dobuild = 1;
+_deadline = diag_tickTime + 15;
+waitUntil {sleep 0.2; diag_tickTime > _deadline || {!isNull findDisplay 312}};
+if (!isNull findDisplay 312) then {
+    sleep 1;
+    curatorCamera setPosASL (AGLToASL (player modelToWorld [8, -5, 25]));
+    curatorCamera setVectorDirAndUp [vectorDir player vectorMultiply 0.5 vectorAdd [0, 0, -0.85], [0, 0, 1]];
+    setMousePosition [0.5, 0.5];
+    _deadline = diag_tickTime + 10;
+    waitUntil {sleep 0.2; diag_tickTime > _deadline || {build_valid && build_confirmed == 1}};
+    if (build_valid) then { build_confirmed = 2; repeatbuild = false };
+    _deadline = diag_tickTime + 15;
+    waitUntil {sleep 0.2; diag_tickTime > _deadline || {dobuild == 0}};
+    sleep 2;
+    private _crew = if (isNull build_vehicle) then {[]} else {crew build_vehicle};
+    _crewOk = typeOf build_vehicle == _cclass && {count _crew > 0} && {_crew findIf {group _x != group player} < 0};
+    diag_log ["HPC_CREW_BUILD", build_vehicle, count _crew, _crew apply {group _x}, group player, manned];
+    { deleteVehicle _x } forEach _crew;
+    if (!isNull build_vehicle) then { deleteVehicle build_vehicle };
+};
+manned = false;
+["build.crew_joins_squad", _crewOk] call _assert;
 
 // Escape cancels and closes Zeus
 build_unit = [_zclass, [], 0, [], [], [], []];
@@ -477,7 +506,7 @@ private _hint = ["STR_SPECIALDELI_MESSAGE1", "#ff0000", "Town", "Captain Test"];
 private _hintText = format ([localize (_hint select 0)] + (_hint select [1]));
 diag_log ["HPC_HINT_FORMAT", _hintText];
 ["missions.hintFormat", (_hintText find "Captain Test") >= 0 && {(_hintText find "Town") >= 0}] call _assert;
-["RUN_DONE|30"] call _emit;
+["RUN_DONE|31"] call _emit;
 // --hold only: a staged firefight for visual inspection of the map overlay and command window.
 if (missionNamespace getVariable ["HPC_testHold", false]) then {
     player allowDamage false;

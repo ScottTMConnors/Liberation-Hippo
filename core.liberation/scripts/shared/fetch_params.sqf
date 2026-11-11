@@ -6,6 +6,36 @@ GRLIB_west_modder = "Unknown";
 GRLIB_east_modder = "Unknown";
 [] call compileFinal preprocessFileLineNumbers "gameplay_constants.sqf";
 
+// Rank XP curve. Each step costs more than the last; every rank unlocks something.
+// Scaled by the map's GRLIB_perm_max (750 on Malden), so larger maps keep a longer climb.
+// The old five tier names stay as aliases: Corporal, Sergeant, Second Lieutenant, Major, Colonel.
+private _xpScale = GRLIB_perm_max / 750;
+private _xp = { 5 * round (_this * _xpScale / 5) };
+GRLIB_perm_pfc = 20 call _xp;
+GRLIB_perm_cpl = 50 call _xp;
+GRLIB_perm_sgt = 100 call _xp;
+GRLIB_perm_ssg = 160 call _xp;
+GRLIB_perm_sfc = 230 call _xp;
+GRLIB_perm_msg = 310 call _xp;
+GRLIB_perm_sgm = 400 call _xp;
+GRLIB_perm_2lt = 500 call _xp;
+GRLIB_perm_1lt = 620 call _xp;
+GRLIB_perm_cpt = 760 call _xp;
+GRLIB_perm_maj = 920 call _xp;
+GRLIB_perm_ltc = 1100 call _xp;
+GRLIB_perm_col = 1300 call _xp;
+GRLIB_perm_bg = 1800 call _xp;
+GRLIB_perm_mg = 2400 call _xp;
+GRLIB_perm_ltg = 3100 call _xp;
+GRLIB_perm_gen = 4000 call _xp;
+// XP thresholds before this curve, for migrating saved scores (see load_game_mp.sqf).
+GRLIB_xp_legacy_ladder = [0, 75, 150, 300, 330, 360, 390, 420, 450, 500, 550, 600, 675, 750, 1500, 2000, 2500, 3000] apply { round (_x * _xpScale) };
+GRLIB_perm_inf = GRLIB_perm_cpl;
+GRLIB_perm_log = GRLIB_perm_sgt;
+GRLIB_perm_tank = GRLIB_perm_2lt;
+GRLIB_perm_air = GRLIB_perm_maj;
+GRLIB_perm_max = GRLIB_perm_col;
+
 // Save Key
 GRLIB_param_version = 1;
 GRLIB_paramsV1_save_key = format ["%1-config", GRLIB_save_key];

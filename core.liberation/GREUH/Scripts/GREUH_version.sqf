@@ -144,23 +144,43 @@ _xp append (["Losses" call _sub] + _losses);
 ["HPC_Guide", "XP Rewards", _xp] call _add;
 
 // Ranks (top): the game's own insignia next to each rank.
-// Unlocks are attached to the ranks that start a new tier (F_getRank thresholds).
+// Squad/manpower perks come with the ranks that start a new tier (F_getRank thresholds);
+// every rank also lists the build items it unlocks.
 private _unlockKeys = createHashMapFromArray [
 	["Private", "STR_RANK_LVL1"], ["Corporal", "STR_RANK_LVL2"], ["Sergeant", "STR_RANK_LVL3"],
 	["Second Lieutenant", "STR_RANK_LVL4"], ["Major", "STR_RANK_LVL5"], ["Colonel", "STR_RANK_LVL6"], ["General", "STR_RANK_LVL7"]
 ];
 private _ranks = [
 	"Ranks" call _h,
-	("Earn XP to climb 18 ranks. Ranks marked UNLOCKS open new vehicles, support and catalog items; the ranks in between mark your progress. Your rank and XP to the next one show on the HUD." call _mut), "<br/>"
+	("Earn XP to climb 18 ranks. Every rank unlocks new units, vehicles or support; early ranks come quickly, later ones take longer. Your rank and XP to the next one show on the HUD." call _mut), "<br/>"
 ];
+// Build items per unlock XP, by display name.
+private _unlockItems = createHashMap;
+{
+	private _cls = _x select 0;
+	private _xpNeed = _x select 4;
+	if (_cls isEqualType "" && {_xpNeed isEqualType 0} && {_xpNeed < GRLIB_perm_hidden}) then {
+		private _name = getText (configFile >> "CfgVehicles" >> _cls >> "displayName");
+		if (_name != "") then {
+			private _names = _unlockItems getOrDefault [_xpNeed, []];
+			_names pushBackUnique _name;
+			_unlockItems set [_xpNeed, _names];
+		};
+	};
+} forEach (infantry_units_west + light_vehicles + heavy_vehicles + air_vehicles + static_vehicles + support_vehicles);
 // Highest rank first. reverse works in place and returns nothing, so reverse a copy first.
 private _ladder = +("ladder" call HPC_fnc_rankInfo);
 reverse _ladder;
 {
 	_x params ["_title", "_xp", "_icon"];
 	private _key = _unlockKeys getOrDefault [_title, ""];
-	private _line = format ["<br/><img image='%1' height='22'/>  <font color='%2'>%3</font>  <font color='%5'>%4 XP</font>", _icon, ["#FFFFFF", _cAcc] select (_key != ""), toUpper _title, _xp, _cMut];
-	if (_key != "") then { _line = _line + format ["  <font color='%1'>UNLOCKS</font><br/>%2", _cKey, localize _key] };
+	private _items = _unlockItems getOrDefault [_xp, []];
+	private _line = format ["<br/><img image='%1' height='22'/>  <font color='%2'>%3</font>  <font color='%5'>%4 XP</font>", _icon, ["#FFFFFF", _cAcc] select (_key != "" || {_items isNotEqualTo []}), toUpper _title, _xp, _cMut];
+	if (_items isNotEqualTo []) then {
+		private _shown = _items select [0, 5];
+		_line = _line + format ["<br/><font color='%1'>Unlocks:</font> %2%3", _cKey, _shown joinString ", ", if (count _items > 5) then {format [" and %1 more", count _items - 5]} else {""}];
+	};
+	if (_key != "") then { _line = _line + format ["<br/>%1", localize _key] };
 	_ranks pushBack (_line + "<br/>");
 } forEach _ladder;
 ["HPC_Guide", "Ranks", _ranks +
