@@ -1,20 +1,31 @@
-// Admin tools: centred two-column panel. Left = spawn / world / campaign actions,
-// right = player actions, bans and personal toggles. Import / export text boxes
-// (idc 521-527 / 531-536) overlay the right column while admin_menu.sqf shows them.
+// Admin tools: tabbed panel. Tabs (idc 1650-1653) switch pages; admin_menu.sqf shows
+// only the controls of the active page (HPC_adminPages). Import / export text boxes
+// (idc 521-527 / 531-536) overlay the page area while admin_menu.sqf shows them.
 // HPCA_* classes are shared with liberation_admin_a3w.hpp (included after this file).
-#define ADM_W (72 * HPC_GX)
-#define ADM_H (33.6 * HPC_GY)
+#define ADM_W (50 * HPC_GX)
+#define ADM_H (31.6 * HPC_GY)
+// Players page: list on the left, actions on the right
+#define ADM_PL_W (ADM_COL * 0.52)
+#define ADM_PR_X (ADM_LX + ADM_PL_W + ADM_GAP)
+#define ADM_PR_W (ADM_COL - ADM_PL_W - ADM_GAP)
+#define ADM_PR_2 ((ADM_PR_W - 0.4 * HPC_GX) / 2)
+#define ADM_PR_3 ((ADM_PR_W - 0.8 * HPC_GX) / 3)
 #define ADM_X (0.5 - ADM_W / 2)
 #define ADM_Y (safezoneY + 8 * HPC_GY)
 #define ADM_PAD (1.1 * HPC_GX)
-#define ADM_COL (33.9 * HPC_GX)
+#define ADM_COL (ADM_W - 2 * ADM_PAD)
 #define ADM_LX (ADM_X + ADM_PAD)
-#define ADM_RX (ADM_X + ADM_PAD + ADM_COL + 2 * HPC_GX)
+#define ADM_C (ADM_Y + 9.0 * HPC_GY)
 #define ADM_BH (2.6 * HPC_GY)
-#define ADM_B3 (11.1 * HPC_GX)
-#define ADM_B3S (11.4 * HPC_GX)
-#define ADM_B4 (8.175 * HPC_GX)
-#define ADM_B4S (8.575 * HPC_GX)
+#define ADM_GAP (0.6 * HPC_GX)
+#define ADM_B3 ((ADM_COL - 2 * ADM_GAP) / 3)
+#define ADM_B3S (ADM_B3 + ADM_GAP)
+#define ADM_B2 ((ADM_COL - ADM_GAP) / 2)
+#define ADM_TAB_W ((ADM_COL - 3 * 0.4 * HPC_GX) / 4)
+#define ADM_TAB_S (ADM_TAB_W + 0.4 * HPC_GX)
+#define ADM_AMT_W (9 * HPC_GX)
+#define ADM_ADD_W ((ADM_COL - ADM_AMT_W - 4 * 0.4 * HPC_GX) / 4)
+#define ADM_ADD_S (ADM_ADD_W + 0.4 * HPC_GX)
 
 class HPCA_Combo : StdCombo {
 	font = "RobotoCondensed";
@@ -62,13 +73,14 @@ class HPCA_IconButton : HPC_Button {
 class liberation_admin {
 	idd = 5204;
 	movingEnable = false;
-	controlsBackground[] = { "Panel", "ColumnLine" };
+	controlsBackground[] = { "Panel" };
 	controls[] = {
 		"Accent", "Header", "Subtitle", "CloseX", "Divider",
+		"TabWorld", "TabCampaign", "TabPlayers", "TabTools",
 		"LabelSpawn", "ArsenalButton", "AmmoButton", "RespawnButton", "BuildList", "BuildButton",
 		"LabelWorld", "CaptureButton", "KillButton", "SkipTimeButton", "ZeusModeButton", "UnlockButton", "DeleteButton",
 		"LabelCampaign", "SaveButton", "ExportButton", "ImportButton", "CleanButton", "MowerButton",
-		"LabelPlayer", "PlayerList", "Item05Input", "Item02Button", "Item03Button", "Item04Button", "Item08Button",
+		"LabelPlayer", "PlayerList", "LabelPlayerActions", "Item05Input", "Item02Button", "Item03Button", "Item04Button", "Item08Button",
 		"Item05Button", "Item06Button", "Item07Button",
 		"LabelBanned", "BannedList", "Item01Button",
 		"LabelTools", "godmod_cb_1607", "godmod_cb_text", "teleport_cb_1620", "teleport_cb_text",
@@ -82,10 +94,6 @@ class liberation_admin {
 	class Panel : HPC_Panel {
 		x = ADM_X; y = ADM_Y; w = ADM_W; h = ADM_H;
 		colorBackground[] = HPC_C_PANEL_SOLID;
-	};
-	class ColumnLine : HPC_Text {
-		x = ADM_RX - 1 * HPC_GX; y = ADM_Y + 5.4 * HPC_GY; w = 0.08 * HPC_GX; h = 23.6 * HPC_GY;
-		colorBackground[] = HPC_C_LINE;
 	};
 	class Accent : HPC_Text {
 		x = ADM_X; y = ADM_Y; w = 0.28 * HPC_GX; h = 4.2 * HPC_GY;
@@ -112,13 +120,44 @@ class liberation_admin {
 		action = "closeDialog 0";
 	};
 	class Divider : HPC_Text {
-		x = ADM_LX; y = ADM_Y + 4.6 * HPC_GY; w = ADM_W - 2 * ADM_PAD; h = 0.1 * HPC_GY;
+		x = ADM_LX; y = ADM_Y + 4.6 * HPC_GY; w = ADM_COL; h = 0.1 * HPC_GY;
 		colorBackground[] = HPC_C_LINE;
 	};
 
-	// ---- Left column ----
+	// ---- Tabs (the active one is highlighted by admin_menu.sqf) ----
+	class TabWorld : HPC_Button {
+		idc = 1650;
+		text = "WORLD";
+		tooltip = "Spawn objects, sectors, time and Zeus";
+		action = "HPC_adminPage = 0";
+		x = ADM_LX; y = ADM_Y + 5.3 * HPC_GY; w = ADM_TAB_W; h = 2.6 * HPC_GY;
+	};
+	class TabCampaign : TabWorld {
+		idc = 1651;
+		text = "CAMPAIGN";
+		tooltip = "Save, export, import and cleanup";
+		action = "HPC_adminPage = 1";
+		x = ADM_LX + ADM_TAB_S;
+	};
+	class TabPlayers : TabWorld {
+		idc = 1652;
+		text = "PLAYERS";
+		tooltip = "Give resources, teleport to, kick, ban and unban players";
+		action = "HPC_adminPage = 2";
+		x = ADM_LX + 2 * ADM_TAB_S;
+	};
+	class TabTools : TabWorld {
+		idc = 1653;
+		text = "TOOLS";
+		tooltip = "Personal toggles, mission admin and AI load";
+		action = "HPC_adminPage = 3";
+		x = ADM_LX + 3 * ADM_TAB_S;
+	};
+
+	// ---- WORLD page ----
 	class LabelSpawn : HPC_Label {
-		x = ADM_LX; y = ADM_Y + 5.2 * HPC_GY; w = ADM_COL; h = 1.4 * HPC_GY;
+		idc = 1660;
+		x = ADM_LX; y = ADM_C; w = ADM_COL; h = 1.4 * HPC_GY;
 		text = "SPAWN";
 	};
 	class ArsenalButton : HPC_Button {
@@ -126,7 +165,7 @@ class liberation_admin {
 		action = "do_spawn=1";
 		text = $STR_ADMIN_ARSENAL;
 		tooltip = $STR_ADMIN_ARSENAL_TOOLTIP;
-		x = ADM_LX; y = ADM_Y + 6.6 * HPC_GY; w = ADM_B3; h = ADM_BH;
+		x = ADM_LX; y = ADM_C + 1.4 * HPC_GY; w = ADM_B3; h = ADM_BH;
 	};
 	class AmmoButton : ArsenalButton {
 		idc = 1601;
@@ -144,17 +183,18 @@ class liberation_admin {
 	};
 	class BuildList : HPCA_Combo {
 		idc = 1618;
-		x = ADM_LX; y = ADM_Y + 9.6 * HPC_GY; w = ADM_COL - ADM_B3S; h = ADM_BH;
+		x = ADM_LX; y = ADM_C + 4.4 * HPC_GY; w = ADM_COL - ADM_B3S; h = ADM_BH;
 		tooltip = "Vehicle or object to build";
 	};
 	class BuildButton : HPC_Button {
 		idc = 1617;
 		action = "do_spawn=100";
 		text = $STR_ADMIN_BUILD;
-		x = ADM_LX + ADM_COL - ADM_B3; y = ADM_Y + 9.6 * HPC_GY; w = ADM_B3; h = ADM_BH;
+		x = ADM_LX + 2 * ADM_B3S; y = ADM_C + 4.4 * HPC_GY; w = ADM_B3; h = ADM_BH;
 	};
 	class LabelWorld : HPC_Label {
-		x = ADM_LX; y = ADM_Y + 12.8 * HPC_GY; w = ADM_COL; h = 1.4 * HPC_GY;
+		idc = 1661;
+		x = ADM_LX; y = ADM_C + 7.6 * HPC_GY; w = ADM_COL; h = 1.4 * HPC_GY;
 		text = "SECTOR AND WORLD";
 	};
 	class CaptureButton : HPC_Button {
@@ -162,7 +202,7 @@ class liberation_admin {
 		action = "do_capture=1";
 		text = $STR_ADMIN_CAPTURE;
 		tooltip = "Capture the nearest enemy sector";
-		x = ADM_LX; y = ADM_Y + 14.2 * HPC_GY; w = ADM_B3; h = ADM_BH;
+		x = ADM_LX; y = ADM_C + 9.0 * HPC_GY; w = ADM_B3; h = ADM_BH;
 	};
 	class KillButton : CaptureButton {
 		idc = 1632;
@@ -183,7 +223,7 @@ class liberation_admin {
 		action = "do_zeus=1";
 		text = $STR_ADMIN_ZEUSMODE;
 		tooltip = "";
-		y = ADM_Y + 17.2 * HPC_GY;
+		y = ADM_C + 12.0 * HPC_GY;
 	};
 	class UnlockButton : ZeusModeButton {
 		idc = 1609;
@@ -200,8 +240,11 @@ class liberation_admin {
 		x = ADM_LX + 2 * ADM_B3S;
 		colorBackgroundActive[] = HPC_C_DANGER;
 	};
+
+	// ---- CAMPAIGN page ----
 	class LabelCampaign : HPC_Label {
-		x = ADM_LX; y = ADM_Y + 20.4 * HPC_GY; w = ADM_COL; h = 1.4 * HPC_GY;
+		idc = 1662;
+		x = ADM_LX; y = ADM_C; w = ADM_COL; h = 1.4 * HPC_GY;
 		text = "CAMPAIGN";
 	};
 	class SaveButton : HPC_Button {
@@ -209,7 +252,7 @@ class liberation_admin {
 		action = "do_save=1";
 		text = $STR_ADMIN_SAVE;
 		tooltip = $STR_FORCE_SAVE_TOOLTIP;
-		x = ADM_LX; y = ADM_Y + 21.8 * HPC_GY; w = ADM_B3; h = ADM_BH;
+		x = ADM_LX; y = ADM_C + 1.4 * HPC_GY; w = ADM_B3; h = ADM_BH;
 	};
 	class ExportButton : SaveButton {
 		idc = 1613;
@@ -230,7 +273,7 @@ class liberation_admin {
 		action = "GRLIB_force_cleanup = true; publicVariable 'GRLIB_force_cleanup'";
 		text = $STR_ADMIN_CLEAN;
 		tooltip = $STR_FORCE_CLEANUP_TOOLTIP;
-		y = ADM_Y + 24.8 * HPC_GY;
+		y = ADM_C + 4.4 * HPC_GY;
 	};
 	class MowerButton : CleanButton {
 		idc = 1626;
@@ -239,62 +282,76 @@ class liberation_admin {
 		tooltip = $STR_CALL_MAGIC_MOWER_TOOLTIP;
 		x = ADM_LX + ADM_B3S;
 	};
-	// ---- Right column ----
+
+	// ---- PLAYERS page ----
 	class LabelPlayer : HPC_Label {
-		x = ADM_RX; y = ADM_Y + 5.2 * HPC_GY; w = ADM_COL; h = 1.4 * HPC_GY;
-		text = "PLAYER";
+		idc = 1663;
+		x = ADM_LX; y = ADM_C; w = ADM_PL_W; h = 1.4 * HPC_GY;
+		text = "PLAYERS";
 	};
-	class PlayerList : HPCA_Combo {
+	// Every player: online ones first, then saved players who are offline.
+	class PlayerList : HPC_ListBox {
 		idc = 1612;
 		tooltip = $STR_SELECTED_PLAYER_TOOLTIP;
-		x = ADM_RX; y = ADM_Y + 6.6 * HPC_GY; w = ADM_COL; h = ADM_BH;
+		x = ADM_LX; y = ADM_C + 1.4 * HPC_GY; w = ADM_PL_W; h = 11.4 * HPC_GY;
+		colorBackground[] = {0,0,0,0.25};
+		rowHeight = 1.9 * HPC_GY;
+		sizeEx = 0.95 * HPC_GY;
+		colorTextRight[] = {0.62,0.69,0.72,1};
+		colorSelectRight[] = {1,1,1,1};
+		colorSelect2Right[] = {1,1,1,1};
+	};
+	class LabelPlayerActions : HPC_Label {
+		idc = 1667;
+		x = ADM_PR_X; y = ADM_C; w = ADM_PR_W; h = 1.4 * HPC_GY;
+		text = "SELECTED PLAYER";
 	};
 	class Item05Input : HPCA_Edit {
 		idc = 1619;
 		tooltip = $STR_ADD_AMOUNT_TOOLTIP;
-		x = ADM_RX; y = ADM_Y + 9.6 * HPC_GY; w = 7.9 * HPC_GX; h = ADM_BH;
+		x = ADM_PR_X; y = ADM_C + 1.4 * HPC_GY; w = ADM_PR_W; h = ADM_BH;
 	};
 	class Item02Button : HPCA_IconButton {
 		idc = 1603;
 		action = "do_score=1";
 		text = "+ XP";
 		tooltip = $STR_ADD_XP_TOOLTIP;
-		x = ADM_RX + 8.3 * HPC_GX; y = ADM_Y + 9.6 * HPC_GY; w = 6.1 * HPC_GX; h = ADM_BH;
+		x = ADM_PR_X; y = ADM_C + 4.4 * HPC_GY; w = ADM_PR_2; h = ADM_BH;
 	};
 	class Item03Button : Item02Button {
 		idc = 1615;
 		action = "do_ammo=1";
 		text = "+ Ammo";
 		tooltip = $STR_ADD_AMMO_TOOLTIP;
-		x = ADM_RX + 14.8 * HPC_GX;
+		x = ADM_PR_X + ADM_PR_2 + 0.4 * HPC_GX;
 	};
 	class Item04Button : Item02Button {
 		idc = 1624;
 		action = "do_fuel=1";
 		text = "+ Fuel";
 		tooltip = $STR_ADD_FUEL_TOOLTIP;
-		x = ADM_RX + 21.3 * HPC_GX;
+		y = ADM_C + 7.4 * HPC_GY;
 	};
-	class Item08Button : Item02Button {
+	class Item08Button : Item04Button {
 		idc = 1631;
 		action = "do_reput=1";
 		text = "+ Rep";
 		tooltip = $STR_ADD_REPUT_TOOLTIP;
-		x = ADM_RX + 27.8 * HPC_GX;
+		x = ADM_PR_X + ADM_PR_2 + 0.4 * HPC_GX;
 	};
 	class Item05Button : HPC_Button {
 		idc = 1616;
 		action = "do_rejoin=1";
 		text = "Go to";
 		tooltip = $STR_REJOIN_PLAYER_TOOLTIP;
-		x = ADM_RX; y = ADM_Y + 12.6 * HPC_GY; w = ADM_B3; h = ADM_BH;
+		x = ADM_PR_X; y = ADM_C + 10.2 * HPC_GY; w = ADM_PR_3; h = ADM_BH;
 	};
 	class Item06Button : Item05Button {
 		idc = 1621;
 		action = "do_kick=1";
 		text = "Kick";
 		tooltip = $STR_KICK_PLAYER_TOOLTIP;
-		x = ADM_RX + ADM_B3S;
+		x = ADM_PR_X + ADM_PR_3 + 0.4 * HPC_GX;
 		colorBackgroundActive[] = HPC_C_DANGER;
 	};
 	class Item07Button : Item06Button {
@@ -302,51 +359,55 @@ class liberation_admin {
 		action = "do_ban=1";
 		text = "Ban";
 		tooltip = $STR_BAN_PLAYER_TOOLTIP;
-		x = ADM_RX + 2 * ADM_B3S;
+		x = ADM_PR_X + 2 * (ADM_PR_3 + 0.4 * HPC_GX);
 	};
 	class LabelBanned : HPC_Label {
-		x = ADM_RX; y = ADM_Y + 15.8 * HPC_GY; w = ADM_COL; h = 1.4 * HPC_GY;
+		idc = 1664;
+		x = ADM_LX; y = ADM_C + 13.4 * HPC_GY; w = ADM_COL; h = 1.4 * HPC_GY;
 		text = "BANNED PLAYERS";
 	};
 	class BannedList : HPCA_Combo {
 		idc = 1611;
 		tooltip = "Banned player UID";
-		x = ADM_RX; y = ADM_Y + 17.2 * HPC_GY; w = ADM_COL - ADM_B3S; h = ADM_BH;
+		x = ADM_LX; y = ADM_C + 14.8 * HPC_GY; w = ADM_COL - ADM_B3S; h = ADM_BH;
 	};
 	class Item01Button : HPC_Button {
 		idc = 1602;
 		action = "do_unban=1";
 		text = $STR_ADMIN_UNBAN;
-		x = ADM_RX + ADM_COL - ADM_B3; y = ADM_Y + 17.2 * HPC_GY; w = ADM_B3; h = ADM_BH;
+		x = ADM_LX + 2 * ADM_B3S; y = ADM_C + 14.8 * HPC_GY; w = ADM_B3; h = ADM_BH;
 	};
+
+	// ---- TOOLS page ----
 	class LabelTools : HPC_Label {
-		x = ADM_RX; y = ADM_Y + 20.4 * HPC_GY; w = ADM_COL; h = 1.4 * HPC_GY;
+		idc = 1665;
+		x = ADM_LX; y = ADM_C; w = ADM_COL; h = 1.4 * HPC_GY;
 		text = "PERSONAL";
 	};
 	class godmod_cb_1607 : HPCA_Check {
 		idc = 1607;
-		x = ADM_RX; y = ADM_Y + 21.8 * HPC_GY; w = 3.4 * HPC_GX; h = ADM_BH;
+		x = ADM_LX; y = ADM_C + 1.4 * HPC_GY; w = 3.4 * HPC_GX; h = ADM_BH;
 		onCheckBoxesSelChanged = "[_this] execVM 'scripts\client\misc\godmode.sqf';";
 	};
 	class godmod_cb_text : HPC_Text {
 		idc = 1608;
-		x = ADM_RX + 4.2 * HPC_GX; y = ADM_Y + 21.8 * HPC_GY; w = ADM_COL / 2 - 4.6 * HPC_GX; h = ADM_BH;
+		x = ADM_LX + 4.2 * HPC_GX; y = ADM_C + 1.4 * HPC_GY; w = ADM_B2 - 4.2 * HPC_GX; h = ADM_BH;
 		text = $STR_ADMIN_GODMODE;
 	};
 	class teleport_cb_1620 : godmod_cb_1607 {
 		idc = 1620;
-		x = ADM_RX + ADM_COL / 2;
+		x = ADM_LX + ADM_B2 + ADM_GAP;
 		onCheckBoxesSelChanged = "[_this] execVM 'scripts\client\misc\teleport.sqf';";
 	};
 	class teleport_cb_text : godmod_cb_text {
 		idc = 1606;
-		x = ADM_RX + ADM_COL / 2 + 4.2 * HPC_GX;
+		x = ADM_LX + ADM_B2 + ADM_GAP + 4.2 * HPC_GX;
 		text = "Map teleport";
 		tooltip = "ALT + left click on the map to teleport";
 	};
-
 	class LabelServer : HPC_Label {
-		x = ADM_RX; y = ADM_Y + 24.8 * HPC_GY; w = ADM_COL; h = 1.4 * HPC_GY;
+		idc = 1666;
+		x = ADM_LX; y = ADM_C + 4.6 * HPC_GY; w = ADM_COL; h = 1.4 * HPC_GY;
 		text = "SERVER";
 	};
 	// Both close this menu first; admin_menu.sqf opens the target after its loop ends.
@@ -355,14 +416,14 @@ class liberation_admin {
 		text = "Mission admin";
 		tooltip = "Open the mission admin menu (debug tools and markers)";
 		action = "admin_open_next = 'scripts\client\commander\admin_menu_a3w.sqf'; closeDialog 0;";
-		x = ADM_RX; y = ADM_Y + 26.2 * HPC_GY; w = ADM_COL / 2 - 0.2 * HPC_GX; h = ADM_BH;
+		x = ADM_LX; y = ADM_C + 6.0 * HPC_GY; w = ADM_B2; h = ADM_BH;
 	};
 	class UnusedButton : MissionAdminButton {
 		idc = 1630;
 		text = "AI load";
 		tooltip = "Open the persistent AI load window: live metrics, ownership breakdown and FPS history.";
 		action = "admin_open_next = 'scripts\client\misc\HPC_hcStatus.sqf'; closeDialog 0;";
-		x = ADM_RX + ADM_COL / 2 + 0.2 * HPC_GX;
+		x = ADM_LX + ADM_B2 + ADM_GAP;
 	};
 
 	class CancelButton : HPC_Button {
@@ -375,17 +436,17 @@ class liberation_admin {
 	// ---- Import overlay (hidden until do_import) ----
 	class Input_OuterBG : HPC_Text {
 		idc = 521;
-		x = ADM_RX - 0.8 * HPC_GX; y = ADM_Y + 5 * HPC_GY; w = ADM_COL + 1.6 * HPC_GX; h = 24.2 * HPC_GY;
+		x = ADM_X + 0.3 * HPC_GX; y = ADM_C - 0.4 * HPC_GY; w = ADM_W - 0.6 * HPC_GX; h = 17.8 * HPC_GY;
 		colorBackground[] = {0.035,0.045,0.05,1};
 	};
 	class Input_InnerBG : HPC_Text {
 		idc = 522;
-		x = ADM_RX - 0.8 * HPC_GX; y = ADM_Y + 5 * HPC_GY; w = 0.28 * HPC_GX; h = 24.2 * HPC_GY;
+		x = ADM_X + 0.3 * HPC_GX; y = ADM_C - 0.4 * HPC_GY; w = 0.28 * HPC_GX; h = 17.8 * HPC_GY;
 		colorBackground[] = HPC_C_ACCENT;
 	};
 	class Input_OuterBG_F : HPC_Label {
 		idc = 523;
-		x = ADM_RX; y = ADM_Y + 5.2 * HPC_GY; w = ADM_COL; h = 1.4 * HPC_GY;
+		x = ADM_LX; y = ADM_C; w = ADM_COL; h = 1.4 * HPC_GY;
 		text = "IMPORT SAVE GAME - PASTE THE EXPORTED TEXT";
 	};
 	class Input_InnerBG_F : HPC_Text {
@@ -395,18 +456,18 @@ class liberation_admin {
 	class Input_TextField : HPCA_Edit {
 		idc = 527;
 		style = ST_MULTI;
-		x = ADM_RX; y = ADM_Y + 6.8 * HPC_GY; w = ADM_COL; h = 18.8 * HPC_GY;
+		x = ADM_LX; y = ADM_C + 1.6 * HPC_GY; w = ADM_COL; h = 12.2 * HPC_GY;
 		sizeEx = 0.85 * HPC_GY;
 	};
 	class Input_ButtonName_Abort : HPC_Button {
 		idc = 526;
-		x = ADM_RX; y = ADM_Y + 26.2 * HPC_GY; w = ADM_B3; h = ADM_BH;
+		x = ADM_LX; y = ADM_C + 14.4 * HPC_GY; w = ADM_B3; h = ADM_BH;
 		text = "Cancel";
 		action = "input_save = 'null';";
 	};
 	class Input_ButtonName_Ok : HPC_ButtonAccent {
 		idc = 525;
-		x = ADM_RX + ADM_COL - ADM_B3; y = ADM_Y + 26.2 * HPC_GY; w = ADM_B3; h = ADM_BH;
+		x = ADM_LX + 2 * ADM_B3S; y = ADM_C + 14.4 * HPC_GY; w = ADM_B3; h = ADM_BH;
 		text = "IMPORT";
 		action = "input_save = ctrlText 527;";
 	};

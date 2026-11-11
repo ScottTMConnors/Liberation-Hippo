@@ -135,6 +135,7 @@ private _list = [];
 	_score_combo lbAdd format["%1", name _x];
 	_score_combo lbSetData [_i, _uid];
 	_score_combo lbSetColor [_i, _color];
+	_score_combo lbSetTextRight [_i, "online"];
 	_i = _i + 1;
 } foreach (AllPlayers - (entities "HeadlessClient_F"));
 
@@ -143,7 +144,8 @@ private _list = [];
 	if !(_uid in _list) then {
 		_score_combo lbAdd format["%1", _x select 5];
 		_score_combo lbSetData [_i, _uid];
-		_score_combo lbSetColor [_i, _color];
+		_score_combo lbSetColor [_i, [0.6,0.64,0.66,1]];
+		_score_combo lbSetTextRight [_i, "offline"];
 		_i = _i + 1;
 	};
 } foreach GRLIB_player_scores;
@@ -159,8 +161,29 @@ _ban_combo lbSetCurSel 0;
 _score_combo lbSetCurSel 0;
 _build_combo lbSetCurSel last_build;
 
+// Tabs: one page of controls visible at a time (the last page is remembered).
+private _pages = [
+	[1660,1600,1601,1623,1618,1617,1661,1627,1632,1604,1625,1609,1610],
+	[1662,1628,1613,1614,1629,1626],
+	[1663,1612,1667,1619,1603,1615,1624,1631,1616,1621,1622,1664,1611,1602],
+	[1665,1607,1608,1620,1606,1666,1633,1630]
+];
+private _moderator = PAR_Grp_ID in GRLIB_whitelisted_moderators;
+if (isNil "HPC_adminPage") then { HPC_adminPage = 0 };
+private _shownPage = -1;
+private _showPage = {
+	{
+		private _page = _forEachIndex;
+		{ ctrlShow [_x, _page == HPC_adminPage && {!(_moderator && {_x in _disabled_controls})}] } forEach _x;
+	} forEach _pages;
+	{
+		(_display displayCtrl (1650 + _forEachIndex)) ctrlSetBackgroundColor (if (_forEachIndex == HPC_adminPage) then {[0.20,0.42,0.38,0.95]} else {[0.12,0.15,0.16,0.9]});
+	} forEach _pages;
+	_shownPage = HPC_adminPage;
+};
+
 // Limit Moderators Menu
-if (PAR_Grp_ID in GRLIB_whitelisted_moderators) then {
+if (_moderator) then {
 	{
 		ctrlEnable [_x, false];
 		ctrlShow [_x, false];
@@ -169,6 +192,7 @@ if (PAR_Grp_ID in GRLIB_whitelisted_moderators) then {
 };
 
 while { alive player && {!isNull _display} } do {
+	if (_shownPage != HPC_adminPage) then { call _showPage };
 	_msg = "";
 	_admin_msg = "";
 
