@@ -175,9 +175,9 @@
 	R3F_LOG_IDX_can_be_transported_cargo_cout = 9;
 	R3F_LOG_CST_zero_log = [false, false, false, false, false, false, false, 0, false, 0];
 
-	R3F_LOG_FNCT_determiner_fonctionnalites_logistique = compile preprocessFileLineNumbers "R3F_LOG\fonctions_generales\determiner_fonctionnalites_logistique.sqf";
-	R3F_calculer_chargement_vehicule = compile preprocessFileLineNumbers "R3F_LOG\transporteur\calculer_chargement_vehicule.sqf";
-	R3F_transporteur_charger_auto = compile preprocessFileLineNumbers "R3F_LOG\transporteur\charger_auto.sqf";
+	R3F_LOG_FNCT_determiner_fonctionnalites_logistique = compileFinal preprocessFileLineNumbers "R3F_LOG\fonctions_generales\determiner_fonctionnalites_logistique.sqf";
+	R3F_calculer_chargement_vehicule = compileFinal preprocessFileLineNumbers "R3F_LOG\transporteur\calculer_chargement_vehicule.sqf";
+	R3F_transporteur_charger_auto = compileFinal preprocessFileLineNumbers "R3F_LOG\transporteur\charger_auto.sqf";
 
 	// Un serveur dédié n'en a pas besoin
 	if (!isDedicated && hasInterface) then {
@@ -198,34 +198,34 @@
 
 		call compile preprocessFileLineNumbers "R3F_LOG\fonctions_generales\lib_visualisation_objet.sqf";
 
-		R3F_LOG_FNCT_objet_relacher = compile preprocessFileLineNumbers "R3F_LOG\objet_deplacable\relacher.sqf";
-		R3F_LOG_FNCT_objet_deplacer = compile preprocessFileLineNumbers "R3F_LOG\objet_deplacable\deplacer.sqf";
+		R3F_LOG_FNCT_objet_relacher = compileFinal preprocessFileLineNumbers "R3F_LOG\objet_deplacable\relacher.sqf";
+		R3F_LOG_FNCT_objet_deplacer = compileFinal preprocessFileLineNumbers "R3F_LOG\objet_deplacable\deplacer.sqf";
 
-		R3F_LOG_FNCT_heliporteur_heliporter = compile preprocessFileLineNumbers "R3F_LOG\heliporteur\heliporter.sqf";
-		R3F_LOG_FNCT_heliporteur_detect_objet = compile preprocessFileLineNumbers "R3F_LOG\heliporteur\detect_objet.sqf";
-		R3F_LOG_FNCT_heliporteur_larguer = compile preprocessFileLineNumbers "R3F_LOG\heliporteur\larguer.sqf";
-		R3F_LOG_FNCT_heliporteur_init = compile preprocessFileLineNumbers "R3F_LOG\heliporteur\heliporteur_init.sqf";
+		R3F_LOG_FNCT_heliporteur_heliporter = compileFinal preprocessFileLineNumbers "R3F_LOG\heliporteur\heliporter.sqf";
+		R3F_LOG_FNCT_heliporteur_detect_objet = compileFinal preprocessFileLineNumbers "R3F_LOG\heliporteur\detect_objet.sqf";
+		R3F_LOG_FNCT_heliporteur_larguer = compileFinal preprocessFileLineNumbers "R3F_LOG\heliporteur\larguer.sqf";
+		R3F_LOG_FNCT_heliporteur_init = compileFinal preprocessFileLineNumbers "R3F_LOG\heliporteur\heliporteur_init.sqf";
 
-		R3F_LOG_FNCT_remorqueur_detacher = compile preprocessFileLineNumbers "R3F_LOG\remorqueur\detacher.sqf";
-		R3F_LOG_FNCT_remorqueur_fix = compile preprocessFileLineNumbers "R3F_LOG\remorqueur\remorqueur_fix.sqf";
-		R3F_LOG_FNCT_remorqueur_remorquer_deplace = compile preprocessFileLineNumbers "R3F_LOG\remorqueur\remorquer_deplace.sqf";
-		R3F_LOG_FNCT_remorqueur_remorquer_direct = compile preprocessFileLineNumbers "R3F_LOG\remorqueur\remorquer_direct.sqf";
-		R3F_LOG_FNCT_remorqueur_init = compile preprocessFileLineNumbers "R3F_LOG\remorqueur\remorqueur_init.sqf";
+		R3F_LOG_FNCT_remorqueur_detacher = compileFinal preprocessFileLineNumbers "R3F_LOG\remorqueur\detacher.sqf";
+		R3F_LOG_FNCT_remorqueur_fix = compileFinal preprocessFileLineNumbers "R3F_LOG\remorqueur\remorqueur_fix.sqf";
+		R3F_LOG_FNCT_remorqueur_remorquer_deplace = compileFinal preprocessFileLineNumbers "R3F_LOG\remorqueur\remorquer_deplace.sqf";
+		R3F_LOG_FNCT_remorqueur_remorquer_direct = compileFinal preprocessFileLineNumbers "R3F_LOG\remorqueur\remorquer_direct.sqf";
+		R3F_LOG_FNCT_remorqueur_init = compileFinal preprocessFileLineNumbers "R3F_LOG\remorqueur\remorqueur_init.sqf";
 
-		R3F_LOG_FNCT_transporteur_charger_deplace = compile preprocessFileLineNumbers "R3F_LOG\transporteur\charger_deplace.sqf";
-		R3F_LOG_FNCT_transporteur_charger_selection = compile preprocessFileLineNumbers "R3F_LOG\transporteur\charger_selection.sqf";
-		R3F_LOG_FNCT_transporteur_decharger = compile preprocessFileLineNumbers "R3F_LOG\transporteur\decharger.sqf";
-		R3F_LOG_FNCT_transporteur_selectionner_objet = compile preprocessFileLineNumbers "R3F_LOG\transporteur\selectionner_objet.sqf";
-		R3F_LOG_FNCT_transporteur_voir_contenu_vehicule = compile preprocessFileLineNumbers "R3F_LOG\transporteur\voir_contenu_vehicule.sqf";
-		R3F_LOG_FNCT_transporteur_init = compile preprocessFileLineNumbers "R3F_LOG\transporteur\transporteur_init.sqf";
+		R3F_LOG_FNCT_transporteur_charger_deplace = compileFinal preprocessFileLineNumbers "R3F_LOG\transporteur\charger_deplace.sqf";
+		R3F_LOG_FNCT_transporteur_charger_selection = compileFinal preprocessFileLineNumbers "R3F_LOG\transporteur\charger_selection.sqf";
+		R3F_LOG_FNCT_transporteur_decharger = compileFinal preprocessFileLineNumbers "R3F_LOG\transporteur\decharger.sqf";
+		R3F_LOG_FNCT_transporteur_selectionner_objet = compileFinal preprocessFileLineNumbers "R3F_LOG\transporteur\selectionner_objet.sqf";
+		R3F_LOG_FNCT_transporteur_voir_contenu_vehicule = compileFinal preprocessFileLineNumbers "R3F_LOG\transporteur\voir_contenu_vehicule.sqf";
+		R3F_LOG_FNCT_transporteur_init = compileFinal preprocessFileLineNumbers "R3F_LOG\transporteur\transporteur_init.sqf";
 
-		R3F_LOG_FNCT_objet_init = compile preprocessFileLineNumbers "R3F_LOG\objet_commun\objet_init.sqf";
-		R3F_LOG_FNCT_objet_est_verrouille = compile preprocessFileLineNumbers "R3F_LOG\objet_commun\objet_est_verrouille.sqf";
-		R3F_LOG_FNCT_deverrouiller_objet = compile preprocessFileLineNumbers "R3F_LOG\objet_commun\deverrouiller_objet.sqf";
-		R3F_LOG_FNCT_definir_proprietaire_verrou = compile preprocessFileLineNumbers "R3F_LOG\objet_commun\definir_proprietaire_verrou.sqf";
+		R3F_LOG_FNCT_objet_init = compileFinal preprocessFileLineNumbers "R3F_LOG\objet_commun\objet_init.sqf";
+		R3F_LOG_FNCT_objet_est_verrouille = compileFinal preprocessFileLineNumbers "R3F_LOG\objet_commun\objet_est_verrouille.sqf";
+		R3F_LOG_FNCT_deverrouiller_objet = compileFinal preprocessFileLineNumbers "R3F_LOG\objet_commun\deverrouiller_objet.sqf";
+		R3F_LOG_FNCT_definir_proprietaire_verrou = compileFinal preprocessFileLineNumbers "R3F_LOG\objet_commun\definir_proprietaire_verrou.sqf";
 
-		R3F_LOG_FNCT_formater_fonctionnalites_logistique = compile preprocessFileLineNumbers "R3F_LOG\fonctions_generales\formater_fonctionnalites_logistique.sqf";
-		R3F_LOG_FNCT_formater_nombre_entier_milliers = compile preprocessFileLineNumbers "R3F_LOG\fonctions_generales\formater_nombre_entier_milliers.sqf";
+		R3F_LOG_FNCT_formater_fonctionnalites_logistique = compileFinal preprocessFileLineNumbers "R3F_LOG\fonctions_generales\formater_fonctionnalites_logistique.sqf";
+		R3F_LOG_FNCT_formater_nombre_entier_milliers = compileFinal preprocessFileLineNumbers "R3F_LOG\fonctions_generales\formater_nombre_entier_milliers.sqf";
 
 		// Liste des variables activant ou non les actions de menu
 		R3F_LOG_action_charger_deplace_valide = false;
@@ -251,7 +251,7 @@
 		R3F_LOG_action_deverrouiller_valide = false;
 
 		/** Sur ordre (publicVariable), révéler la présence d'un objet au joueur (accélérer le retour des addActions) */
-		R3F_LOG_FNCT_PUBVAR_reveler_au_joueur = {
+		R3F_LOG_FNCT_PUBVAR_reveler_au_joueur = compileFinal {
 			private ["_objet"];
 			_objet = _this select 1;
 

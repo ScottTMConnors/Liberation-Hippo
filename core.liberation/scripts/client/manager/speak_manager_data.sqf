@@ -1,4 +1,4 @@
-speak_end = {
+speak_end = compileFinal {
 	params ["_unit"];
 	sleep 3;
 	if (_unit isKindOf "CAManBase") then {
@@ -8,13 +8,13 @@ speak_end = {
 	_unit setVariable ["GRLIB_speaking", nil];
 };
 
-speak_another_time = {
+speak_another_time = compileFinal {
 	params ["_unit"];
 	_unit globalChat localize "STR_SPEAKMANAGER12";
 	[_unit] call speak_end;
 };
 
-speak_squad_AI = {
+speak_squad_AI = compileFinal {
 	params ["_unit"];
 	player globalChat format [localize "STR_CHAT_HELLO", name _unit];
 	sleep 2;
@@ -26,7 +26,7 @@ speak_squad_AI = {
 	[_unit] call speak_end;
 };
 
-speak_civil_AI = {
+speak_civil_AI = compileFinal {
 	params ["_unit"];
 	if (_unit getVariable ["GRLIB_A3W_Mission_MR1", false]) exitWith {[_unit] call speak_mission_resistance};
 	if (_unit getVariable ["GRLIB_A3W_Mission_SD1", false]) exitWith {[_unit] call speak_mission_sdelivery1};
@@ -57,7 +57,7 @@ speak_civil_AI = {
 	[_unit] call speak_end;
 };
 
-speak_info_unit = {
+speak_info_unit = compileFinal {
 	params ["_unit"];
 	private _greetings = [
 		localize "STR_GREETING_HELLO",
@@ -100,7 +100,7 @@ speak_info_unit = {
 	[_unit] call speak_end;
 };
 
-speak_insult_unit = {
+speak_insult_unit = compileFinal {
 	params ["_unit"];
 	private _insults = [
 		localize "STR_INSULT_FUCK_OFF",
@@ -116,7 +116,7 @@ speak_insult_unit = {
 	[_unit] call speak_end;
 };
 
-speak_repair_vehicle = {
+speak_repair_vehicle = compileFinal {
 	params ["_unit"];	
     _unit globalChat localize "STR_DIALOG_REPAIR_HELLO";
     sleep 2;
@@ -124,7 +124,7 @@ speak_repair_vehicle = {
 	[_unit] call speak_end;
 };
 
-speak_join_player = {
+speak_join_player = compileFinal {
 	params ["_unit"];	
     _unit globalChat format [localize "STR_DIALOG_JOIN_HELLO", name _unit];
     sleep 2;
@@ -132,13 +132,13 @@ speak_join_player = {
 	[_unit] call speak_end;
 };
 
-speak_repair = {
+speak_repair = compileFinal {
 	params ["_unit"];	
 	_unit globalChat localize "STR_DIALOG_NEED_REPAIR";
 	[_unit] call speak_end;
 };
 
-speak_player_repair = {
+speak_player_repair = compileFinal {
 	params ["_unit"];	
 	_unit globalChat localize "STR_DIALOG_THANK_REPAIR";
 	if (([player] call F_getReput) >= 25) then {
@@ -148,13 +148,13 @@ speak_player_repair = {
 	[_unit] call speak_end;
 };
 
-speak_refuel = {
+speak_refuel = compileFinal {
 	params ["_unit"];	
 	_unit globalChat localize "STR_DIALOG_NEED_FUEL";
 	[_unit] call speak_end;
 };
 
-speak_player_refuel = {
+speak_player_refuel = compileFinal {
 	params ["_unit"];	
 	_unit globalChat localize "STR_DIALOG_THANK_REFUEL";
 	if (([player] call F_getReput) >= 25) then {
@@ -164,7 +164,7 @@ speak_player_refuel = {
 	[_unit] call speak_end;
 };
 
-speak_reammo_player = {
+speak_reammo_player = compileFinal {
 	params ["_unit"];	
 	_unit globalChat localize "STR_DIALOG_OFFER_AMMO_1";
 	sleep 2;
@@ -172,7 +172,7 @@ speak_reammo_player = {
 	[_unit] call speak_end;
 };
 
-speak_heal_player = {
+speak_heal_player = compileFinal {
 	params ["_unit"];	
 	_unit globalChat localize "STR_DIALOG_OFFER_HEAL_1";
 	sleep 2;
@@ -180,7 +180,7 @@ speak_heal_player = {
 	[_unit] call speak_end;
 };
 
-speak_heal_civ = {
+speak_heal_civ = compileFinal {
 	params ["_unit"];
 	_unit globalChat localize "STR_DIALOG_REQUEST_HEAL";
 	private _timer = time + 45;
@@ -198,7 +198,7 @@ speak_heal_civ = {
 };
 
 // Nikos
-speak_mission_sdelivery1 = {
+speak_mission_sdelivery1 = compileFinal {
 	params ["_unit"];
 	if (isNil "GRLIB_A3W_Mission_SD") exitWith {[_unit] call speak_another_time};
 	private _suitcase = GRLIB_A3W_Mission_SD select 2;
@@ -220,7 +220,7 @@ speak_mission_sdelivery1 = {
 };
 
 // Orestes
-speak_mission_sdelivery2 = {
+speak_mission_sdelivery2 = compileFinal {
 	params ["_unit"];
 	if (isNil "GRLIB_A3W_Mission_SD") exitWith {[_unit] call speak_another_time};
 	private _suitcase = GRLIB_A3W_Mission_SD select 2;
@@ -239,7 +239,7 @@ speak_mission_sdelivery2 = {
 };
 
 // Orestes
-speak_mission_sdelivery3 = {
+speak_mission_sdelivery3 = compileFinal {
 	params ["_unit"];
 	if (isNil "GRLIB_A3W_Mission_SD") exitWith {[_unit] call speak_another_time};
 	private _suitcase = GRLIB_A3W_Mission_SD select 2;
@@ -258,7 +258,7 @@ speak_mission_sdelivery3 = {
 };
 
 // Nikos Old
-speak_mission_sdelivery4 = {
+speak_mission_sdelivery4 = compileFinal {
 	params ["_unit"];
 	if (isNil "GRLIB_A3W_Mission_SD") exitWith {[_unit] call speak_another_time};
 	private _suitcase = GRLIB_A3W_Mission_SD select 2;
@@ -279,7 +279,7 @@ speak_mission_sdelivery4 = {
 };
 
 // Resistance
-speak_mission_resistance = {
+speak_mission_resistance = compileFinal {
 	params ["_unit"];
 	private _leader = leader group _unit;
 	if (_unit == _leader) then {
@@ -302,31 +302,31 @@ speak_mission_resistance = {
 };
 
 // Delivery
-speak_mission_delivery_fuel = {
+speak_mission_delivery_fuel = compileFinal {
 	params ["_unit"];
 	[_unit, "Fuel", "barrels"] call speak_mission_delivery;
 	[_unit] call speak_end;
 };
 
-speak_mission_delivery_water = {
+speak_mission_delivery_water = compileFinal {
 	params ["_unit"];
 	[_unit, "Water", "barrels"] call speak_mission_delivery;
 	[_unit] call speak_end;
 };
 
-speak_mission_delivery_food = {
+speak_mission_delivery_food = compileFinal {
 	params ["_unit"];
 	[_unit, "Food", "pallets"] call speak_mission_delivery;
 	[_unit] call speak_end;
 };
 
-speak_mission_delivery_ammo = {
+speak_mission_delivery_ammo = compileFinal {
 	params ["_unit"];
 	[_unit, "Ammo", "small boxes"] call speak_mission_delivery;
 	[_unit] call speak_end;
 };
 
-speak_mission_delivery = {
+speak_mission_delivery = compileFinal {
 	params ["_unit", "_txt1", "_txt2"];
 	_unit switchMove "AmovPercMstpSnonWnonDnon_Salute";
 	_unit playMoveNow "AmovPercMstpSnonWnonDnon_Salute";
@@ -344,7 +344,7 @@ speak_mission_delivery = {
 };
 
 // Doctor
-speak_mission_heal_doctor = {
+speak_mission_heal_doctor = compileFinal {
 	params ["_unit"];
 	private _wnded = ({alive _x && !isNil {_x getVariable "GRLIB_A3W_Mission_HC2"}} count (units GRLIB_side_civilian));
 	if (_wnded == 0) exitWith { _unit globalChat localize "STR_DIALOG_DOCTOR_REQUEST_FINISH"; [_unit] call speak_end };
@@ -359,7 +359,7 @@ speak_mission_heal_doctor = {
 };
 
 // Wounded
-speak_mission_heal_wounded = {
+speak_mission_heal_wounded = compileFinal {
 	params ["_unit"];
 	_unit globalChat localize "STR_DIALOG_HEAL_REQUEST";
 	[_unit] call F_fixPosUnit;
@@ -371,13 +371,13 @@ speak_mission_heal_wounded = {
 };
 
 // Civilian Transport
-speak_mission_civ01 = {
+speak_mission_civ01 = compileFinal {
 };
 
 // Civilian need ammo
-speak_mission_civ02 = {
+speak_mission_civ02 = compileFinal {
 };
 
 // Civilian need fuel
-speak_mission_civ03 = {
+speak_mission_civ03 = compileFinal {
 };

@@ -16,7 +16,7 @@ private _path = format ["mod_template\%1\classnames_r3f.sqf", GRLIB_mod_east];
 [_path] call F_getTemplateFile;
 
 // return cargo space or cargo size
-ACE_getSize = {
+ACE_getSize = compileFinal {
     params ["_object", "_list"];
     private _ret = 0;
     {
@@ -41,8 +41,8 @@ GRLIB_ACE_blacklist = [
 
 // R3F functions
 [] call compile preprocessFileLineNumbers "R3F_LOG\fonctions_generales\lib_geometrie_3D.sqf";
-R3F_LOG_FNCT_objet_deplacer = compile preprocessFileLineNumbers "R3F_LOG\objet_deplacable\deplacer.sqf";
-R3F_calculer_chargement_vehicule = {
+R3F_LOG_FNCT_objet_deplacer = compileFinal preprocessFileLineNumbers "R3F_LOG\objet_deplacable\deplacer.sqf";
+R3F_calculer_chargement_vehicule = compileFinal {
     params ["_vehicle"];
     private _cargo_full = [_vehicle, GRLIB_ACE_cargoSpace] call ACE_getSize;
     private _cargo_left = _vehicle getVariable ["ace_cargo_space", 0];

@@ -2,7 +2,7 @@
 // an owned unit or vehicle to remote control it. Server side lives in
 // scripts\server\game\zeus_limited.sqf.
 
-HPC_fnc_zeusOwned = {
+HPC_fnc_zeusOwned = compileFinal {
 	params ["_unit"];
 	private _grp = group _unit;
 	(_grp isEqualTo group player) ||
@@ -10,7 +10,7 @@ HPC_fnc_zeusOwned = {
 	{(vehicle _unit) getVariable ["GRLIB_vehicle_owner", ""] == PAR_Grp_ID}
 };
 
-HPC_fnc_zeusRemote = {
+HPC_fnc_zeusRemote = compileFinal {
 	params ["_obj"];
 	// double-click opens the attributes window: close it (no health/ammo edits)
 	private _end = diag_tickTime + 0.5;
@@ -34,7 +34,7 @@ HPC_fnc_zeusRemote = {
 };
 
 // Master Zeus (admin menu): one session only. Closing it gives the limited Zeus back.
-HPC_fnc_masterZeus = {
+HPC_fnc_masterZeus = compileFinal {
 	if (isNull HPC_masterCurator) exitWith { hint "No Master Zeus in this mission." };
 	[player, true] remoteExec ["zeus_assign_remote_call", 2];
 	private _end = time + 10;
@@ -50,7 +50,7 @@ HPC_fnc_masterZeus = {
 // Build placement with the Zeus camera (called from build_manager.sqf, which
 // keeps the preview and validation): left-click places, R / Shift+R rotates,
 // PgUp / PgDn changes height, Escape cancels.
-HPC_fnc_zeusBuildOpen = {
+HPC_fnc_zeusBuildOpen = compileFinal {
 	params [["_canRotate", true]];
 	HPC_zeusBuildActive = true;
 	HPC_zeusBuildRotate = _canRotate;
@@ -80,7 +80,7 @@ HPC_fnc_zeusBuildOpen = {
 	hint parseText "<t size='1.1'>Zeus placement</t><br/>Left-click: place<br/>R / Shift+R: rotate<br/>PgUp / PgDn: height<br/>Esc: cancel";
 };
 
-HPC_fnc_zeusBuildClose = {
+HPC_fnc_zeusBuildClose = compileFinal {
 	HPC_zeusBuildActive = nil;
 	findDisplay 312 closeDisplay 2;
 };

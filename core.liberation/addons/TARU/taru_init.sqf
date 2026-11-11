@@ -21,7 +21,7 @@
 
 waitUntil {sleep 1; !isNil "GRLIB_vehicle_huron"};
 
-HALV_attachTarupods = {
+HALV_attachTarupods = compileFinal {
 	_heli = _this select 0;
 	_action = _this select 2;
 	_pod = _this select 3;
@@ -62,7 +62,7 @@ HALV_attachTarupods = {
 	};
 };
 
-HALV_detachTarupods = {
+HALV_detachTarupods = compileFinal {
 	_heli = _this select 0;
 	_action = _this select 2;
 	_pod = _this select 3;
@@ -96,7 +96,7 @@ HALV_detachTarupods = {
 	};
 };
 
-HALV_fnc_checkattachedpods = {
+HALV_fnc_checkattachedpods = compileFinal {
 	_currentpod = objNull;
 	{
 		_var1 = _x getVariable ["R3F_LOG_est_transporte_par",objNull];

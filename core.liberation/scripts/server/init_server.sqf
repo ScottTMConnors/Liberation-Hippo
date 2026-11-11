@@ -57,6 +57,8 @@ addMissionEventHandler ["MPEnded", {
 addMissionEventHandler ["OnUserAdminStateChanged", {
 	params ["_networkId", "_loggedIn", "_votedIn"];
 	private _player = (_networkId getUserInfo 10);
+	// on disconnect the user info (and unit) is already gone
+	if (isNil "_player" || {isNull _player}) exitWith {};
 	private _uid = getPlayerUID _player;
 	if (_uid == "")  exitWith {};
 	if (_loggedIn) then {

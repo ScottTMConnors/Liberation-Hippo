@@ -1,5 +1,5 @@
 
-outlw_MR_createDialog = {
+outlw_MR_createDialog = compileFinal {
 	private ["_stance", "_raised", "_weapon"];
 
 	outlw_MR_sourceType = "";
@@ -110,7 +110,7 @@ outlw_MR_createDialog = {
 	};
 };
 
-outlw_MR_populateMagComboBox = {
+outlw_MR_populateMagComboBox = compileFinal {
 	private ["_magTypes", "_ammoTypes", "_n", "_a"];
 
 	_magTypes = (call outlw_MR_magInfo) select 0;
@@ -127,7 +127,7 @@ outlw_MR_populateMagComboBox = {
 	};
 };
 
-outlw_MR_populateMagListBox = {
+outlw_MR_populateMagListBox = compileFinal {
 	private ["_args", "_magListTitle", "_magTypes", "_magAmmoCounts", "_magAmmoCaps", "_magCounts", "_list", "_isFiltered", "_n", "_idx", "_magName", "_count", "_cap"];
 
 	_args = call outlw_MR_magInfo;
@@ -179,7 +179,7 @@ outlw_MR_populateMagListBox = {
 };
 
 // Fills a slot's ammo bar (_bar inside group _group) to _count of _cap.
-outlw_MR_setAmmoBar = {
+outlw_MR_setAmmoBar = compileFinal {
 	params ["_bar", "_group", "_cap", "_count"];
 	private _h = (ctrlPosition ((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl _group)) select 3;
 	private _y = _h;
@@ -188,7 +188,7 @@ outlw_MR_setAmmoBar = {
 };
 
 // Structured text for a slot: name, short description, rounds.
-outlw_MR_slotText = {
+outlw_MR_slotText = compileFinal {
 	params ["_magType", "_count", "_cap"];
 	format
 	[
@@ -199,7 +199,7 @@ outlw_MR_slotText = {
 	];
 };
 
-outlw_MR_refreshSlots = {
+outlw_MR_refreshSlots = compileFinal {
 	if (outlw_MR_sourceType != "") then
 	{
 		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 1100) ctrlSetStructuredText parseText ([outlw_MR_sourceType, outlw_MR_sourceCount, outlw_MR_sourceCap] call outlw_MR_slotText);
@@ -212,7 +212,7 @@ outlw_MR_refreshSlots = {
 	[22190, 2219, outlw_MR_targetCap, outlw_MR_targetCount] call outlw_MR_setAmmoBar;
 };
 
-outlw_MR_filter = {
+outlw_MR_filter = compileFinal {
 	// Added additional tracer check to avoid repacks between some tracer and non-tracer variants - GiPPO
 	
 	private ["_this", "_magTypes", "_magAmmoCounts", "_magAmmoCaps", "_ammoType", "_returnTypes", "_returnCounts", "_returnCaps", "_ammoTracer","_userFilter"];
@@ -255,7 +255,7 @@ outlw_MR_filter = {
 	[_returnTypes, _returnCounts, _returnCaps];
 };
 
-outlw_MR_hideFull = {
+outlw_MR_hideFull = compileFinal {
 	private ["_this", "_magTypes", "_magAmmoCounts", "_magAmmoCaps", "_magCounts", "_returnMagTypes", "_returnAmmoCaps", "_returnAmmoCaps", "_returnMagCounts", "_n", "_a"];
 
 	_magTypes = _this select 0;
@@ -286,7 +286,7 @@ outlw_MR_hideFull = {
 	[_returnMagTypes, _returnMagAmmoCounts, _returnMagAmmoCaps, _returnMagCounts];
 };
 
-outlw_MR_repack = {
+outlw_MR_repack = compileFinal {
 	private ["_sourceCap", "_targetCap", "_refreshRate", "_refreshCount", "_magCode", "_keepRepacking", "_sleepTime", "_n"];
 
 	outlw_MR_isRepacking = true;
@@ -365,7 +365,7 @@ outlw_MR_repack = {
 	["outlw_MR_Dialog_Main", 10002, [-((ctrlPosition ((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 10000)) select 2), 0], 0] call outlw_MR_ctrlSetPos;
 };
 
-outlw_MR_repackingText = {
+outlw_MR_repackingText = compileFinal {
 	private ["_repacking"];
 
 	_repacking = "Repacking...";
@@ -387,7 +387,7 @@ outlw_MR_repackingText = {
 	((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 1008) ctrlSetText "";
 };
 
-outlw_MR_debugInfo = {
+outlw_MR_debugInfo = compileFinal {
 	private ["_magsAmmo", "_totalMagCount", "_totalAmmo", "_typeCountAmmo", "_magType", "_magAmmo", "_index", "_inArray", "_n", "_a"];
 
 	_magsAmmo = magazinesAmmo player;
@@ -432,7 +432,7 @@ outlw_MR_debugInfo = {
 	[[_totalMagCount, _totalAmmo], _typeCountAmmo];
 };
 
-outlw_MR_block = {
+outlw_MR_block = compileFinal {
 	private ["_doBlockSource", "_doBlockTarget"];
 
 	_doBlockSource = true;
@@ -501,7 +501,7 @@ outlw_MR_block = {
 	((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 2217) ctrlSetBackgroundColor [0.46,0.80,0.72,0.18];
 };
 
-outlw_MR_onDrag = {
+outlw_MR_onDrag = compileFinal {
 	private ["_this", "_magInfo"];
 
 	outlw_MR_listDragging = false;
@@ -522,7 +522,7 @@ outlw_MR_onDrag = {
 	call outlw_MR_block;
 };
 
-outlw_MR_onMouseButtonUp = {
+outlw_MR_onMouseButtonUp = compileFinal {
 	outlw_MR_dragType = "";
 	outlw_MR_dragCount = 0;
 	outlw_MR_dragCap = 0;
@@ -548,7 +548,7 @@ outlw_MR_onMouseButtonUp = {
 	((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 2217) ctrlEnable false;
 };
 
-outlw_MR_sourceEnabled = {
+outlw_MR_sourceEnabled = compileFinal {
 	private ["_this"];
 
 	if (_this select 0) then
@@ -583,7 +583,7 @@ outlw_MR_sourceEnabled = {
 	};
 };
 
-outlw_MR_targetEnabled = {
+outlw_MR_targetEnabled = compileFinal {
 	private ["_this"];
 
 	if (_this select 0) then
@@ -618,7 +618,7 @@ outlw_MR_targetEnabled = {
 	};
 };
 
-outlw_MR_addSource = {
+outlw_MR_addSource = compileFinal {
 	private ["_this", "_doExit", "_magInfo"];
 
 	_doExit = false;
@@ -666,7 +666,7 @@ outlw_MR_addSource = {
 	};
 };
 
-outlw_MR_clearSource = {
+outlw_MR_clearSource = compileFinal {
 	private ["_doPopulate"];
 
 	_doPopulate = false;
@@ -696,7 +696,7 @@ outlw_MR_clearSource = {
 	[22180, 2218, 0, 0] call outlw_MR_setAmmoBar;
 };
 
-outlw_MR_addTarget = {
+outlw_MR_addTarget = compileFinal {
 	private ["_this", "_doExit", "_magInfo"];
 
 	_doExit = false;
@@ -753,7 +753,7 @@ outlw_MR_addTarget = {
 	};
 };
 
-outlw_MR_clearTarget = {
+outlw_MR_clearTarget = compileFinal {
 	if (outlw_MR_doAddToMagazines) then
 	{
 			player addMagazine [outlw_MR_targetType, outlw_MR_targetCount];
@@ -772,7 +772,7 @@ outlw_MR_clearTarget = {
 	[22190, 2219, 0, 0] call outlw_MR_setAmmoBar;
 };
 
-outlw_MR_moveToList = {
+outlw_MR_moveToList = compileFinal {
 	switch (true) do
 	{
 		case (outlw_MR_sourceDragging): {call outlw_MR_clearSource;};
@@ -781,11 +781,11 @@ outlw_MR_moveToList = {
 };
 
 // Options now sit permanently in the footer; kept for old callers.
-outlw_MR_optionsMenu = {
+outlw_MR_optionsMenu = compileFinal {
 	outlw_MR_optionsOpen = !outlw_MR_optionsOpen;
 };
 
-outlw_MR_debugSwitch = {
+outlw_MR_debugSwitch = compileFinal {
 	if (outlw_MR_debugMode) then
 	{
 		outlw_MR_debugMode = false;
@@ -800,7 +800,7 @@ outlw_MR_debugSwitch = {
 	};
 };
 
-outlw_MR_showFullSwitch = {
+outlw_MR_showFullSwitch = compileFinal {
 	if (outlw_MR_doHideFull) then
 	{
 		outlw_MR_doHideFull = false;
@@ -817,7 +817,7 @@ outlw_MR_showFullSwitch = {
 	call outlw_MR_populateMagListBox;
 };
 
-outlw_MR_onDialogDestroy = {
+outlw_MR_onDialogDestroy = compileFinal {
 	private ["_endingInfo", "_sTCA", "_eTCA", "_snTCA", "_enTCA", "_output", "_toAdd", "_dif", "_difStr", "_n", "_a"];
 
 	ppEffectDestroy outlw_MR_blur;

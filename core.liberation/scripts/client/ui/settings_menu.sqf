@@ -1,6 +1,6 @@
 if (isDedicated || !hasInterface) exitWith {};
 
-GRLIB_SetupParamMenu = {
+GRLIB_SetupParamMenu = compileFinal {
     if (!dialog || !GRLIB_DialogOpen || !hasInterface) exitWith {};
     GRLIB_ParamControls = [];
     // Readable on the dark theme (the marker colours are too dark).
@@ -126,7 +126,7 @@ GRLIB_SetupParamMenu = {
 };
 
 // Fills the description strip under the settings list (MouseEnter / SetFocus on a value box).
-GRLIB_showParamInfo = {
+GRLIB_showParamInfo = compileFinal {
     params ["_control"];
     private _display = findDisplay 5119;
     if (isNull _display) exitWith {};
@@ -137,7 +137,7 @@ GRLIB_showParamInfo = {
 };
 
 // Section list (idc 9970): scroll the settings group to the chosen category.
-GRLIB_jumpParamCategory = {
+GRLIB_jumpParamCategory = compileFinal {
     params ["_list", "_index"];
     if (_index < 0) exitWith {};
     private _display = ctrlParent _list;
@@ -150,7 +150,7 @@ GRLIB_jumpParamCategory = {
     _group ctrlSetScrollValues [((_rows select _row) / _range) min 1, -1];
 };
 
-GRLIB_SetValue = {
+GRLIB_SetValue = compileFinal {
     if (!dialog || !GRLIB_DialogOpen || !hasInterface) exitWith {};
     params ["_lbCurSel", "_key"];
     _parHash = LRX_Mission_Params get _key;
@@ -159,7 +159,7 @@ GRLIB_SetValue = {
     GRLIB_ModParams set [_key, createHashMapFromArray [[GRLIB_PARAM_ValueKey, _newValue]]];
 };
 
-GRLIB_CreateParamDialog = {
+GRLIB_CreateParamDialog = compileFinal {
     if (!hasInterface) exitWith {};
     closeDialog 0;
     GRLIB_DialogOpen = true;
@@ -177,7 +177,7 @@ GRLIB_CreateParamDialog = {
     [] call GRLIB_SetupParamMenu;
 };
 
-GRLIB_refreshDialog = {
+GRLIB_refreshDialog = compileFinal {
     if (!dialog || !GRLIB_DialogOpen || !hasInterface) exitWith {};
     // Reset the dialog without closing it
     {
@@ -186,20 +186,20 @@ GRLIB_refreshDialog = {
     [] call GRLIB_SetupParamMenu;
 };
 
-GRLIB_resetParams = {
+GRLIB_resetParams = compileFinal {
     if (!dialog || !GRLIB_DialogOpen || !hasInterface) exitWith {};
     GRLIB_ModParams = ([] call GRLIB_DefaultParams);
     [] call GRLIB_refreshDialog;
 };
 
-GRLIB_cancelParams = {
+GRLIB_cancelParams = compileFinal {
     if (!dialog || !GRLIB_DialogOpen || !hasInterface) exitWith {};
     [] call GRLIB_CloseDialog;
     GRLIB_ParamsInitialized = true;
     publicVariable "GRLIB_ParamsInitialized";
 };
 
-GRLIB_saveParams = {
+GRLIB_saveParams = compileFinal {
     if (!dialog || !GRLIB_DialogOpen || !hasInterface) exitWith {};
     [] call GRLIB_CloseDialog;
     if (isServer) then {
@@ -216,7 +216,7 @@ GRLIB_saveParams = {
     };
 };
 
-GRLIB_CloseDialog = {
+GRLIB_CloseDialog = compileFinal {
     if (!dialog || !GRLIB_DialogOpen || !hasInterface) exitWith {};
     GRLIB_DialogOpen = false;
     closeDialog 0;

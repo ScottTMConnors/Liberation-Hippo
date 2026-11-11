@@ -403,7 +403,55 @@ private _zmasterOk = if (_zadmin) then {
 };
 diag_log ["HPC_ZEUS_MASTER", _zadmin, _zgotMaster, getAssignedCuratorLogic player];
 ["zeus.master", _zmasterOk] call _assert;
-["RUN_DONE|26"] call _emit;
+
+// Log in as admin (server config passwordAdmin). Client serverCommand needs a
+// UI context: the harness sends a real key press, caught by a KeyDown handler.
+waitUntil {sleep 0.5; isNull findDisplay 312 && cameraOn isEqualTo player};
+sleep 2;
+HPC_testLoginTries = 0;
+private _zkeyEH = (findDisplay 46) displayAddEventHandler ["KeyDown", {
+    HPC_testLoginTries = HPC_testLoginTries + 1;
+    HPC_testLoginUI = isUIContext;
+    HPC_testLoginSent = serverCommand "#login hippo-test-admin";
+    diag_log ["HPC_ZEUS_LOGIN_TRY", HPC_testLoginTries, isUIContext, HPC_testLoginSent];
+    true
+}];
+// the admin state can take a while to reach the client: retry with real key presses
+for "_try" from 1 to 3 do {
+    if ((call BIS_fnc_admin) == 2) exitWith {};
+    diag_log format ["HPC_UIKEY|%1|login%2", HPC_testRun, _try];
+    _deadline = diag_tickTime + 15;
+    waitUntil {sleep 0.5; diag_tickTime > _deadline || {(call BIS_fnc_admin) == 2}};
+};
+_deadline = diag_tickTime + 15;
+waitUntil {sleep 0.5; diag_tickTime > _deadline || {(call BIS_fnc_admin) == 2}};
+(findDisplay 46) displayRemoveEventHandler ["KeyDown", _zkeyEH];
+private _zloggedIn = (call BIS_fnc_admin) == 2;
+diag_log ["HPC_ZEUS_LOGIN", _zloggedIn, missionNamespace getVariable ["HPC_testLoginUI", "n/a"], missionNamespace getVariable ["HPC_testLoginSent", "n/a"]];
+// the server's admin-login handler may touch curators: let it settle
+sleep 4;
+private _zadminOk = false;
+if (_zloggedIn) then {
+    [] spawn HPC_fnc_masterZeus;
+    _deadline = diag_tickTime + 15;
+    waitUntil {sleep 0.2; diag_tickTime > _deadline || {getAssignedCuratorLogic player isEqualTo HPC_masterCurator && !isNull findDisplay 312}};
+    private _opened = getAssignedCuratorLogic player isEqualTo HPC_masterCurator && !isNull findDisplay 312;
+    sleep 2;
+    findDisplay 312 closeDisplay 2;
+    _deadline = diag_tickTime + 15;
+    waitUntil {sleep 0.5; diag_tickTime > _deadline || {(getAssignedCuratorLogic player) getVariable ["HPC_zeusLimited", false]}};
+    private _reverted = (getAssignedCuratorLogic player) getVariable ["HPC_zeusLimited", false];
+    // the normal Zeus key now opens the limited one again
+    openCuratorInterface;
+    _deadline = diag_tickTime + 10;
+    waitUntil {sleep 0.2; diag_tickTime > _deadline || {!isNull findDisplay 312}};
+    private _limitedAgain = !isNull findDisplay 312 && {(getAssignedCuratorLogic player) getVariable ["HPC_zeusLimited", false]};
+    findDisplay 312 closeDisplay 2;
+    diag_log ["HPC_ZEUS_MASTER_ADMIN", _opened, _reverted, _limitedAgain, getAssignedCuratorLogic player];
+    _zadminOk = _opened && _reverted && _limitedAgain;
+};
+["zeus.master_admin", _zadminOk] call _assert;
+["RUN_DONE|27"] call _emit;
 // --hold only: a staged firefight for visual inspection of the map overlay and command window.
 if (missionNamespace getVariable ["HPC_testHold", false]) then {
     player allowDamage false;

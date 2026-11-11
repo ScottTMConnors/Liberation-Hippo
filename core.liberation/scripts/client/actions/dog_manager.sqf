@@ -1,7 +1,7 @@
 waituntil {sleep 1; GRLIB_player_spawned};
 sleep 5;
 
-do_dog_cleanup = {
+do_dog_cleanup = compileFinal {
 	params ["_my_dog"];
 	deleteVehicle _my_dog;
 	player setVariable ["my_dog", nil, true];

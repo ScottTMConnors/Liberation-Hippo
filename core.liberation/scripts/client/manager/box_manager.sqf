@@ -1,6 +1,6 @@
 // Manage Box actions (Transported, Stocked, Load/Unload)
 
-GRLIB_checkAction_AbandonBox = {
+GRLIB_checkAction_AbandonBox = compileFinal {
 	params ["_target", "_unit"];
 	if (!isNil "GRLIB_load_box") exitWith { false };
 	if (_target getVariable ["R3F_LOG_disabled", false]) exitWith { false };
@@ -10,7 +10,7 @@ GRLIB_checkAction_AbandonBox = {
 	(GRLIB_player_is_menuok && _ready && _owned && _loaded)
 };
 
-GRLIB_checkAction_LoadBox = {
+GRLIB_checkAction_LoadBox = compileFinal {
 	params ["_target", "_unit"];
 	if (!isNil "GRLIB_load_box") exitWith { false };
 	if (!isNull (_target getVariable ['R3F_LOG_remorque', objNull])) exitWith { false };
@@ -23,7 +23,7 @@ GRLIB_checkAction_LoadBox = {
 	(GRLIB_player_is_menuok && _ready && _owned)
 };
 
-GRLIB_checkAction_UnloadBox = {
+GRLIB_checkAction_UnloadBox = compileFinal {
 	params ["_target", "_unit"];
 	if (!isNil "GRLIB_load_box") exitWith { false };
 	if (!isNull (_target getVariable ['R3F_LOG_remorque', objNull])) exitWith { false };
@@ -35,7 +35,7 @@ GRLIB_checkAction_UnloadBox = {
 	(GRLIB_player_is_menuok && _ready && _owned && _loaded)
 };
 
-GRLIB_checkAction_UnloadLastBox = {
+GRLIB_checkAction_UnloadLastBox = compileFinal {
 	params ["_target", "_unit"];
 	if (!isNil "GRLIB_load_box") exitWith { false };
 	if (!isNull (_target getVariable ['R3F_LOG_remorque', objNull])) exitWith { false };

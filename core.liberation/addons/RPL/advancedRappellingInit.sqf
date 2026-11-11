@@ -29,7 +29,7 @@ AR_RAPPEL_POINT_CLASS_HEIGHT_OFFSET = [
 	["All", [-0.05, -0.05, -0.05, -0.05, -0.05, -0.05]]
 ];
 
-AR_Rappel_All_Cargo = {
+AR_Rappel_All_Cargo = compileFinal {
 	params ["_vehicle",["_rappelHeight",25],["_positionASL",[]]];
 	if (isPlayer (driver _vehicle)) exitWith {};
 	_this spawn {
@@ -127,7 +127,7 @@ AR_Rappel_All_Cargo = {
 	};
 };
 
-AR_Get_Heli_Rappel_Points = {
+AR_Get_Heli_Rappel_Points = compileFinal {
 	params ["_vehicle"];
 
 	// Check for pre-defined rappel points
@@ -238,7 +238,7 @@ AR_Get_Heli_Rappel_Points = {
 	_validRappelPoints;
 };
 
-AR_Rappel_AI_From_Heli = {
+AR_Rappel_AI_From_Heli = compileFinal {
 	params ["_player","_heli"];
 	{
 		if (vehicle _x == _heli && {((assignedVehicleRole _x) param [0, ""]) == "cargo"}) then { // only AI in this helicopter
@@ -248,7 +248,7 @@ AR_Rappel_AI_From_Heli = {
 	} forEach (units player - [player]);
 };
 
-AR_Rappel_From_Heli = {
+AR_Rappel_From_Heli = compileFinal {
 	params ["_player","_heli"];
 	if !(_player in _heli) exitWith {};
 	if (_player getVariable ["AR_Is_Rappelling", false]) exitWith {};
@@ -286,7 +286,7 @@ AR_Rappel_From_Heli = {
 	};
 };
 
-AR_Client_Rappel_From_Heli = {
+AR_Client_Rappel_From_Heli = compileFinal {
 	params ["_player","_heli","_rappelPoint"];
 
 	moveOut _player;
@@ -519,7 +519,7 @@ AR_Client_Rappel_From_Heli = {
 	_player allowDamage true;
 };
 
-AR_Current_Weapon_Type_Selected = {
+AR_Current_Weapon_Type_Selected = compileFinal {
 	params ["_player"];
 	if (currentWeapon _player == handgunWeapon _player) exitWith {"HANDGUN"};
 	if (currentWeapon _player == primaryWeapon _player) exitWith {"PRIMARY"};
@@ -527,7 +527,7 @@ AR_Current_Weapon_Type_Selected = {
 	"OTHER";
 };
 
-AR_Enable_Rappelling_Animation_Client = {
+AR_Enable_Rappelling_Animation_Client = compileFinal {
 	params ["_player"];
 
 	if (_player != player) then {
@@ -552,17 +552,17 @@ AR_Enable_Rappelling_Animation_Client = {
 	_player enableSimulation true;
 };
 
-AR_Rappel_Detach_Action = {
+AR_Rappel_Detach_Action = compileFinal {
 	params ["_player"];
 	_player setVariable ["AR_Detach_Rope",true,true];
 };
 
-AR_Rappel_Detach_Action_Check = {
+AR_Rappel_Detach_Action_Check = compileFinal {
 	params ["_player"];
 	(_player getVariable ["AR_Is_Rappelling",false]);
 };
 
-AR_Rappel_From_Heli_Action_Check = {
+AR_Rappel_From_Heli_Action_Check = compileFinal {
 	params ["_player","_vehicle", "_isplayer"];
 	if (lifeState _player == 'INCAPACITATED') exitWith {false};
 	if !([_vehicle] call AR_Is_Supported_Vehicle) exitWith {false};
@@ -573,7 +573,7 @@ AR_Rappel_From_Heli_Action_Check = {
 	true;
 };
 
-AR_Rappel_AI_Units_From_Heli_Action_Check = {
+AR_Rappel_AI_Units_From_Heli_Action_Check = compileFinal {
 	params ["_player","_vehicle"];
 	if !([_player, _vehicle, false] call AR_Rappel_From_Heli_Action_Check) exitWith {false};
 	if (leader group _player != _player) exitWith {false};
@@ -585,7 +585,7 @@ AR_Rappel_AI_Units_From_Heli_Action_Check = {
 	_canRappelOne;
 };
 
-AR_Get_Corner_Points = {
+AR_Get_Corner_Points = compileFinal {
 	params ["_vehicle"];
 	private ["_centerOfMass","_bbr","_p1","_p2","_rearCorner","_rearCorner2","_frontCorner","_frontCorner2"];
 	private ["_maxWidth","_widthOffset","_maxLength","_lengthOffset","_widthFactor","_lengthFactor","_maxHeight","_heightOffset"];
@@ -620,7 +620,7 @@ AR_Get_Corner_Points = {
 	[_rearCorner,_rearCorner2,_frontCorner,_frontCorner2];
 };
 
-AR_Is_Supported_Vehicle = {
+AR_Is_Supported_Vehicle = compileFinal {
 	params ["_vehicle","_isSupported"];
 	_isSupported = false;
 	if (not isNull _vehicle) then {
@@ -634,7 +634,7 @@ AR_Is_Supported_Vehicle = {
 	_isSupported;
 };
 
-AR_Player_Actions = {
+AR_Player_Actions = compileFinal {
 	params ["_player"];
 
 	_player addAction [(["Rappel self", "\a3\ui_f\data\igui\cfg\actions\getout_ca.paa", "info"] call HPC_fnc_actionTitle), {

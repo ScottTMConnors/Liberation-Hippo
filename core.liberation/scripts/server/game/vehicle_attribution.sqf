@@ -1,5 +1,5 @@
 if (!isServer) exitWith {};
-HPC_fnc_trackVehicle = {
+HPC_fnc_trackVehicle = compileFinal {
     params ["_entity"];
     if (!(_entity isKindOf "AllVehicles") || {_entity isKindOf "CAManBase"} || {_entity isKindOf "Logic"} || {_entity getVariable ["HPC_vehicleHitTracked",false]}) exitWith {};
     _entity setVariable ["HPC_vehicleHitTracked",true];

@@ -3,7 +3,7 @@ private [ "_cur", "_last", "_msg", "_msg2", "_rank", "_new_rank", "_uid", "_fire
 waitUntil {sleep 1; !isNil "GRLIB_init_server"};
 waitUntil {sleep 1; !isNil "GRLIB_player_scores"};
 
-CHG_Perm = {
+CHG_Perm = compileFinal {
 	params ["_uid", "_perms"];
 	{
 		if ( _x select 0 == _uid ) exitWith { _x set [1,_perms] };

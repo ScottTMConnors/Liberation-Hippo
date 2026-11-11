@@ -3,8 +3,8 @@ if (!isServer || !GRLIB_Commander_mode || !HPC_AIWarfare) exitWith {};
 if (missionNamespace getVariable ["HPC_warfareRunning", false]) exitWith {};
 HPC_warfareRunning = true;
 
-HPC_fnc_warfareActive = { HPC_AIWarfare && GRLIB_endgame == 0 && GRLIB_global_stop == 0 };
-HPC_fnc_warfareDelete = {
+HPC_fnc_warfareActive = compileFinal { HPC_AIWarfare && GRLIB_endgame == 0 && GRLIB_global_stop == 0 };
+HPC_fnc_warfareDelete = compileFinal {
     params ["_group", ["_vehicle", objNull]];
     if (!isNull _vehicle) then {
         // Decide before deleting: crew removal on an HC-owned vehicle reaches the server later.
@@ -15,7 +15,7 @@ HPC_fnc_warfareDelete = {
     };
     if (!isNull _group) then { { if (_x getVariable ["HPC_warfare", false] && !isPlayer _x) then {if (isNull objectParent _x) then {deleteVehicle _x} else {(objectParent _x) deleteVehicleCrew _x}} } forEach units _group; if (units _group isEqualTo []) then {_group remoteExecCall ["deleteGroup",groupOwner _group]} };
 };
-HPC_fnc_warfarePosition = {
+HPC_fnc_warfarePosition = compileFinal {
     params ["_center", ["_size", 3], ["_radius", 100]];
     private _guess = _center getPos [_radius * sqrt random 1, random 360];
     if (surfaceIsWater _guess) then {_guess = _center};
@@ -28,7 +28,7 @@ HPC_fnc_warfarePosition = {
 // When a target ends (sector taken or lost, FOB gone) the group's "auto after capture"
 // flag (HPC_cmdReturn, default on) decides: on -> automatic orders again; off -> it keeps
 // defending the captured sector, or holds the last objective's position.
-HPC_fnc_warfareOrder = {
+HPC_fnc_warfareOrder = compileFinal {
     params ["_group"];
     private _order = _group getVariable ["HPC_cmdOrder", []];
     if (_order isEqualTo []) exitWith {[]};
@@ -64,7 +64,7 @@ HPC_fnc_warfareOrder = {
     [_pos, _type]
 };
 // Moves a group toward a resolved commander order. Defenders spread out around the target.
-HPC_fnc_warfareGo = {
+HPC_fnc_warfareGo = compileFinal {
     params ["_group", "_order"];
     if (_order isEqualTo []) exitWith {};
     _order params ["_pos", "_type"];
@@ -79,7 +79,7 @@ HPC_fnc_warfareGo = {
     ] call HPC_fnc_groupOrder;
 };
 // Public tags read by the map overlay and the commander window.
-HPC_fnc_warfareTag = {
+HPC_fnc_warfareTag = compileFinal {
     params ["_group", "_role", "_name"];
     _group setVariable ["HPC_warfare", true, true];
     _group setVariable ["HPC_warfareRole", _role, true];
@@ -88,7 +88,7 @@ HPC_fnc_warfareTag = {
     _group setVariable ["HPC_hcReadyAt", diag_tickTime + 15];
     {_x setVariable ["HPC_warfare", true, true]} forEach units _group;
 };
-HPC_fnc_warfareInfantry = {
+HPC_fnc_warfareInfantry = compileFinal {
     params ["_enemy", "_number"];
     private _side = if (_enemy) then {GRLIB_side_enemy} else {GRLIB_side_friendly};
     while {call HPC_fnc_warfareActive} do {
@@ -123,7 +123,7 @@ HPC_fnc_warfareInfantry = {
         sleep (if (_enemy) then {random [120,240,480]} else {random [30,60,90]});
     };
 };
-HPC_fnc_warfareVehicle = {
+HPC_fnc_warfareVehicle = compileFinal {
     params ["_heavy", "_number"];
     while {call HPC_fnc_warfareActive} do {
         waitUntil {sleep 2; !(call HPC_fnc_warfareActive) || {count GRLIB_all_fobs > 0 && count active_sectors > 0}};

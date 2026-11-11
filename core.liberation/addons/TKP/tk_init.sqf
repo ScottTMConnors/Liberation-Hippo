@@ -18,8 +18,8 @@ heavily modified by pSiKO
 
 // Disabled mode ignores saved warning counts and keeps the handlers as no-ops.
 if (GRLIB_tk_mode == 0) exitWith {
-	LRX_tk_actions = {};
-	LRX_tk_check = {};
+	LRX_tk_actions = compileFinal {};
+	LRX_tk_check = compileFinal {};
 };
 
 LRX_tk_actions = compileFinal preprocessFileLineNumbers "addons\TKP\tk_actions.sqf";
@@ -31,7 +31,7 @@ if ((BTC_logic getVariable [PAR_Grp_ID, 0]) >= GRLIB_tk_count) then { [player] c
 LRX_tk_vip = [];
 LRX_tk_player_action = 0;
 
-LRX_tk_check = {
+LRX_tk_check = compileFinal {
 	params ["_unit", "_killer"];
 	if (LRX_tk_vip find (name _killer) > -1) exitWith {};
 

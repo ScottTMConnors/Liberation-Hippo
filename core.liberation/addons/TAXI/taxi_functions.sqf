@@ -1,5 +1,5 @@
 // Taxi functions
-taxi_land = {
+taxi_land = compileFinal {
 	params ["_vehicle"];
 	private ["_alt", "_speed", "_vspeed"];
 	private _stop = time + (3 * 60); // wait 3min max
@@ -26,7 +26,7 @@ taxi_land = {
 	sleep 5;
 };
 
-taxi_dest = {
+taxi_dest = compileFinal {
 	params ["_vehicle", "_dest", "_msg"];
 
 	_vehicle setVariable ["GRLIB_taxi_destination", _dest, true];
@@ -70,19 +70,19 @@ taxi_dest = {
 	(time >= _stop);
 };
 
-taxi_cargo = {
+taxi_cargo = compileFinal {
 	params ["_vehicle"];
 	(crew _vehicle - (_vehicle getVariable ["GRLIB_taxi_crew", []]));
 };
 
-taxi_outboard = {
+taxi_outboard = compileFinal {
 	params ["_vehicle", "_cargo"];
 	if (count _cargo > 0) then { [_vehicle] call do_eject };
 	_vehicle setVehicleLock "LOCKED";
 	_vehicle lockCargo true;
 };
 
-taxi_check_dest = {
+taxi_check_dest = compileFinal {
 	params ["_vehicle", "_freepos"];
 	if (GRLIB_taxi_helipad_created) then {
 		deleteVehicle GRLIB_taxi_helipad;

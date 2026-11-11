@@ -18,7 +18,7 @@ HPC_cmdGroups = [];   // group list row -> group
 HPC_cmdDests = [];    // destination list row -> [type, key, position] or [] for headings
 HPC_mapSelected = [];
 
-HPC_fnc_cmdAction = {
+if (isNil "HPC_fnc_cmdAction") then { HPC_fnc_cmdAction = compileFinal {
     params ["_what"];
     private _display = uiNamespace getVariable ["HPC_AICommandDisplay", displayNull];
     if (isNull _display) exitWith {};
@@ -47,10 +47,10 @@ HPC_fnc_cmdAction = {
             _status ctrlSetText format ["Order sent for %1 group%2.", count _groups, ["s", ""] select (count _groups == 1)];
         };
     };
-};
+}; };
 
 // Destination markers and a preview of the order on the window's own map.
-HPC_fnc_cmdDrawDests = {
+if (isNil "HPC_fnc_cmdDrawDests") then { HPC_fnc_cmdDrawDests = compileFinal {
     params ["_map"];
     private _display = uiNamespace getVariable ["HPC_AICommandDisplay", displayNull];
     if (isNull _display) exitWith {};
@@ -78,7 +78,7 @@ HPC_fnc_cmdDrawDests = {
             if (alive _leader) then {_map drawLine [getPosASLVisual _leader, _target, [1, 1, 1, 0.55]]};
         } forEach HPC_mapSelected;
     };
-};
+}; };
 
 private _groupsList = _display displayCtrl 110;
 private _destList = _display displayCtrl 111;

@@ -16,7 +16,7 @@ JKB_music_blacklist = [
 	"EventTrack03_F_Curator"
 ];
 
-JKB_stopMusic = {
+JKB_stopMusic = compileFinal {
 	params ["_sound"];
 	if (!isNull _sound) then {
 		deleteVehicle _sound;

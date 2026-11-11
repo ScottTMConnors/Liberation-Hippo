@@ -68,12 +68,12 @@ GRLIB_enabledPrefix = [
 	["WS_", GRLIB_WS_enabled]
 ];
 
-GRLIB_Template_Modloaded = {
+GRLIB_Template_Modloaded = compileFinal {
 	params ["_faction"];
 	GRLIB_enabledPrefix findIf {!(_x#1) && {([(_x#0), _faction] call F_startsWith)}} == -1;
 };
 
-GRLIB_trim_Params = {
+GRLIB_trim_Params = compileFinal {
 	params["_params"];
 	_trimmed = createHashMapFromArray (_params apply {
 		[_x, createHashMapFromArray [[GRLIB_PARAM_ValueKey, _y get GRLIB_PARAM_ValueKey]]]
@@ -81,7 +81,7 @@ GRLIB_trim_Params = {
 	_trimmed;
 };
 
-GRLIB_DefaultParams = {
+GRLIB_DefaultParams = compileFinal {
 	[LRX_Mission_Params] call GRLIB_trim_Params;
 };
 

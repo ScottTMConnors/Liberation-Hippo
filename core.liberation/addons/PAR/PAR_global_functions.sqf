@@ -16,13 +16,13 @@ PAR_fn_sortie = compileFinal preprocessFileLineNumbers "addons\PAR\PAR_fn_sortie
 PAR_fn_unconscious = compileFinal preprocessFileLineNumbers "addons\PAR\PAR_fn_unconscious.sqf";
 // PAR_is_wounded = compileFinal preprocessFileLineNumbers "addons\PAR\PAR_is_wounded.sqf";  // moved to shared
 
-PAR_deathSound = {
+PAR_deathSound = compileFinal {
 	params ["_unit"];
 	private _deathsound = format ["A3\sounds_f\characters\human-sfx\P%1\hit_max_%2.wss", selectRandom ["03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18"], selectRandom [1,2,3]];
 	playSound3D [_deathsound, _unit, false, getPosASL _unit, 4, 1, 300];
 };
 
-PAR_protected_units = {
+PAR_protected_units = compileFinal {
 	params ["_unit"];
 	private _my_squad = player getVariable ["my_squad", grpNull];
 	if (isNil "_unit") then {
@@ -36,7 +36,7 @@ PAR_protected_units = {
 	};
 };
 
-PAR_unblock_AI = {
+PAR_unblock_AI = compileFinal {
 	// Unblock unit(s) 0-8-1
 	params ["_unit_array"];
 	if (player getVariable ["SOG_player_in_tunnel", false]) exitWith {};
@@ -91,7 +91,7 @@ PAR_unblock_AI = {
 	};
 };
 
-PAR_abandon_priso = {
+PAR_abandon_priso = compileFinal {
 	// Abandon selected prisoners 0-8-2
 	params ["_unit_array"];
 	if (player getVariable ["SOG_player_in_tunnel", false]) exitWith {};
@@ -120,7 +120,7 @@ PAR_abandon_priso = {
 	};
 };
 
-PAR_fn_globalchat = {
+PAR_fn_globalchat = compileFinal {
 	params ["_speaker", "_msg"];
 	if (isDedicated || !(local _speaker) || _msg == "") exitWith {};
 	if (_msg == PAR_AI_old_msg) exitWith {};
@@ -130,7 +130,7 @@ PAR_fn_globalchat = {
 	};
 };
 
-PAR_fn_fixPos = {
+PAR_fn_fixPos = compileFinal {
 	params ["_medic", "_wnded"];
 	{
 		if (local _x) then {
@@ -149,17 +149,17 @@ PAR_fn_fixPos = {
 	} forEach [_medic, _wnded];
 };
 
-PAR_is_medic = {
+PAR_is_medic = compileFinal {
 	params ["_unit"];
 	(_unit getUnitTrait "Medic" || getNumber (configOf _unit >> "attendant") == 1);
 };
 
-PAR_has_medikit = {
+PAR_has_medikit = compileFinal {
 	params ["_unit"];
 	(PAR_AidKit in (items _unit) || PAR_Medikit in (items _unit));
 };
 
-PAR_public_EH = {
+PAR_public_EH = compileFinal {
 	params ["_EH", "_target"];
 	private _killed = _target select 0;
 	private _killer = _target select 1;
@@ -183,17 +183,17 @@ PAR_public_EH = {
 	};
 };
 
-PAR_revive_max = {
+PAR_revive_max = compileFinal {
 	params ["_unit"];
 	(PAR_ai_revive_max + (GRLIB_rank_level find (rank _unit)));
 };
 
-PAR_revive_cur = {
+PAR_revive_cur = compileFinal {
 	params ["_unit"];
 	(([_unit] call PAR_revive_max) - count (_unit getVariable ["PAR_revive_history", []]));
 };
 
-PAR_revive_dec = {
+PAR_revive_dec = compileFinal {
 	params ["_unit"];
 	private _cur_revive = ([_unit] call PAR_revive_cur);
 	private _msg = format ["%1, %2 revive(s) left.", name _unit, _cur_revive];
@@ -204,7 +204,7 @@ PAR_revive_dec = {
 	_unit setVariable ["PAR_revive_history", _history];
 };
 
-PAR_spawn_gargbage = {
+PAR_spawn_gargbage = compileFinal {
 	params ["_target"];
 	private _pos = getPos _target;
 	if (surfaceIsWater _pos) exitWith {};
@@ -213,7 +213,7 @@ PAR_spawn_gargbage = {
 	_grbg spawn {sleep (60 + floor(random 30)); deleteVehicle _this};
 };
 
-PAR_spawn_blood = {
+PAR_spawn_blood = compileFinal {
 	params ["_target"];
 	private _pos = getPos _target;
 	if (surfaceIsWater _pos) exitWith {objNull};
@@ -223,7 +223,7 @@ PAR_spawn_blood = {
 };
 
 // AI Section
-PAR_fn_AI_Damage_EH = {
+PAR_fn_AI_Damage_EH = compileFinal {
 	params ["_unit"];
 	if (_unit getVariable ["PAR_EH_Installed", false]) exitWith {};
 	_unit setVariable ["PAR_EH_Installed", true];

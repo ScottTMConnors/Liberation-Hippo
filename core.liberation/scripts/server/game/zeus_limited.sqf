@@ -7,8 +7,9 @@ HPC_masterCurator = allCurators param [0, objNull];
 publicVariable "HPC_masterCurator";
 HPC_zeusCurators = createHashMap;
 
-HPC_fnc_zeusCurator = {
-	params ["_uid"];
+HPC_fnc_zeusCurator = compileFinal {
+	params [["_uid", "", [""]]];
+	if (_uid == "") exitWith { objNull };
 	private _cur = HPC_zeusCurators getOrDefault [_uid, objNull];
 	if (!isNull _cur) exitWith { _cur };
 	private _grp = createGroup [sideLogic, false];
@@ -24,8 +25,9 @@ HPC_fnc_zeusCurator = {
 	_cur
 };
 
-HPC_fnc_zeusAssign = {
-	params ["_player", "_master"];
+HPC_fnc_zeusAssign = compileFinal {
+	params [["_player", objNull, [objNull]], ["_master", false, [false]]];
+	if (isNull _player || {getPlayerUID _player == ""}) exitWith {};
 	private _target = if (_master) then { HPC_masterCurator } else { [getPlayerUID _player] call HPC_fnc_zeusCurator };
 	if (isNull _target) exitWith {};
 	private _current = getAssignedCuratorLogic _player;
@@ -36,7 +38,7 @@ HPC_fnc_zeusAssign = {
 	_player assignCurator _target;
 };
 
-HPC_fnc_zeusRefresh = {
+HPC_fnc_zeusRefresh = compileFinal {
 	params ["_player", "_cur"];
 	private _uid = getPlayerUID _player;
 	private _units = (units group _player) select { alive _x };
