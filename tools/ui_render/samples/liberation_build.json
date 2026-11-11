@@ -1,23 +1,194 @@
 {
-  "1011": {"text": "BUILD MENU - Captain"},
-  "151": {"text": "Combat Vehicles"},
-  "1709": {"text": "6 items  |  4 unlocked  |  2 locked"},
-  "1702": {"rows": ["All available factions"], "sel": 0},
-  "1703": {"rows": ["All types"], "sel": 0},
-  "110": {"rows": [
-    {"cells": ["v  Tanks (3)", "", "", ""], "color": [0.5,0.85,1,1]},
-    {"cells": ["M2A1 Slammer", "4", "250", "120"], "icon": "/A3/ui_f/data/map/vehicleicons/icontank_ca.paa", "color": [0.96,0.98,1,1]},
-    {"cells": ["M2A4 Slammer UP", "4", "300", "140"], "icon": "/A3/ui_f/data/map/vehicleicons/icontank_ca.paa", "color": [0.77,0.88,0.96,1]},
-    {"cells": ["M4 Scorcher", "3", "400", "160"], "icon": "/A3/ui_f/data/gui/rsc/rscdisplaymultiplayer/sessions_locked_ca.paa", "iconColor": [0.78,0.45,0.42,0.9], "color": [0.69,0.71,0.75,1]},
-    {"cells": ["v  Wheeled APCs (3)", "", "", ""], "color": [0.5,0.85,1,1]},
-    {"cells": ["AMV-7 Marshall", "3", "180", "90"], "icon": "/A3/ui_f/data/map/vehicleicons/iconAPC_ca.paa", "color": [0.96,0.98,1,1]},
-    {"cells": ["Rhino MGS", "3", "220", "110"], "icon": "/A3/ui_f/data/gui/rsc/rscdisplaymultiplayer/sessions_locked_ca.paa", "iconColor": [0.78,0.45,0.42,0.9], "color": [0.69,0.71,0.75,1]},
-    {"cells": ["IFV-6c Panther", "3", "160", "80"], "icon": "/A3/ui_f/data/map/vehicleicons/iconAPC_ca.paa", "color": [0.77,0.88,0.96,1]}
-  ], "sel": 1},
-  "163": {"text": "<t size='1.25' font='PuristaSemibold'>M2A1 Slammer</t><br/><t color='#9EB0B8' size='0.85'>COST</t><br/><t color='#80E6A6'>Manpower 4</t>    <t color='#F2A694'>Ammo 250</t>    <t color='#F2D678'>Fuel 120</t><br/><t color='#9EB0B8' size='0.85'>VEHICLE</t><br/><t color='#9EB0B8' size='0.85'>Armor 1200  |  Engine 1475 hp  |  Top speed 65 km/h</t><br/><t color='#9EB0B8' size='0.85'>Crew 3  |  Passengers 4  |  Fuel tank 1885 L  |  Inventory 3000</t><br/><t color='#9EB0B8' size='0.85'>Weapons: 120mm Cannon, Coaxial MG 7.62 mm, .50 Cal HMG</t><br/><t color='#9EB0B8' size='0.85'>Logistics: Cargo 20  |  Can tow</t>"},
-  "161": {"text": "<t color='#75CCB8' align='center'>Unlocked<br/>Military Base Tuvanaka</t>"},
-  "131": {"text": "Manpower : 12/40"},
-  "132": {"text": "Ammo : 1450"},
-  "133": {"text": "Fuel : 820"},
-  "134": {"text": "Unit cap : 8/30"}
+ "1011": {
+  "text": "BUILD MENU - Captain"
+ },
+ "151": {
+  "text": "Combat Vehicles"
+ },
+ "1709": {
+  "text": "6 items  |  4 unlocked  |  2 locked"
+ },
+ "1702": {
+  "rows": [
+   "All available factions"
+  ],
+  "sel": 0
+ },
+ "1703": {
+  "rows": [
+   "All types"
+  ],
+  "sel": 0
+ },
+ "110": {
+  "rows": [
+   {
+    "cells": [
+     "v  Tanks (3)",
+     "",
+     "",
+     ""
+    ],
+    "color": [
+     0.5,
+     0.85,
+     1,
+     1
+    ]
+   },
+   {
+    "cells": [
+     "M2A1 Slammer",
+     "4",
+     "250",
+     "120"
+    ],
+    "icon": "/A3/ui_f/data/map/vehicleicons/icontank_ca.paa",
+    "color": [
+     0.96,
+     0.98,
+     1,
+     1
+    ]
+   },
+   {
+    "cells": [
+     "M2A4 Slammer UP",
+     "4",
+     "300",
+     "140"
+    ],
+    "icon": "/A3/ui_f/data/map/vehicleicons/icontank_ca.paa",
+    "color": [
+     0.96,
+     0.98,
+     1,
+     1
+    ]
+   },
+   {
+    "cells": [
+     "M4 Scorcher",
+     "3",
+     "400",
+     "160"
+    ],
+    "icon": "/A3/ui_f/data/gui/rsc/rscdisplaymultiplayer/sessions_locked_ca.paa",
+    "iconColor": [
+     0.78,
+     0.45,
+     0.42,
+     0.9
+    ],
+    "color": [
+     0.69,
+     0.71,
+     0.75,
+     1
+    ]
+   },
+   {
+    "cells": [
+     "v  Wheeled APCs (3)",
+     "",
+     "",
+     ""
+    ],
+    "color": [
+     0.5,
+     0.85,
+     1,
+     1
+    ]
+   },
+   {
+    "cells": [
+     "AMV-7 Marshall",
+     "3",
+     "180",
+     "90"
+    ],
+    "icon": "/A3/ui_f/data/map/vehicleicons/iconAPC_ca.paa",
+    "color": [
+     0.96,
+     0.98,
+     1,
+     1
+    ]
+   },
+   {
+    "cells": [
+     "Rhino MGS",
+     "3",
+     "220",
+     "110"
+    ],
+    "icon": "/A3/ui_f/data/gui/rsc/rscdisplaymultiplayer/sessions_locked_ca.paa",
+    "iconColor": [
+     0.78,
+     0.45,
+     0.42,
+     0.9
+    ],
+    "color": [
+     0.69,
+     0.71,
+     0.75,
+     1
+    ]
+   },
+   {
+    "cells": [
+     "IFV-6c Panther",
+     "3",
+     "160",
+     "80"
+    ],
+    "icon": "/A3/ui_f/data/map/vehicleicons/iconAPC_ca.paa",
+    "color": [
+     0.96,
+     0.98,
+     1,
+     1
+    ]
+   }
+  ],
+  "sel": 1
+ },
+ "163": {
+  "text": "<t size='1.25' font='PuristaSemibold'>M2A1 Slammer</t><br/><t color='#9EB0B8' size='0.85'>VEHICLE</t><br/><t color='#9EB0B8' size='0.85'>Armor 1200  |  Engine 1475 hp  |  Top speed 65 km/h</t><br/><t color='#9EB0B8' size='0.85'>Crew 3  |  Passengers 4  |  Fuel tank 1885 L  |  Inventory 3000</t><br/><t color='#9EB0B8' size='0.85'>Weapons: 120mm Cannon, Coaxial MG 7.62 mm, .50 Cal HMG</t><br/><t color='#9EB0B8' size='0.85'>Logistics: Cargo 20  |  Can tow</t>"
+ },
+ "161": {
+  "text": "<t color='#75CCB8' align='center'>Unlocked - Military Base Tuvanaka</t>"
+ },
+ "121": {
+  "checked": true
+ },
+ "1721": {
+  "text": "Manpower"
+ },
+ "1731": {
+  "text": "4 / 28"
+ },
+ "1732": {
+  "text": "250 / 1450"
+ },
+ "1733": {
+  "text": "120 / 80",
+  "color": [
+   0.9,
+   0.4,
+   0.36,
+   1
+  ]
+ },
+ "1734": {
+  "text": "8 / 30"
+ },
+ "162": {
+  "text": "/A3/EditorPreviews_F/Data/CfgVehicles/B_MBT_01_cannon_F.jpg"
+ },
+ "122": {
+  "text": "Add AI crew (+4 manpower)"
+ }
 }

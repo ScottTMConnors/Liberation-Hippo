@@ -68,7 +68,9 @@ private _buildpages = [
 private _categoryButtons = [102,103,104,105,106,109,107,108];
 {(_display displayCtrl _x) ctrlSetTooltip (_buildpages select _forEachIndex)} forEach _categoryButtons;
 (_display displayCtrl 120) ctrlSetTooltip "Purchase the selected item. Rank, resources and base restrictions apply.";
-(_display displayCtrl 121) ctrlSetTooltip "Purchase the selected vehicle with an AI crew.";
+(_display displayCtrl 121) ctrlSetTooltip "Build with an AI crew. No extra ammo or fuel; while the crew is alive the vehicle uses its manpower and the crew counts toward your active units.";
+private _crewTypes = [GRLIB_TransportVehicleBuildType,GRLIB_CombatVehicleBuildType,GRLIB_AerialBuildType,GRLIB_DefenceBuildType];
+private _manpowerTypes = [GRLIB_InfantryBuildType,GRLIB_SquadBuildType];
 
 if (_trench) then {
 	{ ctrlEnable [_x, false] } forEach [102, 103, 104, 105, 106, 107, 108, 109];
@@ -333,14 +335,18 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
 			_fuel_collected = player getVariable ["GREUH_fuel_count",0];
             private _requiredAmmo = if (_near_outpost) then {round ((_x select 2) * 1.5)} else {_x select 2};
             private _availableManpower = (infantry_cap - resources_infantry) max 0;
-            private _costs = [[_x select 1,_availableManpower,"Manpower"],[_requiredAmmo,_ammo_collected,"Ammo"],[_x select 3,_fuel_collected,"Fuel"]];
+            private _mpApplies = buildtype in _manpowerTypes;
+            private _costs = [[_requiredAmmo,_ammo_collected,"Ammo",2],[_x select 3,_fuel_collected,"Fuel",3]];
+            if (_mpApplies) then {_costs pushBack [_x select 1,_availableManpower,"Manpower",1]} else {
+                lnbSetTooltip [110,[_row,1],if (buildtype in _crewTypes) then {format ["Manpower: %1, used only when built with an AI crew (%2 free).",_x select 1,_availableManpower]} else {"No manpower needed."}];
+            };
             {
-                _x params ["_required","_available","_label"];
-                lnbSetTooltip [110,[_row,_forEachIndex + 1],format ["%1: requires %2; available %3.%4",_label,_required,_available,if (_required > _available) then {format [" Short by %1.",_required - _available]} else {""}]];
+                _x params ["_required","_available","_label","_column"];
+                lnbSetTooltip [110,[_row,_column],format ["%1: requires %2; available %3.%4",_label,_required,_available,if (_required > _available) then {format [" Short by %1.",_required - _available]} else {""}]];
                 if (_required > _available) then {_reasons pushBack format ["Need %1 more %2.",_required - _available,toLower _label]};
             } forEach _costs;
 			if (
-				((_x select 1 > 0) && ((_x select 1) > (infantry_cap - resources_infantry))) ||
+				(_mpApplies && (_x select 1 > 0) && ((_x select 1) > (infantry_cap - resources_infantry))) ||
 				((_x select 2 > 0) && ((if (_near_outpost) then {round ((_x select 2) * 1.5)} else {_x select 2}) > _ammo_collected)) ||
 				((_x select 3 > 0) && ((_x select 3) > _fuel_collected))
 				) then {
@@ -414,13 +420,13 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
 				};
 			};
 
-            private _tint = if (_row % 2 == 0) then {[0.96,0.98,1,1]} else {[0.77,0.88,0.96,1]};
-            if (_locked) then {_tint = [0.69,0.71,0.75,1]};
+            private _tint = if (_locked) then {[0.69,0.71,0.75,1]} else {[0.96,0.98,1,1]};
             for "_column" from 0 to 3 do {(_display displayCtrl 110) lnbSetColor [[_row,_column],_tint]};
             // Keep names readable when resources are insufficient; highlight costs.
             if (!_affordable && {!_locked}) then {
                 for "_column" from 1 to 3 do {(_display displayCtrl 110) lnbSetColor [[_row,_column],[1,0.77,0.48,1]]};
             };
+            if (!_mpApplies) then {(_display displayCtrl 110) lnbSetColor [[_row,1],[0.55,0.6,0.64,1]]};
 			(_display displayCtrl (110)) lnbSetData  [[_row, 0], str _affordable];
             (_display displayCtrl 110) lnbSetData [[_row,2],_reasons joinString "\n"];
             (_display displayCtrl 110) lnbSetData [[_row,3],str _reasons];
@@ -477,16 +483,11 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
 			if (_picture == "") then { _picture = getMissionPath "res\preview\no_image.jpg" };
 			(_display displayCtrl (162)) ctrlSetText _picture;
 
-			// Details pane: name, cost breakdown, crew and blockers (presentation only).
+			// Details pane: name, stats and blockers (presentation only).
 			private _dName = if (buildtype == GRLIB_SquadBuildType) then {_build_item param [5, "Squad"]} else {[_build_class] call F_getLRXName};
 			if !(_dName isEqualType "") then {_dName = "Squad"};
-			private _dAmmo = if (_near_outpost) then {round ((_build_item select 2) * 1.5)} else {_build_item select 2};
 			private _dParts = [
-				(text _dName) setAttributes ["size", "1.25", "font", "PuristaSemibold"], lineBreak,
-				(text "COST") setAttributes ["color", "#9EB0B8", "size", "0.85"], lineBreak,
-				(text format ["Manpower %1", _build_item select 1]) setAttributes ["color", "#80E6A6"], "    ",
-				(text format ["Ammo %1", _dAmmo]) setAttributes ["color", "#F2A694"], "    ",
-				(text format ["Fuel %1", _build_item select 3]) setAttributes ["color", "#F2D678"]
+				(text _dName) setAttributes ["size", "1.25", "font", "PuristaSemibold"]
 			];
 			if (buildtype in [GRLIB_TransportVehicleBuildType,GRLIB_CombatVehicleBuildType,GRLIB_AerialBuildType]) then {
 				_dParts append ([_build_class] call _vehicleStats);
@@ -521,16 +522,42 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
 		};
 	};
 
-	ctrlSetText [131, format ["%1 : %2/%3", localize "STR_MANPOWER", resources_infantry, infantry_cap] ];
-	ctrlSetText [132, format ["%1 : %2", localize "STR_AMMO", (player getVariable ["GREUH_ammo_count",0])] ];
-	ctrlSetText [133, format ["%1 : %2", localize "STR_FUEL", (player getVariable ["GREUH_fuel_count",0])] ];
-	ctrlSetText [134, format ["%1 : %2/%3", localize "STR_UNITCAP", _unitcap, GRLIB_blufor_cap] ];
+	// Crew checkbox: a crewed vehicle also needs its manpower free.
+	private _selItem = if (_selected_item >= 0 && {_selected_item < count _build_list}) then {_build_list select _selected_item} else {[]};
+	private _freeManpower = (infantry_cap - resources_infantry) max 0;
+	private _crewShown = GRLIB_player_commander && {buildtype in _crewTypes};
+	if (_selItem isNotEqualTo [] && {(_selItem select 1) > _freeManpower}) then {_affordable_crew = false};
+	private _crewCtrl = _display displayCtrl 121;
+	_crewCtrl ctrlShow _crewShown;
+	(_display displayCtrl 122) ctrlShow _crewShown;
+	_crewCtrl ctrlEnable (_crewShown && _affordable_crew && _linked_unlocked && dobuild == 0);
+	if (!ctrlEnabled _crewCtrl && {cbChecked _crewCtrl}) then {_crewCtrl cbSetChecked false};
+	private _withCrew = _crewShown && {cbChecked _crewCtrl};
+	ctrlSetText [122, if (_selItem isEqualTo []) then {"Add AI crew (costs manpower)"} else {format ["Add AI crew (+%1 manpower)", _selItem select 1]}];
+
+	// Cost grid: what the selection costs against what you have.
+	private _hasSel = _selItem isNotEqualTo [];
+	private _mpCost = if (!_hasSel) then {"-"} else {if (buildtype in _manpowerTypes || _withCrew) then {_selItem select 1} else {0}};
+	private _ammoCost = if (!_hasSel) then {"-"} else {if (_near_outpost) then {round ((_selItem select 2) * 1.5)} else {_selItem select 2}};
+	private _fuelCost = if (!_hasSel) then {"-"} else {_selItem select 3};
+	{
+		_x params ["_idc", "_cost", "_have", "_suffix"];
+		private _short = _cost isEqualType 0 && {_cost > _have};
+		ctrlSetText [_idc, format ["%1 / %2%3", _cost, _have, _suffix]];
+		(_display displayCtrl _idc) ctrlSetTextColor (if (_short) then {[0.9,0.4,0.36,1]} else {[0.92,0.94,0.95,1]});
+	} forEach [
+		[1731, _mpCost, _freeManpower, ""],
+		[1732, _ammoCost, player getVariable ["GREUH_ammo_count",0], ""],
+		[1733, _fuelCost, player getVariable ["GREUH_fuel_count",0], ""],
+		[1734, if (_unitcap >= GRLIB_blufor_cap) then {GRLIB_blufor_cap + 1} else {"-"}, GRLIB_blufor_cap, ""]
+	];
+	ctrlSetText [1734, format ["%1 / %2", _unitcap, GRLIB_blufor_cap]];
 
 	_link_color = "#75CCB8";
 	_link_str = localize "STR_VEHICLE_UNLOCKED";
 	if (!_linked_unlocked) then { _link_color = "#E6665C"; _link_str = localize "STR_VEHICLE_LOCKED"; };
 	if ( _linked ) then {
-		(_display displayCtrl (161)) ctrlSetStructuredText parseText ( "<t color='" + _link_color + "' align='center'>" + _link_str +  "<br/>" + ( markerText _base_link ) + "</t>" );
+		(_display displayCtrl (161)) ctrlSetStructuredText parseText ( "<t color='" + _link_color + "' align='center'>" + _link_str +  " - " + ( markerText _base_link ) + "</t>" );
 	} else {
 		(_display displayCtrl (161)) ctrlSetStructuredText parseText "";
 	};
@@ -542,7 +569,7 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
         _selection = [buildtype, +(_build_list select _selected_item)];
     };
     HPC_buildSelection = _selection;
-	ctrlEnable [120, _affordable && _linked_unlocked && dobuild == 0 && count HPC_buildSelection == 2];
+	ctrlEnable [120, (if (_withCrew) then {_affordable_crew} else {_affordable}) && _linked_unlocked && dobuild == 0 && count HPC_buildSelection == 2];
     private _purchaseTip = if (_selectedRow >= 0 && {_selected_item >= 0}) then {lnbData [110,[_selectedRow,2]]} else {"Select an item to see its preview and purchase it."};
     if (_purchaseTip == "") then {_purchaseTip = "Purchase the selected item."};
     if (_unitcap >= GRLIB_blufor_cap && {buildtype in [GRLIB_InfantryBuildType,GRLIB_SquadBuildType]}) then {_purchaseTip = "Your active unit limit has been reached."};
@@ -550,8 +577,6 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
 	if (_selected_item < 0 && {_rowItems findIf {_x >= 0} >= 0}) then {
 		(_display displayCtrl 163) ctrlSetStructuredText composeText [(text "Select an item to see its cost and details.") setAttributes ["color", "#9EB0B8"]];
 	};
-	ctrlShow [121, GRLIB_player_commander && buildtype in [GRLIB_TransportVehicleBuildType,GRLIB_CombatVehicleBuildType,GRLIB_AerialBuildType,GRLIB_DefenceBuildType]];
-	ctrlEnable [121, _affordable_crew && _linked_unlocked && dobuild == 0 && count HPC_buildSelection == 2];
 	sleep 0.2;
 };
 

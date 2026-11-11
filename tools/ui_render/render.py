@@ -471,7 +471,9 @@ class Renderer:
     def draw_static(self, surface, cls, box, d):
         style = int(self.num(cls, "style", 0))
         st = style & ST_TYPE
-        fill(surface, box, self.color(cls, "colorBackground"))
+        # The engine draws no colorBackground behind ST_PICTURE statics (checked on 08_build.png).
+        if st not in (ST_PICTURE, ST_TILE_PICTURE):
+            fill(surface, box, self.color(cls, "colorBackground"))
         text = d.get("text", self.text(cls))
         col = self.color(cls, "colorText", (255, 255, 255, 255))
         if "color" in d:

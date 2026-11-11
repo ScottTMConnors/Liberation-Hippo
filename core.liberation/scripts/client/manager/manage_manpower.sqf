@@ -4,6 +4,8 @@ private _search_list = [] + light_vehicles + heavy_vehicles + air_vehicles + sta
 private _get_mp = {
 	params ["_vehicle"];
 	private _ret = 0;
+	// Only vehicles with a living AI crew use manpower.
+	if !(_vehicle getVariable ["GRLIB_vehicle_manned", false] && {({alive _x && !isPlayer _x} count crew _vehicle) > 0}) exitWith {0};
 	private _veh_class = typeOf _vehicle;
 	{
 		if ((_x select 0) == _veh_class) exitWith { _ret = (_x select 1) };

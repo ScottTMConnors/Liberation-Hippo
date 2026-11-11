@@ -10,6 +10,10 @@ details panes, new buttons) is rendered with `tools/ui_render` and the PNG is
 read before you report the work done. This includes script-only changes that
 alter what a list or text control shows: write or update a `--data` sample in
 `tools/ui_render/samples/<dialog>.json` that mirrors the script's output.
+Fill every script-set picture in the sample with a real image (e.g. a vehicle's
+`editorPreview` from `\A3\EditorPreviews_F\Data\CfgVehicles\<class>.jpg`); an
+empty picture box misjudges the layout. Compare against the newest in-game
+shot of the same menu in `mybuild/hippo_tests/*/shots/` when one exists.
 Fix every renderer warning about your files; "image not found" for a `.paa`
 usually means `ARMA3_TOOLS_DIR` is unset (see AGENTS.local.md for this machine).
 
