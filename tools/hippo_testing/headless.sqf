@@ -117,8 +117,9 @@ waitUntil {sleep 1; (count HPC_headlessClients == 1 && {_remainingOwner > 2} && 
 ["HC_REJOIN|hc1"] call _emit;
 HPC_testRejoin = true;publicVariable "HPC_testRejoin";
 _deadline = diag_tickTime + 100;
-waitUntil {sleep 1; private _ids = HPC_headlessClients apply {owner _x}; _counts = _ids apply {private _id = _x;private _total=0;{if (groupOwner _x == _id) then {_total=_total+count units _x}} forEach _groups;_total}; _counts isEqualTo [8,8] || diag_tickTime > _deadline};
-["hc.rejoined",_counts isEqualTo [8,8]] call _assert;
+waitUntil {sleep 1; private _ids = HPC_headlessClients apply {owner _x}; _counts = _ids apply {private _id = _x;private _total=0;{if (groupOwner _x == _id) then {_total=_total+count units _x}} forEach _groups;_total}; (count _counts == 2 && {_counts select 0 > 0} && {_counts select 1 > 0} && {(_counts select 0) + (_counts select 1) == 16}) || diag_tickTime > _deadline};
+// Other (non-fixture) groups also count toward balance, so require a share on each HC, not an exact 8/8.
+["hc.rejoined",count _counts == 2 && {_counts select 0 > 0} && {_counts select 1 > 0} && {(_counts select 0) + (_counts select 1) == 16}] call _assert;
 ["HC_DROP_ALL|"] call _emit;
 _deadline = diag_tickTime + 50;
 waitUntil {sleep 1; (HPC_headlessClients isEqualTo [] && {_groups findIf {groupOwner _x != 2 || {(_x getVariable ["HPC_orderOwner",-1]) != 2}} < 0}) || diag_tickTime > _deadline};

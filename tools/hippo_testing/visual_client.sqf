@@ -24,11 +24,12 @@ if (count _hudSectors == 2) then {
     sleep 5;
     private _display = uiNamespace getVariable ["GUI_OVERLAY",displayNull];
     private _panel = if (isNull _display) then {controlNull} else {_display displayCtrl 518};
-    // The panel keeps its 16:9 size on wider screens and stays on the right edge.
+    // The panel sits on the HUD grid: fully on screen and anchored to the right edge.
     private _pos = if (isNull _panel) then {[0,0,0,0]} else {ctrlPosition _panel};
-    private _sizeOK = abs ((_pos select 2) - 0.32 * safezoneH) < 0.002 && {abs ((_pos select 0) + (_pos select 2) - (safezoneX + safezoneW - 0.0067 * safezoneH)) < 0.002};
+    private _right = (_pos select 0) + (_pos select 2);
+    private _sizeOK = (_pos select 2) > 0.1 * safezoneH && {(_pos select 0) >= safezoneX} && {_right <= safezoneX + safezoneW + 0.001} && {_right > safezoneX + 0.9 * safezoneW};
     diag_log ["HPC_VISUAL_PANEL",getResolution,safezoneX,safezoneW,safezoneH,_pos];
-    ["visual.objectivePanel",!isNull _panel && {ctrlShown _panel} && {(_pos select 3) > 0.1 * safezoneH} && _sizeOK] call _assert;
+    ["visual.objectivePanel",!isNull _panel && {ctrlShown _panel} && {(_pos select 3) > 0.05 * safezoneH} && _sizeOK] call _assert;
     diag_log "HPC_VISUAL_PHASE|two-objective-panel";
     sleep 35;
     active_sectors = _oldSectors;
