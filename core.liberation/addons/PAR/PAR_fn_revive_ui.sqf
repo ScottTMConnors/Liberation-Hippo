@@ -10,18 +10,36 @@ if (GRLIB_respawn_cooldown > 0) then {
 	};
 };
 
-// Hippo orbit camera. The worker ends when this UI closes.
-private _cam = "camera" camCreate (getPosATL player vectorAdd [0,0,50]);
+// Hippo orbit camera: starts at the player's eyes and slowly rises while circling.
+// While a medic is on the way it circles the medic at a lower height, and returns to the player when there is none.
+private _cam = "camera" camCreate (positionCameraToWorld [0,0,-0.2]);
 _cam cameraEffect ["internal", "BACK"];
+_cam camSetTarget player;
+_cam camSetFOV 0.9;
+_cam camCommit 0;
 showCinemaBorder false;
+camUseNVG (call is_night);
 private _orbit = [_cam] spawn {
     params ["_camera"];
     private _angle = random 360;
+    private _height = 2;
+    private _radius = 3;
     while {!isNull _camera && alive player && ([player] call PAR_is_wounded)} do {
+        private _medic = player getVariable ["PAR_myMedic", objNull];
+        private _focus = player;
+        private _maxHeight = 40;
+        private _maxRadius = 35;
+        if (!isNull _medic && {alive _medic} && {!([_medic] call PAR_is_wounded)}) then {
+            _focus = _medic;
+            _maxHeight = 15;
+            _maxRadius = 18;
+        };
         _angle = _angle - 4;
-        private _pos = player getPos [50, _angle];
-        _pos set [2, (getPosATL player select 2) + 50];
-        _camera camSetTarget player;
+        _height = if (_height < _maxHeight) then { (_height + 1.5) min _maxHeight } else { (_height - 3) max _maxHeight };
+        _radius = if (_radius < _maxRadius) then { (_radius + 1.2) min _maxRadius } else { (_radius - 2) max _maxRadius };
+        private _pos = _focus getPos [_radius, _angle];
+        _pos set [2, _height];
+        _camera camSetTarget _focus;
         _camera camSetPos _pos;
         _camera camCommit 1;
         sleep 1;
