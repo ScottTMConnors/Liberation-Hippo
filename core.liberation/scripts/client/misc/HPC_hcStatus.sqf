@@ -129,7 +129,7 @@ while {!isNull _display} do {
             _playerSegment ctrlSetPosition [safezoneX+_offset*safezoneW,safezoneY+0.683*safezoneH,_playerWidth*safezoneW,0.019*safezoneH];
             _playerSegment ctrlSetTooltip format ["Player-owned AI: %1",_summary select 3];
             _playerSegment ctrlCommit 0;
-            _share ctrlSetText format ["AI OWNERSHIP  |  %1 server / HC machines  |  grey = player-owned AI",count _rows];
+            _share ctrlSetText format ["AI OWNERSHIP  |  %1 server / HC machines  |  gray = player-owned AI",count _rows];
         };
     };
     uiSleep 1;

@@ -109,7 +109,7 @@ _setupObjects = {
 	_vehicles = [_house, _quest_item] + (GRLIB_A3W_Mission_SD select 1);
 	_missionPos = markerPos (_waypoints select 0);
 	_missionPicture = getText (configFile >> "CfgVehicles" >> "C_Hatchback_01_F" >> "picture");
-	_missionHintText = ["STR_SPECIALDELI_MESSAGE1", sideMissionColor, markerText _missionLocation];
+	_missionHintText = ["STR_SPECIALDELI_MESSAGE1", sideMissionColor, markerText _missionLocation, [] call HPC_fnc_contactName];
 	true;
 };
 

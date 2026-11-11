@@ -3,13 +3,14 @@
 // tone: "default" | "accent" (main menus) | "build" (build/logistics) | "info" (vehicles/support) | "danger" (destructive)
 params [["_label", ""], ["_icon", ""], ["_tone", "default"]];
 
-// Strip the old "-- " / ">> " prefixes and shouting capitals.
-_label = trim (_label regexReplace ["^[-=>\s]+", ""]);
+// Strip the old "-- " / "-= ... =-" decorations and shouting capitals (sentence case).
+_label = trim ((_label regexReplace ["^[-=>\s]+", ""]) regexReplace ["[-=<\s]+$", ""]);
 if (_label isEqualTo toUpper _label && {!(_label isEqualTo toLower _label)}) then {
 	private _keep = ["FOB", "HALO", "AI", "ATM", "LHD", "AA", "AT", "UAV", "HQ", "LRX", "XP", "VIP"];
 	_label = ((_label splitString " ") apply {
-		if (_x in _keep) then { _x } else { (toUpper (_x select [0, 1])) + (toLower (_x select [1])) }
+		if (_x in _keep) then { _x } else { toLower _x }
 	}) joinString " ";
+	_label = (toUpper (_label select [0, 1])) + (_label select [1]);
 };
 
 private _color = switch (_tone) do {

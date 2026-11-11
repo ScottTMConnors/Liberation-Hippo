@@ -8,38 +8,38 @@
  * Le mot-clé ""%1"" représente une valeur dynamique fournie par les scripts, comme par exemple un nom de véhicule.
  */
 
-STR_R3F_LOG_action_heliporter = "Lift the object";
+STR_R3F_LOG_action_heliporter = "Sling-lift object";
 STR_R3F_LOG_action_heliporter_fait = "Object ""%1"" attached.";
-STR_R3F_LOG_action_heliport_larguer = "Drop the object";
-STR_R3F_LOG_action_heliport_paradrop = "Parachute the object";
+STR_R3F_LOG_action_heliport_larguer = "Release sling load";
+STR_R3F_LOG_action_heliport_paradrop = "Parachute sling load";
 STR_R3F_LOG_action_heliport_larguer_fait = "Object ""%1"" dropped.";
 STR_R3F_LOG_action_heliport_attente = "Hooking... (%1)";
 STR_R3F_LOG_action_heliport_echec_attente = "Lift aborted ! Stay hover during the hooking.";
 
-STR_R3F_LOG_action_deplacer_objet = "Take ""%1""";
-STR_R3F_LOG_action_relacher_objet = "Release ""%1""";
-STR_R3F_LOG_action_aligner_pente = "Adjust to the slope";
-STR_R3F_LOG_action_aligner_sol = "Adjust to the ground";
-STR_R3F_LOG_action_aligner_horizon = "Adjust horizontally";
-STR_R3F_LOG_action_tourner = "Turn left/right (X / C keys)";
-STR_R3F_LOG_action_rapprocher = "Closer/further (F / R keys)";
+STR_R3F_LOG_action_deplacer_objet = "Carry %1";
+STR_R3F_LOG_action_relacher_objet = "Put down %1";
+STR_R3F_LOG_action_aligner_pente = "Align to slope";
+STR_R3F_LOG_action_aligner_sol = "Align to ground";
+STR_R3F_LOG_action_aligner_horizon = "Align level";
+STR_R3F_LOG_action_tourner = "Rotate (X / C keys)";
+STR_R3F_LOG_action_rapprocher = "Move closer or farther (F / R keys)";
 STR_R3F_LOG_ne_pas_monter_dans_vehicule = "You can't get in a vehicle while you're carrying this object !";
 
-STR_R3F_LOG_action_charger_deplace = "Load in the vehicle";
-STR_R3F_LOG_action_selectionner_objet_charge = "Load ""%1"" in...";
-STR_R3F_LOG_action_charger_selection = "... load in ""%1""";
+STR_R3F_LOG_action_charger_deplace = "Load into vehicle";
+STR_R3F_LOG_action_selectionner_objet_charge = "Load %1 into...";
+STR_R3F_LOG_action_charger_selection = "...load into %1";
 STR_R3F_LOG_action_selectionner_objet_fait = "Now select the destination for ""%1""...";
 STR_R3F_LOG_action_charger_en_cours = "Loading in progress...";
 STR_R3F_LOG_action_charger_fait = "The object ""%1"" has been loaded in ""%2"".";
 STR_R3F_LOG_action_charger_pas_assez_de_place = "There is not enough space for this object in this vehicle !";
 
-STR_R3F_LOG_action_remorquer_direct = "Tow ""%1""";
-STR_R3F_LOG_action_remorquer_deplace = "Tow the object";
-STR_R3F_LOG_action_detacher = "Untow the object";
+STR_R3F_LOG_action_remorquer_direct = "Tow %1";
+STR_R3F_LOG_action_remorquer_deplace = "Tow object";
+STR_R3F_LOG_action_detacher = "Detach towed object";
 STR_R3F_LOG_action_detacher_fait = "Object untowed.";
 STR_R3F_LOG_action_detacher_impossible_pour_ce_vehicule = "Only the pilot can detach this object.";
 
-STR_R3F_LOG_action_contenu_vehicule = "View the vehicle's content";
+STR_R3F_LOG_action_contenu_vehicule = "View cargo";
 STR_R3F_LOG_action_decharger_en_cours = "Unloading in progress...";
 STR_R3F_LOG_action_decharger_fait = "The object ""%1"" has been unloaded from the vehicle.";
 STR_R3F_LOG_action_decharger_deja_fait = "The object has already been unloaded !";
@@ -90,5 +90,5 @@ STR_R3F_LOG_nom_fonctionnalite_actif_transporte_capacite = "max load %1";
 STR_R3F_LOG_deverrouillage_en_cours = "Unlocking... (%1)";
 STR_R3F_LOG_deverrouillage_echec_attente = "Unlock canceled ! Hold the aiming of the object during the countdown.";
 STR_R3F_LOG_deverrouillage_succes_attente = "Object unlocked.";
-STR_R3F_LOG_action_deverrouiller = "Unlock ""%1""";
+STR_R3F_LOG_action_deverrouiller = "Unlock %1";
 STR_R3F_LOG_action_deverrouiller_impossible = "Object locked";

@@ -162,12 +162,12 @@ else
 					R3F_LOG_deplace_force_attachTo = false; // Mettre � true pour forcer le repositionnement de l'objet, en for�ant les filtres anti-flood
 
 					// Ajout des actions de gestion de l'orientation
-					_action_relacher = _joueur addAction [("<t color=""#ee0000"">" + format [STR_R3F_LOG_action_relacher_objet, [_objet] call F_getLRXName] + "</t>  <img size='1' image='R3F_LOG\icons\r3f_release.paa'/>"), {_this call R3F_LOG_FNCT_objet_relacher}, nil, 10, true, true];
-					_action_aligner_pente = _joueur addAction [("<t color=""#00eeff"">" + STR_R3F_LOG_action_aligner_pente + "</t>"), {R3F_LOG_deplace_mode_alignement = "pente"; R3F_LOG_deplace_force_setVector = true;}, nil, 6, false, true, "", "R3F_LOG_deplace_mode_alignement != ""pente"""];
-					_action_aligner_sol = _joueur addAction [("<t color=""#00eeff"">" + STR_R3F_LOG_action_aligner_sol + "</t>"), {R3F_LOG_deplace_mode_alignement = "sol"; R3F_LOG_deplace_force_setVector = true;}, nil, 6, false, true, "", "R3F_LOG_deplace_mode_alignement != ""sol"""];
-					_action_aligner_horizon = _joueur addAction [("<t color=""#00eeff"">" + STR_R3F_LOG_action_aligner_horizon + "</t>"), {R3F_LOG_deplace_mode_alignement = "horizon"; R3F_LOG_deplace_force_setVector = true;}, nil, 6, false, true, "", "R3F_LOG_deplace_mode_alignement != ""horizon"""];
-					_action_tourner = _joueur addAction [("<t color=""#00eeff"">" + STR_R3F_LOG_action_tourner + "</t>"), {R3F_LOG_deplace_dir_rel_objet = R3F_LOG_deplace_dir_rel_objet + 12; R3F_LOG_deplace_force_setVector = true;}, nil, 6, false, false];
-					_action_rapprocher = _joueur addAction [("<t color=""#00eeff"">" + STR_R3F_LOG_action_rapprocher + "</t>"), {R3F_LOG_deplace_distance_rel_objet = R3F_LOG_deplace_distance_rel_objet - 0.4; R3F_LOG_deplace_force_attachTo = true;}, nil, 6, false, false];
+					_action_relacher = _joueur addAction [([format [STR_R3F_LOG_action_relacher_objet, [_objet] call F_getLRXName], "R3F_LOG\icons\r3f_release.paa", "danger"] call HPC_fnc_actionTitle), {_this call R3F_LOG_FNCT_objet_relacher}, nil, 10, true, true];
+					_action_aligner_pente = _joueur addAction [([STR_R3F_LOG_action_aligner_pente, "", "info"] call HPC_fnc_actionTitle), {R3F_LOG_deplace_mode_alignement = "pente"; R3F_LOG_deplace_force_setVector = true;}, nil, 6, false, true, "", "R3F_LOG_deplace_mode_alignement != ""pente"""];
+					_action_aligner_sol = _joueur addAction [([STR_R3F_LOG_action_aligner_sol, "", "info"] call HPC_fnc_actionTitle), {R3F_LOG_deplace_mode_alignement = "sol"; R3F_LOG_deplace_force_setVector = true;}, nil, 6, false, true, "", "R3F_LOG_deplace_mode_alignement != ""sol"""];
+					_action_aligner_horizon = _joueur addAction [([STR_R3F_LOG_action_aligner_horizon, "", "info"] call HPC_fnc_actionTitle), {R3F_LOG_deplace_mode_alignement = "horizon"; R3F_LOG_deplace_force_setVector = true;}, nil, 6, false, true, "", "R3F_LOG_deplace_mode_alignement != ""horizon"""];
+					_action_tourner = _joueur addAction [([STR_R3F_LOG_action_tourner, "", "info"] call HPC_fnc_actionTitle), {R3F_LOG_deplace_dir_rel_objet = R3F_LOG_deplace_dir_rel_objet + 12; R3F_LOG_deplace_force_setVector = true;}, nil, 6, false, false];
+					_action_rapprocher = _joueur addAction [([STR_R3F_LOG_action_rapprocher, "", "info"] call HPC_fnc_actionTitle), {R3F_LOG_deplace_distance_rel_objet = R3F_LOG_deplace_distance_rel_objet - 0.4; R3F_LOG_deplace_force_attachTo = true;}, nil, 6, false, false];
 
 					// Rel�cher l'objet d�s que le joueur tire. Le detach sert � rendre l'objet solide pour ne pas tirer au travers.
 					_idx_eh_fired = _joueur addEventHandler ["Fired", {if (!surfaceIsWater getPos player) then {detach R3F_LOG_joueur_deplace_objet; R3F_LOG_joueur_deplace_objet = objNull;};}];

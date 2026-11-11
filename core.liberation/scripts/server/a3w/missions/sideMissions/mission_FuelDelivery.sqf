@@ -23,7 +23,7 @@ _setupObjects = {
 	doStop _man1;
 	[_man1, "LHD_krajPaluby"] spawn F_startAnimMP;
 	_marker_mission = ["DEL3", _missionPos] call createMissionMarkerCiv;
-	_missionHintText = ["STR_FUELDELI_MESSAGE1", sideMissionColor, _townName];
+	_missionHintText = ["STR_FUELDELI_MESSAGE1", sideMissionColor, _townName, [] call HPC_fnc_contactName];
 	_vehicles = [_man1];
 	true;
 };

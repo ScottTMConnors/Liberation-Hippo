@@ -61,7 +61,7 @@ class liberation_build {
 		x = BLD_IX; y = BLD_Y + 2.5 * HPC_GY; w = BLD_W - 6 * HPC_GX; h = 1.4 * HPC_GY;
 		font = "RobotoCondensed";
 		sizeEx = 0.95 * HPC_GY;
-		text = "Recruit units and buy vehicles, defences and supplies at this base.";
+		text = "Recruit units and buy vehicles, defenses and supplies at this base.";
 	};
 	class ButtonClose : HPC_Button {
 		idc = 101;

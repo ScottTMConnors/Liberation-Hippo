@@ -208,6 +208,70 @@ private _opened = 0;
 [] call _closeDialogs;
 ["uishots.dialogs",_opened >= 4] call _assert;
 
+// Log in as admin (server passwordAdmin): serverCommand needs a UI context, so
+// run.py sends a real key press, caught by this KeyDown handler.
+private _loginEH = (findDisplay 46) displayAddEventHandler ["KeyDown", {
+    serverCommand "#login hippo-test-admin";
+    true
+}];
+for "_try" from 1 to 3 do {
+    if ((call BIS_fnc_admin) == 2) exitWith {};
+    diag_log format ["HPC_UIKEY|%1|uilogin%2", HPC_testRun, _try];
+    private _end = diag_tickTime + 15;
+    waitUntil {uiSleep 0.5; diag_tickTime > _end || {(call BIS_fnc_admin) == 2}};
+};
+(findDisplay 46) displayRemoveEventHandler ["KeyDown", _loginEH];
+diag_log ["HPC_UISHOT_LOGIN", (call BIS_fnc_admin) == 2];
+uiSleep 3;
+
+// Admin tabs: each tab shows only its own page.
+HPC_adminPage = 0;
+[] execVM "scripts\client\commander\admin_menu.sqf";
+private _adminOk = [5204,10] call _waitDisplay;
+private _tabChecks = [];
+if (_adminOk) then {
+    {
+        _x params ["_page","_shownIdc","_hiddenIdc","_shot"];
+        HPC_adminPage = _page;
+        uiSleep 1;
+        private _d = findDisplay 5204;
+        _tabChecks pushBack [_page, ctrlShown (_d displayCtrl _shownIdc), !ctrlShown (_d displayCtrl _hiddenIdc)];
+        [_shot,0.5] call HPC_uiShot;
+    } forEach [[0,1600,1628,"37a_admin_world"],[1,1628,1600,"37b_admin_campaign"],[2,1612,1600,"37c_admin_players"],[3,1633,1612,"37d_admin_tools"]];
+    // Mission admin opens after the admin menu closes and stays open.
+    ((findDisplay 5204) displayCtrl 1633) ctrlActivate true;
+    private _a3w = [5202,10] call _waitDisplay;
+    uiSleep 3;
+    private _a3wStays = !isNull findDisplay 5202;
+    if (_a3wStays) then {["37e_mission_admin",0.5] call HPC_uiShot};
+    ["uishots.missionAdminStays",_a3w && _a3wStays] call _assert;
+};
+diag_log ["HPC_UISHOT_ADMIN_TABS",_tabChecks];
+["uishots.adminTabs",_adminOk && {count _tabChecks == 4} && {_tabChecks findIf {!(_x select 1) || !(_x select 2)} < 0}] call _assert;
+[] call _closeDialogs;
+
+// Build menu vehicle page: the AI crew checkbox is visible.
+buildtype = GRLIB_CombatVehicleBuildType;
+[player,player,0,false] execVM "scripts\client\build\open_build_menu.sqf";
+private _buildOk = [5501,10] call _waitDisplay;
+private _crewShown = false;
+if (_buildOk) then {
+    uiSleep 1.5;
+    private _list = (findDisplay 5501) displayCtrl 110;
+    private _row = -1;
+    for "_r" from 0 to ((lnbSize _list select 0) - 1) do {
+        if (_row < 0 && {(_list lnbData [_r,1]) == ""} && {(_list lnbText [_r,1]) != ""}) then {_row = _r};
+    };
+    if (_row >= 0) then {_list lnbSetCurSelRow _row};
+    uiSleep 1;
+    _crewShown = ctrlShown ((findDisplay 5501) displayCtrl 121);
+    ["08b_build_vehicles",0.5] call HPC_uiShot;
+};
+diag_log ["HPC_UISHOT_CREW",_buildOk,_crewShown];
+["uishots.crewCheckbox",_buildOk && _crewShown] call _assert;
+[] call _closeDialogs;
+buildtype = GRLIB_InfantryBuildType;
+
 // Redeploy again from the base (second visit: loadout list visible).
 [] spawn compileFinal preprocessFileLineNumbers "scripts\client\spawn\redeploy_manager.sqf";
 if ([5201,15] call _waitDisplay) then {

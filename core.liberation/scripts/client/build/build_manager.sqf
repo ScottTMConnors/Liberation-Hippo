@@ -208,7 +208,7 @@ while {true} do {
 				};
 
 				if (_buildtype in [GRLIB_BuildingBuildType, 99, 98]) then {
-					_idactview = player addAction [(["-- Build view", "", "accent"] call HPC_fnc_actionTitle),"scripts\client\build\build_view.sqf","",748,false,false,"","build_confirmed == 1"];
+					_idactview = player addAction [(["Build view", "", "accent"] call HPC_fnc_actionTitle),"scripts\client\build\build_view.sqf","",748,false,false,"","build_confirmed == 1"];
 					_idactsnap = player addAction [([localize "STR_GRID", "", "accent"] call HPC_fnc_actionTitle),"scripts\client\build\do_grid.sqf","",747,false,false,"","build_confirmed == 1"];
 				};
 			};

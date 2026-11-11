@@ -32,7 +32,7 @@ class liberation_airdrop {
 		x = AIR_X + AIR_PAD; y = AIR_Y + 2.5 * HPC_GY; w = AIR_W - 2 * AIR_PAD; h = 1.4 * HPC_GY;
 		font = "RobotoCondensed";
 		sizeEx = 0.95 * HPC_GY;
-		text = "Request support paid with ammo. Greyed out: rank too low or not enough ammo.";
+		text = "Request support paid with ammo. Grayed out: rank too low or not enough ammo.";
 	};
 	class ButtonX : HPC_Button {
 		x = AIR_X + AIR_W - 2.8 * HPC_GX; y = AIR_Y + 0.9 * HPC_GY; w = 1.9 * HPC_GX; h = 1.9 * HPC_GY;

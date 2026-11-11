@@ -99,7 +99,7 @@ _setupObjects = {
 		};
 	};
 
-	_missionHintText = ["STR_RESISTANCE_MESSAGE1", sideMissionColor, _location_name];
+	_missionHintText = ["STR_RESISTANCE_MESSAGE1", sideMissionColor, _location_name, [] call HPC_fnc_contactName];
 	true;
 };
 

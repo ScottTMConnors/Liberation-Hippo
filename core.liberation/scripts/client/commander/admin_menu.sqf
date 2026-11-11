@@ -121,7 +121,7 @@ private _output_controls = [531,532,533,534,535,536];
 
 // Action buttons
 private _button_controls = [1600,1601,1602,1603,1604,1609,1610,1611,1612,1613,1614,1615,1616,1617,1618,1619,1623,1624,1625,1626,1630,1631,1632];
-private _disabled_controls = [1606,1607,1608,1609,1610,1613,1614,1620,1626,1631,1632];
+private _disabled_controls = [1606,1607,1608,1609,1610,1613,1614,1620,1626,1631,1632,1634,1635,1636];
 
 // Build Banned
 [_ban_combo] call _getBannedUID;
@@ -164,9 +164,9 @@ _build_combo lbSetCurSel last_build;
 // Tabs: one page of controls visible at a time (the last page is remembered).
 private _pages = [
 	[1660,1600,1601,1623,1618,1617,1661,1627,1632,1604,1625,1609,1610],
-	[1662,1628,1613,1614,1629,1626],
+	[1662,1628,1613,1614,1629,1626,1635],
 	[1663,1612,1667,1619,1603,1615,1624,1631,1616,1621,1622,1664,1611,1602],
-	[1665,1607,1608,1620,1606,1666,1633,1630]
+	[1665,1607,1608,1620,1606,1666,1633,1630,1634,1636]
 ];
 private _moderator = PAR_Grp_ID in GRLIB_whitelisted_moderators;
 if (isNil "HPC_adminPage") then { HPC_adminPage = 0 };
@@ -177,8 +177,15 @@ private _showPage = {
 		{ ctrlShow [_x, _page == HPC_adminPage && {!(_moderator && {_x in _disabled_controls})}] } forEach _x;
 	} forEach _pages;
 	{
-		(_display displayCtrl (1650 + _forEachIndex)) ctrlSetBackgroundColor (if (_forEachIndex == HPC_adminPage) then {[0.20,0.42,0.38,0.95]} else {[0.12,0.15,0.16,0.9]});
+		private _tab = _display displayCtrl (1650 + _forEachIndex);
+		private _active = _forEachIndex == HPC_adminPage;
+		_tab ctrlSetBackgroundColor (if (_active) then {[0.20,0.42,0.38,0.95]} else {[0.12,0.15,0.16,0.9]});
+		_tab ctrlSetTextColor (if (_active) then {[1,1,1,1]} else {[0.62,0.69,0.72,1]});
 	} forEach _pages;
+	private _marker = _display displayCtrl 1659;
+	private _tabPos = ctrlPosition (_display displayCtrl (1650 + HPC_adminPage));
+	_marker ctrlSetPosition [_tabPos select 0, (_tabPos select 1) + (_tabPos select 3), _tabPos select 2, (ctrlPosition _marker) select 3];
+	_marker ctrlCommit 0;
 	_shownPage = HPC_adminPage;
 };
 
@@ -443,10 +450,10 @@ while { alive player && {!isNull _display} } do {
 };
 // Close only our own menu: a menu opened from a button may already be on top.
 if (!isNull _display) then { closeDialog 0 };
-if (admin_open_next != "") then {
+if !(admin_open_next isEqualTo "") then {
 	private _next = admin_open_next;
 	admin_open_next = "";
-	[] execVM _next;
+	if (_next isEqualType "") then { [] execVM _next } else { [] call _next };
 };
 
 sleep 1;

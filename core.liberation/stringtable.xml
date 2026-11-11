@@ -87,7 +87,7 @@
 			<Czech>-- STAVĚT</Czech>
 		</Key>
 		<Key ID="STR_BUILD_TRENCH_ACTION">
-			<Original>-- BUILD FORTIFICATIONS</Original>
+			<Original>Build fortifications</Original>
 			<French>-- CONSTRUIRE FORTIFICATIONS</French>
 		</Key>
 		<Key ID="STR_BUILD_TITLE">
@@ -187,7 +187,7 @@
 			<Czech>Stabilizovaný</Czech>
 		</Key>
 		<Key ID="STR_ROTATION">
-			<Original>-- Rotation</Original>
+			<Original>Rotate</Original>
 			<French>-- Rotation</French>
 			<German>-- Rotieren</German>
 			<Spanish>-- Rotación</Spanish>
@@ -211,7 +211,7 @@
 			<Czech>-- Postavit</Czech>
 		</Key>
 		<Key ID="STR_PLACEMENT_BIS">
-			<Original>-- Build and Repeat</Original>
+			<Original>Build and repeat</Original>
 			<French>-- Construire et Répéter</French>
 			<German>-- Bauen und Wiederholen</German>
 			<Spanish>-- Construir y repetir</Spanish>
@@ -232,7 +232,7 @@
 			<Czech>-- Posunout nahoru</Czech>
 		</Key>
 		<Key ID="STR_MOVEDOWN">
-			<Original>-- Move down</Original>
+			<Original>Move down</Original>
 			<French>-- Descendre</French>
 			<Chinesesimp>-- 放低</Chinesesimp>
 			<Chinese>-- 放低</Chinese>
@@ -245,7 +245,7 @@
 			<French>-- Raprocher</French>
 		</Key>
 		<Key ID="STR_MOVEFAR">
-			<Original>-- Move farther</Original>
+			<Original>Move farther</Original>
 			<French>-- Eloigner</French>
 		</Key>
 		<Key ID="STR_MODE">
@@ -255,7 +255,7 @@
 			<Chinese>-- 跟隨地形</Chinese>
 		</Key>
 		<Key ID="STR_CANCEL">
-			<Original>-- Cancel</Original>
+			<Original>Cancel</Original>
 			<French>-- Annuler</French>
 			<German>-- Abbrechen</German>
 			<Spanish>-- Cancelar</Spanish>
@@ -303,7 +303,7 @@
 			<Czech>Nelze sem umístit</Czech>
 		</Key>
 		<Key ID="STR_BUILD_ERROR_COLLISION">
-			<Original>Placement blocked: %1 object(s) are within %2 metres of this position.</Original>
+			<Original>Placement blocked: %1 object(s) are within %2 meters of this position.</Original>
 			<French>il y a %1 objet(s) dans les %2 mètres de la position choisie.</French>
 			<German>%1 Objekt(e) innerhalb von %2 Meter der Position</German>
 			<Spanish>hay 1% objeto(s) a %2 metros de la posición del objeto</Spanish>
@@ -345,19 +345,19 @@
 			<Chinese>-- 武器庫解包</Chinese>
 		</Key>
 		<Key ID="STR_INVENTORY_UNPACK">
-			<Original>-- INVENTORY UNPACK</Original>
+			<Original>Unpack inventory</Original>
 			<French>-- INVENTAIRE UNPACK</French>
 			<Chinesesimp>-- 库存解压</Chinesesimp>
 			<Chinese>-- 庫存解壓</Chinese>
 		</Key>
 		<Key ID="STR_ARSENAL_PICKUP">
-			<Original>-- PICK UP GROUND WEAPONS</Original>
+			<Original>Pick up weapons from the ground</Original>
 			<French>-- RAMASSER ARMES AU SOL</French>
 			<Chinesesimp>-- 拾取地面武器</Chinesesimp>
 			<Chinese>-- 拾取地面武器</Chinese>
 		</Key>
 		<Key ID="STR_ACTION_LOAD_BOX">
-			<Original>-- LOAD</Original>
+			<Original>Load box</Original>
 			<French>-- CHARGER</French>
 			<German>-- AUFLADEN</German>
 			<Spanish>-- CARGAR</Spanish>
@@ -369,7 +369,7 @@
 			<Czech>-- NALOŽIT</Czech>
 		</Key>
 		<Key ID="STR_ACTION_UNLOAD_BOX">
-			<Original>-- UNLOAD</Original>
+			<Original>Unload boxes</Original>
 			<French>-- DECHARGER</French>
 			<German>--  ABLADEN</German>
 			<Spanish>-- DESCARGAR</Spanish>
@@ -381,7 +381,7 @@
 			<Czech>-- VYLOŽIT</Czech>
 		</Key>
 		<Key ID="STR_ACTION_UNLOAD_ONE_BOX">
-			<Original>-- UNLOAD LAST ONE</Original>
+			<Original>Unload last box</Original>
 			<French>-- DECHARGER LE DERNIER</French>
 			<Chinesesimp>-- 卸载最后一个</Chinesesimp>
 			<Chinese>-- 卸載最後一個</Chinese>
@@ -446,7 +446,7 @@
 			<Czech>-- POSTAVIT OUTPOST</Czech>
 		</Key>
 		<Key ID="STR_FOB_BUILDING_IMPOSSIBLE">
-			<Original>A new FOB must be at least %1 metres from every other FOB. The nearest FOB is %2 metres away.</Original>
+			<Original>A new FOB must be at least %1 meters from every other FOB. The nearest FOB is %2 meters away.</Original>
 			<French>Impossible de déployer une nouvelle FOB ici, vous devez être à minima %1 mètres de toutes les autres FOB. La FOB la plus proche est à %2 mètres d'ici.</French>
 			<German>Kann hier keine FOB platzieren, du musst min. %1 Meter von der anderen FOB entfernt sein. Das naechste FOB ist %2 Meter entfernt.</German>
 			<Spanish>Imposible desplegar una nueva FOB aquí, debes estar al menos a 1% metros de cualquier otra FOB. La FOB más cercana está a %2 metros.</Spanish>
@@ -458,7 +458,7 @@
 			<Czech>Zde nelze postavit nový FOB, musíte být alespoň %1 metrů od všech ostatních FOB. Nejbližší FOB je %2 metrů daleko.</Czech>
 		</Key>
 		<Key ID="STR_FOB_BUILDING_IMPOSSIBLE_SECTOR">
-			<Original>A new FOB must be at least %1 metres from a capturable sector. The nearest sector is %2 metres away.</Original>
+			<Original>A new FOB must be at least %1 meters from a capturable sector. The nearest sector is %2 meters away.</Original>
 			<French>Impossible de déployer une nouvelle FOB ici, vous devez être à minima %1 mètres de toutes les zones capturables. La zone la plus proche est à %2 mètres d'ici.</French>
 			<German>Kann hier keine FOB platzieren, du musst min. %1 Meter von Kontrollzonen entfernt sein. Die naechste Zone ist %2 Meter entfernt.</German>
 			<Spanish>Imposible desplegar una nueva FOB aquí, debes estar al menos a %1 metros de cualquier zona capturable. La zona más cercana está a %2 metros</Spanish>
@@ -493,7 +493,7 @@
 			<Chinese>深度不够！ \n實際：%1米\n需要：%2米</Chinese>
 		</Key>
 		<Key ID="STR_BUILD_ERROR_DISTANCE">
-			<Original>Cannot build more than %1 metres away.</Original>
+			<Original>Cannot build more than %1 meters away.</Original>
 			<French>Impossible de construire à plus de %1 mètres.</French>
 			<German>Kann nicht weiter als %1 Meter entfernt sein.</German>
 			<Spanish>Imposible construir más lejos de %1 metros.</Spanish>
@@ -778,7 +778,7 @@
 			<Czech>-- Mřížkový režim</Czech>
 		</Key>
 		<Key ID="STR_SECONDARY_CAPTURE">
-			<Original>-- CAPTURE</Original>
+			<Original>Capture</Original>
 			<French>-- CAPTURER</French>
 			<German>-- GEFANGENNEHMEN</German>
 			<Spanish>-- CAPTURAR</Spanish>
@@ -2817,7 +2817,7 @@
 			<Czech>Odebere hráči všechna oprávnění.</Czech>
 		</Key>
 		<Key ID="STR_COMMANDER_ACTION">
-			<Original>-- PERMISSIONS</Original>
+			<Original>-- Player permissions (server rules)</Original>
 			<French>-- PERMISSIONS</French>
 			<German>-- RECHTE</German>
 			<Spanish>-- PERMISOS</Spanish>
@@ -2829,7 +2829,7 @@
 			<Czech>-- PERMISSIONS</Czech>
 		</Key>
 		<Key ID="STR_DUMP_FOB_TEMPLATE">
-			<Original>-- DUMP FOB TEMPLATE</Original>
+			<Original>Export FOB template</Original>
 			<French>-- EXPORTER LE MODÈLE DE FOB</French>
 			<German>-- FOB-VORLAGE EXPORTIEREN</German>
 			<Spanish>-- EXPORTAR PLANTILLA FOB</Spanish>
@@ -2961,7 +2961,7 @@
 			<Czech>Výchozí</Czech>
 		</Key>
 		<Key ID="STR_FOB_REPACKAGE">
-			<Original>-- REPACKAGE FOB</Original>
+			<Original>Repackage FOB</Original>
 			<French>-- REPLIER FOB</French>
 			<German>-- FOB EINPACKEN</German>
 			<Spanish>-- EMPAQUETAR FOB</Spanish>
@@ -4788,7 +4788,7 @@
 		<!-- nnt360 -->
 		<!-- action_manager.sqf -->
 		<Key ID="STR_DOG_PET">
-			<Original>-- PET DOG</Original>
+			<Original>Pet the dog</Original>
 			<French>-- CALINER CHIEN</French>
 			<Russian>-- СОБАКА, ЛАСКИ</Russian>
 			<Japanese>-- 犬をなでる</Japanese>
@@ -4808,19 +4808,19 @@
 			<Czech>-- DOG HLEDEJ</Czech>
 		</Key>
 		<Key ID="STR_DOG_FIND_GUN">
-			<Original>-- DOG BRINGS WEAPON</Original>
+			<Original>Dog: fetch weapon</Original>
 			<French>-- CHIEN RAMÈNE ARME</French>
 			<Chinesesimp>-- 狗狗携带武器</Chinesesimp>
 			<Chinese>-- 狗狗攜帶武器</Chinese>
 		</Key>
 		<Key ID="STR_DOG_PATROL">
-			<Original>-- DOG PATROL</Original>
+			<Original>Dog: patrol</Original>
 			<French>-- CHIEN PATROUILLE</French>
 			<Chinesesimp>-- 狗狗巡逻队</Chinesesimp>
 			<Chinese>-- 狗狗巡邏隊</Chinese>
 		</Key>
 		<Key ID="STR_DOG_RECALL">
-			<Original>-- DOG RECALL</Original>
+			<Original>Dog: come back</Original>
 			<Russian>-- СОБАКА, ЗА МНОЙ</Russian>
 			<French>-- CHIEN REVIENS</French>
 			<Japanese>-- 犬を呼び戻す</Japanese>
@@ -4830,7 +4830,7 @@
 			<Czech>-- DOG ZPĚT</Czech>
 		</Key>
 		<Key ID="STR_DOG_STOP">
-			<Original>-- DOG STOP</Original>
+			<Original>Dog: stay</Original>
 			<Russian>-- СОБАКА, СИДЕТЬ</Russian>
 			<French>-- CHIEN STOP</French>
 			<Japanese>-- 犬を止める</Japanese>
@@ -4850,7 +4850,7 @@
 			<Czech>-- DOG PROPUŠTEN</Czech>
 		</Key>
 		<Key ID="STR_SQUAD_MOVE">
-			<Original>-- SQUAD MOVE</Original>
+			<Original>Squad: move</Original>
 			<Russian>-- ОТРЯД, ДВИЖЕНИЕ</Russian>
 			<French>-- ESCOUADE DEPLACEMENT</French>
 			<Japanese>-- 分隊移動</Japanese>
@@ -4870,7 +4870,7 @@
 			<Czech>-- SQUAD NÁSLEDOVAT</Czech>
 		</Key>
 		<Key ID="STR_SQUAD_STOP">
-			<Original>-- SQUAD STOP</Original>
+			<Original>Squad: stop</Original>
 			<Russian>-- ОТРЯД, СТОЙ</Russian>
 			<French>-- ESCOUADE STOP</French>
 			<Japanese>-- 分隊停止</Japanese>
@@ -4968,7 +4968,7 @@
 			<Czech>-- ROZLOŽIT STAN</Czech>
 		</Key>
 		<Key ID="STR_EXTENDED_OPTIONS">
-			<Original>-- Extended Options</Original>
+			<Original>Extended options</Original>
 			<Russian>-- НАСТРОЙКИ</Russian>
 			<French>-- Options étendues</French>
 			<Japanese>-- 拡張設定</Japanese>
@@ -5020,7 +5020,7 @@
 			<Chinese>-- 陞級前哨</Chinese>
 		</Key>
 		<Key ID="STR_ONBOARD_SHIP">
-			<Original>-- CLIMB ON BOARD</Original>
+			<Original>Climb aboard</Original>
 			<French>-- MONTER À BORD</French>
 			<Chinesesimp>--登船</Chinesesimp>
 			<Chinese>--登船</Chinese>
@@ -5049,7 +5049,7 @@
 			<Czech>-- PRODEJ NÁKLAD</Czech>
 		</Key>
 		<Key ID="STR_DE_FUEL">
-			<Original>-- TAKE FUEL</Original>
+			<Original>Drain fuel</Original>
 			<Russian>-- ВЗЯТЬ ТОПЛИВО</Russian>
 			<French>-- PRENDRE CARBURANT</French>
 			<Portuguese>-- PEGAR COMBUSTÍVEL</Portuguese>
@@ -5058,7 +5058,7 @@
 			<Chinese>-- 獲取燃料</Chinese>
 		</Key>
 		<Key ID="STR_RE_FUEL">
-			<Original>-- PUT FUEL</Original>
+			<Original>Add fuel</Original>
 			<Russian>-- ЗАПРАВИТЬ</Russian>
 			<French>-- METTRE CARBURANT</French>
 			<Japanese>-- 給油</Japanese>
@@ -5073,7 +5073,7 @@
 			<Chinese>-- 修理車輛</Chinese>
 		</Key>
 		<Key ID="STR_STICKY_BOMB">
-			<Original>-- STICKY BOMB!</Original>
+			<Original>Plant sticky bomb</Original>
 			<Russian>--- Липкая бомба!</Russian>
 			<French>--- BOMBE ADHÉSIVE!</French>
 			<Japanese>-- 粘着爆弾！</Japanese>
@@ -5093,7 +5093,7 @@
 			<Chinese>車輛維修箱</Chinese>
 		</Key>
 		<Key ID="STR_HALO_VEH">
-			<Original>-- HALO DROP VEHICLE</Original>
+			<Original>HALO drop vehicle</Original>
 			<Chinesesimp>-- 空投载具</Chinesesimp>
 			<Chinese>-- 空投載具</Chinese>
 		</Key>
@@ -5103,7 +5103,7 @@
 			<Chinese>&lt;t align='center'&gt;空投載具將花費：%1 彈藥&lt;br/&gt;确定嗎？&lt;/t&gt;</Chinese>
 		</Key>
 		<Key ID="STR_SALVAGE">
-			<Original>-- SALVAGE</Original>
+			<Original>Salvage</Original>
 			<Russian>-- ДЕМОНТАЖ</Russian>
 			<French>-- SALVAGE</French>
 			<Japanese>-- 解体</Japanese>
@@ -5113,7 +5113,7 @@
 			<Czech>-- SEŠROTOVAT</Czech>
 		</Key>
 		<Key ID="STR_UN_FLIP">
-			<Original>-- UNFLIP</Original>
+			<Original>Unflip vehicle</Original>
 			<Russian>-- ПЕРЕВЕРНУТЬ</Russian>
 			<French>-- RETOURNER</French>
 			<Japanese>-- ひっくり返す</Japanese>
@@ -5123,7 +5123,7 @@
 			<Czech>-- PŘEVRÁTIT</Czech>
 		</Key>
 		<Key ID="STR_LOCK">
-			<Original>-- LOCK</Original>
+			<Original>Lock</Original>
 			<Russian>-- ЗАКРЫТЬ</Russian>
 			<French>-- LOCK</French>
 			<Japanese>-- 鍵をかける</Japanese>
@@ -5143,7 +5143,7 @@
 			<Czech>-- ODEMKNOUT</Czech>
 		</Key>
 		<Key ID="STR_ABANDON">
-			<Original>-- ABANDON</Original>
+			<Original>Abandon</Original>
 			<Russian>-- ОСТАВИТЬ</Russian>
 			<French>-- ABANDON</French>
 			<Japanese>-- 所有権を放棄する</Japanese>
@@ -5163,7 +5163,7 @@
 			<Czech>-- PŘEMALOVAT</Czech>
 		</Key>
 		<Key ID="STR_VEH_SUPPORT">
-			<Original>-- VEHICLE SUPPORT</Original>
+			<Original>Vehicle support</Original>
 			<Russian>-- ПОДДЕРЖКА ТРАНСПОРТНЫХ СРЕДСТВ</Russian>
 			<French>-- SUPPORT VÉHICULE</French>
 			<Japanese>-- ビークルサポート</Japanese>
@@ -5195,11 +5195,11 @@
 			<Czech>-- VYHODIT POSÁDKU</Czech>
 		</Key>
 		<Key ID="STR_ONBOARD_CREW">
-			<Original>-- BOARD VEHICLE WITH CREW</Original>
+			<Original>Board vehicle with squad</Original>
 			<French>-- EMBARQUER EQUIPAGE</French>
 		</Key>
 		<Key ID="STR_REMOVE_BODY">
-			<Original>-- REMOVE BODY</Original>
+			<Original>Remove body</Original>
 			<Russian>-- УНИЧТОЖИТЬ ТЕЛО</Russian>
 			<French>-- ENLEVER CORPS</French>
 			<Japanese>-- 死体を消す</Japanese>
@@ -5227,7 +5227,7 @@
 			<Chinese>-- 拿錢</Chinese>
 		</Key>
 		<Key ID="STR_SEND_ARSENAL">
-			<Original>-- CARGO TO ARSENAL</Original>
+			<Original>Send cargo to arsenal</Original>
 			<French>-- CARGO VERS ARSENAL</French>
 			<Chinesesimp>-- 库存送到军火库</Chinesesimp>
 			<Chinese>-- 庫存送到軍火庫</Chinese>
@@ -5246,7 +5246,7 @@
 		</Key>
 		<!-- recycle_manager.sqf -->
 		<Key ID="STR_RECYCLE_MANAGER">
-			<Original>-- RECYCLE</Original>
+			<Original>Recycle</Original>
 			<Russian>-- ПЕРЕРАБОТАТЬ</Russian>
 			<French>-- RECYCLER</French>
 			<Japanese>-- リサイクル</Japanese>
@@ -7390,7 +7390,7 @@
 			<Original>-- LOGISTICS SYSTEM</Original>
 		</Key>
 		<Key ID="STR_LOGISTIC_CONTINUE">
-			<Original>-- RESUME LOGISTICS</Original>
+			<Original>Resume logistics</Original>
 		</Key>
 		<Key ID="STR_LOGISTIC_WELCOME">
 			<Original>AI logistics automates resource collection.\nSelect an available vehicle, then choose a destination.</Original>
@@ -7480,7 +7480,7 @@
 
 		<!-- man_manager.sqf -->
 		<Key ID="STR_MAN_MANAGER">
-			<Original>-- SPEAK</Original>
+			<Original>Talk</Original>
 			<Russian>-- ГОВОРИТЬ</Russian>
 			<French>-- DISCUTER</French>
 			<Japanese>-- 話す</Japanese>
@@ -7536,7 +7536,7 @@
 
 		<!-- init_client.sqf -->
 		<Key ID="STR_READ_ME">
-			<Original>-= READ  ME =-</Original>
+			<Original>Read me</Original>
 			<Russian>-= ПРОЧТИ МЕНЯ</Russian>
 			<French>-= A LIRE =-</French>
 			<Japanese>-= 読んでください =-</Japanese>
@@ -7546,7 +7546,7 @@
 			<Czech>-= PŘEČTĚTE SI =-</Czech>
 		</Key>
 		<Key ID="STR_TIPS">
-			<Original>-=   TIPS   =-</Original>
+			<Original>Tips</Original>
 			<Russian>-= СОВЕТЫ</Russian>
 			<French>-= ASTUCES =-</French>
 			<Japanese>-=   前提知識   =-</Japanese>
@@ -7566,7 +7566,7 @@
 			<Chinese>-=   天氣預報   =-</Chinese>
 		</Key>
 		<Key ID="STR_HALL_OF_FAME">
-			<Original>-= Hall of Fame =-</Original>
+			<Original>Hall of fame</Original>
 			<French>-= Temple de la renommée =-</French>
 			<German>-= Ruhmeshalle =-</German>
 			<Spanish>-= Salón de la Fama =-</Spanish>
@@ -7599,13 +7599,13 @@
 			<Chinese>-- 保存玩家資料</Chinese>
 		</Key>
 		<Key ID="STR_BUILD_FORTIFICATION">
-			<Original>-- BUILD FORTIFICATIONS</Original>
+			<Original>Build fortifications</Original>
 			<French>-- CONSTRUIRE FORTIFICATION</French>
 			<Chinesesimp>-- 修筑防御工事</Chinesesimp>
 			<Chinese>-- 修築防禦工事</Chinese>
 		</Key>
 		<Key ID="STR_CLEAR_FORTIFICATION">
-			<Original>-- REMOVE FORTIFICATION</Original>
+			<Original>Remove fortifications</Original>
 			<French>-- SUPPRIMER FORTIFICATION</French>
 			<Chinesesimp>-- 移除防御工事</Chinesesimp>
 			<Chinese>-- 移除防禦工事</Chinese>
@@ -8028,12 +8028,12 @@
 			<Chinese>宙斯模式</Chinese>
 		</Key>
 		<Key ID="STR_ADMIN_SAVE">
-			<Original>SAVE</Original>
+			<Original>Save</Original>
 			<Chinesesimp>保存游戏</Chinesesimp>
 			<Chinese>保存遊戲</Chinese>
 		</Key>
 		<Key ID="STR_ADMIN_CLEAN">
-			<Original>CLEANUP</Original>
+			<Original>Cleanup</Original>
 		</Key>
 		<Key ID="STR_ADMIN_UNLOCK">
 			<Original>Unlock Vehicle</Original>
@@ -8045,12 +8045,12 @@
 			<Czech>Odemknout vozidlo</Czech>
 		</Key>
 		<Key ID="STR_ADMIN_DELETE">
-			<Original>DELETE</Original>
+			<Original>Delete</Original>
 			<Chinesesimp>删除</Chinesesimp>
 			<Chinese>删除</Chinese>
 		</Key>
 		<Key ID="STR_ADMIN_MOWER">
-			<Original>MOWER</Original>
+			<Original>Mower</Original>
 			<Chinesesimp>隐藏地形物件</Chinesesimp>
 			<Chinese>隱藏地形物件</Chinese>
 		</Key>
@@ -8070,7 +8070,7 @@
 			<Portuguese>Importar</Portuguese>
 		</Key>
 		<Key ID="STR_ADMIN_GODMODE">
-			<Original>God Mode</Original>
+			<Original>God mode</Original>
 			<Russian>Режим Бога</Russian>
 			<Japanese>ゴッドモード</Japanese>
 			<Chinesesimp>无敌模式</Chinesesimp>
@@ -11416,7 +11416,7 @@
 			<Czech>Povolit režim velitele: sektory budou aktivovány výběrem polohy na mapě buď velitelem, nebo hlasováním.</Czech>
 		</Key>
 		<Key ID="STR_COMMANDER_MODE_RADIUS_DESC">
-			<Original>Radius in metres for activating nearby objectives when Battle Scope includes nearby sectors.</Original>
+			<Original>Radius in meters for activating nearby objectives when Battle Scope includes nearby sectors.</Original>
 			<Russian>Когда командир выбирает сектор для атаки, близлежащие вражеские сектора в этом диапазоне будут защищаться.</Russian>
 			<French>Lorsque le commandant choisit un secteur à attaquer, les secteurs ennemis proches dans cette portée défendront.</French>
 			<Chinesesimp>当指挥官选择要攻击的扇区时，该范围内的附近敌方扇区将进行防御。</Chinesesimp>
@@ -11660,7 +11660,7 @@
 			<Czech>Donáška jídla</Czech>
 		</Key>
 		<Key ID="STR_FOODDELI_MESSAGE1">
-			<Original>Food Delivery at &lt;br/&gt;&lt;t size='1.25' color='%1'&gt;%2&lt;/t&gt;&lt;br/&gt;&lt;br/&gt;&lt;t color='#00F000'&gt;Talk&lt;/t&gt; to the &lt;t color='#0000F0'&gt;Marshal&lt;/t&gt; to get information.</Original>
+			<Original>Food Delivery at &lt;br/&gt;&lt;t size='1.25' color='%1'&gt;%2&lt;/t&gt;&lt;br/&gt;&lt;br/&gt;&lt;t color='#00F000'&gt;Talk&lt;/t&gt; to &lt;t color='#8EC2F5'&gt;%3&lt;/t&gt; to get information.</Original>
 			<Russian>Доставка еды в &lt;br/&gt;&lt;t size='1.25' color='%1'&gt;%2&lt;/t&gt;&lt;br/&gt;&lt;br/&gt;&lt;t color='#00F000'&gt;Поговорите&lt;/t&gt; с &lt;t color='#0000F0'&gt;Маршалом&lt;/t&gt; чтобы получить информацию.</Russian>
 			<Japanese>食料調達: &lt;br/&gt;&lt;t size='1.25' color='%1'&gt;%2&lt;/t&gt;&lt;br/&gt;&lt;br/&gt;&lt;t color='#00F000'&gt;係の者&lt;/t&gt;に&lt;t color='#0000F0'&gt;聞いて&lt;/t&gt;情報を得てください。</Japanese>
 			<Chinesesimp>送外卖：在 &lt;br/&gt;&lt;t size='1.25' color='%1'&gt;%2&lt;/t&gt;&lt;br/&gt;&lt;br/&gt; 与 &lt;t color='#0000F0'&gt;Marshal&lt;/t&gt; &lt;t color='#00F000'&gt;交谈&lt;/t> 获取任务信息。</Chinesesimp>
@@ -11711,7 +11711,7 @@
 			<Czech>Donážka paliva</Czech>
 		</Key>
 		<Key ID="STR_FUELDELI_MESSAGE1">
-			<Original>Fuel Delivery at &lt;br/&gt;&lt;t size='1.25' color='%1'&gt;%2&lt;/t&gt;&lt;br/&gt;&lt;br/&gt;&lt;t color='#00F000'&gt;Talk&lt;/t&gt; to the &lt;t color='#0000F0'&gt;Marshal&lt;/t&gt; to get information.</Original>
+			<Original>Fuel Delivery at &lt;br/&gt;&lt;t size='1.25' color='%1'&gt;%2&lt;/t&gt;&lt;br/&gt;&lt;br/&gt;&lt;t color='#00F000'&gt;Talk&lt;/t&gt; to &lt;t color='#8EC2F5'&gt;%3&lt;/t&gt; to get information.</Original>
 			<Russian>Доставка топлива в &lt;br/&gt;&lt;t size='1.25' color='%1'&gt;%2&lt;/t&gt;&lt;br/&gt;&lt;br/&gt;&lt;t color='#00F000'&gt;Поговори&lt;/t&gt; с &lt;t color='#0000F0'&gt;Маршалом&lt;/t&gt; чтобы получить информацию.</Russian>
 			<Japanese>燃料配達: &lt;br/&gt;&lt;t size='1.25' color='%1'&gt;%2&lt;/t&gt;&lt;br/&gt;&lt;br/&gt;&lt;t color='#00F000'&gt;係の者&lt;/t&gt;に&lt;t color='#0000F0'&gt;聞いて&lt;/t&gt;情報を得てください。</Japanese>
 			<Chinesesimp>运送燃料：在 &lt;br/&gt;&lt;t size='1.25' color='%1'&gt;%2&lt;/t&gt;&lt;br/&gt;&lt;br/&gt; 与 &lt;t color='#0000F0'&gt;Marshal&lt;/t&gt; &lt;t color='#00F000'&gt;交谈/t&gt; 获取任务信息。</Chinesesimp>
@@ -11745,7 +11745,7 @@
 			<Czech>Dodávka vody</Czech>
 		</Key>
 		<Key ID="STR_WATERDELI_MESSAGE1">
-			<Original>Water Delivery at &lt;br/&gt;&lt;t size='1.25' color='%1'&gt;%2&lt;/t&gt;&lt;br/&gt;&lt;br/&gt;&lt;t color='#00F000'&gt;Talk&lt;/t&gt; to the &lt;t color='#0000F0'&gt;Marshal&lt;/t&gt; to get information.</Original>
+			<Original>Water Delivery at &lt;br/&gt;&lt;t size='1.25' color='%1'&gt;%2&lt;/t&gt;&lt;br/&gt;&lt;br/&gt;&lt;t color='#00F000'&gt;Talk&lt;/t&gt; to &lt;t color='#8EC2F5'&gt;%3&lt;/t&gt; to get information.</Original>
 			<Russian>Доставка воды в &lt;br/&gt;&lt;t size='1.25' color='%1'&gt;%2&lt;/t&gt;&lt;br/&gt;&lt;br/&gt;&lt;t color='#00F000'&gt;Поговорите&lt;/t&gt; с &lt;t color='#0000F0'&gt;Маршалом&lt;/t&gt; чтобы получить информацию.</Russian>
 			<Japanese>水の配達：&lt;br/&gt;&lt;t size='1.25' color='%1'&gt;%2&lt;/t&gt;&lt;br/&gt;&lt;br/&gt;&lt;t color='#00F000'&gt;係の者&lt;/t&gt;と&lt;t color='#0000F0'&gt;話して&lt;/t&gt;情報を得てください。</Japanese>
 			<Chinesesimp>送水：在 &lt;br/&gt;&lt;t size='1.25' color='%1'&gt;%2&lt;/t&gt;&lt;br/&gt;&lt;br/&gt;&lt;t color='#00F000'&gt;&lt;/t&gt; 与 &lt;t color='#0000F0'&gt;Marshal&lt;/t&gt; 交谈来获取任务信息。</Chinesesimp>
@@ -11778,7 +11778,7 @@
 			<Chinese>彈藥押運</Chinese>
 		</Key>
 		<Key ID="STR_AMMODELI_MESSAGE1">
-			<Original>Ammo Delivery at &lt;br/&gt;&lt;t size='1.25' color='%1'&gt;%2&lt;/t&gt;&lt;br/&gt;&lt;br/&gt;&lt;t color='#00F000'&gt;Talk&lt;/t&gt; to the &lt;t color='#0000F0'&gt;Marshal&lt;/t&gt; to get information.</Original>
+			<Original>Ammo Delivery at &lt;br/&gt;&lt;t size='1.25' color='%1'&gt;%2&lt;/t&gt;&lt;br/&gt;&lt;br/&gt;&lt;t color='#00F000'&gt;Talk&lt;/t&gt; to &lt;t color='#8EC2F5'&gt;%3&lt;/t&gt; to get information.</Original>
 			<Russian>Доставка патронов в &lt;br/&gt;&lt;t size='1.25' color='%1'&gt;%2&lt;/t&gt;&lt;br/&gt;&lt;br/&gt;&lt;t color='#00F000'&gt;Поговорите&lt;/t&gt; с &lt;t color='#0000F0'&gt;Маршалом&lt;/t&gt; чтобы получить информацию.</Russian>
 			<Czech>Dodávka munice v &lt;br/&gt;&lt;t size='1.25' color='%1'&gt;%2&lt;/t&gt;&lt;br/&gt;&lt;br/&gt;&lt;t color='#00F000'&gt;Talk&lt;/t&gt; k &lt;t color='#0000F0'&gt;Marshal&lt;/t&gt; získat informace.</Czech>
 			<Chinesesimp>弹药押运在 &lt;br/&gt;&lt;t size='1.25' color='%1'&gt;%2&lt;/t&gt;&lt;br/&gt;&lt;br/&gt;&lt;t color='#00F000'&gt;与&lt;/t&gt; to the &lt;t color='#0000F0'&gt;Marshal&lt;/t&gt; 交谈来获取任务信息</Chinesesimp>
@@ -11905,7 +11905,7 @@
 			<Czech>Odpor</Czech>
 		</Key>
 		<Key ID="STR_RESISTANCE_MESSAGE1">
-			<Original>Meet the Resistance at &lt;br/&gt;&lt;t size='1.25' color='%1'&gt;%2&lt;/t&gt;&lt;br/&gt;&lt;br/&gt;&lt;t color='#00F000'&gt;Talk&lt;/t&gt; to the &lt;t color='#0000F0'&gt;Leader&lt;/t&gt; to get information.&lt;br/&gt;Be ready for any situation!</Original>
+			<Original>Meet the Resistance at &lt;br/&gt;&lt;t size='1.25' color='%1'&gt;%2&lt;/t&gt;&lt;br/&gt;&lt;br/&gt;&lt;t color='#00F000'&gt;Talk&lt;/t&gt; to &lt;t color='#8EC2F5'&gt;%3&lt;/t&gt; to get information.&lt;br/&gt;Be ready for any situation!</Original>
 			<Russian>Встреча с Сопротивлением в &lt;br/&gt;&lt;t size='1.25' color='%1'&gt;%2&lt;/t&gt;&lt;br/&gt;&lt;br/&gt;&lt;t color='#00F000'&gt;Поговорите&lt;/t&gt; с &lt;t color='#0000F0'&gt;Лидером&lt;/t&gt; чтобы получить информацию.&lt;br/&gt;Будьте готовы к любой ситуации!</Russian>
 			<Japanese>&lt;t size='1.25' color='%1'&gt;%2&lt;/t&gt;&lt;br/&gt;でレジスタンスと合流し、&lt;t color='#00F000'&gt;リーダー&lt;/t&gt;と&lt;t color='#0000F0'&gt;話して&lt;/t&gt;情報を得てください。&lt;br/&gt;あらゆる状況に対応できるよう準備を。</Japanese>
 			<Chinesesimp>与抵抗组织 &lt;t color='#0000F0'&gt;领导人&lt;/t&gt; 在 &lt;br/&gt;&lt;t size='1.25' color='%1'&gt;%2&lt;/t&gt;&lt;br/&gt;&lt;br/&gt;&lt;t color='#00F000'&gt;交谈&lt;/t&gt; 获取任务信息。&lt;br/&gt;为任何情况做好准备！</Chinesesimp>
@@ -11970,7 +11970,7 @@
 			<Czech>Speciální dodání</Czech>
 		</Key>
 		<Key ID="STR_SPECIALDELI_MESSAGE1">
-			<Original>Special Delivery at &lt;br/&gt;&lt;t size='1.25' color='%1'&gt;%2&lt;/t&gt;&lt;br/&gt;&lt;br/&gt;&lt;t color='#00F000'&gt;Talk&lt;/t&gt; to &lt;t color='#0000F0'&gt;Nikos&lt;/t&gt; to get information.&lt;br/&gt;Be ready for any situation!</Original>
+			<Original>Special Delivery at &lt;br/&gt;&lt;t size='1.25' color='%1'&gt;%2&lt;/t&gt;&lt;br/&gt;&lt;br/&gt;&lt;t color='#00F000'&gt;Talk&lt;/t&gt; to &lt;t color='#8EC2F5'&gt;%3&lt;/t&gt; to get information.&lt;br/&gt;Be ready for any situation!</Original>
 			<Russian>Специальная доставка в &lt;br/&gt;&lt;t size='1.25' color='%1'&gt;%2&lt;/t&gt;&lt;br/&gt;&lt;br/&gt;&lt;t color='#00F000'&gt;Поговорите&lt;/t&gt; с &lt;t color='#0000F0'&gt;Никосом&lt;/t&gt; чтобы получить информацию.&lt;br/&gt;Будьте готовы к любой ситуации!</Russian>
 			<Japanese>特別配送： &lt;br/&gt;&lt;t size='1.25' color='%1'&gt;%2&lt;/t&gt;&lt;br/&gt;&lt;br/&gt;&lt;t color='#00F000'&gt;Nikos&lt;/t&gt; と &lt;t color='#0000F0'&gt;話して&lt;/t&gt; 情報を得てください。&lt;br/&gt;あらゆる状況に対応できるよう準備を。</Japanese>
 			<Chinesesimp>特快专递：在 &lt;br/&gt;&lt;t size='1.25' color='%1'&gt;%2&lt;/t&gt;&lt;br/&gt;&lt;br/&gt;与 &lt;t color='#0000F0'&gt;Nikos&lt;/t&gt; &lt;t color='#00F000'&gt;交谈&lt;/t&gt; 来获取任务信息.&lt;br/&gt;做好应对任何突发情况的准备！</Chinesesimp>
@@ -12192,7 +12192,7 @@
 			<Chinese>奪取VIP</Chinese>
 		</Key>
 		<Key ID="STR_VIP_CAP_MESSAGE1">
-			<Original>An important &lt;t color='%1'&gt;VIP&lt;/t&gt; is travelling across the island.&lt;br/&gt;Intercept his convoy and capture him &lt;t color='%1'&gt;ALIVE&lt;/t&gt;!</Original>
+			<Original>An important &lt;t color='%1'&gt;VIP&lt;/t&gt; is traveling across the island.&lt;br/&gt;Intercept his convoy and capture him &lt;t color='%1'&gt;ALIVE&lt;/t&gt;!</Original>
 			<Chinesesimp>一名重要的 &lt;t color='%1'&gt;V.I.P&lt;/t&gt; 正在环岛旅行。&lt;br/&gt;拦截并抓获他，&lt;t color='%1'&gt;记住要活口&lt;/t&gt;!</Chinesesimp>
 			<Chinese>一名重要的 &lt;t color='%1'&gt;V.I.P&lt;/t&gt; 正在環島旅行。&lt;br/&gt;攔截並抓獲他，&lt;t color='%1'&gt;記住要活口&lt;/t&gt;!</Chinese>
 		</Key>
@@ -12226,7 +12226,7 @@
 			<Chinese>解救囚犯</Chinese>
 		</Key>
 		<Key ID="STR_PRI_CONV_MESSAGE1">
-			<Original>An important &lt;t color='%1'&gt;prisoner convoy&lt;/t&gt; is travelling across the island.&lt;br/&gt;Intercept the convoy and &lt;t color='%1'&gt;FREE&lt;/t&gt; the prisoners!</Original>
+			<Original>An important &lt;t color='%1'&gt;prisoner convoy&lt;/t&gt; is traveling across the island.&lt;br/&gt;Intercept the convoy and &lt;t color='%1'&gt;FREE&lt;/t&gt; the prisoners!</Original>
 			<Chinesesimp>一队重要的 &lt;t color='%1'&gt;囚犯押运车队&lt;/t&gt; 正在转运囚犯。&lt;br/&gt;拦截并&lt;t color='%1'&gt;释放&lt;/t&gt; 囚犯！</Chinesesimp>
 			<Chinese>一队重要的 &lt;t color='%1'&gt;囚犯押運車隊&lt;/t&gt; 正在轉運囚犯。&lt;br/&gt;攔截並&lt;t color='%1'&gt;释放&lt;/t&gt; 囚犯！</Chinese>
 		</Key>
@@ -12248,7 +12248,7 @@
 			<Chinese>補給車隊</Chinese>
 		</Key>
 		<Key ID="STR_RSC_CONV_MESSAGE1">
-			<Original>An important &lt;t color='%1'&gt;supply convoy&lt;/t&gt; is travelling across the island.&lt;br/&gt;Intercept the convoy and capture the &lt;t color='%1'&gt;supplies&lt;/t&gt;!</Original>
+			<Original>An important &lt;t color='%1'&gt;supply convoy&lt;/t&gt; is traveling across the island.&lt;br/&gt;Intercept the convoy and capture the &lt;t color='%1'&gt;supplies&lt;/t&gt;!</Original>
 			<Chinesesimp>一个重要的&lt;t color='%1'&gt;补给车队&lt;/t&gt; 正在转运物资&lt;br/&gt;拦截并夺取 &lt;t color='%1'&gt;补给&lt;/t&gt;！</Chinesesimp>
 			<Chinese>一个重要的&lt;t color='%1'&gt;補給車隊&lt;/t&gt; 正在轉運物資&lt;br/&gt;攔截並奪取 &lt;t color='%1'&gt;補給&lt;/t&gt;！</Chinese>
 		</Key>
@@ -12270,7 +12270,7 @@
 			<Chinese>剿匪</Chinese>
 		</Key>
 		<Key ID="STR_KILL_BANDIT_MESSAGE1">
-			<Original>A band of ruthless &lt;t color='%1'&gt;bandits&lt;/t&gt; is robbing travellers across the island.&lt;br/&gt;Stop them by any means. You are cleared to &lt;t color='%1'&gt;KILL&lt;/t&gt;!</Original>
+			<Original>A band of ruthless &lt;t color='%1'&gt;bandits&lt;/t&gt; is robbing travelers across the island.&lt;br/&gt;Stop them by any means. You are cleared to &lt;t color='%1'&gt;KILL&lt;/t&gt;!</Original>
 			<Chinesesimp>一群凶猛的 &lt;t color='%1'&gt;匪徒&lt;/t&gt;在岛上肆意劫掠。&lt;br/&gt;一定要阻止他们。你有&lt;t color='%1'&gt;自由开火权&lt;/t&gt;！</Chinesesimp>
 			<Chinese>一群兇猛的 &lt;t color='%1'&gt;匪徒&lt;/t&gt;在島上肆意劫掠。&lt;br/&gt;一定要封锁他們。你有&lt;t color='%1'&gt;自由開火權&lt;/t&gt;！</Chinese>
 		</Key>
@@ -12295,7 +12295,7 @@
 			<Czech>Ahoj, vidíš tady nějaké nepřátele?</Czech>
 		</Key>
 		<Key ID="STR_SPEAKMANAGER2">
-			<Original>Yes. I saw someone %1 metres away, bearing %2. Be careful.</Original>
+			<Original>Yes. I saw someone %1 meters away, bearing %2. Be careful.</Original>
 			<Russian>Да, я вижу кого-то на %1 метрах, Азимут %2, Поторопись!</Russian>
 			<Japanese>%2方向、%1mに敵兵を見ました。急いでください。</Japanese>
 			<Chinesesimp>是的，我看到有人在 %1米处，方位角 %2，快去！</Chinesesimp>
@@ -12330,7 +12330,7 @@
 			<Czech>Ahoj, kde je tvůj vůdce?</Czech>
 		</Key>
 		<Key ID="STR_SPEAKMANAGER7">
-			<Original>Hi, he's %1 metres away, bearing %2. Hurry!</Original>
+			<Original>Hi, he's %1 meters away, bearing %2. Hurry!</Original>
 			<Russian>Привет, он на %1 метрах, Азимут %2, Спешите!</Russian>
 			<Japanese>彼は%2方向、%1m先にいます、急いで！</Japanese>
 			<Chinesesimp>嗨，他在 %1米处，方位角 %2，快去！</Chinesesimp>
@@ -13047,7 +13047,7 @@
 			<Czech>-- Juke Box --</Czech>
 		</Key>
 		<Key ID="STR_JKB_ACTION">
-			<Original>Open Jukebox</Original>
+			<Original>Jukebox</Original>
 			<Russian>Открыть Музыку</Russian>
 			<Chinesesimp>打开音乐播放器</Chinesesimp>
 			<Chinese>打開音樂播放器</Chinese>
@@ -13740,7 +13740,7 @@
 	<!-- pSiKO LRX Taxi -->
 	<Package name="LRX_TAXI">
 		<Key ID="STR_TAXI_ACTION1">
-			<Original>-- TAXI Destination</Original>
+			<Original>Taxi: choose destination</Original>
 			<Russian>Вертолет, назначение</Russian>
 			<French>-- TAXI Destination</French>
 			<Chinesesimp>-- 目的地</Chinesesimp>
@@ -13750,7 +13750,7 @@
 			<Czech>-- TAXI Vyberte CÍL</Czech>
 		</Key>
 		<Key ID="STR_TAXI_ACTION2">
-			<Original>-- TAXI Cancel</Original>
+			<Original>Taxi: cancel</Original>
 			<Russian>Вертолет, отмена</Russian>
 			<French>-- TAXI Annulation</French>
 			<Chinesesimp>-- 取消</Chinesesimp>
@@ -13961,7 +13961,7 @@
 			<Czech>Odpustit</Czech>
 		</Key>
 		<Key ID="STR_TK_ACTION1">
-			<Original>-- Punish or Forgive</Original>
+			<Original>Punish or forgive</Original>
 			<Russian>-- Наказать или простить</Russian>
 			<French>-- Punir ou Pardonner</French>
 			<Chinesesimp>-- 惩罚或原谅他 --</Chinesesimp>

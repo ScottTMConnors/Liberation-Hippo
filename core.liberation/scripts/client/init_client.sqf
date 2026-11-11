@@ -278,7 +278,7 @@ GRLIB_LastNews = 0;
 // kart support
 {
 	if (typeOf _x isKindOf "Kart_01_Base_F") then {
-		_x addAction [(["Enter Kart", "\a3\ui_f\data\igui\cfg\simpletasks\types\car_ca.paa", "accent"] call HPC_fnc_actionTitle),{ (_this select 1) moveInDriver (_this select 0) },"",999,true,true,"","GRLIB_player_is_menuok",5];
+		_x addAction [(["Enter kart", "\a3\ui_f\data\igui\cfg\simpletasks\types\car_ca.paa", "accent"] call HPC_fnc_actionTitle),{ (_this select 1) moveInDriver (_this select 0) },"",999,true,true,"","GRLIB_player_is_menuok",5];
 	};
 } foreach vehicles;
 

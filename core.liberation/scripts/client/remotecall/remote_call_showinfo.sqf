@@ -13,7 +13,7 @@ if (_enemy_nearby || (behaviour player) in [ "COMBAT", "STEALTH"] || !(isNull ob
 
 if (GRLIB_fancy_info == 2) then {
 	if (typeName _text == "ARRAY") then {
-		_formated_text = format [(_text select 0) call BIS_fnc_localize, _text select 1, _text select 2];
+		_formated_text = format ([(_text select 0) call BIS_fnc_localize] + (_text select [1]));
 	} else {
 		_formated_text = _text call BIS_fnc_localize;
 	};

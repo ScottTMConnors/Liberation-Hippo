@@ -174,7 +174,7 @@ private _vehicleStats = {
 	if (_log select R3F_LOG_IDX_can_lift) then {_logParts pushBack "Can sling-lift"};
 	private _lines = [
 		format ["Armor %1  |  Engine %2  |  Top speed %3 km/h", getNumber (_vc >> "armor"), _engine, round getNumber (_vc >> "maxSpeed")],
-		format ["Crew %1  |  Passengers %2  |  Fuel tank %3 L  |  Inventory %4", _crew, _seats, round getNumber (_vc >> "fuelCapacity"), getNumber (_vc >> "maximumLoad")],
+		format ["Crew %1  |  Passengers %2  |  Fuel capacity %3  |  Inventory %4", _crew, _seats, round getNumber (_vc >> "fuelCapacity"), getNumber (_vc >> "maximumLoad")],
 		"Weapons: " + (if (_weapons isEqualTo []) then {"none"} else {_weapons joinString ", "})
 	];
 	if !(_logParts isEqualTo []) then {_lines pushBack ("Logistics: " + (_logParts joinString "  |  "))};

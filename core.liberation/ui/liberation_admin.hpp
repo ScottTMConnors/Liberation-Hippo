@@ -76,15 +76,15 @@ class liberation_admin {
 	controlsBackground[] = { "Panel" };
 	controls[] = {
 		"Accent", "Header", "Subtitle", "CloseX", "Divider",
-		"TabWorld", "TabCampaign", "TabPlayers", "TabTools",
+		"TabWorld", "TabCampaign", "TabPlayers", "TabTools", "TabMarker",
 		"LabelSpawn", "ArsenalButton", "AmmoButton", "RespawnButton", "BuildList", "BuildButton",
 		"LabelWorld", "CaptureButton", "KillButton", "SkipTimeButton", "ZeusModeButton", "UnlockButton", "DeleteButton",
-		"LabelCampaign", "SaveButton", "ExportButton", "ImportButton", "CleanButton", "MowerButton",
+		"LabelCampaign", "SaveButton", "ExportButton", "ImportButton", "CleanButton", "MowerButton", "FobTemplateButton",
 		"LabelPlayer", "PlayerList", "LabelPlayerActions", "Item05Input", "Item02Button", "Item03Button", "Item04Button", "Item08Button",
 		"Item05Button", "Item06Button", "Item07Button",
 		"LabelBanned", "BannedList", "Item01Button",
 		"LabelTools", "godmod_cb_1607", "godmod_cb_text", "teleport_cb_1620", "teleport_cb_text",
-		"LabelServer", "MissionAdminButton", "UnusedButton",
+		"LabelServer", "MissionAdminButton", "UnusedButton", "PermissionsButton", "SettingsButton",
 		"CancelButton",
 		"Input_OuterBG", "Input_InnerBG", "Input_OuterBG_F", "Input_InnerBG_F", "Input_TextField", "Input_ButtonName_Abort", "Input_ButtonName_Ok",
 		"Output_OuterBG", "Output_InnerBG", "Output_OuterBG_F", "Output_InnerBG_F", "Output_TextField", "Output_ButtonName_Abort"
@@ -152,6 +152,13 @@ class liberation_admin {
 		tooltip = "Personal toggles, mission admin and AI load";
 		action = "HPC_adminPage = 3";
 		x = ADM_LX + 3 * ADM_TAB_S;
+	};
+
+	// Accent bar under the active tab; admin_menu.sqf moves it.
+	class TabMarker : HPC_Text {
+		idc = 1659;
+		x = ADM_LX; y = ADM_Y + 7.9 * HPC_GY; w = ADM_TAB_W; h = 0.3 * HPC_GY;
+		colorBackground[] = HPC_C_ACCENT;
 	};
 
 	// ---- WORLD page ----
@@ -281,6 +288,13 @@ class liberation_admin {
 		text = $STR_ADMIN_MOWER;
 		tooltip = $STR_CALL_MAGIC_MOWER_TOOLTIP;
 		x = ADM_LX + ADM_B3S;
+	};
+	class FobTemplateButton : CleanButton {
+		idc = 1635;
+		action = "if (GRLIB_player_near_fob) then {admin_open_next = 'scripts\fob_templates\export_template.sqf'; closeDialog 0} else {hintSilent 'Stand inside a FOB to export its template.'};";
+		text = "FOB template";
+		tooltip = "Copy the layout of the FOB you are standing in, as a reusable FOB template.";
+		x = ADM_LX + 2 * ADM_B3S;
 	};
 
 	// ---- PLAYERS page ----
@@ -416,14 +430,28 @@ class liberation_admin {
 		text = "Mission admin";
 		tooltip = "Open the mission admin menu (debug tools and markers)";
 		action = "admin_open_next = 'scripts\client\commander\admin_menu_a3w.sqf'; closeDialog 0;";
-		x = ADM_LX; y = ADM_C + 6.0 * HPC_GY; w = ADM_B2; h = ADM_BH;
+		x = ADM_LX; y = ADM_C + 6.0 * HPC_GY; w = ADM_B3; h = ADM_BH;
 	};
 	class UnusedButton : MissionAdminButton {
 		idc = 1630;
 		text = "AI load";
 		tooltip = "Open the persistent AI load window: live metrics, ownership breakdown and FPS history.";
 		action = "admin_open_next = 'scripts\client\misc\HPC_hcStatus.sqf'; closeDialog 0;";
-		x = ADM_LX + ADM_B2 + ADM_GAP;
+		x = ADM_LX + ADM_B3S;
+	};
+	class PermissionsButton : MissionAdminButton {
+		idc = 1634;
+		text = "Player permissions";
+		tooltip = "Server rules: which vehicles each player may drive and which actions they may use.";
+		action = "admin_open_next = 'scripts\client\commander\open_permissions.sqf'; closeDialog 0;";
+		x = ADM_LX + 2 * ADM_B3S;
+	};
+	class SettingsButton : MissionAdminButton {
+		idc = 1636;
+		text = "Mission settings";
+		tooltip = "Open the mission settings (most changes need a mission restart).";
+		action = "admin_open_next = {[] spawn GRLIB_CreateParamDialog}; closeDialog 0;";
+		y = ADM_C + 9.0 * HPC_GY;
 	};
 
 	class CancelButton : HPC_Button {

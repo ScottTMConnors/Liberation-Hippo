@@ -111,7 +111,7 @@ private _xp = [
 	"Gains" call _sub,
 	["+100", "Clear an enemy tunnel (SOG)", _cGood] call _row,
 	["+22 to +47", "Delivery missions / Defend Patrol", _cGood] call _row,
-	["+30", "Shoot down the Red Baron", _cGood] call _row,
+	["+30", "Shoot down the enemy jet", _cGood] call _row,
 	["+15 to +45", "Search Intel mission", _cGood] call _row,
 	["+15 to +25", "Defend an attacked sector or FOB", _cGood] call _row,
 	["+50", "Recycle an independent ammo box (up to Corporal)", _cGood] call _row,

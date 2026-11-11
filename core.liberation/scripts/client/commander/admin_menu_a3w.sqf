@@ -27,8 +27,19 @@ lbClear _timeout_list;
 } forEach ["Enabled", "Disabled"];
 
 // Build Mission list
+private _titles = createHashMapFromArray [
+	["AirWreck","STR_AIRWRECK"],["AmmoDelivery","STR_AMMODELI"],["BaronRouge","STR_BARON_ROUGE"],["CaptureVIP","STR_VIP_CAP"],
+	["DefendPatrol","STR_DEFPATROL"],["FoodDelivery","STR_FOODDELI"],["FreeHostages","STR_FREE_HOSTAGES"],["FuelDelivery","STR_FUELDELI"],
+	["HealCivilian","STR_HEAL_CIV"],["HeliCapture","STR_HELI_CAP"],["HostileHelicopter","STR_HOSTILE_HELI"],["KillBandits","STR_KILL_BANDIT"],
+	["KillOfficer","STR_HOSTILE_OFFICER"],["MeetResistance","STR_RESISTANCE"],["Outpost","STR_OUTPOST"],["PrisonerConvoy","STR_PRI_CONV"],
+	["RepairVehicle","STR_VEHICLEREP"],["RessourceConvoy","STR_RSC_CONV"],["RoadBlock","STR_ROADBLOCK"],["SearchIntel","STR_SEARCH_INTEL"],
+	["SpecialDelivery","STR_SPECIALDELI"],["SunkenSupplies","STR_SUNKEN"],["TownInvasion","STR_INVASION"],["VehicleCapture","STR_VEHICLECAP"],
+	["WaterDelivery","STR_WATERDELI"],["WepCache","STR_WEAPCACHE"]
+];
 {
-	_mission_list lbAdd format["%1", (_x select 0) splitString "_" select 1];
+	private _file = (_x select 0) splitString "_" select 1;
+	private _title = _titles getOrDefault [_file, _file];
+	_mission_list lbAdd (if (isLocalized _title) then {localize _title} else {_title});
 } forEach SideMissions;
 
 // Build Timer list

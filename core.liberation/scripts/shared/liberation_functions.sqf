@@ -185,3 +185,4 @@ HPC_fnc_rcFobAllowed = compileFinal preprocessFileLineNumbers "scripts\shared\fu
 HPC_fnc_patrolSlot = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_patrolSlot.sqf";
 HPC_fnc_undercoverReport = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_undercoverReport.sqf";
 HPC_fnc_kickPlayer = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_kickPlayer.sqf";
+HPC_fnc_contactName = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_contactName.sqf"; // random side-mission contact
