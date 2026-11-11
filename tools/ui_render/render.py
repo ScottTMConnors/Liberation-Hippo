@@ -630,6 +630,22 @@ class Renderer:
         cols = max(1, int(self.num(cls, "columns", n)))
         font, cap = self.font_for(cls)
         cw, ch = (box[2] - box[0]) / cols, (box[3] - box[1]) / rows
+        if t == CT["CHECKBOXES"]:
+            # CT_CHECKBOXES: each box shows colorBackground; checked ones use checked_strings
+            # and colorTextSelect (colorSelectedBg only marks keyboard focus).
+            checked = d.get("checked", False)
+            checked = set(checked) if isinstance(checked, list) else ({0} if checked else set())
+            on = cls.get("checked_strings")
+            on = on if isinstance(on, list) else strings
+            for i, s in enumerate(strings):
+                r, c = divmod(i, cols)
+                b = (box[0] + c * cw, box[1] + r * ch, box[0] + (c + 1) * cw, box[1] + (r + 1) * ch)
+                fill(surface, b, self.color(cls, "colorBackground"))
+                is_on = i in checked
+                txt = on[i] if is_on and i < len(on) else s
+                col = self.color(cls, "colorTextSelect" if is_on else "colorText", (255, 255, 255, 255))
+                draw_text_line(surface, b, self.m.localize(str(txt)), font, cap, col, "center")
+            return
         sel = int(d.get("sel", 0))
         for i, s in enumerate(strings):
             r, c = divmod(i, cols)

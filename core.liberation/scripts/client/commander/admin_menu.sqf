@@ -13,6 +13,7 @@ if (isNil "do_admin" || isDamageAllowed player) then { do_admin = 0 };
 if (isNil "last_build") then { last_build = 0 };
 if (isNil "do_teleport") then { do_teleport = 0 };
 
+admin_open_next = ""; // set by buttons that close this menu to open another one
 do_unban = 0;
 do_score = 0;
 do_spawn = 0;
@@ -416,7 +417,13 @@ while { alive player && {!isNull _display} } do {
 	};
 	sleep 0.5;
 };
-closeDialog 0;
+// Close only our own menu: a menu opened from a button may already be on top.
+if (!isNull _display) then { closeDialog 0 };
+if (admin_open_next != "") then {
+	private _next = admin_open_next;
+	admin_open_next = "";
+	[] execVM _next;
+};
 
 sleep 1;
 hintSilent "";

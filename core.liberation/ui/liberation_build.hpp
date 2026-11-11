@@ -36,7 +36,7 @@ class liberation_build {
 	"BuildDefenceImage","BuildSupportImage","BuildSquadImage","BuildBuildingImage",
 	"LabelSearch", "LabelFaction", "LabelType", "LabelOptions",
 	"ColumnItem", "ManpowerImage","AmmoImage","FuelImage",
-	"BuildList","LabelPreview","BuildPreview","ItemDetails","LinkedSector","CostBG", "CostHeadLeft", "CostHeadRight", "CostLabel1", "CostLabel2", "CostLabel3", "CostLabel4", "CostValue1", "CostValue2", "CostValue3", "CostValue4",
+	"BuildList","LabelPreview","BuildPreview","ItemDetails","LinkedSector","CostBG", "CostHeadLeft", "CostHeadRight", "CostIcon1", "CostIcon2", "CostIcon3", "CostIcon4", "CostLabel1", "CostLabel2", "CostLabel3", "CostLabel4", "CostValue1", "CostValue2", "CostValue3", "CostValue4",
 	"CrewCheck","CrewLabel","BuildButton","PageLabel",
 	"CatalogSearchLabel", "CatalogSearch", "CatalogFaction", "CatalogType", "CatalogUnlocked", "CatalogClear", "CatalogExpand", "CatalogCollapse", "CatalogReset", "CatalogCount"
 	};
@@ -321,9 +321,20 @@ class liberation_build {
 		x = BLD_DIX + BLD_DIW / 2 - 0.5 * HPC_GX;
 		text = "COST / AVAILABLE";
 	};
+	class CostIcon1 : HPC_Picture {
+		x = BLD_DIX + 0.6 * HPC_GX; y = BLD_PB - 11.95 * HPC_GY; w = 1.2 * HPC_GX; h = 1.2 * HPC_GY;
+		text = "res\ui_manpo.paa";
+	};
+	class CostIcon2 : CostIcon1 { y = BLD_PB - 10.35 * HPC_GY; text = "res\ui_ammo.paa"; };
+	class CostIcon3 : CostIcon1 { y = BLD_PB - 8.75 * HPC_GY; text = "res\ui_fuel.paa"; };
+	class CostIcon4 : CostIcon1 {
+		y = BLD_PB - 7.15 * HPC_GY;
+		text = "\a3\Ui_F_Curator\Data\Displays\RscDisplayCurator\modeGroups_ca.paa";
+		colorText[] = {0.72,0.78,0.8,1};
+	};
 	class CostLabel1 : HPC_Text {
 		idc = 1721;
-		x = BLD_DIX + 0.5 * HPC_GX; y = BLD_PB - 12.1 * HPC_GY; w = BLD_DIW * 0.6; h = 1.5 * HPC_GY;
+		x = BLD_DIX + 2.2 * HPC_GX; y = BLD_PB - 12.1 * HPC_GY; w = BLD_DIW * 0.6; h = 1.5 * HPC_GY;
 		sizeEx = 0.95 * HPC_GY;
 		colorText[] = {0.72,0.78,0.8,1};
 		text = "Manpower";
@@ -342,42 +353,29 @@ class liberation_build {
 	class CostValue2 : CostValue1 { idc = 1732; y = BLD_PB - 10.5 * HPC_GY; };
 	class CostValue3 : CostValue1 { idc = 1733; y = BLD_PB - 8.9 * HPC_GY; };
 	class CostValue4 : CostValue1 { idc = 1734; y = BLD_PB - 7.3 * HPC_GY; };
-	// Build with AI crew: commanders, vehicle and defence pages only (shown by script).
+	// Build with AI crew: vehicle and defence pages; commanders only (enabled by script).
+	// Same CT_CHECKBOXES style as the admin menu toggles.
 	class CrewCheck {
 		idc = 121;
-		type = 77; // CT_CHECKBOX
-		style = 0;
-		x = BLD_DIX; y = BLD_PB - 5.4 * HPC_GY; w = 1.6 * HPC_GX; h = 1.6 * HPC_GY;
-		checked = 0;
-		textureChecked = "\A3\Ui_f\data\GUI\RscCommon\RscCheckBox\CheckBox_checked_ca.paa";
-		textureUnchecked = "\A3\Ui_f\data\GUI\RscCommon\RscCheckBox\CheckBox_unchecked_ca.paa";
-		textureFocusedChecked = "\A3\Ui_f\data\GUI\RscCommon\RscCheckBox\CheckBox_checked_ca.paa";
-		textureFocusedUnchecked = "\A3\Ui_f\data\GUI\RscCommon\RscCheckBox\CheckBox_unchecked_ca.paa";
-		textureHoverChecked = "\A3\Ui_f\data\GUI\RscCommon\RscCheckBox\CheckBox_checked_ca.paa";
-		textureHoverUnchecked = "\A3\Ui_f\data\GUI\RscCommon\RscCheckBox\CheckBox_unchecked_ca.paa";
-		texturePressedChecked = "\A3\Ui_f\data\GUI\RscCommon\RscCheckBox\CheckBox_checked_ca.paa";
-		texturePressedUnchecked = "\A3\Ui_f\data\GUI\RscCommon\RscCheckBox\CheckBox_unchecked_ca.paa";
-		textureDisabledChecked = "\A3\Ui_f\data\GUI\RscCommon\RscCheckBox\CheckBox_checked_ca.paa";
-		textureDisabledUnchecked = "\A3\Ui_f\data\GUI\RscCommon\RscCheckBox\CheckBox_unchecked_ca.paa";
-		color[] = {1,1,1,0.9};
-		colorFocused[] = {1,1,1,1};
-		colorHover[] = {1,1,1,1};
-		colorPressed[] = {1,1,1,1};
-		colorDisabled[] = {1,1,1,0.25};
-		colorBackground[] = {0,0,0,0};
-		colorBackgroundFocused[] = {0,0,0,0};
-		colorBackgroundHover[] = {0,0,0,0};
-		colorBackgroundPressed[] = {0,0,0,0};
-		colorBackgroundDisabled[] = {0,0,0,0};
-		soundEnter[] = {"",0.1,1};
-		soundPush[] = {"",0.1,1};
-		soundClick[] = {"",0.1,1};
-		soundEscape[] = {"",0.1,1};
+		type = 7; // CT_CHECKBOXES
+		style = 2; // ST_CENTER
+		x = BLD_DIX; y = BLD_PB - 5.5 * HPC_GY; w = 3.4 * HPC_GX; h = 1.8 * HPC_GY;
+		columns = 1;
+		rows = 1;
+		strings[] = {""};
+		checked_strings[] = {"ON"};
+		colorSelectedBg[] = {0,0,0,0};
+		colorText[] = HPC_C_MUTED;
+		colorTextSelect[] = HPC_C_ACCENT;
+		colorBackground[] = {0.16,0.20,0.21,0.95};
+		font = "PuristaSemibold";
+		sizeEx = 0.85 * HPC_GY;
+		shadow = 0;
 		tooltip = "Build with an AI crew.";
 	};
 	class CrewLabel : HPC_Text {
 		idc = 122;
-		x = BLD_DIX + 2.0 * HPC_GX; y = BLD_PB - 5.4 * HPC_GY; w = BLD_DIW - 2.0 * HPC_GX; h = 1.6 * HPC_GY;
+		x = BLD_DIX + 4.0 * HPC_GX; y = BLD_PB - 5.5 * HPC_GY; w = BLD_DIW - 4.0 * HPC_GX; h = 1.8 * HPC_GY;
 		sizeEx = 0.95 * HPC_GY;
 		text = "Add AI crew (costs manpower)";
 	};
@@ -385,6 +383,6 @@ class liberation_build {
 		idc = 120;
 		x = BLD_DIX; y = BLD_PB - 3.5 * HPC_GY; w = BLD_DIW; h = 2.9 * HPC_GY;
 		text = $STR_BUILD_BUTTON;
-		action = "private _crew = (findDisplay 5501) displayCtrl 121; manned = ctrlShown _crew && {cbChecked _crew}; dobuild = 1;";
+		action = "private _crew = (findDisplay 5501) displayCtrl 121; manned = ctrlShown _crew && {ctrlEnabled _crew} && {ctrlChecked _crew}; dobuild = 1;";
 	};
 };
