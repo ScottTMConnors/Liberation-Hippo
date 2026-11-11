@@ -517,8 +517,7 @@ while {true} do {
 			};
 
 			build_vehicle = _vehicle;
-			stats_blufor_vehicles_built = stats_blufor_vehicles_built + 1;
-			publicVariable "stats_blufor_vehicles_built";
+			["stats_blufor_vehicles_built", 1] remoteExecCall ["HPC_fnc_addStat", 2];
 		};
 	};
 

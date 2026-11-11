@@ -91,8 +91,7 @@ if ( dorecycle == 1 && !(isNull _vehicle) && (alive _vehicle || _veh_class in al
 		[player] call F_correctUAVT;
 	};
 
-	stats_vehicles_recycled = stats_vehicles_recycled + 1;
-	publicVariable "stats_vehicles_recycled";
+	["stats_vehicles_recycled", 1] remoteExecCall ["HPC_fnc_addStat", 2];
 	if (_public) then {
 		sleep 1;
 		GRLIB_redraw_marker_fob = true;

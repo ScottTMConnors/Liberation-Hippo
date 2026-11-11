@@ -1,8 +1,16 @@
 if (!isServer && hasInterface) exitWith {};
-params ["_truck", "_mode"];
+params ["_truck", ["_mode", "all"]];
 
 if (isNil "_truck") exitWith {};
 if (isNull _truck) exitWith {};
+if !(_mode in ["one", "all"]) then { _mode = "all" };
+// clients may only unload a vehicle they stand next to
+if (isMultiplayer && {isRemoteExecuted} && {!(call HPC_fnc_rcAdmin)}) then {
+	private _netid = remoteExecutedOwner;
+	private _caller = (allPlayers select {owner _x == _netid}) param [0, objNull];
+	if (isNull _caller || {_caller distance2D _truck > 50}) then { _truck = objNull };
+};
+if (isNull _truck) exitWith { diag_log format ["--- LRX Security: unload_truck rejected from owner %1", remoteExecutedOwner] };
 
 private _all_objects = [] + (_truck getVariable ["GRLIB_ammo_vehicle_load", []]);
 if (count _all_objects == 0) exitWith {};

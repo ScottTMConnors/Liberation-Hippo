@@ -135,6 +135,7 @@ lrx_getParamValue = compileFinal preprocessFileLineNumbers "scripts\shared\funct
 reammo_ai = compileFinal preprocessFileLineNumbers "scripts\shared\functions\F_reammo_ai.sqf";
 
 HPC_fnc_rankInfo = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_rankInfo.sqf"; // rank, insignia, XP to next rank
+HPC_fnc_addStat = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_addStat.sqf"; // server-side stats increment
 HPC_fnc_actionTitle = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_actionTitle.sqf"; // consistent action menu entries
 HPC_fnc_applyEasyAI = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_applyEasyAI.sqf";
 HPC_fnc_groupOrder = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_groupOrder.sqf";

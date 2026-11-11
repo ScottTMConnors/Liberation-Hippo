@@ -39,4 +39,4 @@ private _gameRank = switch (_title) do {
 };
 player setUnitRank _gameRank;
 sleep 1;
-player addRating _rating;
+player addRating ((_rating - rating player) max 0);

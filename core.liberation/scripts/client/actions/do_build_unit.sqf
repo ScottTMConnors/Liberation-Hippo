@@ -28,6 +28,5 @@ if (_class_overide in units_loadout_overide) then {
 };
 
 PAR_AI_bros = PAR_AI_bros + [_unit];
-stats_blufor_soldiers_recruited = stats_blufor_soldiers_recruited + 1;
-publicVariable "stats_blufor_soldiers_recruited";
+["stats_blufor_soldiers_recruited", 1] remoteExecCall ["HPC_fnc_addStat", 2];
 build_refresh = true;

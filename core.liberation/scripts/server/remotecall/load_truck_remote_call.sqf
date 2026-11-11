@@ -3,6 +3,9 @@ params ["_truck" ,"_ammobox", "_caller"];
 
 if (isNil "_truck") exitWith {};
 if (isNull _truck) exitWith {};
+if (isNil "_ammobox" || {!(_ammobox isEqualType objNull)} || {isNull _ammobox}) exitWith {};
+// a player-driven load must come from that player, standing next to the box
+if (!isNil "_caller" && {!([_caller] call HPC_fnc_rcCaller) || {_caller distance2D _ammobox > 50}}) exitWith { diag_log format ["--- LRX Security: load_truck rejected from owner %1", remoteExecutedOwner] };
 // queue behind a load in progress (dropping the request lost boxes the AI
 // logistics had already moved out of the truck)
 private _claimed = false;

@@ -3,6 +3,9 @@ params ["_unit", "_ammo", "_fuel"];
 
 if (isNil "_unit") exitWith {};
 if (isNull _unit) exitWith {};
+// Clients may only credit themselves (admins anyone); checked before any suspension.
+if !([_unit] call HPC_fnc_rcCaller || {call HPC_fnc_rcAdmin}) exitWith { diag_log format ["--- LRX Security: ammo_add rejected from owner %1", remoteExecutedOwner] };
+if !(_ammo isEqualType 0 && {_fuel isEqualType 0} && {finite _ammo} && {finite _fuel}) exitWith {};
 
 // wait for the saved score to be applied (never forever: the player may leave)
 private _timeout = time + 60;

@@ -33,8 +33,7 @@ private ["_unitrank", "_unit", "_class_overide"];
 _grp setCombatMode "GREEN";
 _grp setBehaviourStrong "AWARE";
 
-stats_blufor_soldiers_recruited = stats_blufor_soldiers_recruited + count (units _grp);
-publicVariable "stats_blufor_soldiers_recruited";
+["stats_blufor_soldiers_recruited", count (units _grp)] remoteExecCall ["HPC_fnc_addStat", 2];
 if (player != hcLeader _grp) then {
 	(hcLeader _grp) hcRemoveGroup _grp;
 	player hcSetGroup [_grp];
