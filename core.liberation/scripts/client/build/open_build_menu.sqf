@@ -146,6 +146,41 @@ _display setVariable ["HPC_collapsed", []];
         build_refresh = true;
     };
 }];
+// Vehicle stats for the details pane, read from config.
+private _vehicleStats = {
+	params ["_class"];
+	private _vc = configFile >> "CfgVehicles" >> _class;
+	private _muted = ["color", "#9EB0B8", "size", "0.85"];
+	private _weapons = [];
+	private _collect = {
+		params ["_cfg"];
+		{
+			private _name = getText (configFile >> "CfgWeapons" >> _x >> "displayName");
+			if (_name != "" && {!("horn" in toLower _x)} && {!("flare" in toLower _x)} && {!("smoke" in toLower _x)}) then {_weapons pushBackUnique _name};
+		} forEach getArray (_cfg >> "weapons");
+		{ [_x] call _collect } forEach ("isClass _x" configClasses (_cfg >> "Turrets"));
+	};
+	[_vc] call _collect;
+	private _crew = [_class, false] call BIS_fnc_crewCount;
+	private _seats = ([_class, true] call BIS_fnc_crewCount) - _crew;
+	private _kw = getNumber (_vc >> "enginePower");
+	private _engine = if (_kw > 0) then {format ["%1 hp", round (_kw * 1.341)]} else {"-"};
+	private _log = [_class] call R3F_LOG_FNCT_determiner_fonctionnalites_logistique;
+	private _logParts = [];
+	if (_log select R3F_LOG_IDX_can_transport_cargo) then {_logParts pushBack format ["Cargo %1", _log select R3F_LOG_IDX_can_transport_cargo_cout]};
+	if (_log select R3F_LOG_IDX_can_tow) then {_logParts pushBack "Can tow"};
+	if (_log select R3F_LOG_IDX_can_lift) then {_logParts pushBack "Can sling-lift"};
+	private _lines = [
+		format ["Armor %1  |  Engine %2  |  Top speed %3 km/h", getNumber (_vc >> "armor"), _engine, round getNumber (_vc >> "maxSpeed")],
+		format ["Crew %1  |  Passengers %2  |  Fuel tank %3 L  |  Inventory %4", _crew, _seats, round getNumber (_vc >> "fuelCapacity"), getNumber (_vc >> "maximumLoad")],
+		"Weapons: " + (if (_weapons isEqualTo []) then {"none"} else {_weapons joinString ", "})
+	];
+	if !(_logParts isEqualTo []) then {_lines pushBack ("Logistics: " + (_logParts joinString "  |  "))};
+	private _out = [lineBreak, (text "VEHICLE") setAttributes ["color", "#9EB0B8", "size", "0.85"]];
+	{ _out append [lineBreak, (text _x) setAttributes _muted] } forEach _lines;
+	_out
+};
+
 HPC_buildSelection = [];
 
 ctrlEnable [120, false];
@@ -245,11 +280,6 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
 			_build_class = _x select 0;
 			if ( buildtype != GRLIB_SquadBuildType ) then {
 				_entrytext = [_build_class] call F_getLRXName;
-				if (buildtype in [GRLIB_TransportVehicleBuildType,GRLIB_CombatVehicleBuildType,GRLIB_AerialBuildType]) then {
-					_countCrew = [_build_class, false] call BIS_fnc_crewCount;
-					_countCargo = ([_build_class, true] call BIS_fnc_crewCount) - _countCrew;
-					_entrytext = _entrytext + format [" (%1 crew / %2 seats)", _countCrew, _countCargo];
-				};
 
 				_veh_man = format [ "%1", _x select 1];
 				_veh_ammo = format [ "%1", _x select 2];
@@ -291,8 +321,8 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
                 _reasons pushBack _required;
             };
             if (_locked) then {
-                private _name = if (buildtype == GRLIB_SquadBuildType) then {_squadname} else {_entrytext};
-                lnbSetText [110, [_row, 0], _name + " [Locked]"];
+                lnbSetPicture [110, [_row, 0], "\a3\ui_f\data\gui\rsc\rscdisplaymultiplayer\sessions_locked_ca.paa"];
+                lnbSetPictureColor [110, [_row, 0], [0.78,0.45,0.42,0.9]];
                 if (!_rankLocked) then {
                     private _link = [_build_class] call _is_linked;
                     lnbSetTooltip [110, [_row, 0], format ["Capture %1 to unlock this item.", markerText (_link select 2)]];
@@ -405,6 +435,8 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
         private _restoreRow = if (_restoreIndex >= 0) then {_rowItems find _restoreIndex} else {-1};
         if (_restoreRow < 0) then {_restoreRow = _rowItems findIf {_x >= 0}};
         lnbSetCurSelRow [110, _restoreRow];
+        // The refresh may reset the filter combos; snapshot them so that reset isn't seen as a change.
+        _oldFilters = [ctrlText (_display displayCtrl 1701), lbCurSel (_display displayCtrl 1702), lbCurSel (_display displayCtrl 1703)];
 	};
 
 	private _selectedRow = lnbCurSelRow 110;
@@ -457,8 +489,7 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
 				(text format ["Fuel %1", _build_item select 3]) setAttributes ["color", "#F2D678"]
 			];
 			if (buildtype in [GRLIB_TransportVehicleBuildType,GRLIB_CombatVehicleBuildType,GRLIB_AerialBuildType]) then {
-				private _dCrew = [_build_class, false] call BIS_fnc_crewCount;
-				_dParts append [lineBreak, (text format ["Crew %1  |  Passenger seats %2", _dCrew, (([_build_class, true] call BIS_fnc_crewCount) - _dCrew)]) setAttributes ["color", "#9EB0B8"]];
+				_dParts append ([_build_class] call _vehicleStats);
 			};
 			if (buildtype == GRLIB_InfantryBuildType) then {
 				private _dDesc = _build_item param [5, ""];

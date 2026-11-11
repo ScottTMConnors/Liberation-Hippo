@@ -4,7 +4,6 @@ GRLIB_player_admin_actions = [];
 GRLIB_player_vehicle_actions = [];
 GRLIB_player_dog_actions = [];
 GRLIB_player_squad_actions = [];
-GRLIB_player_fob_actions = []; // old IDs belong to the previous body
 
 // Tuto
 private _icon_tuto = "\a3\ui_f\data\map\markers\handdrawn\unknown_ca.paa";

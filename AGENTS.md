@@ -19,6 +19,14 @@ Capture Workshop images with Steam F12: the native screenshots retain game UI
 without the browser automation cursor. The SQF `screenshot` command captures
 only the 3D scene and omits menus. Inspect every selected image before upload.
 
+# UI changes
+
+Any change a player can see in a menu, HUD or dialog (`.hpp` dialogs, the
+theme, or `.sqf` that fills or styles controls) must be rendered with the
+offline renderer `tools/ui_render` and the PNG inspected before the work is
+reported done. Follow the `hippo-ui` project skill; keep a `--data` sample per
+changed dialog in `tools/ui_render/samples/`.
+
 # Releases
 
 Every Workshop upload gets, for the commit it was built from:

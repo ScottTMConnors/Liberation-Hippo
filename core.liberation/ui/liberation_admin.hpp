@@ -67,7 +67,7 @@ class liberation_admin {
 		"Accent", "Header", "Subtitle", "CloseX", "Divider",
 		"LabelSpawn", "ArsenalButton", "AmmoButton", "RespawnButton", "UnusedButton", "BuildList", "BuildButton",
 		"LabelWorld", "CaptureButton", "KillButton", "SkipTimeButton", "ZeusModeButton", "UnlockButton", "DeleteButton",
-		"LabelCampaign", "SaveButton", "ExportButton", "ImportButton", "CleanButton", "MowerButton",
+		"LabelCampaign", "SaveButton", "ExportButton", "ImportButton", "CleanButton", "MowerButton", "MissionAdminButton",
 		"LabelPlayer", "PlayerList", "Item05Input", "Item02Button", "Item03Button", "Item04Button", "Item08Button",
 		"Item05Button", "Item06Button", "Item07Button",
 		"LabelBanned", "BannedList", "Item01Button",
@@ -244,6 +244,13 @@ class liberation_admin {
 		text = $STR_ADMIN_MOWER;
 		tooltip = $STR_CALL_MAGIC_MOWER_TOOLTIP;
 		x = ADM_LX + ADM_B3S;
+	};
+	class MissionAdminButton : CleanButton {
+		idc = 1633;
+		text = "Mission admin";
+		tooltip = "Open the mission admin menu";
+		action = "closeDialog 0; [] execVM 'scripts\client\commander\admin_menu_a3w.sqf'";
+		x = ADM_LX + 2 * ADM_B3S;
 	};
 
 	// ---- Right column ----

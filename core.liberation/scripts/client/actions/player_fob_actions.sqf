@@ -1,5 +1,8 @@
 params ["_add"];
 
+// IDs live on the body they were added to, so a respawn never leaves a stale list behind.
+GRLIB_player_fob_actions = player getVariable ["GRLIB_fob_action_ids", []];
+
 if (_add) then {
     if (count GRLIB_player_fob_actions == 0) then {
         private _icon_grp = "\a3\Ui_F_Curator\Data\Displays\RscDisplayCurator\modeGroups_ca.paa";
@@ -19,10 +22,12 @@ if (_add) then {
         GRLIB_player_fob_actions pushBack (player addAction [([localize "STR_ONBOARD_SHIP", "res\ui_deployfob.paa", "info"] call HPC_fnc_actionTitle),{ [] spawn do_onboard },"",-981,false,true,"","call GRLIB_checkOnboardShip"]);
         // Remove Helipad
         GRLIB_player_fob_actions pushBack (player addAction [([localize "STR_RECYCLE_MANAGER", "res\ui_recycle.paa", "build"] call HPC_fnc_actionTitle),{ deleteVehicle (nearestObjects [player, ["Helipad_base_F"], GRLIB_ActionDist_3] select 0) },"",-505,false,true,"","call GRLIB_checkRemoveHelipad"]);
+        player setVariable ["GRLIB_fob_action_ids", GRLIB_player_fob_actions];
     };
 } else {
     if (count GRLIB_player_fob_actions > 0) then {
         { player removeAction _x } forEach GRLIB_player_fob_actions;
         GRLIB_player_fob_actions = [];
+        player setVariable ["GRLIB_fob_action_ids", []];
     };
 };

@@ -1,9 +1,17 @@
 ---
 name: hippo-ui
-description: Design, edit and preview menus, HUD/RscTitles and dialogs of the Hippos Conquest mission (.hpp dialogs, ui/hippo_theme.hpp, dialog opener scripts). Use for any menu/HUD/dialog work in this mission; iterate with the offline renderer tools/ui_render instead of launching Arma.
+description: REQUIRED for any change that affects what a player sees in a menu, HUD/RscTitles or dialog of the Hippos Conquest mission - .hpp dialogs, ui/hippo_theme.hpp, and .sqf that fills or styles controls (lbAdd, lnbAddRow, lnbSetPicture, ctrlSetText, ctrlSetStructuredText, colours, icons, row text). Every such change must be rendered with the offline renderer tools/ui_render and the PNG inspected before reporting done.
 ---
 
 # Hippos Conquest UI work
+
+**Mandatory:** any UI-visible change (layout, text, icons, colours, list rows,
+details panes, new buttons) is rendered with `tools/ui_render` and the PNG is
+read before you report the work done. This includes script-only changes that
+alter what a list or text control shows: write or update a `--data` sample in
+`tools/ui_render/samples/<dialog>.json` that mirrors the script's output.
+Fix every renderer warning about your files; "image not found" for a `.paa`
+usually means `ARMA3_TOOLS_DIR` is unset (see AGENTS.local.md for this machine).
 
 ## Iterate offline (main loop)
 1. Edit the dialog `.hpp` (and its opener `.sqf` if it fills/moves controls).
@@ -14,7 +22,8 @@ description: Design, edit and preview menus, HUD/RscTitles and dialogs of the Hi
    ```
    - `--list` shows every dialog / RscTitles class; `--all -o dir` renders all.
    - `--data` fills what scripts set at runtime, keyed by idc: list `rows`
-     (`[text, icon, rightText, iconColor]`) + `sel`, `text` (structured text
+     (`[text, icon, rightText, iconColor]`; LISTNBOX rows are cell lists or
+     `{"cells","icon","iconColor","iconRight","iconRightColor","color"}`) + `sel`, `text` (structured text
      too), `hide`/`show` idcs, `offset`/`pos` for `ctrlSetPosition`. Read the
      opener script and mirror what it does. Example:
      `tools/ui_render/samples/liberation_deploy.json`.

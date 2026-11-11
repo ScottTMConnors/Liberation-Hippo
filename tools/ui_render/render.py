@@ -646,7 +646,7 @@ class Renderer:
         rows = d.get("rows")
         if rows is None:
             rows = [[f"Item {i + 1}"] for i in range(min(nrows, 4))]
-        return [[r] if isinstance(r, str) else r for r in rows]
+        return [[r] if isinstance(r, str) else r for r in rows]  # dict rows: LISTNBOX only
 
     def draw_combo(self, surface, cls, box, d):
         fill(surface, box, self.color(cls, "colorBackground", (0, 0, 0, 200)))
@@ -691,11 +691,24 @@ class Renderer:
                 fill(layer, rb, selbg)
             tc = colsel if selected else col
             if nbox and colpos:
-                for ci, cell in enumerate(row):
+                # Row: list of cells, or {"cells", "icon", "iconColor", "iconRight", "iconRightColor", "color"}
+                # (lnbSetPicture on column 0, lnbSetPictureRight at the row end, lnbSetColor).
+                spec = row if isinstance(row, dict) else {"cells": row}
+                cells = spec.get("cells", [])
+                if not selected and spec.get("color"):
+                    tc = to_rgba(spec["color"])
+                isz = rh * 0.86
+                if spec.get("iconRight"):
+                    rc = to_rgba(spec["iconRightColor"]) if spec.get("iconRightColor") else (255, 255, 255, 255)
+                    self.picture(layer, (w - pad - isz, y + (rh - isz) / 2, w - pad, y + (rh + isz) / 2), spec["iconRight"], rc, True)
+                for ci, cell in enumerate(cells):
                     if ci >= len(colpos):
                         break
                     cx0 = colpos[ci] * w
                     cx1 = colpos[ci + 1] * w if ci + 1 < len(colpos) else w
+                    if ci == 0 and spec.get("icon"):
+                        self.picture(layer, (cx0 + pad, y + (rh - isz) / 2, cx0 + pad + isz, y + (rh + isz) / 2), spec["icon"], to_rgba(spec["iconColor"]) if spec.get("iconColor") else (255, 255, 255, 255), True)
+                        cx0 += isz + pad
                     draw_text_line(layer, (cx0, y, cx1, y + rh), str(cell), font, cap, tc, "left", pad=pad)
                 y += rh
                 continue

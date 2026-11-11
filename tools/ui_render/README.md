@@ -32,7 +32,10 @@ Options: `--size 1920x1080`, `--uisize verysmall|small|normal|large|verylarge|<u
   "300": {"image": "res/x.paa", "value": 0.4, "checked": true, "color": [1,0,0,1]}
 }
 ```
-`rows` for LISTNBOX are column lists. `offset`/`pos` emulate `ctrlSetPosition`
+`rows` for LISTNBOX are column lists, or objects
+`{"cells": [...], "icon": "x.paa", "iconColor": [..], "iconRight": "y.paa", "iconRightColor": [..], "color": [..]}`
+mirroring `lnbSetPicture`/`lnbSetPictureColor` (column 0), `lnbSetPictureRight` (row end) and
+`lnbSetColor` (see `samples/liberation_build.json`). `offset`/`pos` emulate `ctrlSetPosition`
 (numbers or config expressions). With `--all`, the JSON maps class name -> data.
 Lists without data show `Item 1..4` placeholders.
 
@@ -49,7 +52,9 @@ Lists without data show `Item 1..4` placeholders.
   text widths within ~5%.
 * Images: mission paths, then game PBOs (`\A3\...`, index of all PBO prefixes is
   built once into `mybuild/ui_render_cache/pbo_index.json`, ~1 min), `.paa`
-  converted by Arma 3 Tools `ImageToPAA.exe` and cached. `#(argb,..)color(..)` ->
+  converted by Arma 3 Tools `ImageToPAA.exe` and cached. Set `ARMA3_TOOLS_DIR`
+  (and `ARMA3_DIR`) when they are not in the default Steam library, or every
+  uncached `.paa` shows as "image not found". `#(argb,..)color(..)` ->
   solid colour. Missing images -> labelled grey box + warning.
 
 ## Known limits

@@ -269,13 +269,13 @@ class liberation_build {
 	};
 	class BuildPreview : HPC_Picture {
 		idc = 162;
-		x = BLD_DIX; y = BLD_HDR_Y + 1.9 * HPC_GY; w = BLD_DIW; h = 9 * HPC_GY;
+		x = BLD_DIX; y = BLD_HDR_Y + 1.9 * HPC_GY; w = BLD_DIW; h = 6 * HPC_GY;
 		colorBackground[] = {0,0,0,0.35};
 	};
-	// Name, cost breakdown, crew and blockers for the selected row.
+	// Name, cost breakdown, vehicle stats and blockers for the selected row.
 	class ItemDetails : HPC_StructuredText {
 		idc = 163;
-		x = BLD_DIX; y = BLD_HDR_Y + 11.2 * HPC_GY; w = BLD_DIW; h = 7.4 * HPC_GY;
+		x = BLD_DIX; y = BLD_HDR_Y + 8.2 * HPC_GY; w = BLD_DIW; h = 10.4 * HPC_GY;
 		size = 0.95 * HPC_GY;
 		class Attributes {
 			font = "RobotoCondensed";
