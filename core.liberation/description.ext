@@ -89,10 +89,8 @@ class CfgCommands {
 	// Note that in case of clients connected to dedicated server, restrictions defined in its config have priority.
 	allowedHTMLLoadURIs[] +=
 	{
-        "https://www.reddit.com/r/Liberation_RX/",
         "https://discord.gg/HcXyqEaDVb",
-		"https://teamspeak.com/en/downloads/",
-        "ts3server://liberation-rx.duckdns.org"
+        "https://github.com/ScottTMConnors/Liberation-Hippo"
 	};
 };
 

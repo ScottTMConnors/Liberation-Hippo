@@ -20,27 +20,31 @@ if (_curSubject == TXU_Diary && _curEntry == TXU_subDiary) then {
 		_contentHtml ctrlSetFade 1;
 		_contentHtml ctrlCommit 0;
 
-		// Inject button
+		// Inject the link buttons, each with its logo on the left
 		ctrlPosition _diaryEntry params ["_entryX", "_entryY", "_entryW", "_entryH"];
-		_ctrl = _display ctrlCreate ["TXU_TS_INFOBUTTON1", 10001, _diaryEntry];
-		_ctrl ctrlSetPosition[0.02, 0.01, _entryW / 2, _btnHeight];
-		_ctrl ctrlCommit 0;
-		ctrlSetFocus _ctrl;
-		_ctrl = _display ctrlCreate ["TXU_TS_INFOBUTTON2", 10002, _diaryEntry];
-		_ctrl ctrlSetPosition[0.02, 0.05, _entryW / 2, _btnHeight];
-		_ctrl ctrlCommit 0;
-		_ctrl = _display ctrlCreate ["TXU_TS_INFOBUTTON3", 10003, _diaryEntry];
-		_ctrl ctrlSetPosition[0.02, 0.09, _entryW / 2, _btnHeight];
-		_ctrl ctrlCommit 0;
-		_ctrl = _display ctrlCreate ["TXU_TS_INFOBUTTON4", 10004, _diaryEntry];
-		_ctrl ctrlSetPosition[0.02, 0.13, _entryW / 2, _btnHeight];
-		_ctrl ctrlCommit 0;		
+		private _rowH = 0.045 * safeZoneH;
+		private _iconW = _rowH * 0.75;
+		{
+			_x params ["_class", "_idc", "_logo"];
+			private _rowY = 0.015 + _forEachIndex * (_rowH + 0.012);
+			private _icon = _display ctrlCreate ["TXU_TS_INFOLOGO", _idc + 100, _diaryEntry];
+			_icon ctrlSetText _logo;
+			_icon ctrlSetPosition [0.02, _rowY, _iconW, _rowH];
+			_icon ctrlCommit 0;
+			private _button = _display ctrlCreate [_class, _idc, _diaryEntry];
+			_button ctrlSetPosition [0.02 + _iconW + 0.01, _rowY, _entryW * 0.6, _rowH];
+			_button ctrlCommit 0;
+			if (_forEachIndex == 0) then { ctrlSetFocus _button };
+		} forEach [
+			["TXU_TS_INFOBUTTON1", 10001, "res\ui_discord.paa"],
+			["TXU_TS_INFOBUTTON2", 10002, "res\ui_github.paa"]
+		];
 	};
 } else {
 	// If its not the mod info entry AND the injected button exists
 	if !(isNull (_diaryEntry controlsGroupCtrl 10001)) then {
 		// Delete injected button
-		{ctrlDelete (_diaryEntry controlsGroupCtrl _x)} foreach [10001,10002,10003,10004];
+		{ctrlDelete (_diaryEntry controlsGroupCtrl _x)} foreach [10001,10002,10101,10102];
 		// Unhide entry html
 		private _contentHtml = _diaryEntry controlsGroupCtrl 1003;
 		_contentHtml ctrlSetFade 0;

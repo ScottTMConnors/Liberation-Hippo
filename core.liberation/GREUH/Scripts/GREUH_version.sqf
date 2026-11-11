@@ -1,217 +1,224 @@
+// Map diary pages (left list of the map screen).
+// Subjects: "LRX Info" (shown as "Hippos Conquest") and "HPC_Guide" (shown as "Field Guide").
+// Arma lists the record created last at the top, so each subject is built bottom-up.
+// The "LRX Info" id is checked elsewhere (GRLIB_r3) and the "Links" page gets the
+// Discord/GitHub buttons from addons\TXU (TXU_Diary / TXU_subDiary).
 if (player diarySubjectExists "LRX Info") exitWith {};
-private _getRandomColor = {
-	private _str = "#";
-	private _mColors = ["19","03","73","ff","30","40","58","60","6f","80","8f","B0"];
-	for "_i" from 0 to 2 do { _str = _str + selectRandom _mColors };
-	_str;
-};
 
+// Colours that read on the dark map panel (match ui\hippo_theme.hpp)
+private _cAcc = "#75CCB8";
+private _cMut = "#9EB0B8";
+private _cKey = "#F2C14E";
+private _cGood = "#8FD694";
+private _cBad = "#FF7A6B";
+
+private _h = { format ["<font size='16' color='%1'>%2</font><br/>", _cAcc, _this] };
+private _sub = { format ["<br/><font color='%1'>%2</font><br/>", _cKey, _this] };
+private _mut = { format ["<font color='%1'>%2</font>", _cMut, _this] };
+private _row = {
+	params ["_val", "_text", ["_col", "#FFFFFF"]];
+	format ["<font color='%1'>%2</font>  %3<br/>", _col, _val, _text]
+};
 private _getkeyName = {
 	params ["_name"];
-	private _ret = actionKeysNames _name;
-	if (_ret == "") then {_ret = "N/A"};
-	_ret;
+	private _ret = actionKeysNames [_name, 1];
+	if (_ret == "") then { _ret = "unbound" };
+	_ret
+};
+private _add = {
+	params ["_subject", "_title", "_lines"];
+	player createDiaryRecord [_subject, [_title, _lines joinString ""], taskNull, "", false];
 };
 
+// ---------------------------------------------------------------- Field Guide
+player createDiarySubject ["HPC_Guide", "Field Guide"];
+
+// Map and factions (bottom). A raw ampersand breaks diary structured text.
+["HPC_Guide", "Map and Factions", [
+	"Map and Factions" call _h,
+	format ["Map: <font color='%1'>%2</font>, ported by %3", _cKey, worldName, GRLIB_map_modder], "<br/>",
+	format ["Friendly faction: <font color='#7FA8FF'>%1</font> (template by %2)", GRLIB_mod_west, GRLIB_west_modder], "<br/>",
+	format ["Enemy faction: <font color='%1'>%2</font> (template by %3)", _cBad, GRLIB_mod_east, GRLIB_east_modder], "<br/>"
+]] call _add;
+
+// Aircraft Loadouts (DALE)
+["HPC_Guide", "Aircraft Loadouts", [
+	"Aircraft Loadout Editor (DALE)" call _h,
+	localize "STR_RPL_DALE_INTRO_1", "<br/><br/>",
+	localize "STR_RPL_DALE_INTRO_2", "<br/>",
+	localize "STR_RPL_DALE_INTRO_3", "<br/><br/>",
+	localize "STR_RPL_DALE_INTRO_4", "<br/>",
+	localize "STR_RPL_DALE_INTRO_5", "<br/>"
+]] call _add;
+
+// Shortcuts
+private _mgrKey = if (isNil "MGR_Key") then { "N/A" } else { format ["Ctrl + %1", keyName MGR_Key] };
+["HPC_Guide", "Shortcuts", [
+	"Shortcuts" call _h,
+	("Bind Custom Actions 10-15 in Options > Controls > Custom." call _mut), "<br/>",
+	"Custom actions" call _sub,
+	[["User10"] call _getkeyName, "Weapon on back (Custom 10)", _cKey] call _row,
+	[["User11"] call _getkeyName, "Auto-run toggle (Custom 11)", _cKey] call _row,
+	[["User12"] call _getkeyName, "Earplugs (Custom 12)", _cKey] call _row,
+	[["User13"] call _getkeyName, "Quick eject (Custom 13)", _cKey] call _row,
+	[["User14"] call _getkeyName, "Toggle HUD (Custom 14)", _cKey] call _row,
+	[["User15"] call _getkeyName, "Screenshot (Custom 15)", _cKey] call _row,
+	"Other" call _sub,
+	[["TacticalPing"] call _getkeyName, "Tactical ping", _cKey] call _row,
+	[["NetworkStats"] call _getkeyName, "Score table", _cKey] call _row,
+	[_mgrKey, "MagRepack", _cKey] call _row,
+	["0-8-1", "Unstuck (Communication menu)", _cKey] call _row,
+	["Alt + Click", "Teleport on map (admin, when enabled in Admin menu)", _cKey] call _row
+]] call _add;
+
+// Civilian Reputation
+private _rep = [
+	"Civilian Reputation" call _h,
+	"Your reputation (-100 to +100) is shown on the HUD. Friendly civilians may heal you, repair your vehicle or bring ammo; hostile ones make your life hard.", "<br/>",
+	("Most rewards go to players near the mission; most penalties hit everyone." call _mut), "<br/>",
+	"Gains" call _sub,
+	["+25", "Meet Resistance", _cGood] call _row,
+	["+15", "Kill Bandits / Prisoner Convoy", _cGood] call _row,
+	["+10", "Defend Patrol / Town Invasion / Free Hostages", _cGood] call _row,
+	["+7", "Special Delivery", _cGood] call _row,
+	["+5", "Ammo, Fuel, Food or Water delivery (deliverer)", _cGood] call _row,
+	["+5", "Heal Civilians / help a stranded civilian driver", _cGood] call _row,
+	["+5", "Hold an attacked sector / free a hostage / bring a wounded civilian to a medic", _cGood] call _row,
+	["+3 to +9", "Liberate a town (x2 for a capital)", _cGood] call _row,
+	["+3", "Heal a civilian who asked for help", _cGood] call _row,
+	["+1", "Every minute among civilians while undetected", _cGood] call _row
+];
+if (GRLIB_civ_penalties > 0) then {
+	_rep append [
+		"Losses" call _sub,
+		["-15", "Attacked sector lost / Free Hostages failed", _cBad] call _row,
+		["-10", "Defend Patrol failed", _cBad] call _row,
+		["-5", "Kill a civilian / Heal Civilians or Kill Bandits failed", _cBad] call _row,
+		["-5", "Active sector not captured in time", _cBad] call _row,
+		["-3", "Each building destroyed in a sector / Meet Resistance or Special Delivery failed", _cBad] call _row,
+		["-2", "Ammo, Fuel, Food or Water delivery failed", _cBad] call _row,
+		["-1", "Your AI kills a civilian", _cBad] call _row
+	];
+} else {
+	_rep append ["<br/>", "Reputation penalties are disabled on this server." call _mut];
+};
+["HPC_Guide", "Civilian Reputation", _rep] call _add;
+
+// XP Rewards
+private _xp = [
+	"XP Rewards" call _h,
+	("Values in XP; some are randomised within the range shown." call _mut), "<br/>",
+	"Gains" call _sub,
+	["+100", "Clear an enemy tunnel (SOG)", _cGood] call _row,
+	["+22 to +47", "Delivery missions / Defend Patrol", _cGood] call _row,
+	["+30", "Shoot down the Red Baron", _cGood] call _row,
+	["+15 to +45", "Search Intel mission", _cGood] call _row,
+	["+15 to +25", "Defend an attacked sector or FOB", _cGood] call _row,
+	["+50", "Recycle an independent ammo box (up to Corporal)", _cGood] call _row,
+	["+10", "Recycle any ammo box (up to Sergeant)", _cGood] call _row,
+	["0 to +42", "Bring a prisoner to HQ (by rank, 25 for pilots)", _cGood] call _row,
+	["+11", "Kill a kamikaze", _cGood] call _row,
+	["+2 to +10", "Find intel or search an IED trap", _cGood] call _row,
+	["+2 to +6", "Destroy or salvage an enemy vehicle", _cGood] call _row,
+	["+5", "Revive a player (once per 5 min)", _cGood] call _row,
+	["+1", "Kill enemy infantry", _cGood] call _row
+];
+private _losses = [
+	["-250", "A FOB is lost while you are Captain+ and away from it", _cBad] call _row,
+	["-10", "Respawn above Sergeant + 50 XP", _cBad] call _row
+];
+if (GRLIB_civ_penalties > 0) then {
+	_losses = [
+		[format ["-%1 to -%2", GRLIB_civ_penalties / 2, GRLIB_civ_penalties * 4], "Kill a civilian or prisoner (grows with rank)", _cBad] call _row,
+		[format ["-%1", GRLIB_civ_penalties], "Your AI kills a civilian", _cBad] call _row,
+		["-50", "Kill a friendly soldier", _cBad] call _row
+	] + _losses;
+};
+if (GRLIB_tk_mode > 0) then {
+	_losses = [
+		["-50", "Destroy another player's vehicle", _cBad] call _row,
+		["-15", "Shoot a friendly player", _cBad] call _row
+	] + _losses;
+};
+_xp append (["Losses" call _sub] + _losses);
+["HPC_Guide", "XP Rewards", _xp] call _add;
+
+// Ranks (top)
+["HPC_Guide", "Ranks", [
+	"Ranks" call _h,
+	("XP unlocks ranks; each rank opens more of the build menu and support." call _mut), "<br/>",
+	format ["<br/><font color='#7FA8FF'>%1+</font>  SUPER COLONEL<br/>%2<br/>", GRLIB_perm_max * 2, localize "STR_RANK_LVL7"],
+	format ["<br/><font color='#7FA8FF'>%1+</font>  COLONEL<br/>%2<br/>", GRLIB_perm_max, localize "STR_RANK_LVL6"],
+	format ["<br/><font color='#5FB0FF'>%1+</font>  MAJOR<br/>%2<br/>", GRLIB_perm_air, localize "STR_RANK_LVL5"],
+	format ["<br/><font color='#00E5E5'>%1+</font>  CAPTAIN<br/>%2<br/>", GRLIB_perm_tank, localize "STR_RANK_LVL4"],
+	format ["<br/><font color='%3'>%1+</font>  SERGEANT<br/>%2<br/>", GRLIB_perm_log, localize "STR_RANK_LVL3", _cGood],
+	format ["<br/><font color='#FFE066'>%1+</font>  CORPORAL<br/>%2<br/>", GRLIB_perm_inf, localize "STR_RANK_LVL2"],
+	format ["<br/><font color='%2'>0+</font>  PRIVATE<br/>%1<br/>", localize "STR_RANK_LVL1", _cKey],
+	format ["<br/><font color='%2'>below 0</font>  NO RANK<br/>%1<br/>", localize "STR_RANK_LVL0", _cBad],
+	format ["<br/><font color='%3'>%1</font>  BANNED<br/>%2<br/>", GRLIB_perm_ban, localize "STR_RANK_LVLBAN", _cBad]
+]] call _add;
+
+// ---------------------------------------------------------------- Hippos Conquest
 player createDiarySubject ["LRX Info", "Hippos Conquest"];
-player createDiaryRecord ["LRX Info", ["Hippos Conquest", "Built on Liberation RX by <font color='#0080ff'>-pSiKO-</font> and contributors, and the original Liberation by [GREUH] Zbug and McKeewa."]];
-player createDiaryRecord ["LRX Info", ["Hippos Conquest", "<font size='18' color='#9EE3D3'>Hippos Conquest</font><br/>Created and maintained by <font color='#9EE3D3'>TheHungryHippo</font>"]];
 
-player createDiarySubject ["LRX Info", "Website Links"];
-player createDiaryRecord ["LRX Info", ["Website Links", "<br/><br/>"]];
-
-
-player createDiarySubject ["LRX Info", "Original Liberation"];
-player createDiaryRecord ["LRX Info", ["Original Liberation", format ["Last version 0.927"]]];
-player createDiaryRecord ["LRX Info", ["Original Liberation", format ["Website: <font color='#ff8000'>arma.greuh.org</font>"]]];
-player createDiaryRecord ["LRX Info", ["Original Liberation", format ["Original version coded by: <font color='#ff8000'>[GREUH] Zbug</font> and <font color='#ff8000'>[GREUH] McKeewa</font>"]]];
-
-player createDiarySubject ["LRX Info", "Thanks"];
-private _all_friends = "";
+// Settings (bottom)
+private _settings = [
+	"Server Settings" call _h,
+	format ["Version <font color='%1'>%2</font>, build %3 (%4)<br/>", _cKey, localize "STR_MISSION_VERSION", GRLIB_build_version, GRLIB_build_date]
+];
+private ["_param_value", "_param_data", "_param_value_list"];
 {
-	_all_friends = _all_friends + format ["- <font color='%1'>%2</font><br/>", call _getRandomColor, _x];
-} foreach (loadFile "GREUH\LRX_friends.txt" splitString toString [13,10]);
-
-player createDiaryRecord ["LRX Info", ["Thanks", format ["...and you!"]]];
-player createDiaryRecord ["LRX Info", ["Thanks", format ["And to all the good friends:<br/> %1", _all_friends]]];
-player createDiaryRecord ["LRX Info", ["Thanks", format ["<font color='%1'>Bohemia's Forum Community</font> for all the support and code tricks.", call _getRandomColor, call _getRandomColor]]];
-player createDiaryRecord ["LRX Info", ["Thanks", format ["<font color='%1'>GREUH Team</font> for the original work.", call _getRandomColor]]];
-player createDiaryRecord ["LRX Info", ["Thanks", format ["<font color='%1'>Mihuan</font>, <font color='%2'>O360_A1AD</font> for language translation.", call _getRandomColor, call _getRandomColor]]];
-player createDiaryRecord ["LRX Info", ["Thanks", format ["<font color='%1'>Varrkan</font>, <font color='%2'>Polox</font> for MP testing and much more.", call _getRandomColor, call _getRandomColor]]];
-player createDiaryRecord ["LRX Info", ["Thanks", format ["<font color='%1'>AgentRev</font>, <font color='%2'>Larrow Zurb</font>, <font color='%3'>KillZoneKid</font>, <font color='%4'>Quiksilver</font> for code scripting.", call _getRandomColor,call _getRandomColor,call _getRandomColor,call _getRandomColor]]];
-player createDiaryRecord ["LRX Info", ["Thanks", format ["<font color='%1'>Isa</font> for all the love and patience.", "#f80000"]]];
-player createDiaryRecord ["LRX Info", ["Thanks", "Thanks to all the people who contribute to the mission:"]];
-player createDiaryRecord ["LRX Info", ["Thanks", "<font color='#9EE3D3'>TheHungryHippo</font>, author of Hippos Conquest."]];
-
-player createDiarySubject ["LRX Info", "Modders"];
-player createDiaryRecord ["LRX Info", ["Modders", format ["<font color='%1'>Community Authors</font> for Templates and Maps.", call _getRandomColor]]];
-player createDiaryRecord ["LRX Info", ["Modders", format ["<font color='%1'>Dark Demon</font> for Templates and Maps.", call _getRandomColor]]];
-player createDiaryRecord ["LRX Info", ["Modders", format ["<font color='%1'>Z-Warrior</font> for Templates and Maps.", call _getRandomColor]]];
-player createDiaryRecord ["LRX Info", ["Modders", format ["<font color='%1'>C0br4</font> for Templates.", call _getRandomColor]]];
-player createDiaryRecord ["LRX Info", ["Modders", "Thanks to the Mod Template Team:"]];
-
-if (GRLIB_LRX_Template_enabled) then {
-	private _version = getNumber (configFile >> "cfgPatches" >> "LRX_Template" >> "version");
-	if (_version >= 2 ) then {
-		[] call LRX_Template_fnc_playerdiary;
-	};
-};
-
-player createDiarySubject ["LRX Info", "Contributors"];
-player createDiaryRecord ["LRX Info", ["Contributors", format ["This build (%1) was made on %2 at %3.", GRLIB_build_version, GRLIB_build_date, GRLIB_build_time]]];
-player createDiaryRecord ["LRX Info", ["Contributors", format ["All the rest and Scripting Integration<br/>by <font color='#0080ff'>-pSiKO-</font>"]]];
-player createDiaryRecord ["LRX Info", ["Contributors", format ["TXU Info v0.2(fixed)<br/>by <font color='%1'>-Terox-</font>", call _getRandomColor]]];
-player createDiaryRecord ["LRX Info", ["Contributors", format ["Nuke Script v1.00<br/>by <font color='%1'>-Moerderhoschi-</font>", call _getRandomColor]]];
-player createDiaryRecord ["LRX Info", ["Contributors", format ["Advanced Rappelling v1.00<br/>by <font color='%1'>-Seth Duda-</font>", call _getRandomColor]]];
-player createDiaryRecord ["LRX Info", ["Contributors", format ["Vehicle Appearance Manager v1.41<br/>by <font color='%1'>-UNIT_normal-</font>", call _getRandomColor]]];
-player createDiaryRecord ["LRX Info", ["Contributors", format ["DALE Pylons v1.00<br/>by <font color='%1'>-Sgt. Dennenboom-</font>", call _getRandomColor]]];
-player createDiaryRecord ["LRX Info", ["Contributors", format ["Wild Life Manager v1.8<br/>by <font color='%1'>-pSiKO-</font>", call _getRandomColor]]];
-player createDiaryRecord ["LRX Info", ["Contributors", format ["Mag Repack v3.13<br/>by <font color='%1'>-Outlawled-</font>", call _getRandomColor]]];
-player createDiaryRecord ["LRX Info", ["Contributors", format ["A3W Missions and much more<br/>by <font color='%1'>-AgentRev-</font>", call _getRandomColor]]];
-player createDiaryRecord ["LRX Info", ["Contributors", format ["R3F Logistics v3.10<br/>by <font color='%1'>-Team-R3F.org-</font>", call _getRandomColor]]];
-player createDiaryRecord ["LRX Info", ["Contributors", format ["Robust Air Taxi v2.05<br/>by <font color='%1'>-pSiKO-</font>", call _getRandomColor]]];
-player createDiaryRecord ["LRX Info", ["Contributors", format ["pSiKO AI Revive v3.05<br/>by <font color='%1'>-pSiKO-</font>", call _getRandomColor]]];
-player createDiaryRecord ["LRX Info", ["Contributors", format ["LARs Arsenal v1.05<br/>by <font color='%1'>-Larrow Zurb-</font>", call _getRandomColor]]];
-player createDiaryRecord ["LRX Info", ["Contributors", format ["Liberation RX dev board<br/>by <font color='%1'>-ScottTMConnors-</font>,<font color='%2'>Ace is Win</font>", call _getRandomColor, call _getRandomColor]]];
-player createDiaryRecord ["LRX Info", ["Contributors", format ["Liberation RX community managers<br/>by <font color='%1'>-Legend_TS13-</font>, <font color='%2'>-Lord_Kamephis-</font>", call _getRandomColor, call _getRandomColor]]];
-player createDiaryRecord ["LRX Info", ["Contributors", "Hippos Conquest by <font color='#9EE3D3'>TheHungryHippo</font><br/>Based on Liberation RX by <font color='#0080ff'>-pSiKO-</font> and contributors, and the original Liberation by [GREUH] Zbug and McKeewa."]];
-player createDiaryRecord ["LRX Info", ["Contributors", localize "STR_MISSION_TITLE"]];
-
-player createDiarySubject ["LRX Info", "Settings"];
-private _diary = [];
-private ["_name", "_param_value_list", "_param_value", "_param_data", "_param_text"];
-{
-	_name = _x;
-	_diary pushBack format ["%1 <font color='#0080f0'>%2</font> %1", "---", _name];
-	_paramArray = _y;
+	_settings pushBack (_x call _sub);
 	{
-		_paramName = _x#0;
+		private _paramName = _x#0;
 		_param_value = [_paramName] call lrx_getParamValue;
 		_param_data = [_paramName] call lrx_getParamData;
 		_param_value_list = (_param_data select 2);
 		if !(isNil "_param_value_list") then {
 			_param_value = _param_value_list find _param_value;
 		};
-		_param_text = (_param_data select 1) select _param_value;
-		_diary pushBack format ["%1: <font color='#ff8000'>%2</font>", _paramName, _param_text];
-	} forEach _paramArray;
-} foreach GRLIB_groupedParams;
-reverse _diary;
-{ player createDiaryRecord ["LRX Info", ["Settings", _x]] } forEach _diary;
-player createDiaryRecord ["LRX Info", ["Settings", format ["Build version: <font color='#ff8000'>%1</font>", GRLIB_build_version]]];
-player createDiaryRecord ["LRX Info", ["Settings", format ["Main version: <font color='#ff8000'>%1</font>", localize "STR_MISSION_VERSION"]]];
-player createDiaryRecord ["LRX Info", ["Settings", format ["-= Current Settings =-"]]];
+		// Show the readable setting name (as in the settings menu), not the internal key.
+		private _label = _paramName;
+		private _hash = _x param [1, createHashMap];
+		if (_hash isEqualType createHashMap) then { _label = _hash getOrDefault [GRLIB_PARAM_NameKey, _paramName] };
+		_settings pushBack format ["%1: <font color='%2'>%3</font><br/>", _label, _cAcc, (_param_data select 1) select _param_value];
+	} forEach _y;
+} forEach GRLIB_groupedParams;
+["LRX Info", "Settings", _settings] call _add;
 
-player createDiarySubject ["LRX Info", "Community"];
-player createDiaryRecord ["LRX Info", ["Community", "Questions, settings help and suggestions for Hippos Conquest:<br/><br/>Discord: <font color='#0080ff'>https://discord.gg/HcXyqEaDVb</font><br/><br/>Steam Workshop: <font color='#0080ff'>Liberation Hippo - Malden</font>"]];
+// Credits
+["LRX Info", "Credits", [
+	"Credits" call _h,
+	format ["<font color='%1'>Hippos Conquest</font> by <font color='%1'>TheHungryHippo</font><br/>", _cAcc],
+	"Based on" call _sub,
+	"Liberation RX by <font color='#5FB0FF'>pSiKO</font> and contributors<br/>",
+	"Liberation by <font color='#FF9A40'>[GREUH] Zbug</font> and <font color='#FF9A40'>[GREUH] McKeewa</font><br/>",
+	"Included scripts" call _sub,
+	("A3W Missions (AgentRev) - R3F Logistics (Team-R3F) - LARs Arsenal (Larrow) - Advanced Rappelling (Seth Duda) - DALE (Sgt. Dennenboom) - MagRepack (Outlawled) - Nuke Script (Moerderhoschi) - TXU Info (Terox) - Vehicle Appearance Manager (UNIT_normal) - AI Revive, Air Taxi, Wild Life (pSiKO)" call _mut), "<br/>",
+	"Thanks" call _sub,
+	("LRX: Ace is Win, ScottTMConnors (dev board); Legend_TS13, Lord_Kamephis (community); Varrkan, Polox (testing); Mihuan, O360_A1AD (translations); Dark Demon, Z-Warrior, C0br4 and the community authors (templates and maps); KillZoneKid, Quiksilver and the Bohemia forums." call _mut), "<br/>"
+]] call _add;
 
-player createDiarySubject ["Ranking","Ranking"];
-player createDiaryRecord ["Ranking", ["Ranking", format ["<font color='#900000'>%1</font>  :  BANNED<br/>%2", GRLIB_perm_ban, localize "STR_RANK_LVLBAN"]]];
-player createDiaryRecord ["Ranking", ["Ranking", format ["<font color='#ff4000'>%1</font>  :  UNNAMED<br/>%2", "Neg.", localize "STR_RANK_LVL0"]]];
-player createDiaryRecord ["Ranking", ["Ranking", format ["<font color='#ff8000'>%1</font>  :  PRIVATE<br/>%2", "000", localize "STR_RANK_LVL1"]]];
-player createDiaryRecord ["Ranking", ["Ranking", format ["<font color='#ffff00'>%1</font>  :  CORPORAL<br/>%2", GRLIB_perm_inf, localize "STR_RANK_LVL2"]]];
-player createDiaryRecord ["Ranking", ["Ranking", format ["<font color='#8ff000'>%1</font>  :  SERGEANT<br/>%2", GRLIB_perm_log, localize "STR_RANK_LVL3"]]];
-player createDiaryRecord ["Ranking", ["Ranking", format ["<font color='#00ffff'>%1</font>  :  CAPTAIN<br/>%2", GRLIB_perm_tank, localize "STR_RANK_LVL4"]]];
-player createDiaryRecord ["Ranking", ["Ranking", format ["<font color='#0080ff'>%1</font>  :  MAJOR<br/>%2", GRLIB_perm_air, localize "STR_RANK_LVL5"]]];
-player createDiaryRecord ["Ranking", ["Ranking", format ["<font color='#0000ff'>%1</font>  :  COLONEL<br/>%2", GRLIB_perm_max, localize "STR_RANK_LVL6"]]];
-player createDiaryRecord ["Ranking", ["Ranking", format ["<font color='#0000ff'>%1</font>  :  SUPER COLONEL<br/>%2", GRLIB_perm_max*2, localize "STR_RANK_LVL7"]]];
-player createDiaryRecord ["Ranking", ["Ranking", format ["-= How the Ranking System Works =-"]]];
+// Links (TXU_subDiary: Discord/GitHub buttons are drawn over this page)
+["LRX Info", "Links", [
+	"<img image='res\ui_discord.paa' height='20' width='20'/> Discord: <font color='#5FB0FF'>https://discord.gg/HcXyqEaDVb</font><br/><br/>",
+	"<img image='res\ui_github.paa' height='20' width='20'/> GitHub: <font color='#5FB0FF'>https://github.com/ScottTMConnors/Liberation-Hippo</font><br/>"
+]] call _add;
 
-player createDiarySubject["Table","Killing Table"];
-if (GRLIB_civ_penalties > 0) then {
-	player createDiarySubject["Table","Civilian Reputation (Penalties)"];
-	player createDiaryRecord ["Table", ["Civilian Reputation (Penalties)", format ["<font color='#ff4000'> -R</font> pts  :  Destroy Civilian Buildings or Homes"]]];
-	player createDiaryRecord ["Table", ["Civilian Reputation (Penalties)", format ["<font color='#ff4000'>-10</font> pts  :  Fail 'Defend Patrols' Mission"]]];
-	player createDiaryRecord ["Table", ["Civilian Reputation (Penalties)", format ["<font color='#ff4000'> -5</font> pts  :  Fail 'Heal Civilians' Mission"]]];
-	player createDiaryRecord ["Table", ["Civilian Reputation (Penalties)", format ["<font color='#ff4000'> -7</font> pts  :  Fail 'Special Delivery' Mission"]]];
-	player createDiaryRecord ["Table", ["Civilian Reputation (Penalties)", format ["<font color='#ff4000'> -2</font> pts  :  Fail 'Ammo Delivery' Mission"]]];
-	player createDiaryRecord ["Table", ["Civilian Reputation (Penalties)", format ["<font color='#ff4000'> -5</font> pts  :  Fail 'Fuel Delivery' Mission"]]];
-	player createDiaryRecord ["Table", ["Civilian Reputation (Penalties)", format ["<font color='#ff4000'> -5</font> pts  :  Fail 'Food Delivery' Mission"]]];
-	player createDiaryRecord ["Table", ["Civilian Reputation (Penalties)", format ["<font color='#ff4000'> -5</font> pts  :  Fail 'Water Delivery' Mission"]]];
-	player createDiaryRecord ["Table", ["Civilian Reputation (Penalties)", format ["<font color='#ff4000'> -3</font> pts  :  Fail 'Meet Resistance' Mission"]]];
-	player createDiaryRecord ["Table", ["Civilian Reputation (Penalties)", format ["<font color='#ff4000'>-10</font> pts  :  Fail 'Town Invasion' Mission"]]];
-	player createDiaryRecord ["Table", ["Civilian Reputation (Penalties)", format ["<font color='#ff4000'>-15</font> pts  :  Fail 'Free Hostages' Mission"]]];
-	player createDiaryRecord ["Table", ["Civilian Reputation (Penalties)", format ["<font color='#ff4000'>-15</font> pts  :  Fail to Defend an Attacked Sector"]]];
-	player createDiaryRecord ["Table", ["Civilian Reputation (Penalties)", format ["<font color='#ff4000'> -5</font> pts  :  Fail to Capture an activated Sector"]]];
-	player createDiaryRecord ["Table", ["Civilian Reputation (Penalties)", format ["-= Civilian Reputation (Penalties) =-"]]];
+// About (top)
+["LRX Info", "About", [
+	"Hippos Conquest" call _h,
+	format ["Created and maintained by <font color='%1'>TheHungryHippo</font>.<br/><br/>", _cAcc],
+	"Liberate the island sector by sector: capture towns and factories, build FOBs, earn XP and ranks, and keep the civilians on your side.<br/>",
+	"Community" call _sub,
+	"Questions, settings help and suggestions: see <font color='#5FB0FF'>Links</font> for Discord and GitHub.<br/>",
+	format ["Steam Workshop: <font color='%1'>Liberation Hippo - Malden</font><br/>", _cKey],
+	"<br/>", ("See the Field Guide subject for ranks, XP, reputation and shortcuts." call _mut)
+]] call _add;
+
+if (GRLIB_LRX_Template_enabled) then {
+	private _version = getNumber (configFile >> "cfgPatches" >> "LRX_Template" >> "version");
+	if (_version >= 2) then {
+		[] call LRX_Template_fnc_playerdiary;
+	};
 };
-
-player createDiarySubject["Table","Civilian Reputation (Bonuses)"];
-player createDiaryRecord ["Table", ["Civilian Reputation (Bonuses)", format ["<font color='#00ff40'>+20</font> pts  :  Complete 'Defend Patrols' Mission"]]];
-player createDiaryRecord ["Table", ["Civilian Reputation (Bonuses)", format ["<font color='#00ff40'> +5</font> pts  :  Complete 'Heal Civilians' Mission"]]];
-player createDiaryRecord ["Table", ["Civilian Reputation (Bonuses)", format ["<font color='#00ff40'>+25</font> pts  :  Complete 'Special Delivery' Mission"]]];
-player createDiaryRecord ["Table", ["Civilian Reputation (Bonuses)", format ["<font color='#00ff40'> +8</font> pts  :  Complete 'Ammo Delivery' Mission"]]];
-player createDiaryRecord ["Table", ["Civilian Reputation (Bonuses)", format ["<font color='#00ff40'>+15</font> pts  :  Complete 'Fuel Delivery' Mission"]]];
-player createDiaryRecord ["Table", ["Civilian Reputation (Bonuses)", format ["<font color='#00ff40'>+15</font> pts  :  Complete 'Food Delivery' Mission"]]];
-player createDiaryRecord ["Table", ["Civilian Reputation (Bonuses)", format ["<font color='#00ff40'>+15</font> pts  :  Complete 'Water Delivery' Mission"]]];
-player createDiaryRecord ["Table", ["Civilian Reputation (Bonuses)", format ["<font color='#00ff40'> +5</font> pts  :  Complete 'Help Civilian'...Repair/Refuel their Vehicle"]]];
-player createDiaryRecord ["Table", ["Civilian Reputation (Bonuses)", format ["<font color='#00ff40'>+10</font> pts  :  Complete 'Meet Resistance' Mission"]]];
-player createDiaryRecord ["Table", ["Civilian Reputation (Bonuses)", format ["<font color='#00ff40'>+20</font> pts  :  Complete 'Town Invasion' Mission"]]];
-player createDiaryRecord ["Table", ["Civilian Reputation (Bonuses)", format ["<font color='#00ff40'>+10</font> pts  :  Complete 'Free Hostages' Mission"]]];
-player createDiaryRecord ["Table", ["Civilian Reputation (Bonuses)", format ["<font color='#00ff40'>+25</font> pts  :  Defend an Attacked Sector"]]];
-player createDiaryRecord ["Table", ["Civilian Reputation (Bonuses)", format ["<font color='#00ff40'> +8</font> pts  :  Liberate a Sector"]]];
-player createDiaryRecord ["Table", ["Civilian Reputation (Bonuses)", format ["-= Civilian Reputation (Bonuses) =-"]]];
-
-player createDiarySubject["Table","Civilian Reputation"];
-if (GRLIB_civ_penalties > 0) then {
-	player createDiaryRecord ["Table", ["Civilian Reputation", "Most Bonuses apply to Players near or within the Mission area, but most Penalties apply to everyone on the server."]];
-	player createDiaryRecord ["Table", ["Civilian Reputation", "Each Player has a Civilian Reputation rating displayed on the right side of your screen, which indicates your current 'Reputation' among the Civilian population. It scales from -100 to +100.<br/><br/>If you have a higher Rep, the civillians will at times help you: Heal you, Repair your vehicle, Supply you with Ammo during combat.<br/><br/>The lower your Rep goes, especially into the negative, then they will harass you, and do other things to make your life miserable!.<br/><br/>It is beneficial to you, that you keep them happy by completing humanitarian missions and taking care not to kill any of them or let their property be destroyed in combat.<br/><br/>Successfully completing certain things raises your rep, while failing to complete certain things lowers your rep..."]];
-} else {
-	player createDiaryRecord ["Table", ["Civilian Reputation", "Reputation bonuses generally apply to players near or within the mission area."]];
-	player createDiaryRecord ["Table", ["Civilian Reputation", "Each Player has a Civilian Reputation rating displayed on the right side of your screen, which indicates your current 'Reputation' among the Civilian population. It scales from -100 to +100.<br/><br/>If you have a higher Rep, the civillians will at times help you: Heal you, Repair your vehicle, Supply you with Ammo during combat.<br/><br/>Completing humanitarian missions can raise your reputation."]];
-};
-
-player createDiarySubject["Table","Killing Table"];
-player createDiaryRecord ["Table", ["Killing Table", format ["<br/>note: XP points may vary depending on the nature or rank of the targets."]]];
-player createDiaryRecord ["Table", ["Killing Table", format ["<font color='#ff4000'>-50</font> pts  :  Killing Friendly"]]];
-player createDiaryRecord ["Table", ["Killing Table", format ["<font color='#ff4000'>-20</font> up to <font color='#ff4000'>-80</font> pts  :  Killing Prisoners"]]];
-if (GRLIB_civ_penalties > 0) then {
-	player createDiaryRecord ["Table", ["Killing Table", format ["<font color='#ff4000'>-20</font> up to <font color='#ff4000'>-80</font> pts  :  Killing Civilians"]]];
-	player createDiaryRecord ["Table", ["Killing Table", format ["<font color='#ff4000'>-20</font> pts  :  Killing Civilians by AI"]]];
-	player createDiaryRecord ["Table", ["Killing Table", format ["<font color='#ff4000'> -5</font> pts  :  Eject Civilian from Vehicle"]]];
-};
-player createDiaryRecord ["Table", ["Killing Table", format ["<font color='#ff4000'> -5</font> pts  :  Friendly fire"]]];
-player createDiaryRecord ["Table", ["Killing Table", format ["<font color='#ff4000'> -5</font> pts  :  Respawn (Sergeant and above)"]]];
-player createDiaryRecord ["Table", ["Killing Table", format ["<font color='#ff4000'> -1</font> pts  :  Wounded (Sergeant and above)"]]];
-player createDiaryRecord ["Table", ["Killing Table", format ["<font color='#00ff40'>+50</font> pts  :  Recycle AAF AmmoBox (rank below Sergeant)"]]];
-player createDiaryRecord ["Table", ["Killing Table", format ["<font color='#00ff40'>+10</font> pts  :  Recycle any AmmoBox (rank below Captain)"]]];
-player createDiaryRecord ["Table", ["Killing Table", format ["<font color='#00ff40'>+15</font> pts  :  Find intel or search traps"]]];
-player createDiaryRecord ["Table", ["Killing Table", format ["<font color='#00ff40'>+10</font> pts  :  Bring prisoners or VIPs to HQ"]]];
-player createDiaryRecord ["Table", ["Killing Table", format ["<font color='#00ff40'>+20</font> pts  :  Defend Attacked Sector"]]];
-player createDiaryRecord ["Table", ["Killing Table", format ["<font color='#00ff40'>+10</font> pts  :  Kill a Kamikaze"]]];
-player createDiaryRecord ["Table", ["Killing Table", format ["<font color='#00ff40'> +5</font> pts  :  Salvage Wrecks"]]];
-player createDiaryRecord ["Table", ["Killing Table", format ["<font color='#00ff40'> +5</font> pts  :  Revive other players (near combat)"]]];
-player createDiaryRecord ["Table", ["Killing Table", format ["<font color='#00ff40'> +5</font> pts  :  Kill enemy vehicle"]]];
-player createDiaryRecord ["Table", ["Killing Table", format ["<font color='#00ff40'> +1</font> pts  :  Kill enemy infantry"]]];
-player createDiaryRecord ["Table", ["Killing Table", format ["-= Killing Table =-"]]];
-
-player createDiarySubject ["Shortcut","Shortcut"];
-player createDiaryRecord ["Shortcut", ["Shortcut", format ["(Custom Action 15) Take Screenshot : Key <font color='#ff8000'>%1</font>", ["User15"] call _getkeyName]]];
-player createDiaryRecord ["Shortcut", ["Shortcut", format ["(Custom Action 14) Toggle HUD : Key <font color='#ff8000'>%1</font>", ["User14"] call _getkeyName]]];
-player createDiaryRecord ["Shortcut", ["Shortcut", format ["(Custom Action 13) Quick Eject : Key <font color='#ff8000'>%1</font>", ["User13"] call _getkeyName]]];
-player createDiaryRecord ["Shortcut", ["Shortcut", format ["(Custom Action 12) Toggle earplugs : Key <font color='#ff8000'>%1</font>", ["User12"] call _getkeyName]]];
-player createDiaryRecord ["Shortcut", ["Shortcut", format ["(Custom Action 11) Always run : Key <font color='#ff8000'>%1</font>", ["User11"] call _getkeyName]]];
-player createDiaryRecord ["Shortcut", ["Shortcut", format ["(Custom Action 10) Weapon to back : Key <font color='#ff8000'>%1</font>", ["User10"] call _getkeyName]]];
-player createDiaryRecord ["Shortcut", ["Shortcut", format ["Unblock unit (player/AI) : Key <font color='#ff8000'>[0 + 8 + 1]</font>"]]];
-player createDiaryRecord ["Shortcut", ["Shortcut", format ["Teleport on Map (Admin) : Key <font color='#ff8000'>Alt + LMB</font>"]]];
-player createDiaryRecord ["Shortcut", ["Shortcut", format ["Open MagRepack Utility : Key <font color='#ff8000'>Ctrl + %1</font>", keyName (MGR_Key)]]];
-player createDiaryRecord ["Shortcut", ["Shortcut", format ["Tactical Ping : Key <font color='#ff8000'>%1</font>", ["TacticalPing"] call _getkeyName]]];
-player createDiaryRecord ["Shortcut", ["Shortcut", format ["Show the Score Table : Key <font color='#ff8000'>%1</font>", ["NetworkStats"] call _getkeyName]]];
-player createDiaryRecord ["Shortcut", ["Shortcut", format ["-= Key Shortcut =-"]]];
-
-player createDiarySubject ["MapInfo","MapInfo"];
-player createDiaryRecord ["MapInfo", ["MapInfo", format ["This Map: %1<br/>was ported to LRX by: <font color='%3'>%2</font>.", worldname, GRLIB_map_modder, call _getRandomColor]]];
-player createDiaryRecord ["MapInfo", ["MapInfo", format ["The East faction <font color='#f80000'>%1</font><br/>was made by: <font color='%3'>%2</font>.", GRLIB_mod_east, GRLIB_east_modder, call _getRandomColor]]];
-player createDiaryRecord ["MapInfo", ["MapInfo", format ["The West faction <font color='#0000f8'>%1</font><br/>was made by: <font color='%3'>%2</font>.", GRLIB_mod_west, GRLIB_west_modder, call _getRandomColor]]];
-player createDiaryRecord ["MapInfo", ["MapInfo", format ["-= Map Information =-"]]];
-
-private _briefing = [
-    localize "STR_RPL_DALE_INTRO_1",
-    localize "STR_RPL_DALE_INTRO_2",
-    localize "STR_RPL_DALE_INTRO_3",
-    localize "STR_RPL_DALE_INTRO_4",
-    localize "STR_RPL_DALE_INTRO_5",
-    "<br />"
-];
-player createDiarySubject ["DALE", "DALE"];
-player createDiaryRecord ["DALE", ["DALE", _briefing joinString "<br />"]];

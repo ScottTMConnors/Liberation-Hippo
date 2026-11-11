@@ -62,6 +62,7 @@ HPC_ambientTraffic = [];
 GRLIB_civilian_activity = 1;
 for "_i" from 1 to 3 do {[[[_civilianHome,12]],[]] call HPC_fnc_ambientTraffic};
 private _trafficOK = count HPC_ambientTraffic == 3 && {HPC_ambientTraffic findIf {!alive driver _x || {!([group driver _x] call HPC_fnc_hcEligible)} || {count waypoints group driver _x < 3}} < 0};
+diag_log ["HPC_TRAFFIC_TEST",count HPC_ambientTraffic,HPC_ambientTraffic apply {[typeOf _x,alive driver _x,[group driver _x] call HPC_fnc_hcEligible,count waypoints group driver _x]}];
 [[],[]] call HPC_fnc_ambientTraffic;
 ["civilians.traffic",_trafficOK && {HPC_ambientTraffic isEqualTo []}] call _assert;
 HPC_ambientTraffic = _trafficBefore;

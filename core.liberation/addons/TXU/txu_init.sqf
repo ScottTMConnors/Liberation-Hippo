@@ -7,8 +7,8 @@
 
 
 // Global variables
-TXU_Diary = "LRX Info";
-TXU_subDiary = "Website Links";
+TXU_Diary = "Hippos Conquest"; // displayed name of the "LRX Info" diary subject
+TXU_subDiary = "Links";
 TXU_INFO_CtrlEHAdded = false;
 
 // Functions

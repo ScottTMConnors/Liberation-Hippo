@@ -36,7 +36,12 @@ private _towns = (nearestLocations [_home,["NameCityCapital","NameCity","NameVil
     _military findIf {_x distance2D _town < 600} < 0 && {!((_town nearRoads 250) isEqualTo [])}
 };
 if (_towns isEqualTo []) then {_towns = [_home]};
-private _origin = selectRandom _towns;
+// Spawn only inside the 2 km keep radius used above; a car spawned in a farther
+// town was deleted as "away" on the very next tick. Cars may still drive out to
+// the farther towns and are removed there as intended.
+private _origins = _towns select {_x distance2D _home < 1800};
+if (_origins isEqualTo []) then {_origins = [_home]};
+private _origin = selectRandom _origins;
 private _roads = _origin nearRoads 250;
 private _class = switch (_kind) do {
     case "heli": {"C_Heli_Light_01_civil_F"};
@@ -48,9 +53,15 @@ private _class = switch (_kind) do {
 };
 if (!isClass (configFile >> "CfgVehicles" >> _class)) exitWith {};
 if (_kind == "car" && {_roads isEqualTo []}) exitWith {};
-private _position = if (_kind == "car") then {getPosATL selectRandom _roads} else {_home getPos [2500,random 360]};
-// Do not materialize traffic beside a player or inside another vehicle.
-if (_players findIf {_x distance2D _position < 250} >= 0 || {!((_position nearEntities ["LandVehicle",15]) isEqualTo [])}) exitWith {};
+// Do not materialize traffic beside a player or inside another vehicle. A single
+// random pick often lands next to the car spawned a moment earlier on the same
+// road, so try a few spots before giving up on this tick.
+private _position = [];
+for "_attempt" from 1 to 8 do {
+    private _candidate = if (_kind == "car") then {getPosATL selectRandom _roads} else {_home getPos [2500,random 360]};
+    if (_players findIf {_x distance2D _candidate < 250} < 0 && {(_candidate nearEntities ["LandVehicle",15]) isEqualTo []}) exitWith {_position = _candidate};
+};
+if (_position isEqualTo []) exitWith {};
 if (_kind != "car") then {_position set [2,if (_kind == "plane") then {450} else {250}]};
 private _vehicle = createVehicle [_class,_position,[],0,if (_kind == "car") then {"NONE"} else {"FLY"}];
 if (isNull _vehicle) exitWith {};

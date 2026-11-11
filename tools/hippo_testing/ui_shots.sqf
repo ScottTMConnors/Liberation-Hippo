@@ -99,6 +99,34 @@ diag_log format ["HPC_UIWHEEL|%1",HPC_testRun];
 ["07_actions",1.5] call HPC_uiShot;
 uiSleep 4; // let the action menu fade
 
+// Map notes: one shot per diary page. selectDiarySubject "<id>:Record<N>" counts records
+// from the bottom of the list (first created = Record0), see GREUH_version.sqf.
+openMap true;
+uiSleep 2;
+{
+    _x params ["_page","_shot"];
+    player selectDiarySubject _page;
+    uiSleep 1.2;
+    if (_page == "LRX Info:Record2") then {
+        private _btn = ((findDisplay 12) displayCtrl 1013) controlsGroupCtrl 10001;
+        diag_log ["HPC_UISHOT_LINKS", !isNull _btn];
+    };
+    [_shot,0.5] call HPC_uiShot;
+} forEach [
+    ["LRX Info:Record3","17a_diary_about"],
+    ["LRX Info:Record2","17b_diary_links"],
+    ["LRX Info:Record1","17c_diary_credits"],
+    ["LRX Info:Record0","17d_diary_settings"],
+    ["HPC_Guide:Record5","17e_guide_ranks"],
+    ["HPC_Guide:Record4","17f_guide_xp"],
+    ["HPC_Guide:Record3","17g_guide_reputation"],
+    ["HPC_Guide:Record2","17h_guide_shortcuts"],
+    ["HPC_Guide:Record1","17i_guide_aircraft"],
+    ["HPC_Guide:Record0","17j_guide_map"]
+];
+openMap false;
+uiSleep 1;
+
 // Tutorial from the action menu: a real key press must close it, and input must stay free.
 [] call _closeDialogs;
 private _tuto = [] execVM "scripts\client\ui\tutorial_manager.sqf";

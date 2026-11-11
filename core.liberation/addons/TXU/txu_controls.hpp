@@ -66,10 +66,10 @@ class TXU_GUI_RscButton
 
 class TXU_TS_INFOBUTTON1 : TXU_GUI_RscButton
 {
-	text = "Liberation RX Reddit (upstream project)";
-	url = "https://www.reddit.com/r/Liberation_RX/";
+	text = "Join the Hippos Conquest Discord";
+	url = "https://discord.gg/HcXyqEaDVb";
 	w = 0.5;
-	colorText[] = {0,1,1,1};
+	colorText[] = {0.92,0.94,0.95,1};
 	colorDisabled[] = {1,1,1,0.25};
 	colorBackground[] = {0.12,0.15,0.16,0.92};
 	colorBackgroundDisabled[] = {0.10,0.12,0.13,0.6};
@@ -83,20 +83,13 @@ class TXU_TS_INFOBUTTON1 : TXU_GUI_RscButton
 
 class TXU_TS_INFOBUTTON2 : TXU_TS_INFOBUTTON1
 {
-	text = "Join the Hippos Conquest Discord";
-	url = "https://discord.gg/HcXyqEaDVb";
+	text = "Hippos Conquest on GitHub";
+	url = "https://github.com/ScottTMConnors/Liberation-Hippo";
 };
 
-class TXU_TS_INFOBUTTON3 : TXU_TS_INFOBUTTON1
+class TXU_TS_INFOLOGO : HPC_Picture
 {
-	text = "Liberation RX TeamSpeak (upstream project)";
-	url = "ts3server://liberation-rx.duckdns.org?addbookmark=Liberation RX";
-};
-
-class TXU_TS_INFOBUTTON4 : TXU_TS_INFOBUTTON1
-{
-	text = "Download Teamspeak";
-	url = "https://teamspeak.com/en/downloads/";
+	text = "res\ui_discord.paa";
 };
 
 // Note: you MUST allow urls in description.ext file in the allowedHTMLLoadURIs section !
