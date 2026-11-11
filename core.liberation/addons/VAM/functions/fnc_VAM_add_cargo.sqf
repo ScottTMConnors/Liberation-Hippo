@@ -22,7 +22,7 @@ if (_item in VAM_cargo_class_names) then {
 			[_object] call F_aceInitVehicle;
 			[_object, _vehicle] call init_object_direct;
 			[_object, _vehicle, true] call ace_cargo_fnc_loadItem;
-			_msg = format ["%1 added to Cargo.", ([_item] call F_getLRXName) ];
+			_msg = format ["%1 added to cargo.", ([_item] call F_getLRXName) ];
 		};
 	} else {
 		private _veh_load = [_vehicle] call R3F_calculer_chargement_vehicule;
@@ -35,7 +35,7 @@ if (_item in VAM_cargo_class_names) then {
 			if (_near_outpost) then { _cost = round (_cost * 1.5) };
 			if !([_cost] call F_pay) exitWith { _msg = "" };
 			[_vehicle, [_item]] call R3F_transporteur_charger_auto;
-			_msg = format ["%1 added to Cargo.", ([_item] call F_getLRXName)];
+			_msg = format ["%1 added to cargo.", ([_item] call F_getLRXName)];
 		};
 	};
 } else {
@@ -45,7 +45,7 @@ if (_item in VAM_cargo_class_names) then {
 		if !([_cost] call F_pay) exitWith { _msg = "" };
 		_vehicle addItemCargoGlobal [_item, 1];
 		_currentvehiclecargotext ctrlSetText  ([_vehicle] call fnc_VAM_get_freecargo);
-		_msg = format ["%1 added to Cargo.", ([_item] call F_getLRXName)];
+		_msg = format ["%1 added to cargo.", ([_item] call F_getLRXName)];
 	};
 };
 

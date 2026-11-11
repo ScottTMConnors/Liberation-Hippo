@@ -9,7 +9,7 @@ if ([player] call F_getScore < GRLIB_perm_tank || (player distance2D _location <
 _fobname = [_location] call F_getFobName;
 
 private _msg = format [localize "STR_REMOTE_PENALTY", name player, _fobname, _penalty];
-[_msg, 0, 0, 10, 0, 0, 90] spawn BIS_fnc_dynamicText;
+["Penalty", _msg, "bad", 10, true] call HPC_fnc_toast;
 
 playSound "taskfailed";
 [player, -_penalty] remoteExec ["F_addScore", 2];

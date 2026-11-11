@@ -104,6 +104,7 @@ def main():
     ap.add_argument('--steam-launch', action='store_true', help='Launch the isolated rendering client through Steam.')
     ap.add_argument('--targeted', action='store_true', help='Test fortification action and coastal placement in a disposable mission.')
     ap.add_argument('--visual', action='store_true', help='Run isolated civilian and commander visual fixture (requires one client).')
+    ap.add_argument('--ui-shots', action='store_true', help='Capture UI screenshots (menus, redeploy, HUD) from one rendering client into <run>/shots.')
     ap.add_argument('--movement', action='store_true', help='Measure ambient pedestrian movement and garrison occupancy on the server.')
     ap.add_argument('--attribution',action='store_true')
     ap.add_argument('--headless', type=int, choices=[0,2], default=0)
@@ -122,6 +123,7 @@ def main():
     if args.steam_launch and args.clients != 1: ap.error("--steam-launch requires --clients 1")
     if args.targeted and args.clients != 1: ap.error("--targeted requires --clients 1")
     if args.visual and args.clients != 1: ap.error("--visual requires --clients 1")
+    if args.ui_shots and args.clients != 1: ap.error("--ui-shots requires --clients 1")
     if args.attribution and args.headless != 2: ap.error("--attribution requires --headless 2")
     if args.scenario and args.commander:
         ap.error('Run --scenario and --commander separately: scenario cleanup stops the warfare managers needed by commander checks.')
@@ -228,7 +230,7 @@ addMissionEventHandler ["MPEnded",{
         # Test clients cannot press the lobby OK button, so skip role assignment.
         p=stage/'description.ext'
         p.write_text(re.sub(r'skipLobby\s*=\s*0;','skipLobby = 1;',p.read_text(encoding='utf-8-sig')),encoding='utf-8')
-        shutil.copy2(ROOT/('tools/hippo_testing/targeted_client.sqf' if args.targeted else 'tools/hippo_testing/visual_client.sqf' if args.visual else 'tools/hippo_testing/client.sqf'),tests/'client.sqf')
+        shutil.copy2(ROOT/('tools/hippo_testing/targeted_client.sqf' if args.targeted else 'tools/hippo_testing/visual_client.sqf' if args.visual else 'tools/hippo_testing/ui_shots.sqf' if args.ui_shots else 'tools/hippo_testing/client.sqf'),tests/'client.sqf')
         if args.visual:
             shutil.copy2(ROOT/'tools/hippo_testing/visual_server.sqf',tests/'visual_server.sqf')
             with (tests/'run.sqf').open('a', encoding='utf-8') as f: f.write('\nHPC_visualServerReady = true; publicVariable \"HPC_visualServerReady\";\n')
@@ -286,6 +288,8 @@ addMissionEventHandler ["MPEnded",{
     client_cases=['startup.client','player.abilities','catalog.filters','catalog.empty','purchase.filtered','reward.owner','services.cooldown','revive.manual','mods.handlers','catalog.groups','catalog.singleType','catalog.rankVisible','catalog.toggle','catalog.tools','map.overlay','map.remoteShots','commander.window','mods.damage']
     if args.targeted: client_cases=['startup.client','fortifications.build','fortifications.sound']
     if args.visual: client_cases=['startup.client','visual.objectivePanel','visual.civilianMovement','visual.commanderPost']
+    if args.ui_shots: client_cases=['uishots.spawned','uishots.dialogs']
+    shots_taken=set(); wheels_sent=set()
     manifest={'run_id':run_id,'map':args.map,'source_head':subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT).decode().strip(),'source_sha256':source_hash.hexdigest(),'baseline':args.baseline,'variant':args.variant,'control':args.control,'cases':cases,'client_cases':client_cases,'scripts':scripts,'package_sha256':sha(pbo),'argv':argv,'roles':roles,'port':port}
     (out/'manifest.json').write_text(json.dumps(manifest,indent=2),encoding='utf-8')
     if compaction:
@@ -399,12 +403,23 @@ addMissionEventHandler ["MPEnded",{
                         if not isinstance(error,TimeoutError) and role in pipes: pipes.pop(role).close()
                         with (out/'connection.log').open('a',encoding='utf-8') as log:
                             log.write(json.dumps({'role':role,'error':str(error)})+'\n')
+            if args.ui_shots:
+                import ui_capture
+                for role,(child,folder,_) in clients.items():
+                    content=logs(folder)
+                    for name in re.findall(re.escape(f'HPC_UISHOT|{run_id}|')+r'([\w.-]+)',content):
+                        if name in shots_taken: continue
+                        shots_taken.add(name)
+                        ok=ui_capture.capture(child.pid,out/'shots'/f'{name}.png')
+                        print(json.dumps({'shot':name,'saved':ok}),flush=True)
+                    if f'HPC_UIWHEEL|{run_id}' in content and role not in wheels_sent:
+                        wheels_sent.add(role); ui_capture.wheel(child.pid)
             if f'HPC_TEST|{run_id}|server|RUN_DONE|' in rpt and all(f'HPC_TEST|{run_id}|{role}|RUN_DONE|' in logs(folder) for role,(_,folder,_) in clients.items()) and (not args.headless or ((args.attribution or 'hc1_rejoin' in headless) and all(f'HPC_TEST|{run_id}|{role}|RUN_DONE|' in logs(folder) for role,(_,folder) in headless.items()))):
                 completed=True; stop_reason='protocol_complete'
                 if args.hold: time.sleep(min(args.hold,60))
                 break
             if process.poll() is not None: stop_reason='early_exit'; break
-            time.sleep(0.5)
+            time.sleep(0.25 if args.ui_shots else 0.5)
         time.sleep(1)
     finally:
         for child,_ in headless.values():

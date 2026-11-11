@@ -1,15 +1,15 @@
 disableSerialization;
 private [
-	"_overlay", "_hide_HUD", "_attacked_string", "_active_sectors_string", "_fob_sector",
+	"_overlay", "_hide_HUD", "_attacked_string", "_fob_sector",
 	"_color_readiness", "_color_reput", "_reput_icon", "_nearest_active_sector",
-	"_server_overloaded", "_zone_size", "_colorzone", "_bar", "_barwidth",
-	"_reputation", "_attacked_timer", "_sector_timer", "_capture_size"
+	"_server_overloaded", "_zone_size", "_colorzone", "_reputation", "_sector_timer"
 ];
 private _overlayshown = false;
-private _sectorcontrols = [201,202,203,204,205];
 private _indicator = [245,246,247];
 private _active_sectors_hint = false;
 private _uiticks = 0;
+private _alert_shown = false;
+private _gy = safezoneH / 54;
 GRLIB_ui_notif = "";
 
 waituntil {sleep 1; GRLIB_player_spawned};
@@ -26,8 +26,6 @@ if (GRLIB_Commander_mode) then {
 
 private _color_F = getArray (configFile >> "CfgMarkerColors" >> GRLIB_color_friendly >> "color") call BIS_fnc_colorConfigToRGBA;
 private _color_E = getArray (configFile >> "CfgMarkerColors" >> GRLIB_color_enemy >> "color") call BIS_fnc_colorConfigToRGBA;
-private _color_U = getArray (configFile >> "CfgMarkerColors" >> GRLIB_color_unknown >> "color") call BIS_fnc_colorConfigToRGBA;
-private _color_Red = getArray (configFile >> "CfgMarkerColors" >> "ColorRed" >> "color") call BIS_fnc_colorConfigToRGBA;
 
 while {true} do {
 	_hide_HUD = !(shownHUD select 0);
@@ -40,37 +38,9 @@ while {true} do {
 		!([player] call PAR_is_wounded)
 	);
 
-	if (sector_timer == 0) then {
-		"opfor_capture_marker" setMarkerPosLocal markers_reset;
-	};
-
-	if ((markerPos "opfor_capture_marker") distance2D markers_reset > 100) then {
-		_attacked_string = [markerpos "opfor_capture_marker"] call F_getLocationName;
-		_sector_timer = round (sector_timer - serverTime);
-		_attacked_timer = "VULNERABLE";
-		_marker_timer = format [" %1 - VULNERABLE!", _attacked_string];
-		if (_sector_timer > 0) then {
-			_attacked_timer = [_sector_timer] call F_secondsToTimer;
-			_marker_timer = format [" %1 - %2", _attacked_string, _attacked_timer];
-		};
-		if (_overlayshown) then {
-			(_overlay displayCtrl (401)) ctrlShow true;
-			(_overlay displayCtrl (402)) ctrlSetText _attacked_string;
-			(_overlay displayCtrl (403)) ctrlSetText _attacked_timer;
-		};
-		"opfor_capture_marker" setMarkerTextLocal _marker_timer;
-	} else {
-		if (_overlayshown) then {
-			(_overlay displayCtrl (401)) ctrlShow false;
-			(_overlay displayCtrl (402)) ctrlSetText "";
-			(_overlay displayCtrl (403)) ctrlSetText "";
-		};
-		"opfor_capture_marker" setMarkerTextLocal "";
-	};
-
 	if (_overlay_check && !_overlayshown) then {
-		"LibUI" cutRsc ["statusoverlay", "PLAIN", 1];
-		_overlay = uiNamespace getVariable ['GUI_OVERLAY', objNull];
+		"LibUI" cutRsc ["statusoverlay", "PLAIN", 0];
+		_overlay = uiNamespace getVariable ['GUI_OVERLAY', displayNull];
 		_overlayshown = true;
 		_uiticks = 0;
 	};
@@ -80,231 +50,158 @@ while {true} do {
 		_overlayshown = false;
 	};
 
-	if (!isNil "_overlay") then {
-		_server_overloaded = (opforcap_max || count active_sectors >= GRLIB_max_active_sectors);
-		if (!_server_overloaded) then {
-			(_overlay displayCtrl (516)) ctrlSetStructuredText parseText " ";
-			(_overlay displayCtrl (517)) ctrlShow false;
-		};
-
-		if (_overlayshown) then {
-			(_overlay displayCtrl (266)) ctrlSetText format ["%1", GRLIB_ui_notif];
-			(_overlay displayCtrl (267)) ctrlSetText format ["%1", GRLIB_ui_notif];
-
-			if (_uiticks % 2 == 0) then {
-				(_overlay displayCtrl (107)) ctrlSetText format ["%1", (player getVariable ["GREUH_score_count",0])];
-				(_overlay displayCtrl (102)) ctrlSetText format ["%1", (player getVariable ["GREUH_ammo_count",0])];
-				(_overlay displayCtrl (103)) ctrlSetText format ["%1", (player getVariable ["GREUH_fuel_count",0])];
-				(_overlay displayCtrl (101)) ctrlSetText format ["%1/%2", resources_infantry, infantry_cap];
-				_reputation = [player] call F_getReput;
-				(_overlay displayCtrl (104)) ctrlSetText format ["%1", round(_reputation)];
-				(_overlay displayCtrl (105)) ctrlSetText format ["%1%2", round(combat_readiness),"%"];
-				(_overlay displayCtrl (106)) ctrlSetText format ["%1", round(resources_intel)];
-
-				_color_readiness = [0.8,0.8,0.8,1];
-				if (combat_readiness >= 25) then { _color_readiness = [0.8,0.8,0,1] };
-				if (combat_readiness >= 50) then { _color_readiness = [0.8,0.6,0,1] };
-				if (combat_readiness >= 75) then { _color_readiness = [0.8,0.3,0,1] };
-				if (combat_readiness >= 95) then { _color_readiness = [0.8,0,0,1] };
-
-				(_overlay displayCtrl (105)) ctrlSetTextColor _color_readiness;
-				(_overlay displayCtrl (135)) ctrlSetTextColor _color_readiness;
-
-				_color_reput = [0.8,0.8,0.8,1];
-				_reput_icon = "res\rep\rep3.paa";
-				if (_reputation >= 25) then { _color_reput = [0.8,0.8,0,1]; _reput_icon = "res\rep\rep4.paa" };
-				if (_reputation >= 50) then { _color_reput = [0.0,0.6,0,1]; _reput_icon = "res\rep\rep5.paa" };
-				if (_reputation >= 75) then { _color_reput = [0.0,0.8,0,1]; _reput_icon = "res\rep\rep6.paa" };
-				if (_reputation >= 100) then { _color_reput = [0,0.8,0.6,1]; _reput_icon = "res\rep\rep6.paa" };
-				if (_reputation <= -25) then { _color_reput = [0.8,0.8,0,1]; _reput_icon = "res\rep\rep2.paa" };
-				if (_reputation <= -50) then { _color_reput = [0.8,0.6,0,1]; _reput_icon = "res\rep\rep1.paa" };
-				if (_reputation <= -75) then { _color_reput = [0.8,0.3,0,1]; _reput_icon = "res\rep\rep0.paa" };
-				if (_reputation <= -100) then { _color_reput = [0.8,0,0,1]; _reput_icon = "res\rep\rep0.paa" };
-				(_overlay displayCtrl (104)) ctrlSetTextColor _color_reput;
-				(_overlay displayCtrl (1041)) ctrlSetText (getMissionPath _reput_icon);
-
-				_bar = _overlay displayCtrl (246);
-				_bar ctrlSetBackgroundColor _color_Red;
-				_awareness = player getVariable ["GRLIB_unit_detected", 1.5];
-				_ratio = linearConversion [0, 1.5, _awareness, 0, 1, true];
-				_barwidth = 0.084 * safezoneW * _ratio;
-				_bar ctrlSetPosition [(ctrlPosition _bar) select 0,(ctrlPosition _bar) select 1,_barwidth,(ctrlPosition _bar) select 3];
-				_bar ctrlCommit 1;
-			};
-
-			if (_uiticks % 4 == 0) then {
-				_bar = _overlay displayCtrl (204);
-				_fob_sector = false;
-				_nearest_active_sector = "";
-
-				if (GRLIB_player_near_lhd) then {
-					_nearest_active_sector = "base_chimera";
-					_fob_sector = true;
-				} else {
-					if (GRLIB_player_near_fob) then {
-						_nearest_active_sector = [GRLIB_player_nearest_fob] call F_getFobMarker;
-						_fob_sector = true;
-					} else {
-						_nearest_active_sector = [GRLIB_sector_size] call F_getNearestSector;
-					};
-				};
-
-                if (GRLIB_Commander_mode && {count active_sectors > 0}) then {
-                    _nearest_active_sector = active_sectors select 0;
-                    _fob_sector = false;
-                };
-
-				if (_nearest_active_sector == "") then {
-					{ (_overlay displayCtrl _x) ctrlShow false } foreach _sectorcontrols;
-					"zone_capture" setmarkerposlocal markers_reset;
-				} else {
-					{ (_overlay displayCtrl _x) ctrlShow true } foreach _sectorcontrols;
-					"zone_capture" setmarkerposlocal (markerpos _nearest_active_sector);
-					(_overlay displayCtrl (205)) ctrlSetText (markerText _nearest_active_sector);
-				};
-
-				if (side player == GRLIB_side_civilian && !(isNil {player getVariable "GRLIB_unit_detected"})) then {
-					{ (_overlay displayCtrl _x) ctrlShow true } foreach _indicator;
-				} else {
-					{ (_overlay displayCtrl _x) ctrlShow false } foreach _indicator;
-				};
-
-				_zone_size = GRLIB_capture_size;
-				if (_nearest_active_sector in sectors_bigtown) then {
-					_zone_size = GRLIB_capture_size * 1.4;
-				};
-				"zone_capture" setMarkerSizeLocal [_zone_size,_zone_size];
-
-				if (_server_overloaded) then {
-					(_overlay displayCtrl (517)) ctrlShow true;
-
-					if (!_active_sectors_hint) then {
-						hint localize "STR_OVERLOAD_HINT";
-						_active_sectors_hint = true;
-					};
-
-					_active_sectors_string = "<t align='right' color='#e0e000'>" + (localize "STR_ACTIVE_SECTORS") + "<br/>";
-					{
-						_active_sectors_string = _active_sectors_string + (markertext _x) + "<br/>";
-					} foreach active_sectors;
-					_active_sectors_string = _active_sectors_string + "</t>";
-					(_overlay displayCtrl (516)) ctrlSetStructuredText parseText _active_sectors_string;
-				};
-
-				_colorzone = "ColorGrey";
-				_colortext = _color_U;
-				if (_nearest_active_sector != "") then {
-					if (_nearest_active_sector in blufor_sectors || _fob_sector) then {
-						_colorzone = GRLIB_color_friendly;
-						_colortext = _color_F;
-					} else {
-						_colorzone = GRLIB_color_enemy;
-						_colortext = _color_E;
-					};
-				};
-
-				"zone_capture" setmarkercolorlocal _colorzone;
-				(_overlay displayCtrl (205)) ctrlSetTextColor _colortext;
-				(_overlay displayCtrl (204)) ctrlSetBackgroundColor _color_F;
-				(_overlay displayCtrl (203)) ctrlSetBackgroundColor _color_E;
-
-				if (!GRLIB_Commander_mode) then {
-					if (_nearest_active_sector != "") then {
-						if (_fob_sector) exitWith {
-							_barwidth = 0.084 * safezoneW * 1;
-							_bar ctrlSetPosition [(ctrlPosition _bar) select 0,(ctrlPosition _bar) select 1,_barwidth,(ctrlPosition _bar) select 3];
-							_bar ctrlCommit 0;
-						};
-						_capture_size = GRLIB_capture_size;
-						if (_nearest_active_sector in sectors_bigtown) then {
-							_capture_size = GRLIB_capture_size * 1.4;
-						};
-						_ratio = [_nearest_active_sector, _capture_size] call F_getForceRatio;
-						_barwidth = 0.084 * safezoneW * _ratio;
-						_bar ctrlSetPosition [(ctrlPosition _bar) select 0,(ctrlPosition _bar) select 1,_barwidth,(ctrlPosition _bar) select 3];
-						_bar ctrlCommit 1;
-					};
-				} else {
-					if (count active_sectors > 0) then {
-						_active_sector = _nearest_active_sector;
-                        private _state = missionNamespace getVariable ["HPC_sectorState_"+_active_sector,[]];
-                        private _progress = 0;
-                        if (count _state > 1) then {
-                            _progress = ((_state select 1) / 100) max 0 min 1;
-                            if (_state select 0 == "loading") then {
-                                (_overlay displayCtrl 205) ctrlSetText format ["%1 - Loading %2%3",_state param [4,markerText _active_sector],round (_state select 1),"%"];
-                            };
-                        } else {
-                            _progress = [_active_sector,500] call F_getForceRatio;
-                        };
-                        {(_overlay displayCtrl _x) ctrlShow true} forEach _sectorcontrols;
-                        _bar ctrlSetPosition [(ctrlPosition _bar) select 0,(ctrlPosition _bar) select 1,0.084 * safezoneW * _progress,(ctrlPosition _bar) select 3];
-                        _bar ctrlCommit 0.3;
-						if (_active_sector in blufor_sectors) then {
-							(_overlay displayCtrl (206)) ctrlSetText "Standby for mission";
-							(_overlay displayCtrl (206)) ctrlSetTextColor _color_F;
-						} else {
-							(_overlay displayCtrl (206)) ctrlSetText format ["Attack %1", (markerText _active_sector)];
-							(_overlay displayCtrl (206)) ctrlSetTextColor _color_E;
-						};
-					} else {
-						_text = "";
-						if (count GRLIB_AvailAttackSectors > 0) then {
-							if (GRLIB_Commander_VoteEnabled || GRLIB_player_commander) then {
-								if (GRLIB_player_commander) then {
-									//todo: localize
-									_text = "Select a sector on the map to attack";
-								} else {
-									_text = "Vote for a sector on the map to attack";
-								};
-							} else {
-								_text = "Standby for mission";
-							};
-						} else {
-							if (GRLIB_player_commander && count GRLIB_all_fobs == 0) then {
-								_text = "Deploy an FOB to start a mission";
-							} else {
-								_text = "Standby for mission";
-							};
-						};
-						(_overlay displayCtrl (206)) ctrlSetTextColor _color_U;
-						(_overlay displayCtrl (206)) ctrlShow true;
-						(_overlay displayCtrl (206)) ctrlSetText _text;
-					};
-
-				};
-			};
-		};
+	if (sector_timer == 0) then {
+		"opfor_capture_marker" setMarkerPosLocal markers_reset;
 	};
 
+	// Sector under attack: red strip under the resources.
+	_alert_shown = (markerPos "opfor_capture_marker") distance2D markers_reset > 100;
+	if (_alert_shown) then {
+		_attacked_string = [markerpos "opfor_capture_marker"] call F_getLocationName;
+		_sector_timer = round (sector_timer - serverTime);
+		private _attacked_timer = "VULNERABLE";
+		if (_sector_timer > 0) then { _attacked_timer = [_sector_timer] call F_secondsToTimer };
+		"opfor_capture_marker" setMarkerTextLocal format [" %1 - %2", _attacked_string, _attacked_timer];
+		if (_overlayshown) then {
+			(_overlay displayCtrl 402) ctrlSetText format ["UNDER ATTACK  %1", toUpper _attacked_string];
+			(_overlay displayCtrl 403) ctrlSetText _attacked_timer;
+		};
+	} else {
+		"opfor_capture_marker" setMarkerTextLocal "";
+	};
 
-    if (_overlayshown && {!isNil "_overlay"}) then {
-        // A single compact panel lists every active objective without rotating.
-        {(_overlay displayCtrl _x) ctrlShow false} forEach [201,202,203,204,205,206,516,517];
-        private _panel = _overlay displayCtrl 518;
-        private _body = "<t color='#75CBB8' size='0.9'>OPERATIONS</t><br/>";
-        if (active_sectors isEqualTo []) then {
-            _body = _body + "<t color='#BDC8CC'>Select an objective on the map</t>";
-        } else {
-            {
-                private _state = missionNamespace getVariable ["HPC_sectorState_" + _x,[]];
-                private _name = _state param [4,markerText _x];
-                private _phase = _state param [0,"loading"];
-                private _progress = round ((_state param [1,0]) max 0 min 100);
-                private _status = if (_phase == "loading") then {format ["Preparing · %1%2",_progress,"%"]} else {
-                    private _commander = missionNamespace getVariable ["HPC_sectorCommander_" + _x,objNull];
-                    private _dead = (missionNamespace getVariable ["HPC_sectorCommanderDead_" + _x,false]) || {!isNull _commander && {!alive _commander}};
-                    format ["%1%2 cleared  ·  Commander %3",_progress,"%",if (_dead) then {"eliminated"} else {"alive"}]
-                };
-                _body = _body + format ["<t size='1.05' color='#FFFFFF'>%1</t><br/><t color='#B5C2C7' size='0.9'>%2</t><br/>",_name,_status];
-            } forEach active_sectors;
-        };
-        _panel ctrlSetStructuredText parseText _body;
-        _panel ctrlSetPosition [(ctrlPosition _panel select 0),(ctrlPosition _panel select 1),(ctrlPosition _panel select 2),((0.04 + 0.055 * ((count active_sectors) max 1)) min 0.38) * safezoneH];
-        _panel ctrlCommit 0;
-    };
+	if (_overlayshown) then {
+		{ (_overlay displayCtrl _x) ctrlShow _alert_shown } forEach [401, 402, 403, 404];
+		(_overlay displayCtrl 266) ctrlSetText GRLIB_ui_notif;
+		(_overlay displayCtrl 267) ctrlSetText GRLIB_ui_notif;
+
+		if (_uiticks % 2 == 0) then {
+			(_overlay displayCtrl 107) ctrlSetText str (player getVariable ["GREUH_score_count",0]);
+			(_overlay displayCtrl 102) ctrlSetText str (player getVariable ["GREUH_ammo_count",0]);
+			(_overlay displayCtrl 103) ctrlSetText str (player getVariable ["GREUH_fuel_count",0]);
+			(_overlay displayCtrl 101) ctrlSetText format ["%1/%2", resources_infantry, infantry_cap];
+			_reputation = [player] call F_getReput;
+			(_overlay displayCtrl 104) ctrlSetText str (round _reputation);
+			(_overlay displayCtrl 105) ctrlSetText format ["%1%2", round combat_readiness, "%"];
+			(_overlay displayCtrl 106) ctrlSetText str (round resources_intel);
+
+			_color_readiness = [0.85,0.88,0.9,1];
+			if (combat_readiness >= 25) then { _color_readiness = [0.95,0.88,0.35,1] };
+			if (combat_readiness >= 50) then { _color_readiness = [0.98,0.70,0.30,1] };
+			if (combat_readiness >= 75) then { _color_readiness = [0.98,0.50,0.30,1] };
+			if (combat_readiness >= 95) then { _color_readiness = [0.95,0.35,0.32,1] };
+			(_overlay displayCtrl 105) ctrlSetTextColor _color_readiness;
+			(_overlay displayCtrl 135) ctrlSetTextColor _color_readiness;
+
+			_color_reput = [0.85,0.88,0.9,1];
+			_reput_icon = "res\rep\rep3.paa";
+			if (_reputation >= 25) then { _color_reput = [0.92,0.90,0.45,1]; _reput_icon = "res\rep\rep4.paa" };
+			if (_reputation >= 50) then { _color_reput = [0.55,0.85,0.50,1]; _reput_icon = "res\rep\rep5.paa" };
+			if (_reputation >= 75) then { _color_reput = [0.45,0.90,0.55,1]; _reput_icon = "res\rep\rep6.paa" };
+			if (_reputation >= 100) then { _color_reput = [0.45,0.90,0.80,1]; _reput_icon = "res\rep\rep6.paa" };
+			if (_reputation <= -25) then { _color_reput = [0.92,0.90,0.45,1]; _reput_icon = "res\rep\rep2.paa" };
+			if (_reputation <= -50) then { _color_reput = [0.98,0.70,0.30,1]; _reput_icon = "res\rep\rep1.paa" };
+			if (_reputation <= -75) then { _color_reput = [0.98,0.50,0.30,1]; _reput_icon = "res\rep\rep0.paa" };
+			if (_reputation <= -100) then { _color_reput = [0.95,0.35,0.32,1]; _reput_icon = "res\rep\rep0.paa" };
+			(_overlay displayCtrl 104) ctrlSetTextColor _color_reput;
+			(_overlay displayCtrl 1041) ctrlSetText (getMissionPath _reput_icon);
+
+			// Civilian (undercover) mode: detection meter above the card.
+			private _civ = side player == GRLIB_side_civilian && !(isNil {player getVariable "GRLIB_unit_detected"});
+			{ (_overlay displayCtrl _x) ctrlShow _civ } forEach _indicator;
+			if (_civ) then {
+				private _bar = _overlay displayCtrl 246;
+				private _frame = ctrlPosition (_overlay displayCtrl 245);
+				private _ratio = linearConversion [0, 1.5, player getVariable ["GRLIB_unit_detected", 1.5], 0, 1, true];
+				_bar ctrlSetPosition [_frame select 0, _frame select 1, (_frame select 2) * _ratio, _frame select 3];
+				_bar ctrlCommit 0.5;
+			};
+		};
+
+		if (_uiticks % 4 == 0) then {
+			// Capture zone marker around the nearest sector (or the objective in commander mode).
+			_fob_sector = false;
+			_nearest_active_sector = "";
+			if (GRLIB_player_near_lhd) then {
+				_nearest_active_sector = "base_chimera";
+				_fob_sector = true;
+			} else {
+				if (GRLIB_player_near_fob) then {
+					_nearest_active_sector = [GRLIB_player_nearest_fob] call F_getFobMarker;
+					_fob_sector = true;
+				} else {
+					_nearest_active_sector = [GRLIB_sector_size] call F_getNearestSector;
+				};
+			};
+			if (GRLIB_Commander_mode && {count active_sectors > 0}) then {
+				_nearest_active_sector = active_sectors select 0;
+				_fob_sector = false;
+			};
+			if (_nearest_active_sector == "") then {
+				"zone_capture" setmarkerposlocal markers_reset;
+			} else {
+				"zone_capture" setmarkerposlocal (markerpos _nearest_active_sector);
+				_zone_size = GRLIB_capture_size;
+				if (_nearest_active_sector in sectors_bigtown) then { _zone_size = GRLIB_capture_size * 1.4 };
+				"zone_capture" setMarkerSizeLocal [_zone_size,_zone_size];
+				_colorzone = GRLIB_color_enemy;
+				if (_nearest_active_sector in blufor_sectors || _fob_sector) then { _colorzone = GRLIB_color_friendly };
+				"zone_capture" setmarkercolorlocal _colorzone;
+			};
+
+			_server_overloaded = (opforcap_max || count active_sectors >= GRLIB_max_active_sectors);
+			if (_server_overloaded && !_active_sectors_hint) then {
+				hint localize "STR_OVERLOAD_HINT";
+				_active_sectors_hint = true;
+			};
+		};
+
+		// Operations: every active objective in one list under the resources.
+		private _panel = _overlay displayCtrl 518;
+		private _body = "<t font='PuristaSemibold' color='#9EE3D3' size='0.85'>OPERATIONS</t><br/>";
+		if (active_sectors isEqualTo []) then {
+			private _idle = "Select an objective on the map";
+			if (GRLIB_Commander_mode) then {
+				if (count GRLIB_AvailAttackSectors > 0) then {
+					if (!GRLIB_player_commander && GRLIB_Commander_VoteEnabled) then { _idle = "Vote for an objective on the map" };
+					if (!GRLIB_player_commander && !GRLIB_Commander_VoteEnabled) then { _idle = "Standing by for orders" };
+				} else {
+					_idle = ["Standing by for orders", "Deploy an FOB to start a mission"] select (GRLIB_player_commander && count GRLIB_all_fobs == 0);
+				};
+			};
+			_body = _body + format ["<t color='#B5C2C7'>%1</t>", _idle];
+		} else {
+			{
+				private _state = missionNamespace getVariable ["HPC_sectorState_" + _x,[]];
+				private _name = _state param [4, markerText _x];
+				private _phase = _state param [0, "loading"];
+				private _progress = round ((_state param [1, 0]) max 0 min 100);
+				private _status = if (_phase == "loading") then {format ["Preparing  %1%2", _progress, "%"]} else {
+					private _commander = missionNamespace getVariable ["HPC_sectorCommander_" + _x, objNull];
+					private _dead = (missionNamespace getVariable ["HPC_sectorCommanderDead_" + _x, false]) || {!isNull _commander && {!alive _commander}};
+					format ["%1%2 cleared  ·  commander %3", _progress, "%", ["alive", "down"] select _dead]
+				};
+				private _dist = round ((player distance2D (markerPos _x)) / 100) / 10;
+				_body = _body + format [
+					"<t size='1.02' color='#FFFFFF'>%1</t><t align='right' color='#8E9DA3' size='0.85'>%3 km</t><br/><t color='#B5C2C7' size='0.86'>%2</t><br/>",
+					_name, _status, _dist
+				];
+			} forEach active_sectors;
+		};
+		_panel ctrlSetStructuredText parseText _body;
+		private _pos = ctrlPosition _panel;
+		private _top = (ctrlPosition (_overlay displayCtrl 520) select 1) + 4.2 * _gy + ([0, 2.5 * _gy] select _alert_shown);
+		private _h = (((ctrlTextHeight _panel) + 0.5 * _gy) max (2.6 * _gy)) min (0.38 * safezoneH);
+		_panel ctrlSetPosition [_pos select 0, _top + 0.3 * _gy, _pos select 2, _h - 0.3 * _gy];
+		_panel ctrlCommit 0;
+		{
+			private _ctrl = _overlay displayCtrl _x;
+			_ctrl ctrlSetPosition [ctrlPosition _ctrl select 0, _top, ctrlPosition _ctrl select 2, _h];
+			_ctrl ctrlCommit 0;
+		} forEach [519, 521];
+	};
 
 	_uiticks = _uiticks + 1;
 	if (_uiticks > 1000) then { _uiticks = 0 };
-	uiSleep 1;
+	uiSleep 0.5;
 };

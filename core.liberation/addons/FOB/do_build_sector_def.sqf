@@ -58,6 +58,8 @@ while { dialog && alive player } do {
         } foreach _sectors_sorted;
         //lbSetCurSel [110, -1];
         _defense_count = count GRLIB_sector_defense;
+        ctrlSetText [130, format ["%1 / %2 garrisons in use", _defense_count, _max_defense]];
+        ctrlShow [131, count _sectors_def == 0];
         _refresh = false;
     };
 

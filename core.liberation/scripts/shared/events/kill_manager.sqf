@@ -237,7 +237,7 @@ if (isServer) then {
 			_owner_id = getPlayerUID _rewardPlayer;
 			if (GRLIB_tk_mode > 0 && {!(_unit getVariable ["GRLIB_vehicle_owner", ""] in ["", "public", "server", _owner_id])}) then {
 				_penalty = 50;
-				_msg = format ["Penalty of %1 to %2 for killing a Friendly vehicle !!", _penalty, name _rewardPlayer];
+				_msg = format ["Penalty of %1 XP to %2 for destroying a friendly vehicle.", _penalty, name _rewardPlayer];
 				[gamelogic, _msg] remoteExec ["globalChat", 0];
 				[_rewardPlayer, -_penalty] call F_addScore;
 			};

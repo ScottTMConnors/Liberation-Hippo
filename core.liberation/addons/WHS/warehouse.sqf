@@ -87,6 +87,8 @@ while { dialog && alive player } do {
 		} foreach (keys GRLIB_warehouse);
 
 		lbSetCurSel [111, GRLIB_WHS_Selected];
+		ctrlShow [130, count _mybox == 0];
+		ctrlShow [131, count (keys GRLIB_warehouse) == 0];
 	};
 
 	// load action
@@ -99,12 +101,14 @@ while { dialog && alive player } do {
 	// unload action
 	if (lbCurSel 111 == -1) then {
 		ctrlEnable [121, false];
+		ctrlSetText [132, ""];
 	} else {
 		_typename = (lnbData [111, [(lbCurSel 111), 0]]);
 		_box_count = GRLIB_warehouse getOrDefault[ _typename, 0];
 		_price = [_typename, support_vehicles] call F_getObjectPrice;
 		_ammo = ((_price / GRLIB_recycling_percentage) <= (player getVariable ["GREUH_ammo_count", 0]));
 		ctrlEnable [121, (_box_count > 0 && _ammo)];
+		ctrlSetText [132, format ["Withdraw cost: %1 ammo (you have %2)", round (_price / GRLIB_recycling_percentage), player getVariable ["GREUH_ammo_count", 0]]];
 	};
 
 	if (load_box != 0) then {

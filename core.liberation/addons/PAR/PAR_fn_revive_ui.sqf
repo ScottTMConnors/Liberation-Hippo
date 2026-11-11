@@ -68,7 +68,7 @@ while { alive player && ([player] call PAR_is_wounded) && _bleedout_timer > 0 } 
 
 	_bar = (_display displayCtrl 680);
 	_ratio = linearConversion [0, PAR_bleedout, _bleedout_timer, 0, 1, true];
-	_barwidth = 0.200 * safezoneW * _ratio;
+	_barwidth = 30 * (safezoneH * 0.75 / 54) * _ratio; // PAR_BAR_W in liberation_deathscreen.hpp
 	_bar ctrlSetPosition [(ctrlPosition _bar) select 0, (ctrlPosition _bar) select 1, _barwidth,(ctrlPosition _bar) select 3];
 	_bar ctrlCommit 1;
 

@@ -8,6 +8,7 @@ halo_position = getPosATL player;
 "spawn_marker" setMarkerTextLocal localize "STR_LOGISTIC_SELECT";
 ctrlSetText [201, toUpper localize "STR_LOGISTIC_SELECT"];
 ctrlSetText [202, localize "STR_LOGISTIC_SELECT"];
+((findDisplay 5203) displayCtrl 203) ctrlSetStructuredText parseText "Pick the delivery point for the supply run.<br/>Points on water are refused.";
 
 onMapSingleClick {
 	halo_position = _pos;

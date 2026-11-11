@@ -41,7 +41,7 @@ while {true} do {
 
 			if (_mission == "STR_VEHICLEREP") then {
 				_opf = { alive _x && _x distance2D (markerPos _sector) < GRLIB_sector_size && (_x getVariable ["GRLIB_mission_AI", false])} count (units GRLIB_side_enemy);		
-				if (_opf > 0) then {_msg = format [localize "STR_STATUS_OPF_ONLY", _opf]} else {_msg = "Repair the vehicle !!"};
+				if (_opf > 0) then {_msg = format [localize "STR_STATUS_OPF_ONLY", _opf]} else {_msg = "Repair the vehicle!"};
 			};
 
 			// Others

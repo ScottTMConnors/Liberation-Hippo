@@ -17,19 +17,9 @@ if (GRLIB_fancy_info == 2) then {
 	} else {
 		_formated_text = _text call BIS_fnc_localize;
 	};
-	private _msg = format [
-		"<t color='%5' shadow='2' size='1.75'>%1</t><br/>" +
-		"<t color='%5'>--------------------------------</t><br/>" +
-		(if (_subtitle != "") then { "<t size='1.25'>%2</t><br/>" } else { "" }) +
-		(if (_picture != "") then { "<img size='5' image='%3'/><br/>" } else { "" }) +
-		"%4",
-		_title,
-		_subtitle,
-		_picture,
-		_formated_text,
-		_titleColor
-	];
-	[_msg, 0, 0, 6, 0, -1, 90] spawn BIS_fnc_dynamicText;
+	private _body = _formated_text;
+	if (_subtitle != "") then { _body = _subtitle + "<br/>" + _body };
+	[_title, _body, "info", 8, true] call HPC_fnc_toast;
 } else {
 	waitUntil { sleep 0.5; (isNil {uinamespace getvariable ["BIS_InfoText", nil]}) };
 	private _info = [

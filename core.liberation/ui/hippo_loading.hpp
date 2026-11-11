@@ -8,14 +8,14 @@ class HPC_LoadingScreen {
     onUnload = "uiNamespace setVariable ['HPC_LoadingDisplay',displayNull]";
     class controlsBackground {
         class Background : StdText {
-            x = safezoneX; y = safezoneY; w = safezoneW; h = safezoneH;
-            colorBackground[] = {0,0,0,1};
+            x = safezoneXAbs; y = safezoneY; w = safezoneWAbs; h = safezoneH;
+            colorBackground[] = {0.02,0.025,0.03,1};
             text = "";
         };
         class Artwork : BgPicture {
-            x = safezoneX + 0.30 * safezoneW;
-            y = safezoneY + 0.12 * safezoneH;
-            w = 0.40 * safezoneW; h = 0.53 * safezoneH;
+            x = safezoneX + safezoneW / 2 - 0.30 * safezoneH;
+            y = safezoneY + 0.10 * safezoneH;
+            w = 0.60 * safezoneH; h = 0.60 * safezoneH;
             style = ST_PICTURE + ST_KEEP_ASPECT_RATIO;
             colorText[] = {1,1,1,1};
             text = "res\liberation.paa";
@@ -25,22 +25,32 @@ class HPC_LoadingScreen {
         class Title : StdText {
             text = "HIPPOS CONQUEST";
             style = ST_CENTER;
-            x = safezoneX + 0.20 * safezoneW; y = safezoneY + 0.68 * safezoneH;
-            w = 0.60 * safezoneW; h = 0.045 * safezoneH;
-            sizeEx = 0.035 * safezoneH;
+            font = "PuristaSemibold";
+            shadow = 0;
+            x = safezoneX; y = safezoneY + 0.74 * safezoneH;
+            w = safezoneW; h = 0.045 * safezoneH;
+            sizeEx = 0.034 * safezoneH;
         };
         class Status : Title {
             idc = 101;
             text = "Preparing mission data...";
-            y = safezoneY + 0.74 * safezoneH;
-            sizeEx = 0.020 * safezoneH;
+            font = "RobotoCondensed";
+            y = safezoneY + 0.79 * safezoneH;
+            h = 0.03 * safezoneH;
+            sizeEx = 0.021 * safezoneH;
+            colorText[] = {0.62,0.69,0.72,1};
+        };
+        class ProgressTrack : StdText {
+            x = safezoneX + safezoneW / 2 - 0.30 * safezoneH; y = safezoneY + 0.835 * safezoneH;
+            w = 0.60 * safezoneH; h = 0.005 * safezoneH;
+            colorBackground[] = {1,1,1,0.08};
         };
         class Progress {
             idc = 104; type = 8; style = 0;
-            x = safezoneX + 0.25 * safezoneW; y = safezoneY + 0.81 * safezoneH;
-            w = 0.50 * safezoneW; h = 0.016 * safezoneH;
-            colorFrame[] = {0.3,0.35,0.3,1};
-            colorBar[] = {0.9,0.7,0.15,1};
+            x = safezoneX + safezoneW / 2 - 0.30 * safezoneH; y = safezoneY + 0.835 * safezoneH;
+            w = 0.60 * safezoneH; h = 0.005 * safezoneH;
+            colorFrame[] = {0,0,0,0};
+            colorBar[] = {0.46,0.80,0.72,1};
             texture = "#(argb,8,8,3)color(1,1,1,1)";
         };
     };

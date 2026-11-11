@@ -73,8 +73,8 @@ _air_grp setSpeedMode "FULL";
 
 // Actions
 GRLIB_taxi_cooldown = 0;
-private _idact_dest = _vehicle addAction [format ["<t color='#8000FF'>%1</t>", localize "STR_TAXI_ACTION1"], "addons\TAXI\taxi_pickdest.sqf","",999,false,true,"","vehicle _this == _target && _target distance2D GRLIB_taxi_helipad > 300"];
-private _idact_cancel = _vehicle addAction [format ["<t color='#FF0080'>%1</t>", localize "STR_TAXI_ACTION2"], "addons\TAXI\taxi_cancel.sqf","",998,false,true,"","vehicle _this == _target && !(isNil {player getVariable ['GRLIB_taxi_called', nil]})"];
+private _idact_dest = _vehicle addAction [format [(["%1", "", "info"] call HPC_fnc_actionTitle), localize "STR_TAXI_ACTION1"], "addons\TAXI\taxi_pickdest.sqf","",999,false,true,"","vehicle _this == _target && _target distance2D GRLIB_taxi_helipad > 300"];
+private _idact_cancel = _vehicle addAction [format [(["%1", "", "info"] call HPC_fnc_actionTitle), localize "STR_TAXI_ACTION2"], "addons\TAXI\taxi_cancel.sqf","",998,false,true,"","vehicle _this == _target && !(isNil {player getVariable ['GRLIB_taxi_called', nil]})"];
 player setVariable ["GRLIB_taxi_called", _vehicle, true];
 
 // Pickup Marker

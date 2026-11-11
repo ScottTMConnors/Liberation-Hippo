@@ -27,8 +27,7 @@ outlw_MR_createDialog = {
 
 	createDialog "MagRepack_Dialog_Main";
 
-	((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 1001) ctrlSetText ("Mag Repack [" + outlw_MR_version + "]");
-
+	
 	outlw_MR_blur = ppEffectCreate ["DynamicBlur", 401];
 	outlw_MR_blur ppEffectEnable true;
 	outlw_MR_blur ppEffectAdjust [1.5];
@@ -55,8 +54,8 @@ outlw_MR_createDialog = {
 		player playMove ("Ainv" + _stance + "Mstp" + _raised + _weapon + "Dnon");
 	};
 
-	((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 22170) lbAdd "All Ammo Types";
-	((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 22170) lbSetData [0, ""];
+	private _allIdx = ((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 22170) lbAdd "All ammo types";
+	((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 22170) lbSetData [_allIdx, ""];
 	((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 22170) lbSetCurSel 0;
 
 	call outlw_MR_populateMagListBox;
@@ -67,24 +66,21 @@ outlw_MR_createDialog = {
 
 	if (outlw_MR_debugMode) then
 	{
-		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 9002) ctrlSetStructuredText parseText "Debug Mode: <t align='right'>On</t>";
+		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 9002) ctrlSetText "Debug: On";
 	}
 	else
 	{
-		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 9002) ctrlSetStructuredText parseText "Debug Mode: <t align='right'>Off</t>";
+		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 9002) ctrlSetText "Debug: Off";
 	};
 
 	if (outlw_MR_doHideFull) then
 	{
-		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 9004) ctrlSetStructuredText parseText "Show Full: <t align='right'>Off</t>";
+		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 9004) ctrlSetText "Full mags: Hidden";
 	}
 	else
 	{
-		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 9004) ctrlSetStructuredText parseText "Show Full: <t align='right'>On</t>";
+		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 9004) ctrlSetText "Full mags: Shown";
 	};
-
-	((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 9003) ctrlSetStructuredText parseText "Keybindings";
-	((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 9005) ctrlSetStructuredText parseText "About";
 
 	outlw_MR_startingInfo = call outlw_MR_debugInfo;
 
@@ -115,50 +111,44 @@ outlw_MR_createDialog = {
 };
 
 outlw_MR_populateMagComboBox = {
-	private ["_this", "_magTypes", "_ammoTypes", "_n", "_a"];
+	private ["_magTypes", "_ammoTypes", "_n", "_a"];
 
 	_magTypes = (call outlw_MR_magInfo) select 0;
 	_ammoTypes = [];
-	_a = 0;
 
 	for "_n" from 0 to ((count _magTypes) - 1) do
 	{
 		if !((getText(configFile >> "cfgMagazines" >> (_magTypes select _n) >> "ammo")) in _ammoTypes) then
 		{
-			((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 22170) lbAdd ([([(getText(configFile >> "cfgMagazines" >> (_magTypes select _n) >> "ammo"))] call outlw_MR_ammoDisplayName), 25] call outlw_MR_shortString);
+			_a = ((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 22170) lbAdd ([([(getText(configFile >> "cfgMagazines" >> (_magTypes select _n) >> "ammo"))] call outlw_MR_ammoDisplayName), 40] call outlw_MR_shortString);
 			((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 22170) lbSetData [_a, (getText(configFile >> "cfgMagazines" >> (_magTypes select _n) >> "ammo"))];
 			_ammoTypes set [count _ammoTypes, (getText(configFile >> "cfgMagazines" >> (_magTypes select _n) >> "ammo"))];
-
-			_a = _a + 1;
 		};
 	};
 };
 
 outlw_MR_populateMagListBox = {
-	private ["_this", "_args", "_magListTitle", "_magTypes", "_magAmmoCounts", "_magAmmoCaps", "_magCounts", "_bgrndPos", "_n", "_a"];
+	private ["_args", "_magListTitle", "_magTypes", "_magAmmoCounts", "_magAmmoCaps", "_magCounts", "_list", "_isFiltered", "_n", "_idx", "_magName", "_count", "_cap"];
 
 	_args = call outlw_MR_magInfo;
-	_magListTitle = "All Magazines";
+	_magListTitle = "YOUR MAGAZINES";
+	_isFiltered = (outlw_MR_sourceType != "" || {outlw_MR_targetType != ""} || {outlw_MR_currentFilter != ""});
 
-	if (outlw_MR_sourceType != "" || {outlw_MR_targetType != ""} || {outlw_MR_currentFilter != ""}) then
+	if (_isFiltered) then
 	{
 		_args = (_args) call outlw_MR_filter;
-		_magListTitle = "Compatible Mags";
+		_magListTitle = "COMPATIBLE MAGAZINES";
 	};
 
-	lnbClear ((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 1500);
+	_list = ((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 1500);
+	lbClear _list;
 
 	_args = (_args) call outlw_MR_uniqueMags;
 
 	if (outlw_MR_doHideFull) then
 	{
 		_args = (_args) call outlw_MR_hideFull;
-		_magListTitle = "Non-Full Magazines";
-
-		if (outlw_MR_sourceType != "" || {outlw_MR_targetType != ""} || {outlw_MR_currentFilter != ""}) then
-		{
-			_magListTitle = "Compatible, Non-Full";
-		};
+		_magListTitle = ["NON-FULL MAGAZINES", "COMPATIBLE, NON-FULL"] select _isFiltered;
 	};
 
 	_magTypes = _args select 0;
@@ -166,54 +156,60 @@ outlw_MR_populateMagListBox = {
 	_magAmmoCaps = _args select 2;
 	_magCounts = _args select 3;
 
-	((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 1000) ctrlSetStructuredText parseText _magListTitle;
-
-	_bgrndPos = ctrlPosition ((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 1500);
-
-	if (count _magTypes > 9) then
-	{
-		["outlw_MR_Dialog_Main", 1500, [(_bgrndPos select 0), (_bgrndPos select 1), 0.3375, (_bgrndPos select 3)], 0] call outlw_MR_ctrlSetPos;
-		["outlw_MR_Dialog_Main", 2217, [(_bgrndPos select 0), (_bgrndPos select 1), 0.321, (_bgrndPos select 3) + 0.003], 0] call outlw_MR_ctrlSetPos;
-
-		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 1500) lnbDeleteColumn 3;
-		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 1500) lnbAddColumn 0.83;
-	}
-	else
-	{
-		["outlw_MR_Dialog_Main", 1500, [(_bgrndPos select 0), (_bgrndPos select 1), 0.325, (_bgrndPos select 3)], 0] call outlw_MR_ctrlSetPos;
-		["outlw_MR_Dialog_Main", 2217, [(_bgrndPos select 0), (_bgrndPos select 1), 0.325, (_bgrndPos select 3) + 0.003], 0] call outlw_MR_ctrlSetPos;
-
-		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 1500) lnbDeleteColumn 3;
-		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 1500) lnbAddColumn 0.89;
-
-	};
-
-	_a = 0;
+	((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 1000) ctrlSetText _magListTitle;
+	((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 1010) ctrlShow ((count _magTypes) == 0);
 
 	for "_n" from 0 to ((count _magTypes) - 1) do
 	{
-		_magCountStr = str(_magCounts select _n);
+		_count = _magAmmoCounts select _n;
+		_cap = _magAmmoCaps select _n;
+		_magName = getText(configFile >> "cfgMagazines" >> (_magTypes select _n) >> "DisplayName");
 
-		if (_magCounts select _n < 10) then
-		{
-			_magCountStr = " " + _magCountStr;
-		};
-		
-		//Added: ListBox version for 1.48 - GiPPO
-		private ["_magname","_text"];
-		_magName = ([(getText(configFile >> "cfgMagazines" >> _magTypes select _n >> "DisplayName")), 25] call outlw_MR_shortString);
-		_text = (format ["%1x  %2 %3",_magCountStr,_magname]);
+		_idx = _list lbAdd ([_magName, 34] call outlw_MR_shortString);
+		_list lbSetTextRight [_idx, format ["%1/%2   x%3", _count, _cap, _magCounts select _n]];
+		_list lbSetTooltip [_idx, format ["%1 - %2 of %3 rounds (%4 mags)", _magName, _count, _cap, _magCounts select _n]];
+		_list lbSetPicture [_idx, format ["addons\MGR\Images\bulletCount\%1.paa", round(_count / (_cap max 1) * 30)]];
+		_list lbSetPictureColor [_idx, [1,1,1,1]];
+		_list lbSetPictureColorSelected [_idx, [1,1,1,1]];
 
-
-		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 1500) lbadd _text;
-		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 1500) lbSetPicture [_n, format ["addons\MGR\Images\bulletCount\%1.paa", round((_magAmmoCounts select _n)/(_magAmmoCaps select _n)*30)]];
-		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 1500)	lbsetpicturecolor [_n,[1,1,1,1]];
-		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 1500)	lbsetpicturecolorSelected [_n,[1,1,1,1]];
-
-		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 1500) lbSetValue [_n, _magAmmoCounts select _n];
-		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 1500) lbSetData [_n, _magTypes select _n];
-
+		// The drag handlers read the ammo count (value) and magazine class (data).
+		_list lbSetValue [_idx, _count];
+		_list lbSetData [_idx, _magTypes select _n];
 	};
+};
+
+// Fills a slot's ammo bar (_bar inside group _group) to _count of _cap.
+outlw_MR_setAmmoBar = {
+	params ["_bar", "_group", "_cap", "_count"];
+	private _h = (ctrlPosition ((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl _group)) select 3;
+	private _y = _h;
+	if (_cap > 0) then {_y = (_h / _cap) * (_cap - _count)};
+	["outlw_MR_Dialog_Main", _bar, [0, _y], 0] call outlw_MR_ctrlSetPos;
+};
+
+// Structured text for a slot: name, short description, rounds.
+outlw_MR_slotText = {
+	params ["_magType", "_count", "_cap"];
+	format
+	[
+		"<t font='PuristaSemibold' size='1.15'>%1</t><br/><t color='#9EB0B8' size='0.9'>%2</t><br/><t color='#76CCB8'>%3 / %4 rounds</t>",
+		getText (configFile >> "cfgMagazines" >> _magType >> "DisplayName"),
+		getText (configFile >> "cfgMagazines" >> _magType >> "descriptionshort"),
+		_count, _cap
+	];
+};
+
+outlw_MR_refreshSlots = {
+	if (outlw_MR_sourceType != "") then
+	{
+		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 1100) ctrlSetStructuredText parseText ([outlw_MR_sourceType, outlw_MR_sourceCount, outlw_MR_sourceCap] call outlw_MR_slotText);
+	};
+	if (outlw_MR_targetType != "") then
+	{
+		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 1101) ctrlSetStructuredText parseText ([outlw_MR_targetType, outlw_MR_targetCount, outlw_MR_targetCap] call outlw_MR_slotText);
+	};
+	[22180, 2218, outlw_MR_sourceCap, outlw_MR_sourceCount] call outlw_MR_setAmmoBar;
+	[22190, 2219, outlw_MR_targetCap, outlw_MR_targetCount] call outlw_MR_setAmmoBar;
 };
 
 outlw_MR_filter = {
@@ -343,8 +339,7 @@ outlw_MR_repack = {
 	{
 		call _magCode;
 
-		["outlw_MR_Dialog_Main", 22180, [0,((0.12/outlw_MR_sourceCap) * (outlw_MR_sourceCap - outlw_MR_sourceCount))], 0] call outlw_MR_ctrlSetPos;
-		["outlw_MR_Dialog_Main", 22190, [0,((0.12/outlw_MR_targetCap) * (outlw_MR_targetCap - outlw_MR_targetCount))], 0] call outlw_MR_ctrlSetPos;
+		call outlw_MR_refreshSlots;
 
 		_sleepTime = (time + (_refreshRate));
 
@@ -367,7 +362,7 @@ outlw_MR_repack = {
 	outlw_MR_isRepacking = false;
 	((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 1008) ctrlSetText "";
 
-	["outlw_MR_Dialog_Main", 10002, [-0.325,0], 0] call outlw_MR_ctrlSetPos;
+	["outlw_MR_Dialog_Main", 10002, [-((ctrlPosition ((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 10000)) select 2), 0], 0] call outlw_MR_ctrlSetPos;
 };
 
 outlw_MR_repackingText = {
@@ -458,19 +453,19 @@ outlw_MR_block = {
 	{
 		if (outlw_MR_sourceDragging) then
 		{
-			((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 2215) ctrlSetBackgroundColor [1,1,1,0.3];
+			((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 2215) ctrlSetBackgroundColor [0.46,0.80,0.72,0.18];
 			((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 2215) ctrlSetToolTip "";
 		}
 		else
 		{
-			((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 2215) ctrlSetBackgroundColor [1,0,0,0.3];
+			((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 2215) ctrlSetBackgroundColor [0.90,0.40,0.36,0.25];
 		};
 
 		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 2215) ctrlEnable false;
 	}
 	else
 	{
-		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 2215) ctrlSetBackgroundColor [1,1,1,0.3];
+		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 2215) ctrlSetBackgroundColor [0.46,0.80,0.72,0.18];
 	};
 
 	switch (true) do
@@ -488,22 +483,22 @@ outlw_MR_block = {
 	{
 		if (outlw_MR_targetDragging) then
 		{
-			((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 2216) ctrlSetBackgroundColor [1,1,1,0.3];
+			((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 2216) ctrlSetBackgroundColor [0.46,0.80,0.72,0.18];
 			((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 2216) ctrlSetToolTip "";
 		}
 		else
 		{
-			((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 2216) ctrlSetBackgroundColor [1,0,0,0.3];
+			((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 2216) ctrlSetBackgroundColor [0.90,0.40,0.36,0.25];
 		};
 
 		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 2216) ctrlEnable false;
 	}
 	else
 	{
-		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 2216) ctrlSetBackgroundColor [1,1,1,0.3];
+		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 2216) ctrlSetBackgroundColor [0.46,0.80,0.72,0.18];
 	};
 
-	((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 2217) ctrlSetBackgroundColor [1,1,1,0.3];
+	((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 2217) ctrlSetBackgroundColor [0.46,0.80,0.72,0.18];
 };
 
 outlw_MR_onDrag = {
@@ -532,7 +527,7 @@ outlw_MR_onMouseButtonUp = {
 	outlw_MR_dragCount = 0;
 	outlw_MR_dragCap = 0;
 
-	((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 2215) ctrlSetBackgroundColor [1,0,0,0];
+	((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 2215) ctrlSetBackgroundColor [0,0,0,0];
 	((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 2215) ctrlSetToolTip "";
 
 	if (outlw_MR_sourceType == "") then
@@ -540,7 +535,7 @@ outlw_MR_onMouseButtonUp = {
 		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 2215) ctrlEnable true;
 	};
 
-	((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 2216) ctrlSetBackgroundColor [1,0,0,0];
+	((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 2216) ctrlSetBackgroundColor [0,0,0,0];
 	((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 2216) ctrlSetToolTip "";
 
 	if (outlw_MR_targetType == "") then
@@ -560,6 +555,8 @@ outlw_MR_sourceEnabled = {
 	{
 		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 2215) ctrlEnable true;
 		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 1600) ctrlEnable false;
+		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 1600) ctrlShow false;
+		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 1012) ctrlShow true;
 		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 1600) ctrlSetText "";
 		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 1600) ctrlSetTooltip "";
 		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 1201) ctrlSetText "";
@@ -569,12 +566,14 @@ outlw_MR_sourceEnabled = {
 	else
 	{
 		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 2215) ctrlEnable false;
+		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 1012) ctrlShow false;
 
 		if ([outlw_MR_sourceType] call outlw_MR_isConvertable) then
 		{
 			((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 1600) ctrlSetText "Convert";
 			((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 1600) ctrlSetTooltip (getText(configFile >> "CfgMagazines" >> ([outlw_MR_sourceType] call outlw_MR_getConversion) >> "DisplayName"));
 			((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 1600) ctrlEnable true;
+			((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 1600) ctrlShow true;
 		};
 	};
 
@@ -591,6 +590,8 @@ outlw_MR_targetEnabled = {
 	{
 		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 2216) ctrlEnable true;
 		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 1601) ctrlEnable false;
+		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 1601) ctrlShow false;
+		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 1013) ctrlShow true;
 		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 1601) ctrlSetText "";
 		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 1601) ctrlSetTooltip "";
 		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 1203) ctrlSetText "";
@@ -600,12 +601,14 @@ outlw_MR_targetEnabled = {
 	else
 	{
 		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 2216) ctrlEnable false;
+		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 1013) ctrlShow false;
 
 		if ([outlw_MR_targetType] call outlw_MR_isConvertable) then
 		{
 			((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 1601) ctrlSetText "Convert";
 			((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 1601) ctrlSetTooltip (getText(configFile >> "CfgMagazines" >> ([outlw_MR_targetType] call outlw_MR_getConversion) >> "DisplayName"));
 			((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 1601) ctrlEnable true;
+			((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 1601) ctrlShow true;
 		};
 	};
 
@@ -653,14 +656,7 @@ outlw_MR_addSource = {
 
 	((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 1201) ctrlSetText (getText (configFile >> "cfgMagazines" >> outlw_MR_sourceType >> "picture"));
 
-	["outlw_MR_Dialog_Main", 22180, [0,((0.12/outlw_MR_sourceCap) * (outlw_MR_sourceCap - outlw_MR_sourceCount))], 0] call outlw_MR_ctrlSetPos;
-
-	((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 1100) ctrlSetStructuredText parseText format
-	[
-		"<t size='0.65 * GUI_GRID_H' align='left'>%1<br/>%2</t>",
-		(getText (configFile >> "cfgMagazines" >> outlw_MR_sourceType >> "DisplayName")),
-		(getText (configFile >> "cfgMagazines" >> outlw_MR_sourceType >> "descriptionshort"))
-	];
+	call outlw_MR_refreshSlots;
 
 	[false] call outlw_MR_sourceEnabled;
 
@@ -684,7 +680,7 @@ outlw_MR_clearSource = {
 		};
 	};
 
-	lnbClear ((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 1501);
+	lbClear ((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 1501);
 
 	outlw_MR_sourceType = "";
 	outlw_MR_sourceCount = 0;
@@ -697,7 +693,7 @@ outlw_MR_clearSource = {
 	[true] call outlw_MR_sourceEnabled;
 	outlw_MR_doAddToMagazines = true;
 
-	["outlw_MR_Dialog_Main", 22180, [0,0.12], 0] call outlw_MR_ctrlSetPos;
+	[22180, 2218, 0, 0] call outlw_MR_setAmmoBar;
 };
 
 outlw_MR_addTarget = {
@@ -747,14 +743,7 @@ outlw_MR_addTarget = {
 
 	((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 1203) ctrlSetText (getText (configFile >> "cfgMagazines" >> outlw_MR_targetType >> "picture"));
 
-	["outlw_MR_Dialog_Main", 22190, [0,((0.12/outlw_MR_targetCap) * (outlw_MR_targetCap - outlw_MR_targetCount))], 0] call outlw_MR_ctrlSetPos;
-
-	((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 1101) ctrlSetStructuredText parseText format
-	[
-		"<t size='0.65 * GUI_GRID_H' align='right'>%1<br/>%2</t>",
-		(getText (configFile >> "cfgMagazines" >> outlw_MR_targetType >> "DisplayName")),
-		(getText (configFile >> "cfgMagazines" >> outlw_MR_targetType >> "descriptionshort"))
-	];
+	call outlw_MR_refreshSlots;
 
 	[false] call outlw_MR_targetEnabled;
 
@@ -770,7 +759,7 @@ outlw_MR_clearTarget = {
 			player addMagazine [outlw_MR_targetType, outlw_MR_targetCount];
 	};
 
-	lnbClear ((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 1502);
+	lbClear ((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 1502);
 
 	outlw_MR_targetType = "";
 	outlw_MR_targetCount = 0;
@@ -780,7 +769,7 @@ outlw_MR_clearTarget = {
 	[true] call outlw_MR_targetEnabled;
 	outlw_MR_doAddToMagazines = true;
 
-	["outlw_MR_Dialog_Main", 22190, [0,0.12], 0] call outlw_MR_ctrlSetPos;
+	[22190, 2219, 0, 0] call outlw_MR_setAmmoBar;
 };
 
 outlw_MR_moveToList = {
@@ -791,49 +780,9 @@ outlw_MR_moveToList = {
 	};
 };
 
+// Options now sit permanently in the footer; kept for old callers.
 outlw_MR_optionsMenu = {
-	_posGroup = ctrlPosition ((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 9000);
-	_posBottom = ctrlPosition ((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 8998);
-	_posTop = ctrlPosition ((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 8997);
-
-	if ([9006,9001,9000,8999,8998,8997] call outlw_MR_isAnimating) exitWith {};
-
-	if (outlw_MR_optionsOpen) then
-	{
-		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 9006) ctrlSetPosition [0,0.21];
-		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 9001) ctrlSetPosition [0,0];
-		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 9000) ctrlSetPosition [(_posGroup select 0) - 0.00625, (_posGroup select 1), 0, (_posGroup select 3)];
-		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 8999) ctrlSetPosition [(_posGroup select 0), (_posGroup select 1) + 0.055];
-		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 8998) ctrlSetPosition [(_posBottom select 0), (_posBottom select 1) - 0.01];
-		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 8997) ctrlSetPosition [(_posTop select 0), (_posTop select 1) + 0.055];
-
-		outlw_MR_optionsOpen = false;
-
-		[] spawn
-		{
-			{((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl _x) ctrlCommit 0.15;} forEach [9006,9001,9000,8999];
-			UIsleep 0.15;
-			{((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl _x) ctrlCommit 0.1;} forEach [8998,8997];
-		};
-	}
-	else
-	{
-		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 9006) ctrlSetPosition [0.1125,0.21];
-		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 9001) ctrlSetPosition [0.04375,0];
-		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 9000) ctrlSetPosition [(_posGroup select 0) + 0.00625, (_posGroup select 1), 0.2, (_posGroup select 3)];
-		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 8999) ctrlSetPosition [(_posGroup select 0) + 0.2125, (_posGroup select 1) + 0.055];
-		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 8998) ctrlSetPosition [(_posBottom select 0), (_posBottom select 1) + 0.01];
-		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 8997) ctrlSetPosition [(_posTop select 0), (_posTop select 1) - 0.055];
-
-		outlw_MR_optionsOpen = true;
-
-		[] spawn
-		{
-			{((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl _x) ctrlCommit 0.1;} forEach [8998,8997];
-			UIsleep 0.1;
-			{((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl _x) ctrlCommit 0.15;} forEach [9006,9001,9000,8999];
-		};
-	};
+	outlw_MR_optionsOpen = !outlw_MR_optionsOpen;
 };
 
 outlw_MR_debugSwitch = {
@@ -841,13 +790,13 @@ outlw_MR_debugSwitch = {
 	{
 		outlw_MR_debugMode = false;
 		profileNamespace setVariable ["outlw_MR_debugMode_profile", false];
-		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 9002) ctrlSetStructuredText parseText "Debug Mode: <t align='right'>Off</t>";
+		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 9002) ctrlSetText "Debug: Off";
 	}
 	else
 	{
 		outlw_MR_debugMode = true;
 		profileNamespace setVariable ["outlw_MR_debugMode_profile", true];
-		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 9002) ctrlSetStructuredText parseText "Debug Mode: <t align='right'>On</t>";
+		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 9002) ctrlSetText "Debug: On";
 	};
 };
 
@@ -856,13 +805,13 @@ outlw_MR_showFullSwitch = {
 	{
 		outlw_MR_doHideFull = false;
 		profileNamespace setVariable ["outlw_MR_doHideFull_profile", false];
-		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 9004) ctrlSetStructuredText parseText "Show Full: <t align='right'>On</t>";
+		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 9004) ctrlSetText "Full mags: Shown";
 	}
 	else
 	{
 		outlw_MR_doHideFull = true;
 		profileNamespace setVariable ["outlw_MR_doHideFull_profile", true];
-		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 9004) ctrlSetStructuredText parseText "Show Full: <t align='right'>Off</t>";
+		((uiNamespace getVariable "outlw_MR_Dialog_Main") displayCtrl 9004) ctrlSetText "Full mags: Hidden";
 	};
 
 	call outlw_MR_populateMagListBox;

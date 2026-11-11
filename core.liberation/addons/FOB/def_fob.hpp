@@ -1,133 +1,145 @@
+// FOB defense templates. The paste panel (idc 521-527) is shown by
+// do_build_def.sqf only when the custom clipboard template is chosen.
+#define FDF_W (32 * HPC_GX)
+#define FDF_H (34 * HPC_GY)
+#define FDF_X (safezoneX + safezoneW / 2 - 30 * HPC_GX)
+#define FDF_Y (safezoneY + 10 * HPC_GY)
+#define FDF_PAD (1.1 * HPC_GX)
+#define FDF_IW (FDF_W - 2 * FDF_PAD)
+#define FDF_IX (FDF_X + FDF_W + 1 * HPC_GX)
+#define FDF_IW2 (27 * HPC_GX)
+
+class FDF_ListN : StdListNBox {
+	font = "RobotoCondensed";
+	sizeEx = 1.05 * HPC_GY;
+	rowHeight = 2.1 * HPC_GY;
+	shadow = 0;
+	period = 0;
+	colorText[] = HPC_C_TEXT;
+	colorBackground[] = {0,0,0,0.18};
+	colorScrollbar[] = HPC_C_ACCENT;
+	colorSelect[] = {1,1,1,1};
+	colorSelect2[] = {1,1,1,1};
+	colorSelectBackground[] = HPC_C_ACCENT_DIM;
+	colorSelectBackground2[] = HPC_C_ACCENT_DIM;
+	colorActive[] = {1,1,1,1};
+	colorDisabled[] = {1,1,1,0.3};
+	colorPicture[] = {1,1,1,1};
+	colorPictureSelected[] = {1,1,1,1};
+	colorPictureDisabled[] = {1,1,1,0.4};
+	onLBSelChanged = "";
+};
+
 class FOB_Defense {
-  	idd = 2309;
-    onLoad = "if (isNil 'HPC_fnc_scaleDialog') then {_this call compile preprocessFileLineNumbers 'scripts\client\misc\HPC_scaleDialog.sqf'} else {_this call HPC_fnc_scaleDialog};";
+	idd = 2309;
 	name = "FOB_Defense";
 	movingEnable = false;
 	enableSimulation = true;
 
 	class controlsBackground {
-		class OuterBG1: StdBG {
-			colorBackground[] = COLOR_BROWN;
-			x = 0.1917 * safezoneW + safezoneX;
-			y = 0.1324 * safezoneH + safezoneY;
-			w = 0.1651 * safezoneW;
-			h = 0.62 * safezoneH;
-		};
-		class OuterBG_F1: OuterBG1 {
-			style = ST_FRAME;
-		};
-		class InnerBG1: OuterBG1 {
-			colorBackground[] = COLOR_GREEN;
-			x = 0.1985 * safezoneW + safezoneX;
-			y = 0.1916 * safezoneH + safezoneY;
-			w = 0.1515 * safezoneW;
-			h = 0.512 * safezoneH;
-		};
-		class InnerBG_F1: InnerBG1 {
-			style = ST_FRAME;
+		class Panel : HPC_Panel {
+			x = FDF_X; y = FDF_Y; w = FDF_W; h = FDF_H;
 		};
 	};
 
 	class controls {
-		class Header: StdHeader {
-			text = "$STR_FOB_DEFENSE_NAME";
-			x = 0.198875 * safezoneW + safezoneX;
-			y = 0.1414 * safezoneH + safezoneY;
-			w = 0.1515 * safezoneW;
-			h = 0.044 * safezoneH;
+		class Accent : HPC_Text {
+			x = FDF_X; y = FDF_Y; w = 0.28 * HPC_GX; h = 4.2 * HPC_GY;
+			colorBackground[] = HPC_C_ACCENT;
 		};
-
-		class VehList1 : StdListNBox {
-			idc = 110;
-			columns[] = {0,0.78};
-			onLBSelChanged = "";
-			shadow = 2;
-			rowHeight = "1.25 * 0.018 * safezoneH";
-			colorPicture[] = {1,1,1,1};
-			colorPictureSelected[] = {0,1,0,1};
-			colorPictureDisabled[] = {0.4,0.4,0.4,1};
-			x = 0.2027 * safezoneW + safezoneX;
-			y = 0.2074 * safezoneH + safezoneY;
-			w = 0.1440 * safezoneW;
-			h = 0.484 * safezoneH;
+		class Header : HPC_Heading {
+			text = "FOB DEFENSES";
+			x = FDF_X + FDF_PAD; y = FDF_Y + 0.5 * HPC_GY; w = FDF_W - 5 * HPC_GX; h = 2.2 * HPC_GY;
+			sizeEx = 1.55 * HPC_GY;
 		};
-
-		class CancelButton : StdButton {
+		class Subtitle : HPC_Label {
+			x = FDF_X + FDF_PAD; y = FDF_Y + 2.5 * HPC_GY; w = FDF_IW; h = 1.4 * HPC_GY;
+			font = "RobotoCondensed";
+			sizeEx = 0.95 * HPC_GY;
+			text = "Build a defense template around this FOB.";
+		};
+		class CancelButton : HPC_Button {
 			idc = -1;
-			action = "closeDialog 0";
+			x = FDF_X + FDF_W - 2.8 * HPC_GX; y = FDF_Y + 0.9 * HPC_GY; w = 1.9 * HPC_GX; h = 1.9 * HPC_GY;
+			colorBackground[] = {1,1,1,0.06};
+			colorFocused[] = {1,1,1,0.06};
+			colorBackgroundActive[] = HPC_C_DANGER;
 			text = "X";
-			x = 0.3338 * safezoneW + safezoneX;
-			y = 0.1414 * safezoneH + safezoneY;
-			w = 0.015 * safezoneW;
-			h = 0.02 * safezoneH;
+			tooltip = "Close";
+			action = "closeDialog 0";
 			default = true;
 		};
-
-		class SellButton : StdButton {
+		class Divider : HPC_Text {
+			x = FDF_X + FDF_PAD; y = FDF_Y + 4.6 * HPC_GY; w = FDF_IW; h = 0.1 * HPC_GY;
+			colorBackground[] = HPC_C_LINE;
+		};
+		class LabelList : HPC_Label {
+			x = FDF_X + FDF_PAD; y = FDF_Y + 5.5 * HPC_GY; w = FDF_IW; h = 1.4 * HPC_GY;
+			text = "TEMPLATE";
+		};
+		class LabelPrice : HPC_Label {
+			style = ST_RIGHT;
+			x = FDF_X + FDF_PAD; y = FDF_Y + 5.5 * HPC_GY; w = FDF_IW; h = 1.4 * HPC_GY;
+			text = "AMMO";
+		};
+		class VehList1 : FDF_ListN {
+			idc = 110;
+			columns[] = {0,0.78};
+			x = FDF_X + FDF_PAD; y = FDF_Y + 7.2 * HPC_GY; w = FDF_IW; h = FDF_H - 12.6 * HPC_GY;
+		};
+		class SellButton : HPC_ButtonAccent {
 			idc = 120;
 			text = "$STR_FOB_BUILD";
 			action = "build_action = 1";
-			x = 0.2300 * safezoneW + safezoneX;
-			y = 0.7100 * safezoneH + safezoneY;
-			w = 0.09 * safezoneW;
-			h = 0.035 * safezoneH;
+			x = FDF_X + FDF_W - FDF_PAD - 14 * HPC_GX; y = FDF_Y + FDF_H - 4.4 * HPC_GY; w = 14 * HPC_GX; h = 3.2 * HPC_GY;
 		};
 
 //--- Copy from clipboard -------------
-		class Input_OuterBG : StdBG {
+		class Input_OuterBG : HPC_Text {
 			idc = 521;
-			style = ST_SINGLE;
-			colorBackground[] = COLOR_BROWN;
-			x = (0.46 * safezoneW + safezoneX) - (BORDERSIZE);
-			y = ((BASE_Y + 0.31) * safezoneH) + safezoneY - (1.5 * BORDERSIZE);
-			w = 0.17 * safezoneW +  (2 * BORDERSIZE);
-			h = 0.35 * safezoneH  + (3 * BORDERSIZE);
+			colorBackground[] = HPC_C_PANEL_SOLID;
+			x = FDF_IX; y = FDF_Y; w = FDF_IW2; h = FDF_H;
 		};
-		class Input_InnerBG : StdBG {
+		class Input_InnerBG : HPC_Text {
 			idc = 522;
-			colorBackground[] = COLOR_GREEN;
-			x = (0.46 * safezoneW + safezoneX);
-			y = ((BASE_Y + 0.31) * safezoneH) + safezoneY;
-			w = 0.17 * safezoneW;
-			h = 0.35 * safezoneH;
+			colorBackground[] = HPC_C_ACCENT;
+			x = FDF_IX; y = FDF_Y; w = 0.28 * HPC_GX; h = 4.2 * HPC_GY;
 		};
-		class Input_OuterBG_F : Input_OuterBG {
+		class Input_OuterBG_F : HPC_Heading {
 			idc = 523;
-			style = ST_FRAME;
+			x = FDF_IX + FDF_PAD; y = FDF_Y + 0.5 * HPC_GY; w = FDF_IW2 - 2 * FDF_PAD; h = 2.2 * HPC_GY;
+			text = "PASTE TEMPLATE";
 		};
-		class Input_InnerBG_F : Input_InnerBG {
+		class Input_InnerBG_F : HPC_Label {
 			idc = 524;
-			style = ST_FRAME;
+			font = "RobotoCondensed";
+			sizeEx = 0.95 * HPC_GY;
+			x = FDF_IX + FDF_PAD; y = FDF_Y + 2.5 * HPC_GY; w = FDF_IW2 - 2 * FDF_PAD; h = 1.4 * HPC_GY;
+			text = "Paste the exported object array, then press OK.";
 		};
-		class Input_ButtonName_Ok : StdButton {
-			idc = 525;
-			x = 0.58 * safezoneW + safezoneX;
-			y = ((BASE_Y + 0.32) * safezoneH) + safezoneY;
-			w = ((0.2 * safezoneW) / 5) - BORDERSIZE;
-			text = "$STR_FOB_OK";
-			action = "input_save = ctrlText 527;";
-		};
-		class Input_ButtonName_Abort : StdButton {
-			idc = 526;
-			x = 0.58 * safezoneW + safezoneX;
-			y = ((BASE_Y + 0.36) * safezoneH) + safezoneY;
-			w = ((0.2 * safezoneW) / 5) - BORDERSIZE;
-			text = "$STR_FOB_CANCEL";
-			action = "input_save = 'null';";
-		};
-		class Input_TextField : StdButton {
+		class Input_TextField : HPC_Text {
 			idc = 527;
 			type = CT_EDIT;
 			style = ST_MULTI;
-			x = (0.46 * safezoneW + safezoneX) + BORDERSIZE;
-			y = ((BASE_Y + 0.32) * safezoneH) + safezoneY;
-			w = 0.11 * safezoneW;
-			h = 0.33 * safezoneH;
-			text = "";
-			action = "";
-			colorText[] = COLOR_WHITE;
-			colorSelection[] = COLOR_BRIGHTGREEN;
+			x = FDF_IX + FDF_PAD; y = FDF_Y + 5 * HPC_GY; w = FDF_IW2 - 2 * FDF_PAD; h = FDF_H - 10 * HPC_GY;
+			sizeEx = 0.9 * HPC_GY;
+			colorBackground[] = {0,0,0,0.35};
+			colorSelection[] = HPC_C_ACCENT_DIM;
+			colorDisabled[] = {1,1,1,0.3};
 			autocomplete = "";
+			text = "";
+		};
+		class Input_ButtonName_Abort : HPC_Button {
+			idc = 526;
+			x = FDF_IX + FDF_PAD; y = FDF_Y + FDF_H - 4.4 * HPC_GY; w = 11.8 * HPC_GX; h = 3.2 * HPC_GY;
+			text = "$STR_FOB_CANCEL";
+			action = "input_save = 'null';";
+		};
+		class Input_ButtonName_Ok : HPC_ButtonAccent {
+			idc = 525;
+			x = FDF_IX + FDF_IW2 - FDF_PAD - 11.8 * HPC_GX; y = FDF_Y + FDF_H - 4.4 * HPC_GY; w = 11.8 * HPC_GX; h = 3.2 * HPC_GY;
+			text = "$STR_FOB_OK";
+			action = "input_save = ctrlText 527;";
 		};
 	};
 };

@@ -94,7 +94,7 @@ private _lastGroup = "";
 private _onlyUnlocked = missionNamespace getVariable ["HPC_catalogOnlyUnlocked",false];
 private _updateUnlockButton = {
     (_display displayCtrl 1704) ctrlSetText (if (_onlyUnlocked) then {"Unlocked only: ON"} else {"Unlocked only: OFF"});
-    (_display displayCtrl 1704) ctrlSetBackgroundColor (if (_onlyUnlocked) then {[0.08,0.36,0.42,1]} else {[0.12,0.15,0.19,1]});
+    (_display displayCtrl 1704) ctrlSetBackgroundColor (if (_onlyUnlocked) then {[0.20,0.42,0.38,0.95]} else {[0.16,0.20,0.21,0.95]});
 };
 call _updateUnlockButton;
 (_display displayCtrl 1704) ctrlAddEventHandler ["ButtonClick", {
@@ -218,6 +218,7 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
             _rowItems pushBack -1;
 			(_display displayCtrl (110)) lnbSetData  [[_row, 0], "false"];
 			(_display displayCtrl (162)) ctrlSetText getMissionPath "res\preview\unavailable.jpg";
+			(_display displayCtrl 163) ctrlSetStructuredText composeText [(text _msg) setAttributes ["color", "#9EB0B8"]];
 		};
 
 		_old_buildtype = buildtype;
@@ -225,7 +226,7 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
 		_row = 0;
 		ctrlSetText [ 151, _buildpages select (buildtype - 1) ];
         {
-            (_display displayCtrl _x) ctrlSetBackgroundColor (if (_forEachIndex + 1 == buildtype) then {[0.08,0.4,0.5,1]} else {[0.08,0.1,0.12,0.9]});
+            (_display displayCtrl _x) ctrlSetBackgroundColor (if (_forEachIndex + 1 == buildtype) then {[0.20,0.42,0.38,0.95]} else {[0.12,0.15,0.16,0.9]});
         } forEach _categoryButtons;
 		if (count _build_list == 0) then {ctrlEnable [120, false]; ctrlEnable [121, false]};
 
@@ -392,6 +393,7 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
             };
 			(_display displayCtrl (110)) lnbSetData  [[_row, 0], str _affordable];
             (_display displayCtrl 110) lnbSetData [[_row,2],_reasons joinString "\n"];
+            (_display displayCtrl 110) lnbSetData [[_row,3],str _reasons];
             private _details = if (buildtype == GRLIB_SquadBuildType) then {_squadname} else {_entrytext + "\n" + _build_class};
             if (buildtype == GRLIB_InfantryBuildType) then {_details = _details + "\n" + (_x param [5,""])};
             if !(_reasons isEqualTo []) then {_details = _details + "\n\n" + (_reasons joinString "\n")};
@@ -443,6 +445,29 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
 			if (_picture == "") then { _picture = getMissionPath "res\preview\no_image.jpg" };
 			(_display displayCtrl (162)) ctrlSetText _picture;
 
+			// Details pane: name, cost breakdown, crew and blockers (presentation only).
+			private _dName = if (buildtype == GRLIB_SquadBuildType) then {_build_item param [5, "Squad"]} else {[_build_class] call F_getLRXName};
+			if !(_dName isEqualType "") then {_dName = "Squad"};
+			private _dAmmo = if (_near_outpost) then {round ((_build_item select 2) * 1.5)} else {_build_item select 2};
+			private _dParts = [
+				(text _dName) setAttributes ["size", "1.25", "font", "PuristaSemibold"], lineBreak,
+				(text "COST") setAttributes ["color", "#9EB0B8", "size", "0.85"], lineBreak,
+				(text format ["Manpower %1", _build_item select 1]) setAttributes ["color", "#80E6A6"], "    ",
+				(text format ["Ammo %1", _dAmmo]) setAttributes ["color", "#F2A694"], "    ",
+				(text format ["Fuel %1", _build_item select 3]) setAttributes ["color", "#F2D678"]
+			];
+			if (buildtype in [GRLIB_TransportVehicleBuildType,GRLIB_CombatVehicleBuildType,GRLIB_AerialBuildType]) then {
+				private _dCrew = [_build_class, false] call BIS_fnc_crewCount;
+				_dParts append [lineBreak, (text format ["Crew %1  |  Passenger seats %2", _dCrew, (([_build_class, true] call BIS_fnc_crewCount) - _dCrew)]) setAttributes ["color", "#9EB0B8"]];
+			};
+			if (buildtype == GRLIB_InfantryBuildType) then {
+				private _dDesc = _build_item param [5, ""];
+				if (_dDesc isEqualType "" && {_dDesc != ""}) then {_dParts append [lineBreak, (text _dDesc) setAttributes ["color", "#9EB0B8"]]};
+			};
+			private _dReasons = parseSimpleArray (lnbData [110, [_selectedRow, 3]]);
+			{ _dParts append [lineBreak, (text _x) setAttributes ["color", "#E6665C"]] } forEach _dReasons;
+			(_display displayCtrl 163) ctrlSetStructuredText composeText _dParts;
+
 			// Locked by capture
 			_linked = false;
 			_linked_unlocked = true;
@@ -470,9 +495,9 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
 	ctrlSetText [133, format ["%1 : %2", localize "STR_FUEL", (player getVariable ["GREUH_fuel_count",0])] ];
 	ctrlSetText [134, format ["%1 : %2/%3", localize "STR_UNITCAP", _unitcap, GRLIB_blufor_cap] ];
 
-	_link_color = "#0040e0";
+	_link_color = "#75CCB8";
 	_link_str = localize "STR_VEHICLE_UNLOCKED";
-	if (!_linked_unlocked) then { _link_color = "#e00000"; _link_str = localize "STR_VEHICLE_LOCKED"; };
+	if (!_linked_unlocked) then { _link_color = "#E6665C"; _link_str = localize "STR_VEHICLE_LOCKED"; };
 	if ( _linked ) then {
 		(_display displayCtrl (161)) ctrlSetStructuredText parseText ( "<t color='" + _link_color + "' align='center'>" + _link_str +  "<br/>" + ( markerText _base_link ) + "</t>" );
 	} else {
@@ -491,6 +516,9 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
     if (_purchaseTip == "") then {_purchaseTip = "Purchase the selected item."};
     if (_unitcap >= GRLIB_blufor_cap && {buildtype in [GRLIB_InfantryBuildType,GRLIB_SquadBuildType]}) then {_purchaseTip = "Your active unit limit has been reached."};
     (_display displayCtrl 120) ctrlSetTooltip _purchaseTip;
+	if (_selected_item < 0 && {_rowItems findIf {_x >= 0} >= 0}) then {
+		(_display displayCtrl 163) ctrlSetStructuredText composeText [(text "Select an item to see its cost and details.") setAttributes ["color", "#9EB0B8"]];
+	};
 	ctrlShow [121, GRLIB_player_commander && buildtype in [GRLIB_TransportVehicleBuildType,GRLIB_CombatVehicleBuildType,GRLIB_AerialBuildType,GRLIB_DefenceBuildType]];
 	ctrlEnable [121, _affordable_crew && _linked_unlocked && dobuild == 0 && count HPC_buildSelection == 2];
 	sleep 0.2;

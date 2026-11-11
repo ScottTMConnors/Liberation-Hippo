@@ -10,6 +10,7 @@ halo_position = getPosATL player;
 "spawn_marker" setMarkerTextLocal (localize "STR_TAXI_SELECT");
 ctrlSetText [201, toUpper (localize "STR_TAXI_SELECT")];
 ctrlSetText [202, (localize "STR_TAXI_SELECT")];
+((findDisplay 5203) displayCtrl 203) ctrlSetStructuredText parseText "Pick a landing zone for the taxi.<br/>Water, cramped spots and targets closer than 300 m are refused.";
 
 onMapSingleClick {
 	halo_position = _pos;

@@ -1,156 +1,128 @@
+// Recycle confirmation: centred card showing what the object returns.
+#define RCY_W (32 * HPC_GX)
+#define RCY_H (21 * HPC_GY)
+#define RCY_X (safezoneX + (safezoneW - RCY_W) / 2)
+#define RCY_Y (safezoneY + (safezoneH - RCY_H) / 2)
+#define RCY_PAD (1.1 * HPC_GX)
+#define RCY_IX (RCY_X + RCY_PAD)
+#define RCY_IW (RCY_W - 2 * RCY_PAD)
+#define RCY_TILE_W ((RCY_IW - 1.2 * HPC_GX) / 3)
+#define RCY_TILE_STEP (RCY_TILE_W + 0.6 * HPC_GX)
+#define RCY_TILE_Y (RCY_Y + 9.6 * HPC_GY)
+
 class liberation_recycle {
 	idd = 5751;
-    onLoad = "if (isNil 'HPC_fnc_scaleDialog') then {_this call compile preprocessFileLineNumbers 'scripts\client\misc\HPC_scaleDialog.sqf'} else {_this call HPC_fnc_scaleDialog};";
 	movingEnable = false;
-	controlsBackground[] = { "OuterBG", "RecycleBG", "OuterBG_F", "InnerBG", "InnerBG_F" };
+	controlsBackground[] = { "Panel", "TileManpower", "TileAmmo", "TileFuel" };
 	controls[] = {
-		"Header", "RecycleButton", "CancelButton", "ButtonClose",
-		"ManpowerImageShadow","AmmoImageShadow","FuelImageShadow",
+		"Accent", "Header", "Subtitle", "ButtonClose", "Divider",
+		"Infotext", "LabelReturns",
 		"ManpowerImage","AmmoImage","FuelImage",
-		"Infotext","LabelManpower","LabelAmmo","LabelFuel"
+		"LabelManpower","LabelAmmo","LabelFuel",
+		"CaptionManpower","CaptionAmmo","CaptionFuel",
+		"CancelButton", "RecycleButton"
 	};
 	objects[] = {};
 
-	class RecycleBG : BgPicture {
-		x = (0.35 * safezoneW + safezoneX) - ( 2 * BORDERSIZE);
-		y = (0.4 * safezoneH + safezoneY) - (3 * BORDERSIZE);
-		w = (0.3 * safezoneW) + (4 * BORDERSIZE);
-		h = (0.2 * safezoneH) + (6 * BORDERSIZE);
+	class Panel : HPC_Panel {
+		colorBackground[] = HPC_C_PANEL_SOLID;
+		x = RCY_X; y = RCY_Y; w = RCY_W; h = RCY_H;
 	};
-	class OuterBG : StdBG{
-		colorBackground[] = COLOR_BROWN;
-		x = (0.35 * safezoneW + safezoneX) - ( 2 * BORDERSIZE);
-		y = (0.4 * safezoneH + safezoneY) - (3 * BORDERSIZE);
-		w = (0.3 * safezoneW) + (4 * BORDERSIZE);
-		h = (0.2 * safezoneH) + (6 * BORDERSIZE);
+	class Accent : HPC_Text {
+		x = RCY_X; y = RCY_Y; w = 0.28 * HPC_GX; h = 4.2 * HPC_GY;
+		colorBackground[] = HPC_C_ACCENT;
 	};
-	class OuterBG_F : OuterBG {
-		style = ST_FRAME;
+	class Header : HPC_Heading {
+		x = RCY_IX; y = RCY_Y + 0.5 * HPC_GY; w = RCY_IW - 3 * HPC_GX; h = 2.2 * HPC_GY;
+		sizeEx = 1.55 * HPC_GY;
+		text = "RECYCLE";
 	};
-	class InnerBG : OuterBG {
-		colorBackground[] = COLOR_GREEN;
-		x = (0.35 * safezoneW + safezoneX)  - ( BORDERSIZE);
-		y = 0.45 * safezoneH + safezoneY - (1.5 * BORDERSIZE);
-		w = (0.3 * safezoneW) +  (2 * BORDERSIZE);
-		h = 0.15 * safezoneH  + (3 * BORDERSIZE);
+	class Subtitle : HPC_Label {
+		x = RCY_IX; y = RCY_Y + 2.5 * HPC_GY; w = RCY_IW - 3 * HPC_GX; h = 1.4 * HPC_GY;
+		font = "RobotoCondensed";
+		sizeEx = 0.95 * HPC_GY;
+		text = "Remove this object and get resources back.";
 	};
-	class InnerBG_F : InnerBG {
-		style = ST_FRAME;
-	};
-	class Header : StdHeader{
-		x = 0.35 * safezoneW + safezoneX - (BORDERSIZE);
-		y = 0.39 * safezoneH + safezoneY;
-		w = 0.3 * safezoneW + ( 2 * BORDERSIZE);
-		h = 0.05 * safezoneH - (BORDERSIZE);
-		text = $STR_RECYCLING;
-	};
-	class ButtonClose : StdButton{
+	class ButtonClose : HPC_Button {
 		idc = 101;
-		x = 0.632 * safezoneW + safezoneX;
-		w = 0.015 * safezoneW;
-		h = 0.02 * safezoneH;
-		y = 0.402 * safezoneH + safezoneY;
+		x = RCY_X + RCY_W - 2.8 * HPC_GX; y = RCY_Y + 0.9 * HPC_GY; w = 1.9 * HPC_GX; h = 1.9 * HPC_GY;
+		colorBackground[] = {1,1,1,0.06};
+		colorFocused[] = {1,1,1,0.06};
+		colorBackgroundActive[] = HPC_C_DANGER;
 		text = "X";
+		tooltip = "Cancel";
 		action = "closeDialog 0";
 	};
-	class IconImage {
-		idc = -1;
-		type = CT_STATIC;
-		style = ST_PICTURE;
-		colorText[] = {1, 1, 1, 1};
-        colorBackground[] = {0, 0, 0, 1};
-		font = FONTM;
-		sizeEx = 0.023;
-		y = (0.5 * safezoneH + safezoneY);
-		w = (0.015 * safezoneW);
-		h = (0.025 * safezoneH);
-		moving = false;
+	class Divider : HPC_Text {
+		x = RCY_IX; y = RCY_Y + 4.6 * HPC_GY; w = RCY_IW; h = 0.1 * HPC_GY;
+		colorBackground[] = HPC_C_LINE;
+	};
+	class Infotext : HPC_Text {
+		idc = 134;
+		x = RCY_IX; y = RCY_Y + 5.3 * HPC_GY; w = RCY_IW; h = 2 * HPC_GY;
+		sizeEx = 1.1 * HPC_GY;
+	};
+	class LabelReturns : HPC_Label {
+		x = RCY_IX; y = RCY_Y + 8.0 * HPC_GY; w = RCY_IW; h = 1.3 * HPC_GY;
+		text = "YOU GET BACK";
+	};
+
+	// Resource tiles: icon, value, caption
+	class TileManpower : HPC_Panel {
+		colorBackground[] = HPC_C_PANEL_LIGHT;
+		x = RCY_IX + 0 * RCY_TILE_STEP; y = RCY_TILE_Y; w = RCY_TILE_W; h = 6 * HPC_GY;
+	};
+	class TileAmmo : TileManpower { x = RCY_IX + 1 * RCY_TILE_STEP; };
+	class TileFuel : TileManpower { x = RCY_IX + 2 * RCY_TILE_STEP; };
+	class IconImage : HPC_Picture {
+		y = RCY_TILE_Y + 0.6 * HPC_GY; w = 2.2 * HPC_GX; h = 2.2 * HPC_GY;
 	};
 	class ManpowerImage : IconImage {
-		idc = 1085;
-		x = (0.42 * safezoneW + safezoneX);
-		text = "res\ui_manpo.paa";
+		x = RCY_IX + 0 * RCY_TILE_STEP + 0.6 * HPC_GX; text = "res\ui_manpo.paa";
 	};
 	class AmmoImage : IconImage {
-		idc = 1085;
-		x = (0.48 * safezoneW + safezoneX);
-		text = "res\ui_ammo.paa";
+		x = RCY_IX + 1 * RCY_TILE_STEP + 0.6 * HPC_GX; text = "res\ui_ammo.paa";
 	};
 	class FuelImage : IconImage {
-		idc = 1085;
-		x = (0.54 * safezoneW + safezoneX);
-		text = "res\ui_fuel.paa";
+		x = RCY_IX + 2 * RCY_TILE_STEP + 0.6 * HPC_GX; text = "res\ui_fuel.paa";
 	};
-	class ManpowerImageShadow : IconImage {
-		idc = 1085;
-		x = (0.42 * safezoneW + safezoneX)  + 0.003;
-		text = "res\ui_manpo.paa";
-		colorText[] = {0, 0, 0, 1};
-		y = (0.5 * safezoneH + safezoneY) + 0.005;
+	class LabelNumber : HPC_Heading {
+		y = RCY_TILE_Y + 0.5 * HPC_GY; w = RCY_TILE_W - 3.2 * HPC_GX; h = 2.4 * HPC_GY;
+		style = ST_RIGHT;
+		sizeEx = 1.6 * HPC_GY;
 	};
-	class AmmoImageShadow : IconImage {
-		idc = 1085;
-		x = (0.48 * safezoneW + safezoneX) + 0.003;
-		text = "res\ui_ammo.paa";
-		colorText[] = {0, 0, 0, 1};
-		y = (0.5 * safezoneH + safezoneY) + 0.005;
-	};
-	class FuelImageShadow : IconImage {
-		idc = 1085;
-		x = (0.54 * safezoneW + safezoneX)  + 0.003;
-		text = "res\ui_fuel.paa";
-		colorText[] = {0, 0, 0, 1};
-		y = (0.5 * safezoneH + safezoneY) + 0.005;
-	};
-	class Infotext : StdText{
-		idc = 134;
-		style = ST_CENTER;
-		x = (0.35 * safezoneW + safezoneX);
-		w = (0.3 * safezoneW);
-		h = (0.03 * safezoneH);
-		y = (0.45 * safezoneH + safezoneY);
-		colorText[] = {0.9, 0.9, 0.9, 1};
-	};
-	class LabelNumber : StdText{
-		y = (0.5 * safezoneH + safezoneY) - (0.5 * BORDERSIZE);
-		w = (0.1 * safezoneW);
-		h = (0.03 * safezoneH);
-		sizeEx = 0.03 * safezoneH;
-	};
-	class LabelManpower : LabelNumber{
+	class LabelManpower : LabelNumber {
 		idc = 131;
-		x = (0.44 * safezoneW + safezoneX) - BORDERSIZE;
-		colorText[] = {0, 0.75, 0, 1};
+		x = RCY_IX + 0 * RCY_TILE_STEP + 2.8 * HPC_GX;
+		colorText[] = {0.5, 0.9, 0.65, 1};
 	};
-	class LabelAmmo : LabelNumber{
+	class LabelAmmo : LabelNumber {
 		idc = 132;
-		x = (0.5 * safezoneW + safezoneX) - BORDERSIZE;
-		colorText[] = {0.75, 0, 0, 1};
+		x = RCY_IX + 1 * RCY_TILE_STEP + 2.8 * HPC_GX;
+		colorText[] = {0.95, 0.65, 0.58, 1};
 	};
-	class LabelFuel : LabelNumber{
+	class LabelFuel : LabelNumber {
 		idc = 133;
-		x = (0.56 * safezoneW + safezoneX) - BORDERSIZE;
-		colorText[] = {0.75, 0.75, 0, 1};
+		x = RCY_IX + 2 * RCY_TILE_STEP + 2.8 * HPC_GX;
+		colorText[] = {0.95, 0.84, 0.47, 1};
 	};
-	class RecycleButton : StdButton{
-		idc = 120;
-		x = (0.4 * safezoneW + safezoneX) - (BORDERSIZE);
-		y = (0.55 * safezoneH + safezoneY);
-		w = (0.1 * safezoneW) - (BORDERSIZE);
-		h = (0.045 * safezoneH);
-		sizeEx = 0.025 * safezoneH;
-		text = $STR_RECYCLING_PROCEED;
-		action = "dorecycle = 1;";
+	class Caption : HPC_Label {
+		y = RCY_TILE_Y + 3.6 * HPC_GY; w = RCY_TILE_W - 1.2 * HPC_GX; h = 1.6 * HPC_GY;
 	};
-	class CancelButton : StdButton{
+	class CaptionManpower : Caption { x = RCY_IX + 0 * RCY_TILE_STEP + 0.6 * HPC_GX; text = $STR_MANPOWER; };
+	class CaptionAmmo : Caption { x = RCY_IX + 1 * RCY_TILE_STEP + 0.6 * HPC_GX; text = $STR_AMMO; };
+	class CaptionFuel : Caption { x = RCY_IX + 2 * RCY_TILE_STEP + 0.6 * HPC_GX; text = $STR_FUEL; };
+
+	class CancelButton : HPC_Button {
 		idc = 121;
-		x = (0.5 * safezoneW + safezoneX) + (BORDERSIZE);
-		y = (0.55 * safezoneH + safezoneY);
-		w = (0.1 * safezoneW);
-		h = (0.045 * safezoneH);
-		sizeEx = 0.025 * safezoneH;
+		x = RCY_IX + RCY_IW - 22 * HPC_GX; y = RCY_Y + RCY_H - 4.1 * HPC_GY; w = 9 * HPC_GX; h = 2.9 * HPC_GY;
 		text = $STR_RECYCLING_CANCEL;
 		action = "closeDialog 0";
 	};
-
+	class RecycleButton : HPC_ButtonAccent {
+		idc = 120;
+		x = RCY_IX + RCY_IW - 12.4 * HPC_GX; y = RCY_Y + RCY_H - 4.1 * HPC_GY; w = 12.4 * HPC_GX; h = 2.9 * HPC_GY;
+		text = $STR_RECYCLING_PROCEED;
+		action = "dorecycle = 1;";
+	};
 };

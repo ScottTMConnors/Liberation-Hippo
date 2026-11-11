@@ -12,12 +12,12 @@ class DALE_RscButton {
 	text = "";
 
 	borderSize = 0;
-	colorBackground[] 			= {0,0,0,0.8};
-	colorBackgroundActive[] 	= {1,1,1,0.8};
-	colorBackgroundDisabled[] 	= {0.8,0.8,0.8,0.3};
+	colorBackground[] = {0.12,0.15,0.16,0.92};
+	colorBackgroundActive[] = {0.20,0.42,0.38,0.95};
+	colorBackgroundDisabled[] = {0.10,0.12,0.13,0.6};
 	colorBorder[] 				= {0,0,0,0.8};
 	colorDisabled[] 			= {1,1,1,0.3};
-	colorFocused[] 				= {0,0,0,0.8};
+	colorFocused[] = {0.12,0.15,0.16,0.92};
 	colorShadow[] 				= {0,0,0,0};
 	colorText[] 				= {1,1,1,1};
 	deletable = 0;
@@ -46,8 +46,8 @@ class DALE_RscCombo {
 	arrowEmpty = "\A3\ui_f\data\GUI\RscCommon\rsccombo\arrow_combo_ca.paa";
 	arrowFull = "\A3\ui_f\data\GUI\RscCommon\rsccombo\arrow_combo_active_ca.paa";
 
-	colorActive[] = {1,0,0,1};
-	colorBackground[] = {0,0,0,1};
+	colorActive[] = {0.62,0.92,0.84,1};
+	colorBackground[] = {0.12,0.15,0.16,0.92};
 	colorDisabled[] = {1,1,1,0.25};
 	colorPicture[] = {1,1,1,1};
 	colorPictureDisabled[] = {1,1,1,0.25};
@@ -55,11 +55,11 @@ class DALE_RscCombo {
 	colorPictureRight[] = {1,1,1,1};
 	colorPictureRightDisabled[] = {1,1,1,0.25};
 	colorPictureRightSelected[] = {1,1,1,1};
-	colorScrollbar[] = {1,0,0,1};
-	colorSelect[] = {0,0,0,1};
-	colorSelectBackground[] = {1,1,1,0.7};
-	colorSelectRight[] = {0,0,0,1};
-	colorSelect2Right[] = {0,0,0,1};
+	colorScrollbar[] = {0.46,0.80,0.72,1};
+	colorSelect[] = {1,1,1,1};
+	colorSelectBackground[] = {0.20,0.42,0.38,0.95};
+	colorSelectRight[] = {1,1,1,1};
+	colorSelect2Right[] = {1,1,1,1};
 	colorText[] = {1,1,1,1};
 	colorTextRight[] = {1,1,1,1};
 
@@ -91,6 +91,14 @@ class DALE_RscCombo {
 	};
 };
 
+// Pylon loadout editor. The pylon image and its per-pylon controls keep the
+// original __EVAL geometry because fn_dlgLoadoutPylonCreate.sqf reads it; the
+// frame, title strip and buttons sit around it on the HPC grid.
+#define DALE_IMG_X (safezoneX + safezoneW * (0.500-DALE_VAR_DLGWIDTHIMG/2))
+#define DALE_IMG_Y (safezoneY + safezoneH * (0.500-DALE_VAR_DLGHEIGHTIMG/2))
+#define DALE_IMG_W (safezoneW * DALE_VAR_DLGWIDTHIMG)
+#define DALE_IMG_H (safezoneH * DALE_VAR_DLGHEIGHTIMG)
+
 class DALE_RscLoadout {
 	idd = -1;
 	onLoad 		= "uiNamespace setVariable [""DALE_RscLoadout"",_this select 0];";
@@ -101,29 +109,46 @@ class DALE_RscLoadout {
 	movingEnable = false;
 
 	class controls {
-		class title {
+		class frame : HPC_Panel {
+			x = DALE_IMG_X - 1.1 * HPC_GX; y = DALE_IMG_Y - 6.2 * HPC_GY;
+			w = DALE_IMG_W + 2.2 * HPC_GX; h = DALE_IMG_H + 11.4 * HPC_GY;
+			colorBackground[] = HPC_C_PANEL_SOLID;
+		};
+		class accent : HPC_Text {
+			x = DALE_IMG_X - 1.1 * HPC_GX; y = DALE_IMG_Y - 6.2 * HPC_GY; w = 0.28 * HPC_GX; h = 4.2 * HPC_GY;
+			colorBackground[] = HPC_C_ACCENT;
+		};
+		class title : HPC_StructuredText {
 			idc = 1000;
-			x = __EVAL(safezoneX + safezoneW * (0.500-DALE_VAR_DLGWIDTHIMG/2));
-			y = __EVAL(safezoneY + safezoneH * (0.475-DALE_VAR_DLGHEIGHTIMG/2));
-			w = __EVAL(safezoneW * DALE_VAR_DLGWIDTHIMG);
-			h = __EVAL(safezoneH * DALE_VAR_DLGHEIGHTSECTION);
-			text = "";
-
-			colorbackground[] = {0.77,0.51,0.08,0.8};
-			colorText[] = {1,1,1,1};
-			deletable = 0;
-			fade = 0;
-			size = __EVAL(safezoneH * DALE_VAR_DLGHEIGHTSECTION);
-			shadow = 1;
-			style = 0;
-			type = 13;
+			x = DALE_IMG_X; y = DALE_IMG_Y - 5.7 * HPC_GY; w = DALE_IMG_W - 3 * HPC_GX; h = 2.2 * HPC_GY;
+			size = 1.35 * HPC_GY;
 			class Attributes {
-				font = "PuristaLight";
-				color = "#ffffff";
-				colorLink = "#D09B43";
+				font = "PuristaSemibold";
+				color = "#EBEFF1";
+				colorLink = "#76CCB8";
 				align = "left";
-				shadow = 1;
+				valign = "middle";
+				shadow = 0;
 			};
+		};
+		class subtitle : HPC_Label {
+			x = DALE_IMG_X; y = DALE_IMG_Y - 3.7 * HPC_GY; w = DALE_IMG_W; h = 1.4 * HPC_GY;
+			font = "RobotoCondensed";
+			sizeEx = 0.95 * HPC_GY;
+			text = "Pick a preset or set each pylon. The seat icon switches pilot or gunner control.";
+		};
+		class closeX : HPC_Button {
+			x = DALE_IMG_X + DALE_IMG_W - 1.9 * HPC_GX; y = DALE_IMG_Y - 5.3 * HPC_GY; w = 1.9 * HPC_GX; h = 1.9 * HPC_GY;
+			colorBackground[] = {1,1,1,0.06};
+			colorFocused[] = {1,1,1,0.06};
+			colorBackgroundActive[] = HPC_C_DANGER;
+			text = "X";
+			tooltip = "Close";
+			onButtonClick = "(ctrlParent (_this select 0)) closeDisplay 0;";
+		};
+		class divider : HPC_Text {
+			x = DALE_IMG_X; y = DALE_IMG_Y - 1.6 * HPC_GY; w = DALE_IMG_W; h = 0.1 * HPC_GY;
+			colorBackground[] = HPC_C_LINE;
 		};
 		class background {
 			idc = 1001;
@@ -133,7 +158,7 @@ class DALE_RscLoadout {
 			h = __EVAL(safezoneH * DALE_VAR_DLGHEIGHTIMG);
 			text = "";
 
-			colorbackground[] = {0.2,0.2,0.2,0.95};
+			colorbackground[] = {0,0,0,0.25};
 			colorText[] = {0,0,0,0};
 			font = "PuristaLight";
 			sizeEx = 0;
@@ -169,30 +194,32 @@ class DALE_RscLoadout {
 			x = __EVAL(safezoneX + safezoneW * (0.505-DALE_VAR_DLGWIDTHIMG/2));
 			y = __EVAL(safezoneY + safezoneH * (0.505-DALE_VAR_DLGHEIGHTIMG/2));
 			w = __EVAL(safezoneW * DALE_VAR_DLGWIDTHSECTION*2);
+			h = 2 * HPC_GY;
+			font = "RobotoCondensed";
+			sizeEx = HPC_GY;
+			tooltip = "Pylon preset";
 		};
 		class comboPriority: DALE_RscCombo {
 			idc = 1004;
 			x = __EVAL(safezoneX + safezoneW * (0.495+DALE_VAR_DLGWIDTHIMG/2-2*DALE_VAR_DLGWIDTHSECTION));
 			y = __EVAL(safezoneY + safezoneH * (0.505-DALE_VAR_DLGHEIGHTIMG/2));
 			w = __EVAL(safezoneW * DALE_VAR_DLGWIDTHSECTION*2);
+			h = 2 * HPC_GY;
+			font = "RobotoCondensed";
+			sizeEx = HPC_GY;
+			tooltip = "Weapon release mode";
 		};
-		class buttonClose: DALE_RscButton {
+		class buttonClose: HPC_Button {
 			idc = 1005;
-			x = __EVAL(safezoneX + safezoneW * (0.500+DALE_VAR_DLGWIDTHIMG/2-1*DALE_VAR_DLGWIDTHSECTION));
-			y = __EVAL(safezoneY + safezoneH * (0.505+DALE_VAR_DLGHEIGHTIMG/2));
-			w = __EVAL(safezoneW * DALE_VAR_DLGWIDTHSECTION);
+			x = DALE_IMG_X + DALE_IMG_W - 25 * HPC_GX; y = DALE_IMG_Y + DALE_IMG_H + 1.2 * HPC_GY; w = 12 * HPC_GX; h = 3.2 * HPC_GY;
 			text = $STR_DALE_Dialogs_Cancel;
 			onButtonClick = "(ctrlParent (_this select 0)) closeDisplay 0;";
-			style = 2;
 		};
-		class buttonApply: DALE_RscButton {
+		class buttonApply: HPC_ButtonAccent {
 			idc = 1006;
-			x = __EVAL(safezoneX + safezoneW * (0.495+DALE_VAR_DLGWIDTHIMG/2-2*DALE_VAR_DLGWIDTHSECTION));
-			y = __EVAL(safezoneY + safezoneH * (0.505+DALE_VAR_DLGHEIGHTIMG/2));
-			w = __EVAL(safezoneW * DALE_VAR_DLGWIDTHSECTION);
+			x = DALE_IMG_X + DALE_IMG_W - 12 * HPC_GX; y = DALE_IMG_Y + DALE_IMG_H + 1.2 * HPC_GY; w = 12 * HPC_GX; h = 3.2 * HPC_GY;
 			text = $STR_DALE_Dialogs_Apply;
 			onButtonClick = "_this call DALE_fnc_dlgLoadoutApply;";
-			style = 2;
 		};
 	};
 };

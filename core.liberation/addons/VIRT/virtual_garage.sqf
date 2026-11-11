@@ -23,7 +23,7 @@ while { dialog && alive player } do {
 	if ( _refresh ) then {
 		_refresh = false;
         ctrlEnable [120,false];ctrlEnable [121,false];
-        ctrlSetText [1011,format ["Garage: %1 / %2 stored",count GRLIB_virtual_garage,GRLIB_garage_size]];
+        ctrlSetText [1011,format ["%1 / %2 STORED",count GRLIB_virtual_garage,GRLIB_garage_size]];
 
 		// list outside
 		_vehicles_out = (player nearEntities [["LandVehicle","Air","Ship_F",playerbox_typename], 150]) select {
@@ -68,6 +68,7 @@ while { dialog && alive player } do {
 			_control lnbSetColor [[((lnbSize 110) select 0) - 1, 1], [0.72,0.86,1,1]];
 		} foreach GRLIB_virtual_garage;
 
+		ctrlShow [130, count (_vehicles_out + GRLIB_virtual_garage) == 0];
 		_old_sel = -1;
 		sleep 1;
 	};
@@ -143,7 +144,7 @@ while { dialog && alive player } do {
 
 				waitUntil {sleep 0.5; dobuild == 0};
 				if (build_confirmed == 0 && {!isNull build_vehicle}) then { // build_vehicle is null when the build failed
-					hintSilent (format ["Vehicle %1\nUnloaded from Garage.", [(_vehicle select 0)] call F_getLRXName]);
+					hintSilent (format ["%1\nretrieved from the garage.", [(_vehicle select 0)] call F_getLRXName]);
 					GRLIB_virtual_garage deleteAt _selected_item;
 					player setVariable ["GRLIB_virtual_garage", GRLIB_virtual_garage, true];
 				};

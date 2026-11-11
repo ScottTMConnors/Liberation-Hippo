@@ -1,103 +1,142 @@
+// Warehouse: nearby goods (left) can be stored, warehouse stock (right) retrieved.
+#define WHS_W (48 * HPC_GX)
+#define WHS_H (34 * HPC_GY)
+#define WHS_X (safezoneX + (safezoneW - WHS_W) / 2)
+#define WHS_Y (safezoneY + 10 * HPC_GY)
+#define WHS_PAD (1.1 * HPC_GX)
+#define WHS_CW (22.3 * HPC_GX)
+#define WHS_LX (WHS_X + WHS_PAD)
+#define WHS_RX (WHS_X + WHS_W - WHS_PAD - WHS_CW)
+#define WHS_LIST_Y (WHS_Y + 7.2 * HPC_GY)
+#define WHS_LIST_H (WHS_H - 14.2 * HPC_GY)
+
+class WHS_ListN : StdListNBox {
+	font = "RobotoCondensed";
+	sizeEx = 1.05 * HPC_GY;
+	rowHeight = 2.1 * HPC_GY;
+	shadow = 0;
+	period = 0;
+	colorText[] = HPC_C_TEXT;
+	colorBackground[] = {0,0,0,0.18};
+	colorScrollbar[] = HPC_C_ACCENT;
+	colorSelect[] = {1,1,1,1};
+	colorSelect2[] = {1,1,1,1};
+	colorSelectBackground[] = HPC_C_ACCENT_DIM;
+	colorSelectBackground2[] = HPC_C_ACCENT_DIM;
+	colorActive[] = {1,1,1,1};
+	colorDisabled[] = {1,1,1,0.3};
+	colorPicture[] = {1,1,1,1};
+	colorPictureSelected[] = {1,1,1,1};
+	colorPictureDisabled[] = {1,1,1,0.4};
+	onLBSelChanged = "";
+};
+
 class Warehouse {
-  	idd = 2302;
-    onLoad = "if (isNil 'HPC_fnc_scaleDialog') then {_this call compile preprocessFileLineNumbers 'scripts\client\misc\HPC_scaleDialog.sqf'} else {_this call HPC_fnc_scaleDialog};";
+	idd = 2302;
 	name = "Warehouse";
 	movingEnable = false;
 	enableSimulation = true;
 
 	class controlsBackground {
-		class OuterBG1: StdBG {
-			colorBackground[] = COLOR_BROWN;
-			x = 0.19175 * safezoneW + safezoneX;
-			y = 0.1324 * safezoneH + safezoneY;
-			w = 0.25 * safezoneW;
-			h = 0.62 * safezoneH;
-		};
-		class OuterBG_F1: OuterBG1 {
-			style = ST_FRAME;
-		};
-		class InnerBG1: OuterBG1 {
-			colorBackground[] = COLOR_GREEN;
-			x = 0.1985 * safezoneW + safezoneX;
-			y = 0.1916 * safezoneH + safezoneY;
-			w = 0.2375 * safezoneW;
-			h = 0.512 * safezoneH;
-		};
-		class InnerBG_F1: InnerBG1 {
-			style = ST_FRAME;
+		class Panel : HPC_Panel {
+			x = WHS_X; y = WHS_Y; w = WHS_W; h = WHS_H;
 		};
 	};
 
 	class controls {
-		class Header: StdHeader {
-			text = $STR_WAREHOUSE_SHOP;
-			x = 0.1985 * safezoneW + safezoneX;
-			y = 0.1444 * safezoneH + safezoneY;
-			w = 0.2375 * safezoneW;
-			h = 0.04 * safezoneH;
+		class Accent : HPC_Text {
+			x = WHS_X; y = WHS_Y; w = 0.28 * HPC_GX; h = 4.2 * HPC_GY;
+			colorBackground[] = HPC_C_ACCENT;
 		};
-
-		class VehListOut: StdListNBox {
-			idc = 110;
-			x = 0.2027 * safezoneW + safezoneX;
-			y = 0.2074 * safezoneH + safezoneY;
-			w = 0.1135 * safezoneW;
-			h = 0.473 * safezoneH;
-			columns[] = {0, 0.75};
-			onLBSelChanged = "";
-			shadow = 2;
-			rowHeight = "1.25 * 0.018 * safezoneH";
-			colorPicture[] = {1,1,1,1};
-			colorPictureSelected[] = {0,1,0,1};
-			colorPictureDisabled[] = {0.4,0.4,0.4,1};
+		class Header : HPC_Heading {
+			text = "WAREHOUSE";
+			x = WHS_LX; y = WHS_Y + 0.5 * HPC_GY; w = WHS_W - 5 * HPC_GX; h = 2.2 * HPC_GY;
+			sizeEx = 1.55 * HPC_GY;
 		};
-
-		class VehListIn: StdListNBox {
-			idc = 111;
-			x = 0.3195 * safezoneW + safezoneX;
-			y = 0.2074 * safezoneH + safezoneY;
-			w = 0.1135 * safezoneW;
-			h = 0.473 * safezoneH;
-			columns[] = {0, 0.75, 0.05};
-			onLBSelChanged = "";
-			shadow = 2;
-			rowHeight = "1.25 * 0.018 * safezoneH";
-			colorPicture[] = {1,1,1,1};
-			colorPictureSelected[] = {0,1,0,1};
-			colorPictureDisabled[] = {0.4,0.4,0.4,1};
+		class Subtitle : HPC_Label {
+			x = WHS_LX; y = WHS_Y + 2.5 * HPC_GY; w = WHS_W - 2 * WHS_PAD; h = 1.4 * HPC_GY;
+			font = "RobotoCondensed";
+			sizeEx = 0.95 * HPC_GY;
+			text = "Store supply barrels and crates, or withdraw them from stock for ammo.";
 		};
-
-		class CancelButton : StdButton {
+		class CancelButton : HPC_Button {
 			idc = -1;
-			action = "closeDialog 0";
+			x = WHS_X + WHS_W - 2.8 * HPC_GX; y = WHS_Y + 0.9 * HPC_GY; w = 1.9 * HPC_GX; h = 1.9 * HPC_GY;
+			colorBackground[] = {1,1,1,0.06};
+			colorFocused[] = {1,1,1,0.06};
+			colorBackgroundActive[] = HPC_C_DANGER;
 			text = "X";
-			x = 0.42 * safezoneW + safezoneX;
-			y = 0.1444 * safezoneH + safezoneY;
-			w = 0.015 * safezoneW;
-			h = 0.02 * safezoneH;
+			tooltip = "Close";
+			action = "closeDialog 0";
 			default = true;
 		};
-
-		class UnloadButton : StdButton {
-			idc = 120;
-			text = $STR_WAREHOUSE_ACTION1;
-            tooltip = "Store the selected nearby goods in the warehouse.";
-			action = "load_box = 1";
-			x = 0.21 * safezoneW + safezoneX;
-			y = 0.71 * safezoneH + safezoneY;
-			w = 0.09 * safezoneW;
-			h = 0.035 * safezoneH;
+		class Divider : HPC_Text {
+			x = WHS_LX; y = WHS_Y + 4.6 * HPC_GY; w = WHS_W - 2 * WHS_PAD; h = 0.1 * HPC_GY;
+			colorBackground[] = HPC_C_LINE;
 		};
 
-		class LoadButton : StdButton {
+		class LabelOut : HPC_Label {
+			x = WHS_LX; y = WHS_Y + 5.5 * HPC_GY; w = WHS_CW; h = 1.4 * HPC_GY;
+			text = "NEARBY GOODS (20 M)";
+		};
+		class VehListOut : WHS_ListN {
+			idc = 110;
+			columns[] = {0, 0.75};
+			x = WHS_LX; y = WHS_LIST_Y; w = WHS_CW; h = WHS_LIST_H;
+		};
+		class EmptyOut : HPC_Label {
+			idc = 130;
+			style = ST_CENTER;
+			font = "RobotoCondensed";
+			sizeEx = HPC_GY;
+			x = WHS_LX; y = WHS_LIST_Y + 7 * HPC_GY; w = WHS_CW; h = 2 * HPC_GY;
+			text = "No barrels or crates nearby";
+		};
+
+		class LabelIn : HPC_Label {
+			x = WHS_RX; y = WHS_Y + 5.5 * HPC_GY; w = WHS_CW; h = 1.4 * HPC_GY;
+			text = "WAREHOUSE STOCK";
+		};
+		class LabelInCount : HPC_Label {
+			style = ST_RIGHT;
+			x = WHS_RX; y = WHS_Y + 5.5 * HPC_GY; w = WHS_CW; h = 1.4 * HPC_GY;
+			text = "QTY";
+		};
+		class VehListIn : WHS_ListN {
+			idc = 111;
+			columns[] = {0, 0.75, 0.05};
+			x = WHS_RX; y = WHS_LIST_Y; w = WHS_CW; h = WHS_LIST_H;
+		};
+		class EmptyIn : HPC_Label {
+			idc = 131;
+			style = ST_CENTER;
+			font = "RobotoCondensed";
+			sizeEx = HPC_GY;
+			x = WHS_RX; y = WHS_LIST_Y + 7 * HPC_GY; w = WHS_CW; h = 2 * HPC_GY;
+			text = "The warehouse is empty";
+		};
+		class Summary : HPC_Label {
+			idc = 132;
+			style = ST_RIGHT;
+			font = "RobotoCondensed";
+			sizeEx = 0.95 * HPC_GY;
+			x = WHS_RX; y = WHS_Y + WHS_H - 6.6 * HPC_GY; w = WHS_CW; h = 1.5 * HPC_GY;
+			text = "";
+		};
+
+		class UnloadButton : HPC_Button {
+			idc = 120;
+			text = $STR_WAREHOUSE_ACTION1;
+			tooltip = "Store the selected nearby goods in the warehouse.";
+			action = "load_box = 1";
+			x = WHS_LX; y = WHS_Y + WHS_H - 4.4 * HPC_GY; w = WHS_CW; h = 3.2 * HPC_GY;
+		};
+		class LoadButton : HPC_ButtonAccent {
 			idc = 121;
 			text = $STR_WAREHOUSE_ACTION2;
-            tooltip = "Retrieve the selected goods from warehouse stock.";
+			tooltip = "Retrieve the selected goods from warehouse stock.";
 			action = "load_box = 2";
-			x = 0.33 * safezoneW + safezoneX;
-			y = 0.71 * safezoneH + safezoneY;
-			w = 0.09 * safezoneW;
-			h = 0.035 * safezoneH;
+			x = WHS_RX; y = WHS_Y + WHS_H - 4.4 * HPC_GY; w = WHS_CW; h = 3.2 * HPC_GY;
 		};
 	};
 };

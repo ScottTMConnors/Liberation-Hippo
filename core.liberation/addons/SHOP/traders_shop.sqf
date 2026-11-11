@@ -130,6 +130,7 @@ while { dialog && alive player } do {
 		} foreach _sell_list_dlg;
 
 		lbSetCurSel [110, -1];
+		ctrlShow [130, count _sell_list_dlg == 0];
 		_refresh = false;
 	};
 
@@ -138,6 +139,7 @@ while { dialog && alive player } do {
 
 	_selected_item = lbCurSel 111;
     _ammo_collected = player getVariable ["GREUH_ammo_count",0];
+    ctrlSetText [126, format ["You have %1 ammo", _ammo_collected]];
     private _validBuy = _selected_item >= 0 && {_selected_item < count _buy_list_dlg};
     ctrlEnable [121,_validBuy && {parseNumber (_ctrl_buy lnbText [_selected_item,1]) <= _ammo_collected}];
 	if (_selected_item != _selected_item_bak) then {
@@ -146,7 +148,9 @@ while { dialog && alive player } do {
 		_picture = getText (configFile >> "CfgVehicles" >> _veh_class >> "editorPreview");
 		if (_picture == "") then { _picture = getMissionPath "res\preview\no_image.jpg" };
 		(_display displayCtrl (122)) ctrlSetText _picture;
-        } else {(_display displayCtrl 122) ctrlSetText ""};
+		ctrlSetText [124, [_veh_class] call F_getLRXName];
+		ctrlSetText [125, format ["Price: %1 ammo", _buy_list_dlg select _selected_item select 1]];
+        } else {(_display displayCtrl 122) ctrlSetText ""; ctrlSetText [124, "Select a vehicle to buy"]; ctrlSetText [125, ""]};
 		_selected_item_bak = _selected_item;
 	};
 

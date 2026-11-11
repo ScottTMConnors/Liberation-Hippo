@@ -120,7 +120,8 @@ These are defaults; most can be changed in the settings.
 
 - More fortifications: sandbags, H-barriers, towers, raised HMG/GMG, static
   AA/AT, and Expeditionary Forces emplacements when that DLC is loaded.
-- Temporary fortifications place instantly and expire after ten minutes.
+- Temporary fortifications place instantly and expire after ten minutes
+  (a static weapon stays while someone mans it).
 - Deploy to your own parked vehicles, or back to where you last died while
   your grave remains.
 - Repair, refuel and rearm cooldowns drop to about 20 to 30 seconds
@@ -184,7 +185,8 @@ Leave out `--build-only` to also install the mission into your game's
 ## Languages
 
 New Hippos Conquest text is English only. Inherited Liberation RX text keeps
-its French, German, Spanish, Russian and Simplified Chinese translations, so
+its French, German, Spanish, Russian, Chinese, Japanese, Portuguese and Czech
+translations (coverage varies), so
 other languages show a mix.
 
 ## Credits and license

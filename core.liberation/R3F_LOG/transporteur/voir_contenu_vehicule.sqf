@@ -85,6 +85,7 @@ while {!isNull _dlg_contenu_vehicule} do
 		};
 
 		lbClear _ctrl_liste;
+		(_dlg_contenu_vehicule displayCtrl (R3F_LOG_ID_TRANSPORTEUR_START + 14)) ctrlShow (count _tab_objets == 0);
 		(_dlg_contenu_vehicule displayCtrl R3F_LOG_IDC_DLG_CV_CAPACITE_VEHICULE) ctrlSetText (format [STR_R3F_LOG_dlg_CV_capacite_vehicule+" pl.", _chargement select 0, _chargement select 1]);
 		if (_chargement select 1 != 0) then {(_dlg_contenu_vehicule displayCtrl R3F_LOG_IDC_DLG_CV_JAUGE_CHARGEMENT) progressSetPosition ((_chargement select 0) / (_chargement select 1));};
 		(_dlg_contenu_vehicule displayCtrl R3F_LOG_IDC_DLG_CV_JAUGE_CHARGEMENT) ctrlShow ((_chargement select 0) != 0);

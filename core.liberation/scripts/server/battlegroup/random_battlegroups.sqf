@@ -56,8 +56,8 @@ while { GRLIB_endgame == 0 && GRLIB_global_stop == 0 } do {
 				if (floor random 4 == 0) exitWith {};
 				diag_log format ["Spawn Attack on player %1 at %2", name _target, time];
 				_target setVariable ["GRLIB_BN_timer", round (time + (40 * 60))];
-				_msg = format ["<img size='1' image='%2'/> - <img size='1' image='%2'/> - <img size='1' image='%2'/><br/><t color='#0000FF'>%1</t> is now the <t color='#808080'>'Bete Noire'</t> of the <t color='#F00000'>OPFor</t>!<br/><br/>You better take cover...<br/><img size='1' image='%2'/> - <img size='1' image='%2'/> - <img size='1' image='%2'/>", name _target, getMissionPath "res\skull.paa"];
-				[_msg, 0, 0, 10, 0, 0, 90] remoteExec ["BIS_fnc_dynamicText", 0];
+				_msg = format ["%1 is now the Bete Noire of the enemy. Take cover.", name _target];
+				["Hunted", _msg, "bad", 10, true] remoteExec ["HPC_fnc_toast", [0, -2] select isDedicated];
 				waitUntil {sleep 2; isNull objectParent _target};
 				[getPosATL _target, GRLIB_side_enemy, 3] spawn spawn_air;
 				sleep 10;

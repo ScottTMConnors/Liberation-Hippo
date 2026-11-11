@@ -1,190 +1,134 @@
+// Secondary missions: operation list with preview on the left, briefing on the right.
+#define SEC_W (62 * HPC_GX)
+#define SEC_H (36 * HPC_GY)
+#define SEC_X (safezoneX + (safezoneW - SEC_W) / 2)
+#define SEC_Y (safezoneY + (safezoneH - SEC_H) / 2)
+#define SEC_PAD (1.2 * HPC_GX)
+#define SEC_LW (22 * HPC_GX)
+#define SEC_RX (SEC_X + SEC_PAD + SEC_LW + 1.5 * HPC_GX)
+#define SEC_RW (SEC_W - 2 * SEC_PAD - SEC_LW - 1.5 * HPC_GX)
+#define SEC_BODY_Y (SEC_Y + 7 * HPC_GY)
+#define SEC_BODY_H (SEC_H - 12.4 * HPC_GY)
+
 class liberation_secondary {
 	idd = 6842;
-    onLoad = "if (isNil 'HPC_fnc_scaleDialog') then {_this call compile preprocessFileLineNumbers 'scripts\client\misc\HPC_scaleDialog.sqf'} else {_this call HPC_fnc_scaleDialog};";
 	movingEnable = false;
-	controlsBackground[] = {
-		"CamoBG",
-		"OuterBG",
-		"OuterBG_F",
-		"InnerBG",
-		"InnerBG_F",
-		"MissionBriefingFrame"
-	};
-
-	controls[] = {
-	  "Header",
-	  "MissionsList",
-	  "MissionImage",
-	  "ButtonClose",
-	  "MissionBriefing",
-	  "StartButton",
-	  "CancelButton",
-	  "LabelIntel"
-	};
-
+	controlsBackground[] = {"Panel", "BriefingBG"};
+	controls[] = {"Accent", "Header", "Subtitle", "ButtonClose", "Divider", "LabelOps", "MissionImage", "MissionsList", "LabelBriefing", "MissionBriefing", "LabelIntel", "StartButton", "CancelButton"};
 	objects[] = {};
 
-	class CamoBG : BgPicture {
-		x = (0.2 * safezoneW + safezoneX) - ( 2 * BORDERSIZE);
-		y = (0.2 * safezoneH + safezoneY) - (3 * BORDERSIZE);
-		w = (0.6 * safezoneW) + (4 * BORDERSIZE);
-		h = (0.6 * safezoneH) + (6 * BORDERSIZE);
-
+	class Panel : HPC_Panel {
+		x = SEC_X; y = SEC_Y; w = SEC_W; h = SEC_H;
+		colorBackground[] = HPC_C_PANEL_SOLID;
 	};
-	class OuterBG : StdBG{
-		colorBackground[] = COLOR_BROWN;
-		x = (0.2 * safezoneW + safezoneX) - (2 * BORDERSIZE);
-		y = (0.2 * safezoneH + safezoneY) - (3 * BORDERSIZE);
-		w = (0.6 * safezoneW) + (4 * BORDERSIZE);
-		h = (0.6 * safezoneH) + (6 * BORDERSIZE);
+	class BriefingBG : HPC_Text {
+		x = SEC_RX; y = SEC_BODY_Y; w = SEC_RW; h = SEC_BODY_H;
+		colorBackground[] = {0,0,0,0.18};
 	};
-	class OuterBG_F : OuterBG {
-		style = ST_FRAME;
+	class Accent : HPC_Text {
+		x = SEC_X; y = SEC_Y; w = 0.28 * HPC_GX; h = 4.2 * HPC_GY;
+		colorBackground[] = HPC_C_ACCENT;
 	};
-	class InnerBG : OuterBG {
-		colorBackground[] = COLOR_GREEN;
-		x = (0.2 * safezoneW + safezoneX)  - ( BORDERSIZE);
-		y = 0.25 * safezoneH + safezoneY - (1.5 * BORDERSIZE);
-		w = (0.6 * safezoneW) +  (2 * BORDERSIZE);
-		h = 0.55 * safezoneH  + (3 * BORDERSIZE);
-	};
-	class InnerBG_F : InnerBG {
-		style = ST_FRAME;
-	};
-	class MissionBriefingFrame : StdBG{
-		style = ST_FRAME;
-		colorBackground[] = COLOR_GREEN;
-		x = (0.35 * safezoneW + safezoneX) + BORDERSIZE;
-		y = 0.25 * safezoneH + safezoneY;
-		w = (0.45 * safezoneW) - BORDERSIZE;
-		h = (0.5 * safezoneH) - BORDERSIZE;
-	};
-
-	class MissionImage : BgPicture {
-		idc = 106;
-		x = (0.2 * safezoneW + safezoneX);
-		y = (0.25 * safezoneH + safezoneY);
-		w = (0.15 * safezoneW);
-		h = (0.2 * safezoneH);
-		colorText[] = {1.0, 1.0, 1.0, 1.0};
-		text = "";
-	};
-	class Header : StdHeader{
-		x = 0.2 * safezoneW + safezoneX - (BORDERSIZE);
-		y = 0.19 * safezoneH + safezoneY;
-		w = 0.6 * safezoneW + ( 2 * BORDERSIZE);
-		h = 0.05 * safezoneH - (BORDERSIZE);
+	class Header : HPC_Heading {
+		x = SEC_X + SEC_PAD; y = SEC_Y + 0.5 * HPC_GY; w = SEC_W - 5 * HPC_GX; h = 2.2 * HPC_GY;
+		sizeEx = 1.55 * HPC_GY;
 		text = $STR_SECONDARY_OBJECTIVES_TITLE;
 	};
-	class MissionsList : StdListBox {
-		idc = 101;
-		x = 0.2 * safezoneW + safezoneX;
-		w = 0.15 * safezoneW;
-		y = 0.45 * safezoneH + safezoneY + BORDERSIZE;
-		h = (0.3 * safezoneH) - BORDERSIZE;
-		shadow = 2;
-		onLBSelChanged="";
+	class Subtitle : HPC_Label {
+		x = SEC_X + SEC_PAD; y = SEC_Y + 2.5 * HPC_GY; w = SEC_W - 2 * SEC_PAD; h = 1.4 * HPC_GY;
+		font = "RobotoCondensed";
+		sizeEx = 0.95 * HPC_GY;
+		text = "Spend intel to launch a side operation. One operation can run at a time.";
 	};
-
-	class ButtonClose : StdButton{
+	class ButtonClose : HPC_Button {
 		idc = 105;
-		x = 0.785 * safezoneW + safezoneX;
-		w = 0.015 * safezoneW;
-		h = 0.02 * safezoneH;
-		y = 0.197 * safezoneH + safezoneY;
+		x = SEC_X + SEC_W - 2.8 * HPC_GX; y = SEC_Y + 0.9 * HPC_GY; w = 1.9 * HPC_GX; h = 1.9 * HPC_GY;
+		colorBackground[] = {1,1,1,0.06};
+		colorFocused[] = {1,1,1,0.06};
+		colorBackgroundActive[] = HPC_C_DANGER;
 		text = "X";
+		tooltip = "Close";
 		action = "closeDialog 0";
 	};
-
-	class LabelIntel : StdText{
-		idc = 107;
-		x = (0.2 * safezoneW + safezoneX);
-		w = (0.15 * safezoneW);
-		h = (0.04 * safezoneH);
-		y = (0.755 * safezoneH + safezoneY);
-		colorText[] = {0, 0.7, 1.0, 1.0};
-		sizeEx = 0.03 * safezoneH;
-		style = ST_CENTER;
+	class Divider : HPC_Text {
+		x = SEC_X + SEC_PAD; y = SEC_Y + 4.6 * HPC_GY; w = SEC_W - 2 * SEC_PAD; h = 0.1 * HPC_GY;
+		colorBackground[] = HPC_C_LINE;
 	};
-
-	class MissionBriefing  {
-
-	 	type = 15;
-	 	idc = -1;
-	 	style = 0;
-		x = (0.35 * safezoneW + safezoneX) + BORDERSIZE;
-		y = 0.25 * safezoneH + safezoneY;
-		w = (0.45 * safezoneW) - BORDERSIZE;
-		h = (0.5 * safezoneH) - BORDERSIZE;
-		colorScrollbar[] = COLOR_WHITE;
-
-	 	class VScrollbar
-	 	{
-	 		color[] = COLOR_WHITE;
-	 		width = 0.01 * safezoneW;
+	class LabelOps : HPC_Label {
+		x = SEC_X + SEC_PAD; y = SEC_Y + 5.4 * HPC_GY; w = SEC_LW; h = 1.4 * HPC_GY;
+		text = "OPERATIONS";
+	};
+	class MissionImage : HPC_Picture {
+		idc = 106;
+		x = SEC_X + SEC_PAD; y = SEC_BODY_Y; w = SEC_LW; h = 12.4 * HPC_GY;
+		colorBackground[] = {0,0,0,0.3};
+	};
+	class MissionsList : HPC_ListBox {
+		idc = 101;
+		x = SEC_X + SEC_PAD; y = SEC_BODY_Y + 13 * HPC_GY; w = SEC_LW; h = SEC_BODY_H - 13 * HPC_GY;
+		colorBackground[] = {0,0,0,0.18};
+		onLBSelChanged = "";
+	};
+	class LabelBriefing : HPC_Label {
+		x = SEC_RX; y = SEC_Y + 5.4 * HPC_GY; w = SEC_RW; h = 1.4 * HPC_GY;
+		text = "BRIEFING";
+	};
+	class MissionBriefing {
+		type = 15;
+		idc = -1;
+		style = 0;
+		x = SEC_RX + 0.8 * HPC_GX; y = SEC_BODY_Y + 0.6 * HPC_GY; w = SEC_RW - 1.2 * HPC_GX; h = SEC_BODY_H - 1.2 * HPC_GY;
+		class VScrollbar {
+			color[] = {1,1,1,0.5};
+			width = 0.5 * HPC_GX;
 			autoScrollSpeed = -1;
 			autoScrollDelay = 5;
 			autoScrollRewind = 0;
-	 	};
-
-	 	class HScrollbar
-	 	{
-	 		color[] = COLOR_WHITE;
-	 		height = 0.012 * safezoneH;
-	 	};
-
-	 	class ScrollBar
-	 	{
-			color[] = COLOR_WHITE;
-			colorActive[] = COLOR_WHITE;
-			colorDisabled[] = COLOR_WHITE;
+		};
+		class HScrollbar {
+			color[] = {1,1,1,0};
+			height = 0;
+		};
+		class ScrollBar {
+			color[] = {1,1,1,0.5};
+			colorActive[] = {1,1,1,1};
+			colorDisabled[] = {1,1,1,0.3};
 			thumb = "\A3\ui_f\data\gui\cfg\scrollbar\thumb_ca.paa";
 			arrowEmpty = "\A3\ui_f\data\gui\cfg\scrollbar\arrowEmpty_ca.paa";
 			arrowFull = "\A3\ui_f\data\gui\cfg\scrollbar\arrowFull_ca.paa";
 			border = "\A3\ui_f\data\gui\cfg\scrollbar\border_ca.paa";
-	 	};
-
-	 	class Controls
-	 	{
-	 		class MissionBriefingText
-	 		{
-	 			idc = 102;
-	 			type = CT_STRUCTURED_TEXT;
-	 			colorBackground[] = COLOR_NOALPHA;
-	 			style = ST_LEFT;
-	 			x = 0;
-	 			y = 0;
-	 			w = (0.45 * safezoneW) - (2 * BORDERSIZE);
-	 			h = (0.5 * safezoneH) - BORDERSIZE ;
-	 			text= "AAA";
-	 			size = 0.02 * safezoneH;
-	 			sizeEx = 0.02 * safezoneH;
-	 			shadow = 2;
- 				font = FONTM;
- 				color = "#e0e0e0";
- 				align = "left";
- 				valign = "top";
-	 		};
-	 	};
-	 };
-
-	 class StartButton : StdButton{
+		};
+		class Controls {
+			class MissionBriefingText : HPC_StructuredText {
+				idc = 102;
+				x = 0; y = 0; w = SEC_RW - 2.2 * HPC_GX; h = SEC_BODY_H - 1.2 * HPC_GY;
+				size = 1.05 * HPC_GY;
+				class Attributes {
+					font = "RobotoCondensed";
+					color = "#EBEFF1";
+					align = "left";
+					valign = "top";
+					shadow = 0;
+				};
+			};
+		};
+	};
+	class LabelIntel : HPC_Text {
+		idc = 107;
+		x = SEC_X + SEC_PAD; y = SEC_Y + SEC_H - 4.2 * HPC_GY; w = SEC_LW; h = 3 * HPC_GY;
+		font = "PuristaSemibold";
+		sizeEx = 1.3 * HPC_GY;
+		colorText[] = HPC_C_ACCENT;
+	};
+	class StartButton : HPC_ButtonAccent {
 		idc = 103;
-		x = (0.46 * safezoneW + safezoneX);
-		y = (0.75 * safezoneH + safezoneY);
-		w = (0.1 * safezoneW);
-		h = (0.05 * safezoneH);
-		sizeEx = 0.025 * safezoneH;
+		x = SEC_X + SEC_W - SEC_PAD - 14 * HPC_GX; y = SEC_Y + SEC_H - 4.4 * HPC_GY; w = 14 * HPC_GX; h = 3.2 * HPC_GY;
 		text = $STR_SECONDARY_OBJECTIVES_START;
 		action = "dostartsecondary = 1;";
 	};
-	class CancelButton : StdButton{
+	class CancelButton : HPC_Button {
 		idc = 104;
-		x = (0.565 * safezoneW + safezoneX);
-		y = (0.75 * safezoneH + safezoneY);
-		w = (0.1 * safezoneW);
-		h = (0.05 * safezoneH);
-		sizeEx = 0.025 * safezoneH;
+		x = SEC_X + SEC_W - SEC_PAD - 25 * HPC_GX; y = SEC_Y + SEC_H - 4.4 * HPC_GY; w = 10 * HPC_GX; h = 3.2 * HPC_GY;
 		text = $STR_RECYCLING_CANCEL;
 		action = "closeDialog 0;";
 	};

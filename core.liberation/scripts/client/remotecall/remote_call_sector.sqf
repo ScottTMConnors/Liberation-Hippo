@@ -9,31 +9,26 @@ if (_marker_pos isEqualTo [0,0,0]) exitWith {};
 private _location_name = [_marker_pos] call F_getLocationName;
 
 if (_status == 0) then {
-	private _lst_player = "Thanks to: - ";
-	{
-		if (_x distance2D _marker_pos < GRLIB_sector_size) then {
-			_lst_player = _lst_player + name _x + " - ";
-		};
-	} forEach allPlayers;
-	["lib_sector_captured_info", [_lst_player], 3] call BIS_fnc_showNotification;
-	["lib_sector_captured", [_location_name], 7] call BIS_fnc_showNotification;
+	private _names = (allPlayers select {_x distance2D _marker_pos < GRLIB_sector_size}) apply {name _x};
+	private _thanks = ["", "Thanks to " + (_names joinString ", ")] select (count _names > 0);
+	["lib_sector_captured", [_location_name], 7, _thanks] call HPC_fnc_notify;
 };
 
 if (_status == 1) then {
-	["lib_sector_attacked", [_location_name]] call BIS_fnc_showNotification;
+	["lib_sector_attacked", [_location_name]] call HPC_fnc_notify;
 	"opfor_capture_marker" setMarkerPosLocal (markerpos _sector);
 };
 
 if (_status == 2) then {
-	["lib_sector_lost", [_location_name]] call BIS_fnc_showNotification;
+	["lib_sector_lost", [_location_name]] call HPC_fnc_notify;
 };
 
 if (_status == 3) then {
-	["lib_sector_safe", [_location_name]] call BIS_fnc_showNotification;
+	["lib_sector_safe", [_location_name]] call HPC_fnc_notify;
 };
 
 if (_status == 4) then {
-	["lib_sector_building", [_info]] call BIS_fnc_showNotification;
+	["lib_sector_building", [_info]] call HPC_fnc_notify;
 };
 
 { _x setMarkerColorLocal GRLIB_color_friendly } foreach blufor_sectors;

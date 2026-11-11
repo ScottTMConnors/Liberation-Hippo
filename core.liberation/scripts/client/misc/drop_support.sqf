@@ -1,6 +1,6 @@
 private ["_class","_cost"];
 private _timer = player getVariable ["AirCoolDown", 0];
-if (_timer > time) exitWith {hint format ["Air Support not ready !\nNext call in %1 min\n\nPlease wait...", round ((_timer - time)/60)]};
+if (_timer > time) exitWith {hint format ["Air support is not ready.\nNext call in %1 min.", round ((_timer - time)/60)]};
 
 do_action = 0;
 air_type = 0;
@@ -97,6 +97,7 @@ if (do_action == 1) then {
 		"spawn_marker" setMarkerTextLocal (localize "STR_HALO_PARAM_ARTY");
 		ctrlSetText [201, toUpper (localize "STR_HALO_PARAM_ARTY")];
 		ctrlSetText [202, (localize "STR_HALO_PARAM_ARTY")];
+		((findDisplay 5203) displayCtrl 203) ctrlSetStructuredText parseText format ["<t color='#76CCB8' size='1.3'>%1 ammo</t><br/>Cannot fire near friendly units or a FOB.", _cost];
 
 		onMapSingleClick {
 			halo_position = _pos;

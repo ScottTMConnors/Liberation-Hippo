@@ -33,7 +33,7 @@ if (_ai_follow) then {
 
 private _position = (_tunnel getVariable ["tunnel_position", 0]) + 1;
 private _msg = format [localize "STR_UI_TUNNEL_ENTRY_WARNING", _position];
-[_msg, 0, 0, 10, 0, 0, 90] spawn BIS_fnc_dynamicText;
+["Tunnel", _msg, "warn", 8, true] call HPC_fnc_toast;
 
 showMap false;
 [player, _tunnel_name] remoteExec [ "sog_tunnel_enter_remotecall", 2 ];

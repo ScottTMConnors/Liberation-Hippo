@@ -432,7 +432,6 @@ outlw_MR_openAbout =
 	
 	((uiNamespace getVariable "outlw_MR_Dialog_About") displayCtrl 1001) ctrlSetText ("Version: " + outlw_MR_version);
 	((uiNamespace getVariable "outlw_MR_Dialog_About") displayCtrl 1003) ctrlSetText ("Updated: " + outlw_MR_date);
-	((uiNamespace getVariable "outlw_MR_Dialog_About") displayCtrl 2400) ctrlSetStructuredText parseText "<t size='0.8'>OK</t>";
 };
 
 

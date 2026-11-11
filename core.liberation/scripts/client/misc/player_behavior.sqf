@@ -72,7 +72,7 @@ while {true} do {
 						_x setVariable ["PAR_Grp_AI", GRLIB_player_group];
 					} forEach _player_units;
 					_msg = format ["<t color='#0000FF'>%1</t> you are a <t color='#660080'>Civilian</t> now...", name player];
-					[_msg, 0, 0, 10, 0, 0, 90] spawn BIS_fnc_dynamicText;
+					["Undercover", _msg, "info", 8, true] call HPC_fnc_toast;
 					_msg = format ["%1 and his squad goes to the Civilian side...", name player];
 					[gamelogic, _msg] remoteExec ["globalChat", 0];
 					_timer = time + 600;
@@ -93,8 +93,8 @@ while {true} do {
 					_timer_bonus = 60;
 				};
 			} else {
-				_msg = format ["DETECTED!!<br/><t color='#0000FF'>%1</t> you go back to <t color='#004C99'>BLUFOR</t> side...", name player];
-				[_msg, 0, 0, 10, 0, 0, 90] spawn BIS_fnc_dynamicText;
+				_msg = format ["DETECTED!<br/><t color='#0000FF'>%1</t>, your cover is blown. You are back on the <t color='#004C99'>BLUFOR</t> side.", name player];
+				["Detected", _msg, "bad", 8, true] call HPC_fnc_toast;
 				_player_units = (units GRLIB_player_group);
 				GRLIB_player_group = createGroup [GRLIB_side_friendly, true];
 				waitUntil {

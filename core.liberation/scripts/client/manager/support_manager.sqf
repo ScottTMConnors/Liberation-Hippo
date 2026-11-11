@@ -188,7 +188,7 @@ while {true} do {
 		if (!isNil "_tower") then {
 			if ([GRLIB_capture_size, _tower, opfor_sectors] call F_getNearestSector != "") then {
 				_msg = localize "STR_DESTROY_TOWER";
-				[_msg, 0, 0, 5, 0, 0, 90] spawn BIS_fnc_dynamicText;
+				["Radio tower", _msg, "warn", 6, true] call HPC_fnc_toast;
 			};
 		};
 	};

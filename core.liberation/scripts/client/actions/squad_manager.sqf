@@ -36,7 +36,7 @@ while {true} do {
 
 		private _my_squad_order = player getVariable ["my_squad_order", nil];
 		if (!isNil "_my_squad_order") then {
-			_leader sideChat "Order Received !!";
+			_leader sideChat "Order received!";
 			player setVariable ["my_squad_order", nil, true];
 		};
 

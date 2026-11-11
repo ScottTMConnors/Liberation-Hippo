@@ -1,117 +1,110 @@
+// Redeploy screen: docked side panel over the live camera, minimap bottom right.
+#define DEP_X (safezoneX + 1.2 * HPC_GX)
+#define DEP_Y (safezoneY + 4 * HPC_GY)
+#define DEP_W (20 * HPC_GX)
+#define DEP_H (31 * HPC_GY)
+#define DEP_PAD (1.1 * HPC_GX)
+#define DEP_MAP_W (26 * HPC_GX)
+#define DEP_MAP_H (19.5 * HPC_GY)
+#define DEP_MAP_X (HPC_RIGHT - 1.2 * HPC_GX - DEP_MAP_W)
+#define DEP_MAP_Y (HPC_BOTTOM - 1.5 * HPC_GY - DEP_MAP_H)
+
 class liberation_deploy {
 	idd = 5201;
-    onLoad = "if (isNil 'HPC_fnc_scaleDialog') then {_this call compile preprocessFileLineNumbers 'scripts\client\misc\HPC_scaleDialog.sqf'} else {_this call HPC_fnc_scaleDialog};";
 	movingEnable = false;
-	controlsBackground[] = {};
-
-	controls[] = {"OuterBG", "RecycleBG", "OuterBG_F", "InnerBG", "InnerBG_F", "Header", "DeployList", "DeployButton", "DeployMap", "LoadoutsCombo", "LabelDeploy", "LabelLoadout", "MapButton", "ButtonClose"};
-
+	enableSimulation = true;
+	controlsBackground[] = {"Panel", "MapFrame"};
+	controls[] = {"Accent", "Title", "Subtitle", "ButtonClose", "Divider", "LabelLoadout", "LoadoutsCombo", "LabelDeploy", "DeployList", "Info", "DeployButton", "DeployMap", "MapButton"};
 	objects[] = {};
 
-	class RecycleBG : BgPicture {
+	class Panel : HPC_Panel {
 		idc = 198;
-		x = (0.15 * safezoneW + safezoneX) - ( 2 * BORDERSIZE);
-		y = (0.12 * safezoneH + safezoneY) - (3 * BORDERSIZE);
-		w = (0.15 * safezoneW) + (4 * BORDERSIZE);
-		h = (0.75 * safezoneH) + (6 * BORDERSIZE);
+		x = DEP_X; y = DEP_Y; w = DEP_W; h = DEP_H;
+	};
+	class MapFrame : HPC_Panel {
+		idc = 252;
+		x = DEP_MAP_X - 0.3 * HPC_GX; y = DEP_MAP_Y - 0.3 * HPC_GY;
+		w = DEP_MAP_W + 0.6 * HPC_GX; h = DEP_MAP_H + 0.6 * HPC_GY;
+	};
+	class Accent : HPC_Text {
+		x = DEP_X; y = DEP_Y; w = 0.28 * HPC_GX; h = 4.2 * HPC_GY;
+		colorBackground[] = HPC_C_ACCENT;
+	};
+	class Title : HPC_Heading {
+		idc = 207;
+		x = DEP_X + DEP_PAD; y = DEP_Y + 0.5 * HPC_GY; w = DEP_W - 4 * HPC_GX; h = 2.2 * HPC_GY;
+		sizeEx = 1.55 * HPC_GY;
+		text = "DEPLOYMENT";
+	};
+	class Subtitle : HPC_Label {
+		x = DEP_X + DEP_PAD; y = DEP_Y + 2.5 * HPC_GY; w = DEP_W - 2 * DEP_PAD; h = 1.4 * HPC_GY;
+		font = "RobotoCondensed";
+		sizeEx = 0.95 * HPC_GY;
+		text = "Choose where to insert. Double-click to deploy.";
+	};
+	class ButtonClose : HPC_Button {
+		idc = 101;
+		x = DEP_X + DEP_W - 2.8 * HPC_GX; y = DEP_Y + 0.9 * HPC_GY; w = 1.9 * HPC_GX; h = 1.9 * HPC_GY;
+		colorBackground[] = {1,1,1,0.06};
+		colorFocused[] = {1,1,1,0.06};
+		colorBackgroundActive[] = HPC_C_DANGER;
+		text = "X";
+		tooltip = "Cancel";
+		action = "closeDialog 0";
+	};
+	class Divider : HPC_Text {
+		x = DEP_X + DEP_PAD; y = DEP_Y + 4.6 * HPC_GY; w = DEP_W - 2 * DEP_PAD; h = 0.1 * HPC_GY;
+		colorBackground[] = HPC_C_LINE;
+	};
+	class LabelLoadout : HPC_Label {
+		idc = 205;
+		x = DEP_X + DEP_PAD; y = DEP_Y + 5.4 * HPC_GY; w = DEP_W - 2 * DEP_PAD; h = 1.4 * HPC_GY;
+		text = "LOADOUT";
+	};
+	class LoadoutsCombo : StdCombo {
+		idc = 203;
+		x = DEP_X + DEP_PAD; y = DEP_Y + 6.9 * HPC_GY; w = DEP_W - 2 * DEP_PAD; h = 2.2 * HPC_GY;
+		font = "RobotoCondensed";
+		sizeEx = 1.05 * HPC_GY;
+		wholeHeight = 14 * HPC_GY;
+		colorBackground[] = {0.12,0.15,0.16,0.95};
+		colorSelectBackground[] = HPC_C_ACCENT_DIM;
+		colorSelect[] = {1,1,1,1};
+		colorText[] = HPC_C_TEXT;
+	};
+	class LabelDeploy : HPC_Label {
+		idc = 208;
+		x = DEP_X + DEP_PAD; y = DEP_Y + 10 * HPC_GY; w = DEP_W - 2 * DEP_PAD; h = 1.4 * HPC_GY;
+		text = "SPAWN POINT";
+	};
+	class DeployList : HPC_ListBox {
+		idc = 201;
+		x = DEP_X + DEP_PAD; y = DEP_Y + 11.6 * HPC_GY; w = DEP_W - 2 * DEP_PAD; h = DEP_H - 20.6 * HPC_GY;
+		colorBackground[] = {0,0,0,0.18};
+	};
+	class Info : HPC_StructuredText {
+		idc = 206;
+		x = DEP_X + DEP_PAD; y = DEP_Y + DEP_H - 8.6 * HPC_GY; w = DEP_W - 2 * DEP_PAD; h = 3.9 * HPC_GY;
+		size = 0.95 * HPC_GY;
+	};
+	class DeployButton : HPC_ButtonAccent {
+		idc = 202;
+		x = DEP_X + DEP_PAD; y = DEP_Y + DEP_H - 4.4 * HPC_GY; w = DEP_W - 2 * DEP_PAD; h = 3.2 * HPC_GY;
+		text = "DEPLOY";
+		action = "deploy = 1";
 	};
 	class DeployMap : kndr_MapControl {
 		idc = 251;
-		x = (0.15 * safezoneW + safezoneX);
-		y = (0.57 * safezoneH + safezoneY);
-		w = (0.15 * safezoneW);
-		h = (0.25 * safezoneH) - ( 1.5 * BORDERSIZE);
+		x = DEP_MAP_X; y = DEP_MAP_Y; w = DEP_MAP_W; h = DEP_MAP_H;
+		maxSatelliteAlpha = 0.6;
+		colorBackground[] = {0.93,0.93,0.90,1};
 	};
-
-	class OuterBG : StdBG{
-		colorBackground[] = COLOR_BROWN;
-		x = (0.15 * safezoneW + safezoneX) - ( 2 * BORDERSIZE);
-		y = (0.12 * safezoneH + safezoneY) - (3 * BORDERSIZE);
-		w = (0.15 * safezoneW) + (4 * BORDERSIZE);
-		h = (0.75 * safezoneH) + (6 * BORDERSIZE);
-	};
-	class OuterBG_F : OuterBG {
-		style = ST_FRAME;
-	};
-	class InnerBG : OuterBG {
-		colorBackground[] = COLOR_GREEN;
-		x = (0.15 * safezoneW + safezoneX)  - ( BORDERSIZE);
-		y = 0.17 * safezoneH + safezoneY - (1.5 * BORDERSIZE);
-		w = (0.15 * safezoneW) +  (2 * BORDERSIZE);
-		h = 0.7 * safezoneH  + (3 * BORDERSIZE);
-	};
-	class InnerBG_F : InnerBG {
-		style = ST_FRAME;
-	};
-	class Header : StdHeader{
-		x = 0.15 * safezoneW + safezoneX - (BORDERSIZE);
-		y = 0.11 * safezoneH + safezoneY;
-		w = 0.15 * safezoneW + ( 2 * BORDERSIZE);
-		h = 0.05 * safezoneH - (BORDERSIZE);
-		text = $STR_DEPLOY_TITLE;
-	};
-	class LabelDeploy : StdText{
-		x = (0.15 * safezoneW + safezoneX);
-		w = (0.15 * safezoneW);
-		h = (0.03 * safezoneH);
-		y = 0.23 * safezoneH + safezoneY;
-		sizeEx = 0.018 * safezoneH;
-		text = $STR_SPAWN_POINT;
-	};
-	class DeployList : StdListBox {
-		idc = 201;
-		x = 0.15 * safezoneW + safezoneX;
-		w = 0.15 * safezoneW;
-		y = 0.26 * safezoneH + safezoneY;
-		h = (0.31 * safezoneH) - (1.5 * BORDERSIZE);
-		shadow = 2;
-		onLBSelChanged="";
-	};
-
-	class LabelLoadout : StdText{
-		idc = 205;
-		x = (0.15 * safezoneW + safezoneX);
-		w = (0.15 * safezoneW);
-		h = (0.03 * safezoneH);
-		y = 0.16 * safezoneH + safezoneY;
-		sizeEx = 0.018 * safezoneH;
-		text = $STR_LOADOUT;
-	};
-	class LoadoutsCombo : StdCombo{
-		idc = 203;
-		x = (0.15 * safezoneW + safezoneX);
-		w = 0.15 * safezoneW;
-		y = 0.19 * safezoneH + safezoneY;
-		h = 0.03 * safezoneH;
-		sizeEx = 0.018 * safezoneH;
-	  };
-	class DeployButton : StdButton{
-		idc = 202;
-		x = (0.15 * safezoneW + safezoneX);
-		y = (0.82 * safezoneH + safezoneY);
-		w = (0.15 * safezoneW);
-		h = (0.05 * safezoneH);
-		sizeEx = 0.05 * safezoneH;
-		text = $STR_DEPLOY_BUTTON;
-		action = "deploy = 1";
-	};
-	class MapButton : StdButton{
+	class MapButton : HPC_Button {
 		idc = 204;
-		x = (0.285 * safezoneW + safezoneX);
-		y = (0.56 * safezoneH + safezoneY);
-		w = (0.015 * safezoneW);
-		h = (0.025 * safezoneH);
-		sizeEx = 0.018 * safezoneH;
-		text = "<>";
+		x = DEP_MAP_X + DEP_MAP_W - 7 * HPC_GX; y = DEP_MAP_Y + 0.5 * HPC_GY; w = 6.5 * HPC_GX; h = 1.7 * HPC_GY;
+		sizeEx = 0.85 * HPC_GY;
+		colorBackground[] = {0.035,0.045,0.05,0.85};
+		text = "EXPAND MAP";
 		action = "fullmap = fullmap + 1;";
-	};
-	class ButtonClose : StdButton{
-		idc = 101;
-		x = 0.286 * safezoneW + safezoneX;
-		y = 0.114 * safezoneH + safezoneY;
-		w = 0.015 * safezoneW;
-		h = 0.02 * safezoneH;
-		text = "X";
-		action = "closeDialog 0";
 	};
 };

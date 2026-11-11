@@ -37,6 +37,12 @@ python tools/hippo_testing/run.py --game-directory "F:/Medium500/Applications/St
 Results land in `mybuild/hippo_tests/<run_id>/` (manifest JSON + RPTs). Other
 modes: `--clients 1` (needs the virtual display), `--headless 2`,
 `--scenario`, `--commander`, `--attribution --headless 2`, `--variant expanded`.
+
+UI work: `--clients 1 --ui-shots --timeout 600 --client-size 1600x900` drives
+`tools/hippo_testing/ui_shots.sqf` (start menu, pause menu, redeploy, HUD,
+alert cards, action menu, main dialogs) and saves window captures, UI included,
+to `<run>/shots/*.png`. Add a shot with `["name", settleSeconds] call HPC_uiShot`.
+Needs the virtual display (AGENTS.md) and `SteamAppId`/`SteamGameId=107410`.
 The server run compiles everything and fails on any RPT script error.
 
 ## 3. Recurring bugs in this codebase (check every diff for these)

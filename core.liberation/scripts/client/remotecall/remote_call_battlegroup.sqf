@@ -3,7 +3,7 @@ params ["_battlegroup_position"];
 
 "opfor_bg_marker" setMarkerPosLocal _battlegroup_position;
 private _location_name = [_battlegroup_position] call F_getLocationName;
-["lib_battlegroup", [_location_name]] call BIS_fnc_showNotification;
+["lib_battlegroup", [_location_name]] call HPC_fnc_notify;
 
 sleep 600;
 

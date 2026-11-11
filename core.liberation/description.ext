@@ -90,7 +90,7 @@ class CfgCommands {
 	allowedHTMLLoadURIs[] +=
 	{
         "https://www.reddit.com/r/Liberation_RX/",
-        "https://discord.gg/uCRzJ7wauR",
+        "https://discord.gg/HcXyqEaDVb",
 		"https://teamspeak.com/en/downloads/",
         "ts3server://liberation-rx.duckdns.org"
 	};

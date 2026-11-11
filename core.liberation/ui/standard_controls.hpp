@@ -360,6 +360,8 @@ class StdText {
 class StdHeader : StdText {
   	style = ST_CENTER;
     sizeEx = 0.03 * safezoneH;
+	font = "PuristaSemibold";
+	shadow = 0;
 	colorBackground[] = COLOR_LIGHTGRAY;
 };
 
@@ -370,17 +372,17 @@ class StdButton {
 	default = false;
 	font = FONTM;
 	sizeEx = 0.018 * safezoneH;
-	colorText[] = { 0, 0, 0, 1 };
-	colorFocused[] = { 1, 1, 1, 1 };
-	colorDisabled[] = { 0.2, 0.2, 0.2, 0.7 };
-	colorBackground[] = { 0.8, 0.8, 0.8, 0.8 };
-	colorBackgroundDisabled[] = { 0.5, 0.5, 0.5, 0.5 };
-	colorBackgroundActive[] = { 1, 1, 1, 1 };
-	offsetX = 0.003;
-	offsetY = 0.003;
-	offsetPressedX = 0.002;
-	offsetPressedY = 0.002;
-	colorShadow[] = { 0, 0, 0, 0.5 };
+	colorText[] = { 0.92, 0.94, 0.95, 1 };
+	colorFocused[] = { 0.16, 0.20, 0.21, 0.95 };
+	colorDisabled[] = { 1, 1, 1, 0.3 };
+	colorBackground[] = { 0.16, 0.20, 0.21, 0.95 };
+	colorBackgroundDisabled[] = { 0.10, 0.12, 0.13, 0.6 };
+	colorBackgroundActive[] = { 0.20, 0.42, 0.38, 1 };
+	offsetX = 0;
+	offsetY = 0;
+	offsetPressedX = 0.001;
+	offsetPressedY = 0.001;
+	colorShadow[] = { 0, 0, 0, 0 };
 	colorBorder[] = { 0, 0, 0, 1 };
 	borderSize = 0;
 	soundEnter[] = { "", 0, 1 };  // no sound
@@ -421,7 +423,7 @@ class StdBG {
 		idc = -1;
 		type =  CT_STATIC;
 		style = ST_SINGLE;
-		colorText[] = COLOR_BLACK;
+		colorText[] = { 1, 1, 1, 0.08 };
 		font = FONTM;
 		sizeEx = 0.023;
 		text = "";
@@ -494,12 +496,12 @@ class BgPicture {
 	idc = -1;
 	type = CT_STATIC;
 	style = ST_PICTURE;
-	colorText[] = {0.5, 0.4, 0.25, 0.6};
+	colorText[] = {0, 0, 0, 0};
 	colorBackground[] = {0, 0, 0, 1};
 	font = FONTM;
 	sizeEx = 0.023;
 	moving = false;
-	text = "res\camo03.jpg";
+	text = "#(argb,8,8,3)color(0,0,0,0)";
 };
 
 class StdCombo {

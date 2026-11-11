@@ -12,7 +12,8 @@ _tutorial_titles = [
 	localize "STR_TUTO_TITLE9",
 	localize "STR_TUTO_TITLE10",
 	localize "STR_TUTO_TITLE11",
-	localize "STR_TUTO_TITLE12"
+	localize "STR_TUTO_TITLE12",
+	localize "STR_TUTO_TITLE13"
 ];
 
 _tutorial_pages = [
@@ -27,6 +28,7 @@ _tutorial_pages = [
 	"STR_TUTO_TEXT9",
 	"STR_TUTO_TEXT10",
 	"STR_TUTO_TEXT11",
+	"STR_TUTO_TEXT13",
 	"STR_TUTO_TEXT12"
 ];
 
@@ -54,6 +56,9 @@ while { howtoplay == 1 && alive player && dialog } do {
 		ctrlSetText [ 514, _tutorial_titles select _current_page ];
 		_text = format [(localize (_tutorial_pages select _current_page)), worldname];
 		((findDisplay 5353) displayCtrl (515)) ctrlSetStructuredText parseText _text;
+		private _txt = (findDisplay 5353) displayCtrl 515;
+		_txt ctrlSetPositionH ((ctrlTextHeight _txt) max ((ctrlPosition (ctrlParentControlsGroup _txt)) select 3));
+		_txt ctrlCommit 0;
 		_old_page = _current_page;
 	};
 	uiSleep 0.2;

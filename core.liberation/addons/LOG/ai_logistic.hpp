@@ -1,78 +1,102 @@
+// AI logistics: choose which nearby transport the AI convoy will use.
+#define ALG_W (32 * HPC_GX)
+#define ALG_H (32 * HPC_GY)
+#define ALG_X (safezoneX + (safezoneW - ALG_W) / 2)
+#define ALG_Y (safezoneY + 11 * HPC_GY)
+#define ALG_PAD (1.1 * HPC_GX)
+#define ALG_IW (ALG_W - 2 * ALG_PAD)
+
+class ALG_ListN : StdListNBox {
+	font = "RobotoCondensed";
+	sizeEx = 1.05 * HPC_GY;
+	rowHeight = 2.1 * HPC_GY;
+	shadow = 0;
+	period = 0;
+	colorText[] = HPC_C_TEXT;
+	colorBackground[] = {0,0,0,0.18};
+	colorScrollbar[] = HPC_C_ACCENT;
+	colorSelect[] = {1,1,1,1};
+	colorSelect2[] = {1,1,1,1};
+	colorSelectBackground[] = HPC_C_ACCENT_DIM;
+	colorSelectBackground2[] = HPC_C_ACCENT_DIM;
+	colorActive[] = {1,1,1,1};
+	colorDisabled[] = {1,1,1,0.3};
+	colorPicture[] = {1,1,1,1};
+	colorPictureSelected[] = {1,1,1,1};
+	colorPictureDisabled[] = {1,1,1,0.4};
+	onLBSelChanged = "";
+};
+
 class AI_Logistic {
-  	idd = 2307;
-    onLoad = "if (isNil 'HPC_fnc_scaleDialog') then {_this call compile preprocessFileLineNumbers 'scripts\client\misc\HPC_scaleDialog.sqf'} else {_this call HPC_fnc_scaleDialog};";
+	idd = 2307;
 	name = "AI_Logistic";
 	movingEnable = false;
 	enableSimulation = true;
 
 	class controlsBackground {
-		class OuterBG1: StdBG {
-			colorBackground[] = COLOR_BROWN;
-			x = 0.1917 * safezoneW + safezoneX;
-			y = 0.1324 * safezoneH + safezoneY;
-			w = 0.1651 * safezoneW;
-			h = 0.62 * safezoneH;
+		class Panel : HPC_Panel {
+			x = ALG_X; y = ALG_Y; w = ALG_W; h = ALG_H;
 		};
-		class OuterBG_F1: OuterBG1 {
-			style = ST_FRAME;
-		};
-		class InnerBG1: OuterBG1 {
-			colorBackground[] = COLOR_GREEN;
-			x = 0.1985 * safezoneW + safezoneX;
-			y = 0.1916 * safezoneH + safezoneY;
-			w = 0.1515 * safezoneW;
-			h = 0.512 * safezoneH;
-		};
-		class InnerBG_F1: InnerBG1 {
-			style = ST_FRAME;
-		};
-
 	};
 
 	class controls {
-		class Header: StdHeader {
-			text = "AI Logistics System";
-			x = 0.198875 * safezoneW + safezoneX;
-			y = 0.1414 * safezoneH + safezoneY;
-			w = 0.1515 * safezoneW;
-			h = 0.044 * safezoneH;
+		class Accent : HPC_Text {
+			x = ALG_X; y = ALG_Y; w = 0.28 * HPC_GX; h = 4.2 * HPC_GY;
+			colorBackground[] = HPC_C_ACCENT;
 		};
-
-		class VehList1 : StdListNBox {
-			idc = 110;
-			columns[] = {0,0.78};
-			onLBSelChanged = "";
-			shadow = 2;
-			rowHeight = "1.25 * 0.018 * safezoneH";
-			colorPicture[] = {1,1,1,1};
-			colorPictureSelected[] = {0,1,0,1};
-			colorPictureDisabled[] = {0.4,0.4,0.4,1};
-			x = 0.2027 * safezoneW + safezoneX;
-			y = 0.2074 * safezoneH + safezoneY;
-			w = 0.1440 * safezoneW;
-			h = 0.484 * safezoneH;
+		class Header : HPC_Heading {
+			text = "AI LOGISTICS";
+			x = ALG_X + ALG_PAD; y = ALG_Y + 0.5 * HPC_GY; w = ALG_W - 5 * HPC_GX; h = 2.2 * HPC_GY;
+			sizeEx = 1.55 * HPC_GY;
 		};
-
-		class CancelButton : StdButton {
+		class Subtitle : HPC_Label {
+			x = ALG_X + ALG_PAD; y = ALG_Y + 2.5 * HPC_GY; w = ALG_IW; h = 1.4 * HPC_GY;
+			font = "RobotoCondensed";
+			sizeEx = 0.95 * HPC_GY;
+			text = "Choose the transport an AI driver will use for supply runs.";
+		};
+		class CancelButton : HPC_Button {
 			idc = -1;
-			action = "closeDialog 0";
+			x = ALG_X + ALG_W - 2.8 * HPC_GX; y = ALG_Y + 0.9 * HPC_GY; w = 1.9 * HPC_GX; h = 1.9 * HPC_GY;
+			colorBackground[] = {1,1,1,0.06};
+			colorFocused[] = {1,1,1,0.06};
+			colorBackgroundActive[] = HPC_C_DANGER;
 			text = "X";
-			x = 0.3338 * safezoneW + safezoneX;
-			y = 0.1414 * safezoneH + safezoneY;
-			w = 0.015 * safezoneW;
-			h = 0.02 * safezoneH;
+			tooltip = "Close";
+			action = "closeDialog 0";
 			default = true;
 		};
-
-		class SellButton : StdButton {
+		class Divider : HPC_Text {
+			x = ALG_X + ALG_PAD; y = ALG_Y + 4.6 * HPC_GY; w = ALG_IW; h = 0.1 * HPC_GY;
+			colorBackground[] = HPC_C_LINE;
+		};
+		class LabelList : HPC_Label {
+			x = ALG_X + ALG_PAD; y = ALG_Y + 5.5 * HPC_GY; w = ALG_IW; h = 1.4 * HPC_GY;
+			text = "TRANSPORTS NEARBY (50 M)";
+		};
+		class LabelCap : HPC_Label {
+			style = ST_RIGHT;
+			x = ALG_X + ALG_PAD; y = ALG_Y + 5.5 * HPC_GY; w = ALG_IW; h = 1.4 * HPC_GY;
+			text = "CAPACITY";
+		};
+		class VehList1 : ALG_ListN {
+			idc = 110;
+			columns[] = {0,0.78};
+			x = ALG_X + ALG_PAD; y = ALG_Y + 7.2 * HPC_GY; w = ALG_IW; h = ALG_H - 12.6 * HPC_GY;
+		};
+		class EmptyList : HPC_Label {
+			idc = 130;
+			style = ST_CENTER;
+			font = "RobotoCondensed";
+			sizeEx = HPC_GY;
+			x = ALG_X + ALG_PAD; y = ALG_Y + 14 * HPC_GY; w = ALG_IW; h = 2 * HPC_GY;
+			text = "No free owned transport nearby";
+		};
+		class SellButton : HPC_ButtonAccent {
 			idc = 120;
 			text = "SELECT";
 			action = "logistic_action = 1";
-			x = 0.2300 * safezoneW + safezoneX;
-			y = 0.7100 * safezoneH + safezoneY;
-			w = 0.09 * safezoneW;
-			h = 0.035 * safezoneH;
+			x = ALG_X + ALG_W - ALG_PAD - 14 * HPC_GX; y = ALG_Y + ALG_H - 4.4 * HPC_GY; w = 14 * HPC_GX; h = 3.2 * HPC_GY;
 		};
-
 	};
 };

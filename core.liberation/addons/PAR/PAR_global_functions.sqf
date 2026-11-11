@@ -196,8 +196,8 @@ PAR_revive_cur = {
 PAR_revive_dec = {
 	params ["_unit"];
 	private _cur_revive = ([_unit] call PAR_revive_cur);
-	private _msg = format ["%1, %2 Revive left.", name _unit, _cur_revive];
-	if (_cur_revive == 0) then { _msg = format ["CRITICAL! %1 LAST Revive !!", name _unit] };
+	private _msg = format ["%1, %2 revive(s) left.", name _unit, _cur_revive];
+	if (_cur_revive == 0) then { _msg = format ["Critical: %1 has used their last revive!", name _unit] };
 	[_unit, _msg] call PAR_fn_globalchat;
 	private _history = _unit getVariable ["PAR_revive_history", []];
 	_history pushBack round (time + PAR_AI_recover_revive);

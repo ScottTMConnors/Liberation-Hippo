@@ -1,134 +1,169 @@
+// Trader shop: sell nearby owned vehicles (left), buy from the trader (middle),
+// preview and price of the selected purchase (right). Laid out on the HPC grid.
+#define TSH_W (60 * HPC_GX)
+#define TSH_H (34 * HPC_GY)
+#define TSH_X (safezoneX + (safezoneW - TSH_W) / 2)
+#define TSH_Y (safezoneY + 10 * HPC_GY)
+#define TSH_PAD (1.1 * HPC_GX)
+#define TSH_LX (TSH_X + TSH_PAD)
+#define TSH_LW (18 * HPC_GX)
+#define TSH_MX (TSH_X + 20.3 * HPC_GX)
+#define TSH_MW (20 * HPC_GX)
+#define TSH_RX (TSH_X + 41.5 * HPC_GX)
+#define TSH_RW (17.4 * HPC_GX)
+#define TSH_LIST_Y (TSH_Y + 7.2 * HPC_GY)
+#define TSH_LIST_H (TSH_H - 12.6 * HPC_GY)
+#define TSH_BTN_Y (TSH_Y + TSH_H - 4.4 * HPC_GY)
+
+class TSH_ListN : StdListNBox {
+	font = "RobotoCondensed";
+	sizeEx = 1.05 * HPC_GY;
+	rowHeight = 2.1 * HPC_GY;
+	shadow = 0;
+	period = 0;
+	colorText[] = HPC_C_TEXT;
+	colorBackground[] = {0,0,0,0.18};
+	colorScrollbar[] = HPC_C_ACCENT;
+	colorSelect[] = {1,1,1,1};
+	colorSelect2[] = {1,1,1,1};
+	colorSelectBackground[] = HPC_C_ACCENT_DIM;
+	colorSelectBackground2[] = HPC_C_ACCENT_DIM;
+	colorActive[] = {1,1,1,1};
+	colorDisabled[] = {1,1,1,0.3};
+	colorPicture[] = {1,1,1,1};
+	colorPictureSelected[] = {1,1,1,1};
+	colorPictureDisabled[] = {1,1,1,0.4};
+	onLBSelChanged = "";
+};
+
 class Traders_Shop {
-  	idd = 2304;
-    onLoad = "if (isNil 'HPC_fnc_scaleDialog') then {_this call compile preprocessFileLineNumbers 'scripts\client\misc\HPC_scaleDialog.sqf'} else {_this call HPC_fnc_scaleDialog};";
+	idd = 2304;
 	name = "Traders_Shop";
 	movingEnable = false;
 	enableSimulation = true;
 
 	class controlsBackground {
-		class OuterBG1: StdBG {
-			colorBackground[] = COLOR_BROWN;
-			x = 0.19175 * safezoneW + safezoneX;
-			y = 0.1324 * safezoneH + safezoneY;
-			w = 0.33 * safezoneW;
-			h = 0.62 * safezoneH;
+		class Panel : HPC_Panel {
+			x = TSH_X; y = TSH_Y; w = TSH_W; h = TSH_H;
 		};
-		class OuterBG_F1: OuterBG1 {
-			style = ST_FRAME;
-		};
-		class InnerBG1: OuterBG1 {
-			colorBackground[] = COLOR_GREEN;
-			x = 0.1985 * safezoneW + safezoneX;
-			y = 0.1916 * safezoneH + safezoneY;
-			w = 0.1515 * safezoneW;
-			h = 0.512 * safezoneH;
-		};
-		class InnerBG_F1: InnerBG1 {
-			style = ST_FRAME;
-		};
-		class InnerBG2: OuterBG1 {
-			colorBackground[] = COLOR_GREEN;
-			x = 0.3630 * safezoneW + safezoneX;
-			y = 0.1916 * safezoneH + safezoneY;
-			w = 0.1515 * safezoneW;
-			h = 0.378 * safezoneH;
-		};
-		class InnerBG_F2: InnerBG2 {
-			style = ST_FRAME;
+		class PreviewBG : HPC_Text {
+			x = TSH_RX; y = TSH_LIST_Y; w = TSH_RW; h = 10.5 * HPC_GY;
+			colorBackground[] = {0,0,0,0.25};
 		};
 	};
 
 	class controls {
-		class Header: StdHeader {
-			text = "$STR_SHOP_NAME";
-			x = 0.198875 * safezoneW + safezoneX;
-			y = 0.1414 * safezoneH + safezoneY;
-			w = 0.314531 * safezoneW;
-			h = 0.044 * safezoneH;
+		class Accent : HPC_Text {
+			x = TSH_X; y = TSH_Y; w = 0.28 * HPC_GX; h = 4.2 * HPC_GY;
+			colorBackground[] = HPC_C_ACCENT;
 		};
-
-		class VehList1 : StdListNBox {
-			idc = 110;
-			columns[] = {0,0.80};
-			onLBSelChanged = "";
-			shadow = 2;
-			rowHeight = "1.25 * 0.018 * safezoneH";
-			colorPicture[] = {1,1,1,1};
-			colorPictureSelected[] = {0,1,0,1};
-			colorPictureDisabled[] = {0.4,0.4,0.4,1};
-			x = 0.2027 * safezoneW + safezoneX;
-			y = 0.2074 * safezoneH + safezoneY;
-			w = 0.1444 * safezoneW;
-			h = 0.484 * safezoneH;
+		class Header : HPC_Heading {
+			text = "TRADER";
+			x = TSH_LX; y = TSH_Y + 0.5 * HPC_GY; w = TSH_W - 6 * HPC_GX; h = 2.2 * HPC_GY;
+			sizeEx = 1.55 * HPC_GY;
 		};
-
-		class VehList2: StdListNBox {
-			idc = 111;
-			columns[] = {0,0.80};
-			onLBSelChanged = "";
-			shadow = 2;
-			rowHeight = "1.25 * 0.018 * safezoneH";
-			colorPicture[] = {1,1,1,1};
-			colorPictureSelected[] = {0,1,0,1};
-			colorPictureDisabled[] = {0.4,0.4,0.4,1};
-			x = 0.3679 * safezoneW + safezoneX;
-			y = 0.2074 * safezoneH + safezoneY;
-			w = 0.1444 * safezoneW;
-			h = 0.350 * safezoneH;
+		class Subtitle : HPC_Label {
+			x = TSH_LX; y = TSH_Y + 2.5 * HPC_GY; w = TSH_W - 2 * TSH_PAD; h = 1.4 * HPC_GY;
+			font = "RobotoCondensed";
+			sizeEx = 0.95 * HPC_GY;
+			text = "Sell your nearby vehicles for ammo, or buy vehicles from the trader.";
 		};
-
-		class BuildPreview {
-			idc = 122;
-			type = CT_STATIC;
-			style = ST_PICTURE + ST_KEEP_ASPECT_RATIO;
-			x = 0.390 * safezoneW + safezoneX;
-			y = 0.585 * safezoneH + safezoneY;
-			w = 0.27;
-			h = 0.20;
-			colorBackground[] = {0,0,0,0};
-			colorText[] = {1,1,1,1};
-			text = "";
-			size = 0.02 * safezoneH;
-			sizeEx = 0.02 * safezoneH;
-			shadow = 2;
-			font = FONTM;
-			color = "#e0e000";
-		};
-
-		class BuildPreview_F: BuildPreview {
-			style = ST_FRAME;
-			colorText[] = {0.8,0.8,0.8,1};
-		};
-
-		class CancelButton : StdButton {
+		class CancelButton : HPC_Button {
 			idc = -1;
-			action = "closeDialog 0";
+			x = TSH_X + TSH_W - 2.8 * HPC_GX; y = TSH_Y + 0.9 * HPC_GY; w = 1.9 * HPC_GX; h = 1.9 * HPC_GY;
+			colorBackground[] = {1,1,1,0.06};
+			colorFocused[] = {1,1,1,0.06};
+			colorBackgroundActive[] = HPC_C_DANGER;
 			text = "X";
-			x = 0.4950 * safezoneW + safezoneX;
-			y = 0.1414 * safezoneH + safezoneY;
-			w = 0.015 * safezoneW;
-			h = 0.02 * safezoneH;
+			tooltip = "Close";
+			action = "closeDialog 0";
 			default = true;
 		};
+		class Divider : HPC_Text {
+			x = TSH_LX; y = TSH_Y + 4.6 * HPC_GY; w = TSH_W - 2 * TSH_PAD; h = 0.1 * HPC_GY;
+			colorBackground[] = HPC_C_LINE;
+		};
 
-		class SellButton : StdButton {
+		// Sell column
+		class LabelSell : HPC_Label {
+			x = TSH_LX; y = TSH_Y + 5.5 * HPC_GY; w = TSH_LW; h = 1.4 * HPC_GY;
+			text = "SELL - YOUR VEHICLES";
+		};
+		class LabelSellPrice : HPC_Label {
+			style = ST_RIGHT;
+			x = TSH_LX; y = TSH_Y + 5.5 * HPC_GY; w = TSH_LW; h = 1.4 * HPC_GY;
+			text = "AMMO";
+		};
+		class VehList1 : TSH_ListN {
+			idc = 110;
+			columns[] = {0,0.78};
+			x = TSH_LX; y = TSH_LIST_Y; w = TSH_LW; h = TSH_LIST_H;
+		};
+		class EmptySell : HPC_Label {
+			idc = 130;
+			style = ST_CENTER;
+			font = "RobotoCondensed";
+			sizeEx = HPC_GY;
+			x = TSH_LX; y = TSH_LIST_Y + 6 * HPC_GY; w = TSH_LW; h = 2 * HPC_GY;
+			text = "No owned vehicles within 50 m";
+		};
+		class SellButton : HPC_Button {
 			idc = 120;
 			text = $STR_SHOP_ACTION1;
 			action = "shop_action = 1";
-			x = 0.23 * safezoneW + safezoneX;
-			y = 0.71 * safezoneH + safezoneY;
-			w = 0.09 * safezoneW;
-			h = 0.035 * safezoneH;
+			x = TSH_LX; y = TSH_BTN_Y; w = TSH_LW; h = 3.2 * HPC_GY;
 		};
 
-		class BuyButton : StdButton {
+		// Buy column
+		class LabelBuy : HPC_Label {
+			x = TSH_MX; y = TSH_Y + 5.5 * HPC_GY; w = TSH_MW; h = 1.4 * HPC_GY;
+			text = "BUY - TRADER STOCK";
+		};
+		class LabelBuyPrice : HPC_Label {
+			style = ST_RIGHT;
+			x = TSH_MX; y = TSH_Y + 5.5 * HPC_GY; w = TSH_MW; h = 1.4 * HPC_GY;
+			text = "AMMO";
+		};
+		class VehList2 : TSH_ListN {
+			idc = 111;
+			columns[] = {0,0.80};
+			x = TSH_MX; y = TSH_LIST_Y; w = TSH_MW; h = TSH_LIST_H + 4.4 * HPC_GY;
+		};
+
+		// Details column
+		class LabelDetails : HPC_Label {
+			x = TSH_RX; y = TSH_Y + 5.5 * HPC_GY; w = TSH_RW; h = 1.4 * HPC_GY;
+			text = "SELECTED PURCHASE";
+		};
+		class BuildPreview : HPC_Picture {
+			idc = 122;
+			x = TSH_RX + 0.4 * HPC_GX; y = TSH_LIST_Y + 0.4 * HPC_GY; w = TSH_RW - 0.8 * HPC_GX; h = 9.7 * HPC_GY;
+		};
+		class DetailName : HPC_Text {
+			idc = 124;
+			font = "PuristaSemibold";
+			sizeEx = 1.15 * HPC_GY;
+			x = TSH_RX; y = TSH_LIST_Y + 11 * HPC_GY; w = TSH_RW; h = 2 * HPC_GY;
+			text = "";
+		};
+		class DetailPrice : HPC_Text {
+			idc = 125;
+			colorText[] = HPC_C_ACCENT;
+			x = TSH_RX; y = TSH_LIST_Y + 13 * HPC_GY; w = TSH_RW; h = 1.6 * HPC_GY;
+			text = "";
+		};
+		class DetailWallet : HPC_Label {
+			idc = 126;
+			font = "RobotoCondensed";
+			sizeEx = 0.95 * HPC_GY;
+			x = TSH_RX; y = TSH_LIST_Y + 14.7 * HPC_GY; w = TSH_RW; h = 1.5 * HPC_GY;
+			text = "";
+		};
+		class BuyButton : HPC_ButtonAccent {
 			idc = 121;
 			text = "$STR_SHOP_ACTION2";
 			action = "shop_action = 2";
-			x = 0.40 * safezoneW + safezoneX;
-			y = 0.71 * safezoneH + safezoneY;
-			w = 0.09 * safezoneW;
-			h = 0.035 * safezoneH;
+			x = TSH_RX; y = TSH_BTN_Y; w = TSH_RW; h = 3.2 * HPC_GY;
 		};
 	};
 };

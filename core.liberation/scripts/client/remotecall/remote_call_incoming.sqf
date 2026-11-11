@@ -9,7 +9,7 @@ _marker setMarkerTypeLocal "selector_selectedMission";
 _marker setMarkerColorLocal GRLIB_color_enemy_bright;
 
 private _location_name = [_attack_destination] call F_getLocationName;
-["lib_incoming", [_location_name]] call BIS_fnc_showNotification;
+["lib_incoming", [_location_name]] call HPC_fnc_notify;
 
 sleep 180;
 deleteMarkerLocal _marker;

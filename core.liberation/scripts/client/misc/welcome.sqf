@@ -45,7 +45,7 @@ private _color = _reput select 0;
 private _text = _reput select 1;
 
 private _msg = format [localize "STR_UI_WELCOME_MSG", name player, _rank, _score, _ammo_collected, _color, _text, _prefix_tag];
-[_msg, 0, 0, 10, 0, 0, 90] spawn BIS_fnc_dynamicText;
+[localize "STR_UI_WELCOME_TITLE", _msg, "info", 10] call HPC_fnc_toast;
 
 // Load Player Suad Context
 if !(player getVariable ["GRLIB_squad_context_loaded", false]) then {

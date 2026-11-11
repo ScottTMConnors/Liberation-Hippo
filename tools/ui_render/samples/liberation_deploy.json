@@ -1,0 +1,8 @@
+{
+  "hide": [203, 205],
+  "208": {"offset": [0, "-4.6 * safezoneH / 54"]},
+  "201": {"offset": [0, "-4.6 * safezoneH / 54", 0, "4.6 * safezoneH / 54"],
+          "rows": [["  BASE CHIMERA", "/A3/ui_f/data/igui/cfg/simpletasks/types/boat_ca.paa", "008122", [0.62,0.92,0.84,1]],
+                   ["  FOB Alpha", "/A3/ui_f/data/igui/cfg/simpletasks/types/defend_ca.paa", "008122", [0.62,0.92,0.84,1]]], "sel": 1},
+  "206": {"text": "<t font='PuristaSemibold' size='1.1'>FOB Alpha</t><br/><t color='#9EAFB5'>Forward operating base  ·  Grid 008122</t>"}
+}

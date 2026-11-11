@@ -12,13 +12,8 @@ if !([] call F_getValid) exitWith {
 	disableUserInput false;
 };
 
-waitUntil {
-	titleText [localize "STR_TITLE_LOADING", "PLAIN", 100];
-	uiSleep 1;
-	titleText [localize "STR_TITLE_PLEASE_WAIT", "PLAIN", 100];
-	uiSleep 1;
-	(!isNil "GRLIB_init_server")
-};
+titleText [localize "STR_TITLE_PLEASE_WAIT", "PLAIN", 100];
+waitUntil { uiSleep 0.1; !isNil "GRLIB_init_server" };
 titleText ["", "PLAIN", 100];
 
 diag_log "--- Client Init start ---";
@@ -61,7 +56,7 @@ if (toLower _name in GRLIB_blacklisted_names || (_name == str parseNumber _name)
 };
 
 // LRX_Template mod version check
-waitUntil {uiSleep 0.5; !isNil "GRLIB_LRX_Template_version"};
+waitUntil {uiSleep 0.1; !isNil "GRLIB_LRX_Template_version"};
 private _version_checked = true;
 if (!isNil "LRX_Template_version") then {
 	if (typeName LRX_Template_version == "SCALAR") then {
@@ -79,7 +74,7 @@ if (!_version_checked) exitWith {
 	disableUserInput false;
 };
 
-waitUntil {uiSleep 0.5; !isNil "GRLIB_global_stop"};
+waitUntil {uiSleep 0.1; !isNil "GRLIB_global_stop"};
 if (GRLIB_global_stop == 1) exitWith {
 	private _msg = localize "STR_MSG_FINAL_MISSION_RUNNING";
 	[] call HPC_fnc_loadingEnd; // otherwise the native loading screen hides the message
@@ -89,7 +84,7 @@ if (GRLIB_global_stop == 1) exitWith {
 	disableUserInput false;
 };
 
-waitUntil {uiSleep 0.5; !isNil "GRLIB_endgame"};
+waitUntil {uiSleep 0.1; !isNil "GRLIB_endgame"};
 if (GRLIB_endgame == 1) exitWith {
 	private _msg = localize "STR_MSG_END_GAME";
 	[] call HPC_fnc_loadingEnd; // otherwise the native loading screen hides the message
@@ -103,7 +98,7 @@ if (GRLIB_kick_idle > 0) then {
 	[] execVM "scripts\client\misc\kick_idle.sqf";
 };
 
-waitUntil {uiSleep 0.5; !isNil "BTC_logic"};
+waitUntil {uiSleep 0.1; !isNil "BTC_logic"};
 if (GRLIB_respawn_cooldown > 0) then {
 	private _cooldown = BTC_logic getVariable [format ["%1_last_respawn", PAR_Grp_ID], 0];
 	if (_cooldown > time) then {
@@ -170,22 +165,14 @@ GRLIB_player_configured = false;
 GRLIB_action_player_ready = false;
 build_confirmed = -1;
 startgame = 0;
-[] spawn {
-	waituntil {
-		titleText ["... Loading Player Data ...", "PLAIN", 100];
-		uiSleep 1;
-		titleText [localize "STR_TITLE_PLEASE_WAIT", "PLAIN", 100];
-		uiSleep 1;
-		(LRX_init_done);
-	};
-};
+titleText [localize "STR_TITLE_PLEASE_WAIT", "PLAIN", 100];
 
 HPC_clientLoadingStage = [0.85,"Preparing your player and squad..."];
 
 // Create Player Group
 GRLIB_player_group = createGroup [GRLIB_side_friendly, true];
 [GRLIB_player_group, "add"] remoteExec ["addel_group_remote_call", 2];
-waitUntil { uiSleep 1; player getVariable ["GRLIB_score_set", 0] == 1 && player in (units GRLIB_player_group) };
+waitUntil { uiSleep 0.1; player getVariable ["GRLIB_score_set", 0] == 1 && player in (units GRLIB_player_group) };
 
 [] call compileFinal preprocessFileLineNumbers "addons\VAM\RPT_init_client.sqf";
 
@@ -195,7 +182,7 @@ HPC_clientLoadingStage = [0.90,"Preparing arsenal equipment..."];
 diag_log "--- LRX: Build Arsenal Classnames ---";
 [] call compileFinal preprocessFileLineNumbers "addons\LARs\default_classnames.sqf";
 [] spawn compileFinal preprocessFileLineNumbers "addons\LARs\liberationArsenal.sqf";
-waitUntil { uiSleep 1; LRX_arsenal_init_done };
+waitUntil { uiSleep 0.1; LRX_arsenal_init_done };
 
 // LRX Addons
 [] execVM "addons\PAR\PAR_AI_Revive.sqf";
@@ -215,7 +202,6 @@ waitUntil { uiSleep 1; LRX_arsenal_init_done };
 
 [] call compile preprocessFileLineNumbers "scripts\client\markers\init_markers.sqf";
 LRX_init_done = true;
-uiSleep 1;
 
 HPC_clientLoadingStage = [1,"Ready"];
 [true] call HPC_fnc_loadingEnd; // stay black until the intro camera takes over
@@ -227,7 +213,7 @@ diag_log "--- Client Intro start ---";
 // Init actions
 [] execVM "scripts\client\actions\action_manager_player.sqf";
 [] execVM "scripts\client\build\build_manager.sqf";
-waitUntil {uiSleep 1; (GRLIB_player_configured && GRLIB_action_player_ready && build_confirmed == 0)};
+waitUntil {uiSleep 0.1; (GRLIB_player_configured && GRLIB_action_player_ready && build_confirmed == 0)};
 
 // Player actions manager
 [] execVM "scripts\client\actions\action_manager_veh.sqf";
@@ -274,11 +260,12 @@ if (!GRLIB_ACE_enabled) then {
 
 // Init Tips Tables from XML
 GRLIB_TipsText = [];
+// One tip per "- tip<br/>" line; tags are removed.
 {
-	if (_x select [0, 1] != "t" && _x != "br") then {
-    	GRLIB_TipsText pushback (_x select [7]);
-	};
-} forEach ((localize "STR_TUTO_TEXT12") splitString "></");
+	private _tip = trim _x;
+	if (_tip select [0, 2] == "- ") then { _tip = _tip select [2] };
+	if (_tip != "") then { GRLIB_TipsText pushBack _tip };
+} forEach (((localize "STR_TUTO_TEXT12") regexReplace ["<[^>]*>/g", "|"]) splitString "|");
 GRLIB_LastNews = 0;
 
 // Draw Zeus
@@ -290,7 +277,7 @@ GRLIB_LastNews = 0;
 // kart support
 {
 	if (typeOf _x isKindOf "Kart_01_Base_F") then {
-		_x addAction ["<t color='#00F880'>Enter Kart</t> <img size='1' image='\a3\ui_f\data\igui\cfg\simpletasks\types\car_ca.paa'/>",{ (_this select 1) moveInDriver (_this select 0) },"",999,true,true,"","GRLIB_player_is_menuok",5];
+		_x addAction [(["Enter Kart", "\a3\ui_f\data\igui\cfg\simpletasks\types\car_ca.paa", "accent"] call HPC_fnc_actionTitle),{ (_this select 1) moveInDriver (_this select 0) },"",999,true,true,"","GRLIB_player_is_menuok",5];
 	};
 } foreach vehicles;
 

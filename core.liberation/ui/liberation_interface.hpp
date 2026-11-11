@@ -1,5 +1,6 @@
 #include "defines.hpp"
 #include "standard_controls.hpp"
+#include "hippo_theme.hpp"
 #include "liberation_titles.hpp"
 #include "liberation_recycle.hpp"
 #include "liberation_build.hpp"

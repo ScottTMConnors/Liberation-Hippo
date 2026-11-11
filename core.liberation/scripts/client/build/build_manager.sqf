@@ -199,28 +199,28 @@ while {true} do {
 		if (!repeatbuild) then {
 			if (build_water == 0) then {
 				if (_buildtype == GRLIB_BuildingBuildType && !(_classname in GRLIB_build_force_mode)) then {
-					_idactplacebis = player addAction ["<t color='#B0FF00'>" + localize "STR_PLACEMENT_BIS" + "</t> <img size='1' image='res\ui_confirm.paa'/>","scripts\client\build\build_place_bis.sqf","",750,true,false,"","build_valid && build_confirmed == 1"];
-					_idactmode = player addAction ["<t color='#B0FF00'>" + localize "STR_MODE" + "</t> <img size='1' image='R3F_LOG\icons\r3f_drop.paa'/>","scripts\client\build\build_mode.sqf","",746,false,false,"","build_confirmed == 1"];
+					_idactplacebis = player addAction [([localize "STR_PLACEMENT_BIS", "res\ui_confirm.paa", "accent"] call HPC_fnc_actionTitle),"scripts\client\build\build_place_bis.sqf","",750,true,false,"","build_valid && build_confirmed == 1"];
+					_idactmode = player addAction [([localize "STR_MODE", "R3F_LOG\icons\r3f_drop.paa", "accent"] call HPC_fnc_actionTitle),"scripts\client\build\build_mode.sqf","",746,false,false,"","build_confirmed == 1"];
 				};
 
 				if (_buildtype in [GRLIB_BuildingBuildType, 99, 98]) then {
-					_idactview = player addAction ["<t color='#B0FF00'>" + "-- Build view" + "</t>","scripts\client\build\build_view.sqf","",748,false,false,"","build_confirmed == 1"];
-					_idactsnap = player addAction ["<t color='#B0FF00'>" + localize "STR_GRID" + "</t>","scripts\client\build\do_grid.sqf","",747,false,false,"","build_confirmed == 1"];
+					_idactview = player addAction [(["-- Build view", "", "accent"] call HPC_fnc_actionTitle),"scripts\client\build\build_view.sqf","",748,false,false,"","build_confirmed == 1"];
+					_idactsnap = player addAction [([localize "STR_GRID", "", "accent"] call HPC_fnc_actionTitle),"scripts\client\build\do_grid.sqf","",747,false,false,"","build_confirmed == 1"];
 				};
 			};
 
 			if (_buildtype in [GRLIB_TransportVehicleBuildType, GRLIB_CombatVehicleBuildType, GRLIB_AerialBuildType, GRLIB_DefenceBuildType, GRLIB_BuildingBuildType, GRLIB_TrenchBuildType, GRLIB_SupportBuildType, GRLIB_BuildTypeDirect,99,98]) then {
-				_idactfarther = player addAction ["<t color='#B0FF00'>" + localize "STR_MOVEFAR" + "</t> <img size='1' image='R3F_LOG\icons\r3f_far.paa'/>","scripts\client\build\build_farther.sqf","",-755,false,false,"","build_confirmed == 1"];
-				_idactupper = player addAction ["<t color='#B0FF00'>" + localize "STR_MOVEUP" + "</t> <img size='1' image='R3F_LOG\icons\r3f_lift.paa'/>","scripts\client\build\build_up.sqf","",-756,false,false,"","build_confirmed == 1"];
-				_idactlower = player addAction ["<t color='#B0FF00'>" + localize "STR_MOVEDOWN" + "</t> <img size='1' image='R3F_LOG\icons\r3f_release.paa'/>","scripts\client\build\build_down.sqf","",-757,false,false,"","build_confirmed == 1"];
-				_idactcloser = player addAction ["<t color='#B0FF00'>" + localize "STR_MOVECLOSE" + "</t> <img size='1' image='R3F_LOG\icons\r3f_drop.paa'/>","scripts\client\build\build_closer.sqf","",-758,false,false,"","build_confirmed == 1"];
+				_idactfarther = player addAction [([localize "STR_MOVEFAR", "R3F_LOG\icons\r3f_far.paa", "accent"] call HPC_fnc_actionTitle),"scripts\client\build\build_farther.sqf","",-755,false,false,"","build_confirmed == 1"];
+				_idactupper = player addAction [([localize "STR_MOVEUP", "R3F_LOG\icons\r3f_lift.paa", "accent"] call HPC_fnc_actionTitle),"scripts\client\build\build_up.sqf","",-756,false,false,"","build_confirmed == 1"];
+				_idactlower = player addAction [([localize "STR_MOVEDOWN", "R3F_LOG\icons\r3f_release.paa", "accent"] call HPC_fnc_actionTitle),"scripts\client\build\build_down.sqf","",-757,false,false,"","build_confirmed == 1"];
+				_idactcloser = player addAction [([localize "STR_MOVECLOSE", "R3F_LOG\icons\r3f_drop.paa", "accent"] call HPC_fnc_actionTitle),"scripts\client\build\build_closer.sqf","",-758,false,false,"","build_confirmed == 1"];
 				if (_classname != FOB_typename) then {
-					_idactrotate = player addAction ["<t color='#B0FF00'>" + localize "STR_ROTATION" + "</t> <img size='1' image='res\ui_rotation.paa'/>","scripts\client\build\build_rotate.sqf","",-759,false,false,"","build_confirmed == 1"];
+					_idactrotate = player addAction [([localize "STR_ROTATION", "res\ui_rotation.paa", "accent"] call HPC_fnc_actionTitle),"scripts\client\build\build_rotate.sqf","",-759,false,false,"","build_confirmed == 1"];
 				};
 			};
 
-			_idactplace = player addAction ["<t color='#B0FF00'>" + localize "STR_PLACEMENT" + "</t> <img size='1' image='res\ui_confirm.paa'/>","scripts\client\build\build_place.sqf","",750,false,false,"","build_valid && build_confirmed == 1"];
-			_idactcancel = player addAction ["<t color='#B0FF00'>" + localize "STR_CANCEL" + "</t> <img size='1' image='res\ui_cancel.paa'/>","scripts\client\build\build_cancel.sqf","",749,false,false,"","build_confirmed == 1"];
+			_idactplace = player addAction [([localize "STR_PLACEMENT", "res\ui_confirm.paa", "accent"] call HPC_fnc_actionTitle),"scripts\client\build\build_place.sqf","",750,false,false,"","build_valid && build_confirmed == 1"];
+			_idactcancel = player addAction [([localize "STR_CANCEL", "res\ui_cancel.paa", "accent"] call HPC_fnc_actionTitle),"scripts\client\build\build_cancel.sqf","",749,false,false,"","build_confirmed == 1"];
 		};
 
 		// Create ghost vehicle
@@ -464,7 +464,7 @@ while {true} do {
 			_vehicle = [_classname, _owner, manned, _veh_pos, _veh_dir, _veh_vup] call do_build_vehicle;
 			if (isNull _vehicle || !alive _vehicle) exitWith {
 				[player, _price, _price_fuel] remoteExec ["ammo_add_remote_call", 2];
-				private _msg = format ["--- LRX Error: Cannot build vehicle (%1) at position %2", _classname, _veh_pos];
+				private _msg = format ["Error: cannot build vehicle (%1) at position %2. Your resources were refunded.", _classname, _veh_pos];
 				deleteVehicle _vehicle;
 				systemchat _msg;
 				diag_log _msg;

@@ -36,7 +36,7 @@ switch (_type) do {
 };
 if (count _data > 0) then {
     GRLIB_LastNews = -1;
-    _data spawn BIS_fnc_dynamicText;
+    (_data + [10]) call HPC_fnc_toast;
     sleep 10;
     GRLIB_LastNews = _last_news;    
 };

@@ -72,10 +72,10 @@ class outlw_MR_RscListBox
 	colorText[] = {1,1,1,1};
 	colorDisabled[] = {1,1,1,0.25};
 	colorScrollbar[] = {1,0,0,0};
-	colorSelect[] = {0,0,0,1};
-	colorSelect2[] = {0,0,0,1};
-	colorSelectBackground[] = {0.95,0.95,0.95,1};
-	colorSelectBackground2[] = {1,1,1,0.5};
+	colorSelect[] = {1,1,1,1};
+	colorSelect2[] = {1,1,1,1};
+	colorSelectBackground[] = {0.20,0.42,0.38,0.95};
+	colorSelectBackground2[] = {0.20,0.42,0.38,0.75};
 	colorBackground[] = {0,0,0,0};
 	soundSelect[] =
 	{
@@ -171,8 +171,8 @@ class outlw_MR_RscButtonMenu
 	};
 	colorFocused[] = {1,1,1,0.5};
 	colorBackgroundFocused[] = {0,0,0,0.8};
-	colorBackground[] = {0,0,0,0.8};
-	colorBackground2[] = {1,1,1,0.5};
+	colorBackground[] = {0.12,0.15,0.16,0.92};
+	colorBackground2[] = {0.20,0.42,0.38,0.8};
 	color[] = {1,1,1,1};
 	color2[] = {1,1,1,1};
 	colorText[] = {1,1,1,1};
@@ -268,10 +268,10 @@ class outlw_MR_RscControlsGroup
 class outlw_MR_RscCombo
 {
 	type = 4;
-	colorSelect[] = {0,0,0,1};
+	colorSelect[] = {1,1,1,1};
 	colorText[] = {1,1,1,1};
-	colorBackground[] = {0,0,0,1};
-	colorScrollbar[] = {1,0,0,1};
+	colorBackground[] = {0.12,0.15,0.16,0.92};
+	colorScrollbar[] = {0.46,0.80,0.72,1};
 	soundSelect[] =
 	{
 		"\A3\ui_f\data\sound\RscCombo\soundSelect",
@@ -308,12 +308,12 @@ class outlw_MR_RscCombo
 	w = 0.12;
 	h = 0.035;
 	shadow = 0;
-	colorSelectBackground[] = {1,1,1,0.7};
+	colorSelectBackground[] = {0.20,0.42,0.38,0.95};
 	arrowEmpty = "\A3\ui_f\data\GUI\RscCommon\rsccombo\arrow_combo_ca.paa";
 	arrowFull = "\A3\ui_f\data\GUI\RscCommon\rsccombo\arrow_combo_active_ca.paa";
 	wholeHeight = 0.45;
 	color[] = {1,1,1,1};
-	colorActive[] = {1,0,0,1};
+	colorActive[] = {0.62,0.92,0.84,1};
 	colorDisabled[] = {1,1,1,0.25};
 	font = "PuristaMedium";
 	sizeEx = "(((((safezoneW / safezoneH) min 1.2) / 1.2) / 25) * 1)";

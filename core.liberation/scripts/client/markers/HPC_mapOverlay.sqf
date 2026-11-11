@@ -215,7 +215,12 @@ HPC_fnc_mapDraw = compileFinal toString {
             };
         } forEach HPC_mapIntel;
     };
-    if (_mainMap) then {HPC_mapHover = _hover};
+    if (_mainMap) then {
+        HPC_mapHover = _hover;
+        if (!isNull _hover) then {
+            _map drawIcon [_ring, [1, 1, 1, 0.85], getPosASLVisual leader _hover, 38, 38, 0];
+        };
+    };
     {
         private _leader = leader _x;
         if (alive _leader) then {
@@ -284,41 +289,46 @@ private _panelIdc = 77901;
 private _tooltipIdc = 77920;
 private _createPanel = {
     params ["_display"];
+    // HPC grid (ui\hippo_theme.hpp): one unit = 1/54 of the screen height, square.
+    private _gy = safezoneH / 54;
+    private _gx = safezoneH * 0.75 / 54;
+    private _w = 20 * _gx;
     private _x0 = safezoneX + safezoneW - 0.245 * safezoneW; // clear of the HUD column on the right edge
     private _y0 = safezoneY + 0.1 * safezoneH;
     private _panel = _display ctrlCreate ["RscStructuredText", _panelIdc];
-    _panel ctrlSetPosition [_x0, _y0, 0.195 * safezoneW, 0.25 * safezoneH];
-    _panel ctrlSetFontHeight (0.021 * safezoneH);
-    _panel ctrlSetBackgroundColor [0.025, 0.035, 0.045, 0.82];
+    _panel ctrlSetPosition [_x0, _y0, _w, 12 * _gy];
+    _panel ctrlSetFontHeight (1.0 * _gy);
+    _panel ctrlSetBackgroundColor [0.035, 0.045, 0.05, 0.88];
     _panel ctrlCommit 0;
     private _accent = _display ctrlCreate ["RscText", _panelIdc + 5];
-    _accent ctrlSetPosition [_x0, _y0, 0.195 * safezoneW, 0.004 * safezoneH];
-    _accent ctrlSetBackgroundColor [0.88, 0.69, 0.25, 1];
+    _accent ctrlSetPosition [_x0, _y0, 0.28 * _gx, 2.2 * _gy];
+    _accent ctrlSetBackgroundColor [0.46, 0.80, 0.72, 1];
     _accent ctrlCommit 0;
+    private _third = (_w - 0.6 * _gx) / 3;
     {
         _x params ["_offset", "_column", "_row", "_width", "_label", "_tooltip", "_code"];
-        private _button = _display ctrlCreate ["RscButton", _panelIdc + _offset];
-        _button ctrlSetPosition [_x0 + _column * safezoneW, _y0 + (0.255 + 0.036 * _row) * safezoneH, _width * safezoneW, 0.032 * safezoneH];
+        private _button = _display ctrlCreate ["HPC_Button", _panelIdc + _offset];
+        _button ctrlSetPosition [_x0 + _column * (_third + 0.3 * _gx), _y0 + 12.4 * _gy + 2.5 * _gy * _row, [_third, _w] select (_width > 1), 2.2 * _gy];
         _button ctrlSetText _label;
         _button ctrlSetTooltip _tooltip;
-        _button ctrlSetFontHeight (0.019 * safezoneH);
+        _button ctrlSetFontHeight (0.85 * _gy);
         _button ctrlAddEventHandler ["ButtonClick", _code];
         _button ctrlCommit 0;
     } forEach [
-        [1, 0, 0, 0.0635, "FORCES", "Show or hide friendly AI groups and their objectives.", {
+        [1, 0, 0, 1, "FORCES", "Show or hide friendly AI groups and their objectives.", {
             HPC_mapShowForces = !HPC_mapShowForces;
             profileNamespace setVariable ["HPC_mapShowForces", HPC_mapShowForces];
         }],
-        [4, 0.0657, 0, 0.0635, "INTEL", "Show or hide enemy groups our forces have spotted.", {
+        [4, 1, 0, 1, "INTEL", "Show or hide enemy groups our forces have spotted.", {
             HPC_mapShowIntel = !HPC_mapShowIntel;
             profileNamespace setVariable ["HPC_mapShowIntel", HPC_mapShowIntel];
         }],
-        [2, 0.1314, 0, 0.0635, "SHOTS", "Show or hide shot markers.", {
+        [2, 2, 0, 1, "SHOTS", "Show or hide shot markers.", {
             HPC_mapShowTracers = !HPC_mapShowTracers;
             profileNamespace setVariable ["HPC_mapShowTracers", HPC_mapShowTracers];
             if (!HPC_mapShowTracers) then {HPC_mapShots = []};
         }],
-        [3, 0, 1, 0.195, "COMMAND AI FORCES", "Send assault squads and armor to a sector or FOB.", {
+        [3, 0, 1, 2, "COMMAND AI FORCES", "Send assault squads and armor to a sector or FOB.", {
             [] spawn {
                 openMap false;
                 uiSleep 0.1;
@@ -327,8 +337,9 @@ private _createPanel = {
         }]
     ];
     private _tooltip = _display ctrlCreate ["RscStructuredText", _tooltipIdc];
-    _tooltip ctrlSetPosition [0, 0, 0.17 * safezoneW, 0.1 * safezoneH];
-    _tooltip ctrlSetBackgroundColor [0.02, 0.03, 0.04, 0.9];
+    _tooltip ctrlSetPosition [0, 0, 17 * _gx, 5 * _gy];
+    _tooltip ctrlSetFontHeight (0.95 * _gy);
+    _tooltip ctrlSetBackgroundColor [0.035, 0.045, 0.05, 0.94];
     _tooltip ctrlEnable false;
     _tooltip ctrlShow false;
     _tooltip ctrlCommit 0;
@@ -354,7 +365,7 @@ private _summary = {
         ]
     };
     private _lines = [
-        "<t font='PuristaBold' size='1.05' color='#E0B040'>FRIENDLY FORCES</t><t align='right' size='0.8' color='#8FA3B4'>",
+        "<t font='PuristaSemibold' size='1.1' color='#EBEFF1'>  FRIENDLY FORCES</t><t align='right' size='0.8' color='#8FA3B4'>",
         format ["%1 AI</t><br/>", _men]
     ];
     if (HPC_mapShowForces) then {
@@ -373,7 +384,7 @@ private _summary = {
         ["o_inf", "#FF5A47", "Enemy groups spotted", if (HPC_mapShowIntel) then {count HPC_mapIntel} else {"hidden"}] call _row,
         format ["<t color='#C9D4DE'>Active objectives</t><t align='right' color='#FF6B5A'>%1</t><br/>", count active_sectors],
         format ["<t color='#C9D4DE'>Commander</t><t align='right' color='#FFFFFF'>%1</t><br/>", if (_commander isEqualTo []) then {"none"} else {name (_commander select 0)}],
-        "<t size='0.75' color='#8FA3B4'>Hover a group for details. Ring = in combat, ? = last known.</t>"
+        "<t size='0.75' color='#8FA3B4'>Hover a group for details. Red ring = in combat, gold = your orders, ? = last known.</t>"
     ];
     _lines joinString ""
 };
@@ -461,19 +472,24 @@ while {true} do {
             private _panel = _display displayCtrl _panelIdc;
             _panel ctrlSetStructuredText parseText (call _summary);
             // Fit the panel to its text and keep the buttons just below it.
-            private _height = (ctrlTextHeight _panel) + 0.008 * safezoneH;
+            private _gy = safezoneH / 54;
+            private _height = (ctrlTextHeight _panel) + 0.5 * _gy;
             (ctrlPosition _panel) params ["_px", "_py", "_pw"];
             _panel ctrlSetPosition [_px, _py, _pw, _height];
             _panel ctrlCommit 0;
             {
-                private _button = _display displayCtrl (_panelIdc + (_x select 0));
+                _x params ["_offset", "_row", "_on", "_label"];
+                private _button = _display displayCtrl (_panelIdc + _offset);
                 (ctrlPosition _button) params ["_bx", "", "_bw", "_bh"];
-                _button ctrlSetPosition [_bx, _py + _height + 0.005 * safezoneH + (_x select 1) * 0.036 * safezoneH, _bw, _bh];
+                _button ctrlSetPosition [_bx, _py + _height + 0.3 * _gy + _row * 2.5 * _gy, _bw, _bh];
                 _button ctrlCommit 0;
-            } forEach [[1, 0], [4, 0], [2, 0], [3, 1]];
-            (_display displayCtrl (_panelIdc + 1)) ctrlSetText (["FORCES: OFF", "FORCES: ON"] select HPC_mapShowForces);
-            (_display displayCtrl (_panelIdc + 4)) ctrlSetText (["INTEL: OFF", "INTEL: ON"] select HPC_mapShowIntel);
-            (_display displayCtrl (_panelIdc + 2)) ctrlSetText (["SHOTS: OFF", "SHOTS: ON"] select HPC_mapShowTracers);
+                if (_label != "") then {
+                    // Toggles: lit teal when the layer is shown, dim with muted text when hidden.
+                    _button ctrlSetText (_label + (["  OFF", ""] select _on));
+                    _button ctrlSetBackgroundColor ([[0.16, 0.20, 0.21, 0.95], [0.20, 0.42, 0.38, 0.95]] select _on);
+                    _button ctrlSetTextColor ([[0.62, 0.69, 0.72, 1], [0.92, 0.94, 0.95, 1]] select _on);
+                };
+            } forEach [[1, 0, HPC_mapShowForces, "FORCES"], [4, 0, HPC_mapShowIntel, "INTEL"], [2, 0, HPC_mapShowTracers, "SHOTS"], [3, 1, true, ""]];
             (_display displayCtrl (_panelIdc + 3)) ctrlShow (_commander && {GRLIB_Commander_mode} && {HPC_AIWarfare});
         };
     };

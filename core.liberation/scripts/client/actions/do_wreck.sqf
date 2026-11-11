@@ -39,7 +39,7 @@ if ((_bonus + _bounty) > 0) then {
 	hintSilent format [localize "STR_DO_WRECK", name player, _bonus, _bounty];
 	[player, _bonus] remoteExec ["F_addScore", 2];
 } else {
-	hintSilent "Thank You !!";
+	hintSilent "Thank you!";
 };
 
 sleep 0.5;

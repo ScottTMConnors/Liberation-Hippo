@@ -33,7 +33,7 @@ while {true} do {
 
 				if (GRLIB_tk_mode > 0 && {_new_rank == "None" && _cur < _last}) exitWith {
 					_msg = format ["Warning: player <t color='#00ff00'>%1</t>,<br />You play Wrong !! <t color='#ff0000'>Read the Manual</t>.<br /><br />%2", name _x, localize "STR_RANK_LVL0"];
-					[_msg, 0, 0, 5, 0, 0, 90] remoteExec ["BIS_fnc_dynamicText", owner _x];
+					["Warning", _msg, "bad", 8, true] remoteExec ["HPC_fnc_toast", owner _x];
 					[_uid, [false,false,false,false,false,false]] call CHG_Perm;
 					_x setVariable ["GRLIB_Rank", _new_rank, true];
 				};
@@ -82,7 +82,7 @@ while {true} do {
 
 					if (_x getVariable ["GRLIB_player_last_notif", 0] < time) then {
 						_msg = format ["Congratulation <t color='#00ff00'>%1</t> !!<br />You have been promoted to : <t color='#ff0000'>%2</t>.<br /><br />%3", name _x, _new_rank, _msg2];
-						[_msg, 0, 0, 5, 0, 0, 90] remoteExec ["BIS_fnc_dynamicText", owner _x];
+						["Promotion", _msg, "good", 8, true] remoteExec ["HPC_fnc_toast", owner _x];
 						["FD_Finish_F"] remoteExec ["playSound", owner _x];
 					} else {
 						_msg = format ["You have been promoted to %1.", _new_rank];

@@ -134,6 +134,7 @@ lrx_getParamData = compileFinal preprocessFileLineNumbers "scripts\shared\functi
 lrx_getParamValue = compileFinal preprocessFileLineNumbers "scripts\shared\functions\F_getParamValue.sqf";
 reammo_ai = compileFinal preprocessFileLineNumbers "scripts\shared\functions\F_reammo_ai.sqf";
 
+HPC_fnc_actionTitle = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_actionTitle.sqf"; // consistent action menu entries
 HPC_fnc_applyEasyAI = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_applyEasyAI.sqf";
 HPC_fnc_groupOrder = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_groupOrder.sqf";
 HPC_fnc_hcHeartbeat = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_hcHeartbeat.sqf";

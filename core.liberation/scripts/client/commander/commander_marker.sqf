@@ -3,6 +3,30 @@ if !(GRLIB_Commander_mode) exitWith {};
 waituntil {sleep 1; GRLIB_player_spawned};
 sleep 5;
 
+// Hover feedback on the main map while the next battle is being chosen: ring the
+// selectable sector under the cursor (same 100 m pick radius as the click in
+// commander_manager.sqf) and say what a click does. Nothing is drawn otherwise.
+HPC_comRingIcon = getText (configFile >> "CfgMarkers" >> "mil_circle" >> "icon");
+HPC_fnc_comSectorDraw = compileFinal toString {
+    params ["_map"];
+    if (count active_sectors > 0 || {GRLIB_AvailAttackSectors isEqualTo []}) exitWith {};
+    private _commander = GRLIB_player_commander;
+    if (!_commander && {!GRLIB_Commander_VoteEnabled}) exitWith {};
+    private _mouse = _map ctrlMapScreenToWorld getMousePosition;
+    private _best = "";
+    private _bestDistance = 100;
+    {
+        private _distance = (markerPos _x) distance2D _mouse;
+        if (_distance < _bestDistance) then {_best = _x; _bestDistance = _distance};
+    } forEach GRLIB_AvailAttackSectors;
+    if (_best == "") exitWith {};
+    private _pos = markerPos _best;
+    _map drawIcon [HPC_comRingIcon, [0.46, 0.80, 0.72, 0.6 + 0.35 * sin (diag_tickTime * 360)], _pos, 46, 46, 0];
+    _map drawIcon ["#(rgb,1,1,1)color(1,1,1,0)", [0.92, 0.94, 0.95, 1], _pos, 28, 28, 0,
+        ["Click to vote for this attack", "Click to start the attack here"] select _commander, 2, 0.034, "PuristaSemibold", "right"];
+};
+private _drawnMap = controlNull;
+
 private _availableMarkers = [];
 private _availAttackSectors = [];
 // Sector -> [original text, text we displayed]; lets us undo our vote label
@@ -45,6 +69,11 @@ private _showVotes = {
 
 while {true} do {
     waitUntil { sleep 0.1; visibleMap };
+    private _mainMap = (findDisplay 12) displayCtrl 51;
+    if (!isNull _mainMap && {!(_mainMap isEqualTo _drawnMap)}) then {
+        _mainMap ctrlAddEventHandler ["Draw", {_this call HPC_fnc_comSectorDraw}];
+        _drawnMap = _mainMap;
+    };
     if (count GRLIB_AvailAttackSectors == 0 && count _availableMarkers > 0) then {
         { deleteMarkerLocal _x } forEach _availableMarkers;
         _availableMarkers = [];

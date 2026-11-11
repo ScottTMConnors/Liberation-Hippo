@@ -39,6 +39,7 @@ while { dialog && alive player && isNull _transport} do {
 		} foreach _transport_list;
 
 		lbSetCurSel [110, -1];
+		ctrlShow [130, count _transport_list == 0];
 		_refresh = false;
 	};
 

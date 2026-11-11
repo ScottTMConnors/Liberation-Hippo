@@ -19,6 +19,8 @@ if !(createDialog "liberation_arsenal") exitWith {GRLIB_arsenal_open=false};
 ctrlEnable [202, false];
 ctrlEnable [203, false];
 ctrlEnable [204, false];
+ctrlShow [205, (count GRLIB_saved_loadouts == 0)];
+ctrlSetText [206, format ["Ammo available: %1", _ammo_collected]];
 
 if (count GRLIB_saved_loadouts > 0) then {
 	lbClear 201;

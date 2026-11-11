@@ -17,11 +17,11 @@ class RscTitles
 		colorBackground[] = COLOR_NOALPHA;
 		font = FONTM;
 		sizeEx = 0.035 * safezoneH;
-		x = 0.3 * safezoneW + safezoneX;
-		w = 0.4 * safezoneW;
+		x = 0.1 * safezoneW + safezoneX;
+		w = 0.8 * safezoneW;
 		y = 0.65 * safezoneH + safezoneY;
 		h = 0.1 * safezoneH;
-		text = "Based on Liberation by [GREUH]";
+		text = "Hippos Conquest by TheHungryHippo";
 		shadow = 1;
 	  };
 	  class GenericLabelShadow : GenericLabel2{
@@ -46,11 +46,11 @@ class RscTitles
 		colorBackground[] = COLOR_NOALPHA;
 		font = FONTM;
 		sizeEx = 0.035 * safezoneH;
-		x = 0.3 * safezoneW + safezoneX;
-		w = 0.4 * safezoneW;
+		x = 0.1 * safezoneW + safezoneX;
+		w = 0.8 * safezoneW;
 		y = 0.65 * safezoneH + safezoneY;
 		h = 0.1 * safezoneH;
-		text = "Extended by Liberation RX contributors";
+		text = "Built on Liberation RX by pSiKO and contributors";
 		shadow = 1;
 	  };
 	  class GenericLabelShadow : GenericLabel2{
@@ -74,11 +74,11 @@ class RscTitles
 		colorBackground[] = COLOR_NOALPHA;
 		font = FONTM;
 		sizeEx = 0.035 * safezoneH;
-		x = 0.3 * safezoneW + safezoneX;
-		w = 0.4 * safezoneW;
+		x = 0.1 * safezoneW + safezoneX;
+		w = 0.8 * safezoneW;
 		y = 0.65 * safezoneH + safezoneY;
 		h = 0.1 * safezoneH;
-		text = "Hippo gameplay changes by TheHungryHippo";
+		text = "Based on the original Liberation by [GREUH]";
 		shadow = 1;
 	  };
 	  class GenericLabelShadow : GenericLabel2{
@@ -137,8 +137,8 @@ class RscTitles
 		colorBackground[] = COLOR_NOALPHA;
 		font = FONTM;
 		sizeEx = 0.025 * safezoneH;
-		x = 0.3 * safezoneW + safezoneX;
-		w = 0.4 * safezoneW;
+		x = 0.1 * safezoneW + safezoneX;
+		w = 0.8 * safezoneW;
 		y = 0.70 * safezoneH + safezoneY;
 		h = 0.1 * safezoneH;
 		text = $STR_MISSION_MOTD;
@@ -195,346 +195,179 @@ class RscTitles
 	  };
    };
 
+   // Right-hand HUD: one compact translucent column (resources, alert, operations).
+   #define HUD_W (15 * HPC_GX)
+   #define HUD_X (HPC_RIGHT - 0.8 * HPC_GX - HUD_W)
+   #define HUD_Y (safezoneY + 0.46 * safezoneH)
+   #define HUD_CELL (HUD_W / 4)
+   #define HUD_ROW1 (HUD_Y + 0.45 * HPC_GY)
+   #define HUD_ROW2 (HUD_Y + 2.15 * HPC_GY)
    class statusoverlay
    {
 		name = "statusoverlay";
 		duration = 999999;
 		idd = 6666;
+		fadeIn = 0;
+		fadeOut = 0;
 		movingEnable = true;
 		onLoad = "uiNamespace setVariable ['GUI_OVERLAY', _this select 0];";
-		controls[] = { BGPicture,LabelScore,LabelAmmo,LabelManpower,LabelFuel,LabelCap,PictureAmmoShadow,PictureScoreShadow,PictureManpowerShadow,
-		BGPictureActiveSectors,PictureFuelShadow,PictureScore,PictureAmmo,PictureManpower,PictureFuel,PictureCap,PictureCombatReadinessShadow,
-		PictureCombatReadiness,PictureIntelShadow,PictureIntel,LabelIntel,BGPictureSector,CaptureFrame_OPFOR,CaptureFrame_BLUFOR,CaptureFrame,
-		LabelPoint,CommanderInfo,ObjectivePanel,DetectionFrame,DetectionLevel,DetectionLabel,
-		LabelCombatReadiness,CentralShadow,CentralLabel,ActiveSectors,AlertBGPicture,AlertLabel,AlertTimer };
-		class BGPicture {
-		idc = -1;
-		type =  CT_STATIC;
-		style = ST_PICTURE;
-		colorText[] = {0.8,0.8,0.8,0.9};
-		colorBackground[] = COLOR_NOALPHA;
-		font = FONTM;
-		sizeEx = 0.5;
-		x = 0.95 * safezoneW + safezoneX;
-		w = 0.075 * safezoneW;
-		y = 0.395 * safezoneH + safezoneY;
-		h = 0.183 * safezoneH;
-		text = "res\gradient.paa";
+		controls[] = {
+			ResourcesBG, PictureScore, LabelScore, PictureAmmo, LabelAmmo, PictureFuel, LabelFuel, PictureManpower, LabelManpower,
+			PictureCap, LabelCap, PictureCombatReadiness, LabelCombatReadiness, PictureIntel, LabelIntel,
+			AlertBGPicture, AlertAccent, AlertLabel, AlertTimer, ObjectiveBG, ObjectivePanel, ObjectiveAccent,
+			DetectionLabel, DetectionFrame, DetectionLevel, ActiveSectors, CentralShadow, CentralLabel
 		};
-		class BGPictureSector : BGPicture {
-			idc = 201;
-			x = 0.9 * safezoneW + safezoneX;
-			w = 0.15 * safezoneW;
-			y = 0.33 * safezoneH + safezoneY;
-			h = 0.05 * safezoneH;
+		class ResourcesBG : HPC_Text {
+			idc = 520;
+			x = HUD_X; y = HUD_Y; w = HUD_W; h = 3.85 * HPC_GY;
+			colorBackground[] = {0.035,0.045,0.05,0.55};
 		};
-		class GenericLabel69 {
-		idc = -1;
-		type =  CT_STATIC;
-		style = ST_RIGHT;
-		colorBackground[] = COLOR_NOALPHA;
-		font = FONTM;
-		sizeEx = 0.022 * safezoneH;
-		x = 0.905 * safezoneW + safezoneX;
-		w = 0.08 * safezoneW;
-		y = 0.5225 * safezoneH + safezoneY;
-		h = 0.04 * safezoneH;
-		text = "";
-		shadow = 2;
+		class HudIcon : HPC_Picture {
+			w = 1.25 * HPC_GX; h = 1.25 * HPC_GY;
+			colorText[] = {0.92,0.94,0.95,0.9};
 		};
-		class CentralLabel : GenericLabel69 {
+		class HudValue : HPC_Text {
+			style = ST_LEFT;
+			w = HUD_CELL - 1.7 * HPC_GX; h = 1.25 * HPC_GY;
+			font = "RobotoCondensedBold";
+			sizeEx = 1.0 * HPC_GY;
+			shadow = 1;
+		};
+		class PictureScore : HudIcon { x = HUD_X + 0.4 * HPC_GX; y = HUD_ROW1; text = "res\ui_arsenal.paa"; tooltip = "Score"; };
+		class LabelScore : HudValue { idc = 107; x = HUD_X + 1.8 * HPC_GX; y = HUD_ROW1; };
+		class PictureAmmo : HudIcon { x = HUD_X + HUD_CELL + 0.4 * HPC_GX; y = HUD_ROW1; text = "res\ui_ammo.paa"; colorText[] = {0.95,0.45,0.42,1}; };
+		class LabelAmmo : HudValue { idc = 102; x = HUD_X + HUD_CELL + 1.8 * HPC_GX; y = HUD_ROW1; colorText[] = {0.98,0.62,0.58,1}; };
+		class PictureFuel : HudIcon { x = HUD_X + 2 * HUD_CELL + 0.4 * HPC_GX; y = HUD_ROW1; text = "res\ui_fuel.paa"; colorText[] = {0.95,0.82,0.40,1}; };
+		class LabelFuel : HudValue { idc = 103; x = HUD_X + 2 * HUD_CELL + 1.8 * HPC_GX; y = HUD_ROW1; colorText[] = {0.98,0.88,0.55,1}; };
+		class PictureManpower : HudIcon { x = HUD_X + 3 * HUD_CELL + 0.4 * HPC_GX; y = HUD_ROW1; text = "res\ui_manpo.paa"; colorText[] = {0.50,0.86,0.55,1}; };
+		class LabelManpower : HudValue { idc = 101; x = HUD_X + 3 * HUD_CELL + 1.8 * HPC_GX; y = HUD_ROW1; colorText[] = {0.66,0.93,0.70,1}; };
+		class PictureCap : HudIcon { idc = 1041; x = HUD_X + 0.4 * HPC_GX; y = HUD_ROW2; text = "res\rep\rep3.paa"; };
+		class LabelCap : HudValue { idc = 104; x = HUD_X + 1.8 * HPC_GX; y = HUD_ROW2; };
+		class PictureCombatReadiness : HudIcon { idc = 135; x = HUD_X + HUD_CELL + 0.4 * HPC_GX; y = HUD_ROW2; text = "\A3\ui_f\data\map\markers\handdrawn\warning_CA.paa"; };
+		class LabelCombatReadiness : HudValue { idc = 105; x = HUD_X + HUD_CELL + 1.8 * HPC_GX; y = HUD_ROW2; };
+		class PictureIntel : HudIcon { x = HUD_X + 2 * HUD_CELL + 0.4 * HPC_GX; y = HUD_ROW2; text = "\A3\Ui_f\data\GUI\Cfg\Ranks\general_gs.paa"; colorText[] = {0.45,0.70,1,1}; };
+		class LabelIntel : HudValue { idc = 106; x = HUD_X + 2 * HUD_CELL + 1.8 * HPC_GX; y = HUD_ROW2; colorText[] = {0.62,0.80,1,1}; };
+
+		class AlertBGPicture : HPC_Text {
+			idc = 401;
+			x = HUD_X; y = HUD_Y + 4.2 * HPC_GY; w = HUD_W; h = 2.2 * HPC_GY;
+			colorBackground[] = {0.30,0.05,0.05,0.62};
+		};
+		class AlertAccent : HPC_Text {
+			idc = 404;
+			x = HUD_X; y = HUD_Y + 4.2 * HPC_GY; w = 0.25 * HPC_GX; h = 2.2 * HPC_GY;
+			colorBackground[] = HPC_C_DANGER;
+		};
+		class AlertLabel : HPC_Text {
+			idc = 402;
+			x = HUD_X + 0.8 * HPC_GX; y = HUD_Y + 4.2 * HPC_GY; w = HUD_W - 5.5 * HPC_GX; h = 2.2 * HPC_GY;
+			font = "PuristaSemibold";
+			sizeEx = 0.95 * HPC_GY;
+			colorText[] = {1,0.82,0.80,1};
+		};
+		class AlertTimer : AlertLabel {
+			idc = 403;
+			style = ST_RIGHT;
+			x = HUD_X + HUD_W - 4.8 * HPC_GX; w = 4.2 * HPC_GX;
+			font = "RobotoCondensedBold";
+			sizeEx = 1.05 * HPC_GY;
+			colorText[] = {1,1,1,1};
+		};
+		class ObjectiveBG : HPC_Text {
+			idc = 521;
+			x = HUD_X; y = HUD_Y + 4.2 * HPC_GY; w = HUD_W; h = 5 * HPC_GY;
+			colorBackground[] = {0.035,0.045,0.05,0.55};
+		};
+		class ObjectivePanel : HPC_StructuredText {
+			idc = 518;
+			style = ST_LEFT;
+			x = HUD_X + 0.75 * HPC_GX; y = HUD_Y + 4.2 * HPC_GY; w = HUD_W - 1.1 * HPC_GX; h = 5 * HPC_GY;
+			size = 0.92 * HPC_GY;
+			class Attributes { font = "RobotoCondensed"; color = "#E9EEF0"; align = "left"; valign = "top"; shadow = 0; };
+		};
+		class ObjectiveAccent : HPC_Text {
+			idc = 519;
+			x = HUD_X; y = HUD_Y + 4.2 * HPC_GY; w = 0.25 * HPC_GX; h = 5 * HPC_GY;
+			colorBackground[] = HPC_C_ACCENT;
+		};
+
+		class DetectionLabel : HPC_Label {
+			idc = 247;
+			x = HUD_X; y = HUD_Y - 2.8 * HPC_GY; w = HUD_W; h = 1.2 * HPC_GY;
+			style = ST_RIGHT;
+			colorText[] = {1,0.82,0.80,1};
+			shadow = 1;
+			text = "DETECTION";
+		};
+		class DetectionFrame : HPC_Text {
+			idc = 245;
+			x = HUD_X; y = HUD_Y - 1.4 * HPC_GY; w = HUD_W; h = 0.55 * HPC_GY;
+			colorBackground[] = {0,0,0,0.45};
+		};
+		class DetectionLevel : DetectionFrame {
+			idc = 246;
+			colorBackground[] = HPC_C_DANGER;
+		};
+		class ActiveSectors : HPC_StructuredText {
+			idc = 516;
+			x = HUD_X - 5 * HPC_GX; y = 0.8 * safezoneH + safezoneY; w = HUD_W + 5 * HPC_GX; h = 0.18 * safezoneH;
+			size = 0.85 * HPC_GY;
+			class Attributes { font = "RobotoCondensed"; color = "#F2C14E"; align = "right"; valign = "top"; shadow = 1; };
+		};
+		class CentralLabel : HPC_Text {
 			idc = 266;
-			type = CT_STATIC;
 			style = ST_CENTER;
-			colorText[] = {1,1,0,1};
+			x = safezoneX; w = safezoneW;
+			y = 0.2 * safezoneH + safezoneY; h = 0.05 * safezoneH;
+			font = "PuristaSemibold";
 			sizeEx = 0.03 * safezoneH;
-			x = 0 * safezoneW + safezoneX;
-			w = 1 * safezoneW;
-			y = 0.2 * safezoneH + safezoneY;
-			h = 0.05 * safezoneH;
-			text = "";
+			colorText[] = {1,0.85,0.35,1};
+			shadow = 2;
 		};
 		class CentralShadow : CentralLabel {
 			idc = 267;
 			shadow = 1;
 		};
-		class GenericPicture69 {
-		idc = -1;
-		type =  CT_STATIC;
-		style = ST_PICTURE;
-		colorText[] = {0.9,0.9,0.9,1};
-		colorBackground[] = COLOR_NOALPHA;
-		font = FONTM;
-		sizeEx = 0.5;
-		x = 0.985 * safezoneW + safezoneX;
-		w = 0.012 * safezoneW;
-		h = 0.0213333333 * safezoneH;
-		};
-		class PictureScore : GenericPicture69 {
-			y = (0.4 + ( ICONE_SPACY * 0 ) ) * safezoneH + safezoneY;
-			text = "res\ui_arsenal.paa";
-		};
-		class PictureAmmo : GenericPicture69 {
-			y = (0.4 + ( ICONE_SPACY * 1 ) ) * safezoneH + safezoneY;
-			text = "res\ui_ammo.paa";
-		};
-		class PictureFuel : GenericPicture69 {
-			y = (0.4 + ( ICONE_SPACY * 2 ) ) * safezoneH + safezoneY;
-			text = "res\ui_fuel.paa";
-		};
-		class PictureManpower : GenericPicture69 {
-			y = (0.4 + ( ICONE_SPACY * 3 ) ) * safezoneH + safezoneY;
-			text = "res\ui_manpo.paa";
-		};
-		class PictureCap : GenericPicture69 {
-			idc = 1041;
-			y = (0.4 + ( ICONE_SPACY * 4 ) ) * safezoneH + safezoneY;
-			text = "res\rep\rep3.paa";
-		};
-		class PictureCombatReadiness : GenericPicture69 {
-			idc = 135;
-			y = (0.4 + ( ICONE_SPACY * 5 ) ) * safezoneH + safezoneY;
-			text = "\A3\ui_f\data\map\markers\handdrawn\warning_CA.paa";
-		};
-		class PictureIntel : GenericPicture69 {
-			colorText[] = {0,0.45,0.95,1};
-			y = (0.4 + ( ICONE_SPACY * 6 ) - 0.0025) * safezoneH + safezoneY;
-			text = "\A3\Ui_f\data\GUI\Cfg\Ranks\general_gs.paa";
-		};
-		class PictureScoreShadow : PictureScore {
-			y = (0.4 + SHADOW_Y + ( ICONE_SPACY * 0 ) ) * safezoneH + safezoneY;
-			x = (0.985 + SHADOW_X) * safezoneW + safezoneX;
-			colorText[] = {0,0,0,0.7};
-		};
-		class PictureAmmoShadow : PictureAmmo {
-			y = (0.4 + SHADOW_Y + ( ICONE_SPACY * 1 ) ) * safezoneH + safezoneY;
-			x = (0.985 + SHADOW_X) * safezoneW + safezoneX;
-			colorText[] = {0,0,0,0.7};
-		};
-		class PictureFuelShadow : PictureFuel {
-			y = (0.4 + SHADOW_Y + ( ICONE_SPACY * 2 ) ) * safezoneH + safezoneY;
-			x = (0.985 + SHADOW_X) * safezoneW + safezoneX;
-			colorText[] = {0,0,0,0.7};
-		};
-		class PictureManpowerShadow : PictureManpower {
-		y = (0.4 + SHADOW_Y + ( ICONE_SPACY * 3 ) ) * safezoneH + safezoneY;
-		x = (0.985 + SHADOW_X) * safezoneW + safezoneX;
-		colorText[] = {0,0,0,0.7};
-		};
-		class PictureCombatReadinessShadow : PictureCombatReadiness {
-		idc = -1;
-		y = (0.4 + SHADOW_Y + ( ICONE_SPACY * 5 ) ) * safezoneH + safezoneY;
-		x = (0.985 + SHADOW_X) * safezoneW + safezoneX;
-		colorText[] = {0,0,0,0.7};
-		};
-		class PictureIntelShadow : PictureIntel {
-		y = (0.4 + SHADOW_Y + ( ICONE_SPACY * 6 ) - 0.0025 ) * safezoneH + safezoneY;
-		x = (0.985 + SHADOW_X) * safezoneW + safezoneX;
-		colorText[] = {0,0,0,0.7};
-		};
-		class LabelScore : GenericLabel69 {
-		idc = 107;
-		text = "";
-		y = (0.39 + ( ICONE_SPACY * 0 ) ) * safezoneH + safezoneY;
-		colorText[] = {1, 1, 1, 1};
-		};
-		class LabelAmmo : GenericLabel69 {
-		idc = 102;
-		text = "";
-		y = (0.39 + ( ICONE_SPACY * 1 ) ) * safezoneH + safezoneY;
-		colorText[] = {0.75, 0, 0, 1};
-		};
-		class LabelFuel : GenericLabel69 {
-		idc = 103;
-		text = "";
-		y = (0.39 + ( ICONE_SPACY * 2 ) ) * safezoneH + safezoneY;
-		colorText[] = {0.75, 0.75, 0, 1};
-		};
-		class LabelManpower : GenericLabel69 {
-		idc = 101;
-		text = "";
-		y = (0.39 + ( ICONE_SPACY * 3 ) ) * safezoneH + safezoneY;
-		colorText[] = {0, 0.75, 0, 1};
-		};
-		class LabelCap : GenericLabel69 {
-		idc = 104;
-		text = "";
-		y = (0.39 + ( ICONE_SPACY * 4 ) ) * safezoneH + safezoneY;
-		colorText[] = {0.8, 0.8, 0.8, 1};
-		};
-		class LabelCombatReadiness : GenericLabel69 {
-		idc = 105;
-		text = "";
-		y = (0.39 + ( ICONE_SPACY * 5 ) ) * safezoneH + safezoneY;
-		colorText[] = {0.8, 0.8, 0.8, 1};
-		};
-		class LabelIntel : GenericLabel69 {
-		idc = 106;
-		text = "";
-		y = (0.39 + ( ICONE_SPACY * 6 ) - 0.0015 ) * safezoneH + safezoneY;
-		colorText[] = {0, 0.45, 0.95, 1};
-		};
-		class CaptureFrameStandard {
-			type =  CT_STATIC;
-			font = FONTM;
-			sizeEx = 0.023;
-			text = "";
-		};
-		class CaptureFrame : CaptureFrameStandard {
-			idc = 202;
-			style = ST_FRAME;
-			colorText[] = COLOR_BLACK;
-			colorBackground[] = COLOR_OPFOR_NOALPHA;
-			x = 0.9125 * safezoneW + safezoneX;
-			w = 0.085 * safezoneW;
-			y = 0.358 * safezoneH + safezoneY;
-			h = 0.012 * safezoneH;
-		};
-		class CaptureFrame_OPFOR : CaptureFrameStandard {
-			idc = 203;
-			style = CT_STATIC;
-			colorText[] = {0.6, 0, 0, 1};
-			colorBackground[] = {0.6, 0, 0, 1};
-			x = 0.9125 * safezoneW + safezoneX;
-			w = 0.084 * safezoneW;
-			y = 0.358 * safezoneH + safezoneY;
-			h = 0.011 * safezoneH;
-		};
-		class CaptureFrame_BLUFOR : CaptureFrameStandard {
-			idc = 204;
-			style = CT_STATIC;
-			colorText[] = {0, 0.2, 0.6, 1};
-			colorBackground[] = {0, 0.2, 0.6, 1};
-			x = 0.9125 * safezoneW + safezoneX;
-			w = 0.084 * safezoneW;
-			y = 0.358 * safezoneH + safezoneY;
-			h = 0.011 * safezoneH;
-		};
-		class LabelPoint : GenericLabel69 {
-			idc = 205;
-			text = "";
-			style = ST_RIGHT;
-			font = "PuristaBold";
-			sizeEx = 0.024 * safezoneH;
-			x = 0.8 * safezoneW + safezoneX;
-			w = 0.2 * safezoneW;
-			y = 0.33 * safezoneH + safezoneY;
-			h = 0.03 * safezoneH;
-			colorText[] = {0.7, 0, 0, 1};
-		};
-		class DetectionFrame : CaptureFrameStandard {
-			idc = 245;
-			style = ST_FRAME;
-			colorText[] = COLOR_BLACK;
-			colorBackground[] = COLOR_OPFOR_NOALPHA;
-			x = 0.9125 * safezoneW + safezoneX;
-			w = 0.085 * safezoneW;
-			y = 0.258 * safezoneH + safezoneY;
-			h = 0.012 * safezoneH;
-		};		
-		class DetectionLevel : DetectionFrame {
-			idc = 246;
-			style = CT_STATIC;
-			colorText[] = {0, 0.2, 0.6, 1};
-			colorBackground[] = {0, 0.5, 0, 1};
-			x = 0.9125 * safezoneW + safezoneX;
-			w = 0.084 * safezoneW;
-			y = 0.258 * safezoneH + safezoneY;
-			h = 0.011 * safezoneH;
-		};
-		class DetectionLabel : GenericLabel69 {
-			idc = 247;
-			text = "Detection Level";
-			style = ST_RIGHT;
-			font = "PuristaBold";
-			sizeEx = 0.024 * safezoneH;
-			x = 0.8 * safezoneW + safezoneX;
-			w = 0.2 * safezoneW;
-			y = 0.23 * safezoneH + safezoneY;
-			h = 0.03 * safezoneH;
-			colorText[] = {0.7, 0, 0, 1};
-		};		
-		class CommanderInfo : GenericLabel69 {
-			idc = 206;
-			text = "";
-			style = ST_RIGHT;
-			font = "PuristaBold";
-			sizeEx = 0.024 * safezoneH;
-			x = 0.8 * safezoneW + safezoneX;
-			w = 0.2 * safezoneW;
-			y = 0.24 * safezoneH + safezoneY;
-			h = 0.03 * safezoneH;
-			colorText[] = {0.7, 0, 0, 1};
-		};
-        class ObjectivePanel {
-            idc = 518;
-            type = CT_STRUCTURED_TEXT;
-            style = ST_LEFT;
-            // Width follows screen height so ultrawide screens keep the 16:9 size.
-            x = safezoneX + safezoneW - 0.3267 * safezoneH;
-            y = 0.61 * safezoneH + safezoneY;
-            w = 0.32 * safezoneH;
-            h = 0.25 * safezoneH;
-            colorBackground[] = {0.025,0.035,0.045,0.88};
-            text = "";
-            size = 0.026 * safezoneH;
-            shadow = 1;
-            class Attributes { font = "RobotoCondensed"; color = "#E9EEF0"; align = "left"; valign = "top"; };
-        };
-		class ActiveSectors
-		{
-			idc = 516;
-			type = CT_STRUCTURED_TEXT;
-			colorBackground[] = COLOR_NOALPHA;
-			style = ST_RIGHT;
-			x = 0.7 * safezoneW + safezoneX;
-			w = 0.295 * safezoneW;
-			y = 0.8 * safezoneH + safezoneY;
-			h = 0.2 * safezoneH;
-			text= "";
-			size = 0.02 * safezoneH;
-			sizeEx = 0.02 * safezoneH;
-			shadow = 2;
-				font = FONTM;
-				color = "#e0e000";
-				align = "right";
-				valign = "top";
-		};
-		class BGPictureActiveSectors : BGPicture {
-			idc = 517;
-			x = 0.93 * safezoneW + safezoneX;
-			w = 0.1 * safezoneW;
-			y = 0.8 * safezoneH + safezoneY;
-			h = 0.2 * safezoneH;
-		};
-		class AlertBGPicture : BGPicture {
-			idc = 401;
-			x = 0.9 * safezoneW + safezoneX;
-			w = 0.15 * safezoneW;
-			y = 0.27 * safezoneH + safezoneY;
-			h = 0.05 * safezoneH;
-		};
-		class AlertLabel : GenericLabel69 {
-			idc = 402;
-			text = "";
-			style = ST_CENTER;
-			sizeEx = 0.022 * safezoneH;
-			x = 0.9 * safezoneW + safezoneX;
-			w = 0.1 * safezoneW;
-			y = 0.2675 * safezoneH + safezoneY;
-			h = 0.03 * safezoneH;
-			colorText[] = {0.85, 0, 0, 1};
-		};
-		class AlertTimer : GenericLabel69 {
-			idc = 403;
-			text = "";
-			style = ST_CENTER;
-			sizeEx = 0.026 * safezoneH;
-			x = 0.9 * safezoneW + safezoneX;
-			w = 0.1 * safezoneW;
-			y = 0.29 * safezoneH + safezoneY;
-			h = 0.03 * safezoneH;
-			colorText[] = {0.85, 0, 0, 1};
-		};
 	};
+
+   // News and alerts: up to three translucent cards stacked on the right.
+   #define TOAST_W (19 * HPC_GX)
+   #define TOAST_X (HPC_RIGHT - 0.8 * HPC_GX - TOAST_W)
+   class HPC_Toasts
+   {
+		name = "HPC_Toasts";
+		duration = 1e10;
+		idd = -1;
+		fadeIn = 0;
+		fadeOut = 0;
+		movingEnable = false;
+		onLoad = "uiNamespace setVariable ['HPC_ToastDisplay', _this select 0];";
+		onUnload = "uiNamespace setVariable ['HPC_ToastDisplay', displayNull];";
+		controls[] = {Bg0, Bar0, Text0, Bg1, Bar1, Text1, Bg2, Bar2, Text2};
+		class ToastBg : HPC_Text {
+			x = TOAST_X; y = safezoneY; w = TOAST_W; h = 0;
+			colorBackground[] = {0.035,0.045,0.05,0.68};
+			fade = 1;
+		};
+		class ToastBar : HPC_Text {
+			x = TOAST_X; y = safezoneY; w = 0.25 * HPC_GX; h = 0;
+			colorBackground[] = HPC_C_ACCENT;
+			fade = 1;
+		};
+		class ToastText : HPC_StructuredText {
+			x = TOAST_X + 0.9 * HPC_GX; y = safezoneY; w = TOAST_W - 1.5 * HPC_GX; h = 0;
+			size = 1.0 * HPC_GY;
+			fade = 1;
+			class Attributes { font = "RobotoCondensed"; color = "#DDE4E7"; align = "left"; valign = "top"; shadow = 0; };
+		};
+		class Bg0 : ToastBg { idc = 9100; };
+		class Bar0 : ToastBar { idc = 9101; };
+		class Text0 : ToastText { idc = 9102; };
+		class Bg1 : ToastBg { idc = 9110; };
+		class Bar1 : ToastBar { idc = 9111; };
+		class Text1 : ToastText { idc = 9112; };
+		class Bg2 : ToastBg { idc = 9120; };
+		class Bar2 : ToastBar { idc = 9121; };
+		class Text2 : ToastText { idc = 9122; };
+   };
 };

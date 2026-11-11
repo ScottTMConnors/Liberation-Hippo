@@ -637,15 +637,15 @@ AR_Is_Supported_Vehicle = {
 AR_Player_Actions = {
 	params ["_player"];
 
-	_player addAction ["Rappel Self", {
+	_player addAction [(["Rappel self", "\a3\ui_f\data\igui\cfg\actions\getout_ca.paa", "info"] call HPC_fnc_actionTitle), {
 		[player, vehicle player] call AR_Rappel_From_Heli;
 	}, nil, 0, false, true, "", "[player, vehicle player, true] call AR_Rappel_From_Heli_Action_Check"];
 
-	_player addAction ["Rappel AI Units", {
+	_player addAction [(["Rappel AI units", "\a3\ui_f\data\igui\cfg\actions\getout_ca.paa", "info"] call HPC_fnc_actionTitle), {
 		[player, vehicle player] call AR_Rappel_AI_From_Heli;
 	}, nil, 0, false, true, "", "[player, vehicle player] call AR_Rappel_AI_Units_From_Heli_Action_Check"];
 
-	_player addAction ["Detach Rappel Device", {
+	_player addAction [(["Detach rappel device", "", "info"] call HPC_fnc_actionTitle), {
 		[player] call AR_Rappel_Detach_Action;
 	}, nil, 0, false, true, "", "[player] call AR_Rappel_Detach_Action_Check"];
 

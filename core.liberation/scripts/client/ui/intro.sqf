@@ -1,9 +1,7 @@
 playMusic "LRHIntro";
-sleep 1;
 
 titleText ["", "PLAIN", 100];
-waitUntil { sleep 1; !isNil "GRLIB_all_fobs" };
-waitUntil { sleep 1; !isNil "active_sectors" };
+waitUntil { uiSleep 0.1; !isNil "GRLIB_all_fobs" && {!isNil "active_sectors"} };
 [] spawn cinematic_camera;
 
 if (GRLIB_introduction) then {
@@ -33,7 +31,8 @@ waitUntil {
 createDialog "liberation_menu";
 waitUntil { dialog };
 
-private _noesckey = (findDisplay 5651) displayAddEventHandler ["KeyDown", "if ((_this select 1) == 1) then { true }"];
+// ESC opens the pause menu on top instead of closing the start menu.
+private _noesckey = (findDisplay 5651) displayAddEventHandler ["KeyDown", {[_this select 0, _this select 1] call HPC_fnc_escPause}];
 private _timer = round (time + (3 * 60));
 waitUntil { startgame == 1 || howtoplay == 1 || !dialog || time > _timer };
 disableUserInput true;

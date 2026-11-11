@@ -2,7 +2,7 @@ if (isDedicated || (!hasInterface && !isServer)) exitWith {};
 
 [4] spawn BIS_fnc_earthquake;
 
-private _msg = format ["%1, the <t color='#800000'>ARMAGEDDON</t> has begun...<br/><br/>Be ready for the <t color='#000080'>Final FIGHT</t> !<br/>", name player];
+private _msg = format ["%1, the <t color='#800000'>ARMAGEDDON</t> has begun...<br/><br/>Get ready for the <t color='#000080'>final fight</t>!<br/>", name player];
 [_msg, 0, 0, 10, 0, 0, 90] spawn BIS_fnc_dynamicText;
 
 waitUntil { sleep 1; !isNil "opfor_target"};

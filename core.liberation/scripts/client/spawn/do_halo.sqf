@@ -41,6 +41,10 @@ dojump = 0;
 halo_position = getPosATL _unit;
 
 "spawn_marker" setMarkerTextLocal (localize "STR_HALO_PARAM");
+private _halo_info = "Free jump. Targets closer than 300 m are refused.";
+if (GRLIB_halo_param > 1) then { _halo_info = format ["Free jump. Cooldown %1 min after jumping.<br/>Targets closer than 300 m are refused.", GRLIB_halo_param] };
+if (_is_vehicle) then { _halo_info = format ["<t color='#76CCB8' size='1.3'>%1 ammo</t><br/>You have %2 ammo.<br/>Targets closer than 300 m are refused.", _cost, player getVariable ["GREUH_ammo_count", 0]] };
+((findDisplay 5203) displayCtrl 203) ctrlSetStructuredText parseText _halo_info;
 if (_is_vehicle) then {
 	"spawn_marker" setMarkerTextLocal (localize "STR_HALO_PARAM_VEH");
 	ctrlSetText [201, toUpper (localize "STR_HALO_PARAM_VEH")];

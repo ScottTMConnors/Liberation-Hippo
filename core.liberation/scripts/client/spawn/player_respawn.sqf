@@ -75,12 +75,11 @@ deleteVehicle _oldUnit;
 // Player Loadout
 if !(_unit getVariable ["GRLIB_player_context_loaded", false]) then {
     [_unit] remoteExec ["load_player_context_remote_call", 2];
-    uiSleep 1;
 };
-waitUntil { uiSleep 0.5; (_unit getVariable ["GRLIB_player_context_loaded", false]) };
+waitUntil { uiSleep 0.1; (_unit getVariable ["GRLIB_player_context_loaded", false]) };
 
 [_unit] spawn player_loadout;
-waitUntil { uiSleep 0.5; startgame == 1 };
+waitUntil { uiSleep 0.1; startgame == 1 };
 
 [_unit] call player_EH;
 [_unit] call player_init;

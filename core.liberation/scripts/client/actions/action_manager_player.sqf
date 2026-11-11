@@ -60,14 +60,14 @@ while {true} do {
 						private _player_dist = player distance2D _marker_pos;
 						if (_player_dist > GRLIB_sector_size) then {
 							private _msg = localize "STR_NOTIFICATION_ENTER_TERRITORY";
-							[_msg, 0, 0, 5, 0, 0, 90] spawn BIS_fnc_dynamicText;
+							["", _msg, "warn", 5, true] call HPC_fnc_toast;
 							sleep 3;
 						};
 						while {(_player_dist <= GRLIB_activated_radius)} do {
 							_player_dist = player distance2D _marker_pos;
 							if (_player_dist <= GRLIB_sector_size) exitWith {
 								private _msg = format [localize "STR_NOTIFICATION_ENTER_SECTOR", _marker_text];
-								[_msg, 0, 0, 5, 0, 0, 90] spawn BIS_fnc_dynamicText;
+								["", _msg, "warn", 5, true] call HPC_fnc_toast;
 								sleep 3;
 							};
 							sleep 1;

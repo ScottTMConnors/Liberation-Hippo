@@ -68,10 +68,10 @@ while {true} do {
 		_vehicle = _x;
 		if (isNil {_vehicle getVariable "GRLIB_vehicle_transport"}) then {
 			if (typeOf _vehicle == cargo_sling_typename) then {
-				_vehicle addAction ["<t color='#555555'>" + localize "STR_ABANDON" + "</t> <img size='1' image='res\ui_veh.paa'/>","scripts\client\actions\do_abandon.sqf","",-499,false,true,"","[_target, _this] call GRLIB_checkAction_AbandonBox", GRLIB_ActionDist_5];
+				_vehicle addAction [([localize "STR_ABANDON", "res\ui_veh.paa", "danger"] call HPC_fnc_actionTitle),"scripts\client\actions\do_abandon.sqf","",-499,false,true,"","[_target, _this] call GRLIB_checkAction_AbandonBox", GRLIB_ActionDist_5];
 			};
-			_vehicle addAction ["<t color='#FFFF00'>" + localize "STR_ACTION_UNLOAD_BOX" + "</t> <img size='1' image='res\ui_unload.paa'/>","scripts\client\actions\do_unload_truck.sqf","all",-500,false,true,"","[_target, _this] call GRLIB_checkAction_UnloadBox", GRLIB_ActionDist_10];
-			_vehicle addAction ["<t color='#FFFF00'>" + localize "STR_ACTION_UNLOAD_ONE_BOX" + "</t> <img size='1' image='res\ui_unload.paa'/>","scripts\client\actions\do_unload_truck.sqf","one",-501,false,true,"","[_target, _this] call GRLIB_checkAction_UnloadLastBox", GRLIB_ActionDist_10];
+			_vehicle addAction [([localize "STR_ACTION_UNLOAD_BOX", "res\ui_unload.paa", "build"] call HPC_fnc_actionTitle),"scripts\client\actions\do_unload_truck.sqf","all",-500,false,true,"","[_target, _this] call GRLIB_checkAction_UnloadBox", GRLIB_ActionDist_10];
+			_vehicle addAction [([localize "STR_ACTION_UNLOAD_ONE_BOX", "res\ui_unload.paa", "build"] call HPC_fnc_actionTitle),"scripts\client\actions\do_unload_truck.sqf","one",-501,false,true,"","[_target, _this] call GRLIB_checkAction_UnloadLastBox", GRLIB_ActionDist_10];
 			_vehicle setVariable ["GRLIB_vehicle_transport", true];
 		};
 	} forEach _transport_vehicles;
@@ -80,7 +80,7 @@ while {true} do {
 	_nearboxes = (player nearEntities [box_transport_loadable, _searchradius]) select { isNil {_x getVariable "GRLIB_boxes_action"} };
 	{
 		_vehicle = _x;
-		_vehicle addAction ["<t color='#FFFF00'>" + localize "STR_ACTION_LOAD_BOX" + "</t> <img size='1' image='res\ui_load.paa'/>","scripts\client\actions\do_load_box.sqf","",-400,true,true,"","[_target, _this] call GRLIB_checkAction_LoadBox", GRLIB_ActionDist_5];
+		_vehicle addAction [([localize "STR_ACTION_LOAD_BOX", "res\ui_load.paa", "build"] call HPC_fnc_actionTitle),"scripts\client\actions\do_load_box.sqf","",-400,true,true,"","[_target, _this] call GRLIB_checkAction_LoadBox", GRLIB_ActionDist_5];
 		_vehicle setVariable ["GRLIB_boxes_action", true];
 	} forEach _nearboxes;
 

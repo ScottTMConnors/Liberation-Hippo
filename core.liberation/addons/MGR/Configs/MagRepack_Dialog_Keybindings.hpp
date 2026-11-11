@@ -1,3 +1,18 @@
+// Keybinding screen for Mag Repack, on the HPC grid (MGR_GW/MGR_GH come from
+// MagRepack_Dialog_Main.hpp, included first).
+#define MGRK_W 34
+#define MGRK_H 20
+#define MGRK_X(v) (safezoneX + safezoneW / 2 - (MGRK_W / 2) * HPC_GX + (v) * HPC_GX)
+#define MGRK_Y(v) (safezoneY + safezoneH / 2 - (MGRK_H / 2) * HPC_GY + (v) * HPC_GY)
+
+class MGR_ModifierButton : HPC_Button {
+	colorBackground[] = {0,0,0,0};
+	colorFocused[] = {0,0,0,0};
+	colorBackgroundActive[] = {1,1,1,0.08};
+};
+class MGR_ModifierBack : HPC_Text {
+	colorBackground[] = {0.12,0.15,0.16,0.95};
+};
 
 class MagRepack_Dialog_Keybindings
 {
@@ -5,285 +20,130 @@ class MagRepack_Dialog_Keybindings
 	onLoad = "uiNamespace setVariable ['outlw_MR_Dialog_Keybindings', (_this select 0)]";
 	onUnload = "outlw_MR_keybindingMenuActive = false;";
 	onKeyDown = "_this call outlw_KB_keyDown;";
-	onKeyUp = "_this call outlw_KB_keyUp;";
-	
+
 	class Controls
 	{
-		class KB_BG_Main: outlw_MR_IGUIBack
+		class KB_BG_Main : HPC_Panel
 		{
 			idc = 2200;
-			
-			x = 10 * GUI_GRID_W + GUI_GRID_X;
-			y = 10.5 * GUI_GRID_H + GUI_GRID_Y;
-			w = 20 * GUI_GRID_W;
-			h = 4 * GUI_GRID_H;
-			colorBackground[] = {0,0,0,0.75};
+			x = MGRK_X(0); y = MGRK_Y(0); w = MGR_GW(MGRK_W); h = MGR_GH(MGRK_H);
+			colorBackground[] = HPC_C_PANEL_SOLID;
 		};
-		class KB_MainTitle: outlw_MR_RscText
+		class KB_Accent : HPC_Text
+		{
+			x = MGRK_X(0); y = MGRK_Y(0); w = MGR_GW(0.28); h = MGR_GH(4.2);
+			colorBackground[] = HPC_C_ACCENT;
+		};
+		class KB_MainTitle : HPC_Heading
 		{
 			idc = 1000;
-			text = "$STR_MGR_KEYBINDINGS_TITLE";
-			
-			x = 10 * GUI_GRID_W + GUI_GRID_X;
-			y = 9.375 * GUI_GRID_H + GUI_GRID_Y;
-			w = 20 * GUI_GRID_W;
-			h = 1 * GUI_GRID_H;
-			colorBackground[] = {"(profilenamespace getvariable ['GUI_BCG_RGB_R',0.69])","(profilenamespace getvariable ['GUI_BCG_RGB_G',0.75])","(profilenamespace getvariable ['GUI_BCG_RGB_B',0.5])","(profilenamespace getvariable ['GUI_BCG_RGB_A',0.8])"};
+			text = "KEYBINDING";
+			x = MGRK_X(1.5); y = MGRK_Y(0.5); w = MGR_GW(MGRK_W - 5); h = MGR_GH(2.2);
+			sizeEx = 1.55 * HPC_GY;
 		};
-		class KB_ButtonCancel: outlw_MR_RscButtonMenu
+		class KB_Subtitle : HPC_Label
+		{
+			text = "Press the key that should open Mag Repack.";
+			x = MGRK_X(1.5); y = MGRK_Y(2.5); w = MGR_GW(MGRK_W - 3); h = MGR_GH(1.4);
+			font = "RobotoCondensed";
+			sizeEx = 0.95 * HPC_GY;
+		};
+		class KB_ButtonClose : HPC_Button
+		{
+			text = "X";
+			tooltip = "Cancel";
+			action = "closeDialog 0";
+			x = MGRK_X(MGRK_W - 2.8); y = MGRK_Y(0.9); w = MGR_GW(1.9); h = MGR_GH(1.9);
+			colorBackground[] = {1,1,1,0.06};
+			colorFocused[] = {1,1,1,0.06};
+			colorBackgroundActive[] = HPC_C_DANGER;
+		};
+		class KB_Divider : HPC_Text
+		{
+			x = MGRK_X(1.5); y = MGRK_Y(4.6); w = MGR_GW(MGRK_W - 3); h = MGR_GH(0.1);
+			colorBackground[] = HPC_C_LINE;
+		};
+		class KB_KeyDescription : HPC_Label
+		{
+			idc = 2572;
+			text = "KEY";
+			x = MGRK_X(1.5); y = MGRK_Y(5.6); w = MGR_GW(MGRK_W - 3); h = MGR_GH(1.4);
+		};
+		class KB_BG_Keybinding : HPC_Text
+		{
+			idc = 2498;
+			x = MGRK_X(1.5); y = MGRK_Y(7.2); w = MGR_GW(MGRK_W - 3); h = MGR_GH(2.8);
+			colorBackground[] = HPC_C_ROW;
+		};
+		class KB_Keybinding : HPC_Text
+		{
+			idc = 2499;
+			style = ST_CENTER;
+			font = "PuristaSemibold";
+			sizeEx = 1.3 * HPC_GY;
+			colorText[] = HPC_C_ACCENT;
+			x = MGRK_X(1.5); y = MGRK_Y(7.2); w = MGR_GW(MGRK_W - 3); h = MGR_GH(2.8);
+		};
+		class KB_ModDescription : HPC_Label
+		{
+			idc = 2573;
+			text = "MODIFIERS  -  click to toggle";
+			x = MGRK_X(1.5); y = MGRK_Y(10.8); w = MGR_GW(MGRK_W - 3); h = MGR_GH(1.4);
+		};
+		class KB_BG_Shift : MGR_ModifierBack
+		{
+			idc = 2500;
+			x = MGRK_X(1.5); y = MGRK_Y(12.4); w = MGR_GW(10); h = MGR_GH(2.8);
+		};
+		class KB_BG_Ctrl : MGR_ModifierBack
+		{
+			idc = 2501;
+			x = MGRK_X(12); y = MGRK_Y(12.4); w = MGR_GW(10); h = MGR_GH(2.8);
+		};
+		class KB_BG_Alt : MGR_ModifierBack
+		{
+			idc = 2502;
+			x = MGRK_X(22.5); y = MGRK_Y(12.4); w = MGR_GW(10); h = MGR_GH(2.8);
+		};
+		class KB_ButtonShift : MGR_ModifierButton
+		{
+			idc = 2550;
+			text = "Shift";
+			action = "[0] call outlw_KB_modifierSwitch;";
+			x = MGRK_X(1.5); y = MGRK_Y(12.4); w = MGR_GW(10); h = MGR_GH(2.8);
+		};
+		class KB_ButtonCtrl : MGR_ModifierButton
+		{
+			idc = 2551;
+			text = "Ctrl";
+			action = "[1] call outlw_KB_modifierSwitch;";
+			x = MGRK_X(12); y = MGRK_Y(12.4); w = MGR_GW(10); h = MGR_GH(2.8);
+		};
+		class KB_ButtonAlt : MGR_ModifierButton
+		{
+			idc = 2552;
+			text = "Alt";
+			action = "[2] call outlw_KB_modifierSwitch;";
+			x = MGRK_X(22.5); y = MGRK_Y(12.4); w = MGR_GW(10); h = MGR_GH(2.8);
+		};
+		class KB_FooterDivider : HPC_Text
+		{
+			x = MGRK_X(1.5); y = MGRK_Y(16.0); w = MGR_GW(MGRK_W - 3); h = MGR_GH(0.1);
+			colorBackground[] = HPC_C_LINE;
+		};
+		class KB_ButtonCancel : HPC_Button
 		{
 			idc = 2400;
 			text = "$STR_MGR_CANCEL";
 			action = "closeDialog 0";
-			
-			x = 22.5 * GUI_GRID_W + GUI_GRID_X;
-			y = 14.625 * GUI_GRID_H + GUI_GRID_Y;
-			w = 7.5 * GUI_GRID_W;
-			h = 1 * GUI_GRID_H;
-			
-			default = false;
-			
-			class Attributes
-			{
-				align = "right";
-			};
+			x = MGRK_X(MGRK_W - 22.5); y = MGRK_Y(16.6); w = MGR_GW(10); h = MGR_GH(2.8);
 		};
-		class KB_BG_MiddleBottom: outlw_MR_IGUIBack
-		{
-			idc = 2405;
-			
-			x = 17.625 * GUI_GRID_W + GUI_GRID_X;
-			y = 14.625 * GUI_GRID_H + GUI_GRID_Y;
-			w = 4.7225 * GUI_GRID_W;
-			h = 1 * GUI_GRID_H;
-			colorBackground[] = {0,0,0,0.75};
-		};
-		class KB_ButtonApply: outlw_MR_RscButtonMenu
+		class KB_ButtonApply : HPC_ButtonAccent
 		{
 			idc = 2401;
 			text = "$STR_MGR_APPLY";
 			action = "[[outlw_KB_cShift, outlw_KB_cCtrl, outlw_KB_cAlt, outlw_KB_cKey]] call outlw_MR_applyKeybinding;";
-			
-			x = 10 * GUI_GRID_W + GUI_GRID_X;
-			y = 14.625 * GUI_GRID_H + GUI_GRID_Y;
-			w = 7.5 * GUI_GRID_W;
-			h = 1 * GUI_GRID_H;
-			
-			default = false;
-		};
-		class KB_BG_Keybinding: outlw_MR_IGUIBack
-		{
-			idc = 2498;
-			
-			x = 20.125 * GUI_GRID_W + GUI_GRID_X;
-			y = 11.375 * GUI_GRID_H + GUI_GRID_Y;
-			w = 9 * GUI_GRID_W;
-			h = 1 * GUI_GRID_H;
-
-			colorBackground[] = {1,1,1,0.25};
-		};
-		class KB_Keybinding: outlw_MR_RscStructuredText
-		{
-			idc = 2499;
-			text = "";
-			
-			x = 20.125 * GUI_GRID_W + GUI_GRID_X;
-			y = 11.375 * GUI_GRID_H + GUI_GRID_Y;
-			w = 9 * GUI_GRID_W;
-			h = 1 * GUI_GRID_H;
-			
-			colorBackground[] = {0,0,0,0};
-			
-			class Attributes
-			{
-				align = "center";
-				valign = "middle";
-				size = 0.8;
-			};
-		};
-		class KB_BG_Shift: outlw_MR_IGUIBack
-		{
-			idc = 2500;
-			
-			x = 20.125 * GUI_GRID_W + GUI_GRID_X;
-			y = 12.625 * GUI_GRID_H + GUI_GRID_Y;
-			w = 2.875 * GUI_GRID_W;
-			h = 1 * GUI_GRID_H;
-
-			colorBackground[] = {0,0,0,0.8};
-		};
-		class KB_BG_Ctrl: outlw_MR_IGUIBack
-		{
-			idc = 2501;
-			
-			x = 23.1875 * GUI_GRID_W + GUI_GRID_X;
-			y = 12.625 * GUI_GRID_H + GUI_GRID_Y;
-			w = 2.75 * GUI_GRID_W;
-			h = 1 * GUI_GRID_H;
-
-			colorBackground[] = {0,0,0,0.8};
-		};
-		class KB_BG_Alt: outlw_MR_IGUIBack
-		{
-			idc = 2502;
-			
-			x = 26.1875 * GUI_GRID_W + GUI_GRID_X;
-			y = 12.625 * GUI_GRID_H + GUI_GRID_Y;
-			w = 2.875 * GUI_GRID_W;
-			h = 1 * GUI_GRID_H;
-
-			colorBackground[] = {0,0,0,0.8};
-		};
-		class KB_ButtonShift: outlw_MR_RscButtonMenu
-		{
-			idc = 2550;
-			text = "Shift";
-			
-			action = "[0] call outlw_KB_modifierSwitch;";
-			
-			x = 20.125 * GUI_GRID_W + GUI_GRID_X;
-			y = 12.625 * GUI_GRID_H + GUI_GRID_Y;
-			w = 2.875 * GUI_GRID_W;
-			h = 1 * GUI_GRID_H;
-			
-			colorFocused[] = {1,1,1,0.5};
-			colorBackgroundFocused[] = {0,0,0,0};
-			colorBackground[] = {0,0,0,0};
-			colorBackground2[] = {1,1,1,0.5};
-			
-			textureNoShortcut = "#(argb,8,8,3)color(0,0,0,0)";
-			animTextureNormal = "#(argb,8,8,3)color(1,1,1,0)";
-			animTextureDisabled = "#(argb,8,8,3)color(1,1,1,0)";
-			animTextureOver = "#(argb,8,8,3)color(1,1,1,0)";
-			animTextureFocused = "#(argb,8,8,3)color(0,0,0,0)";
-			animTexturePressed = "#(argb,8,8,3)color(1,1,1,0)";
-			animTextureDefault = "#(argb,8,8,3)color(0,0,0,0)";
-			
-			class Attributes
-			{
-				align = "center";
-				size = "0.875";
-			};
-		};
-		class KB_ButtonCtrl: outlw_MR_RscButtonMenu
-		{
-			idc = 2551;
-			text = "Ctrl";
-			
-			action = "[1] call outlw_KB_modifierSwitch;";
-			
-			x = 23.1875 * GUI_GRID_W + GUI_GRID_X;
-			y = 12.625 * GUI_GRID_H + GUI_GRID_Y;
-			w = 2.75 * GUI_GRID_W;
-			h = 1 * GUI_GRID_H;
-			
-			colorFocused[] = {1,1,1,0.5};
-			colorBackgroundFocused[] = {0,0,0,0};
-			colorBackground[] = {0,0,0,0};
-			colorBackground2[] = {1,1,1,0.5};
-			
-			textureNoShortcut = "#(argb,8,8,3)color(0,0,0,0)";
-			animTextureNormal = "#(argb,8,8,3)color(1,1,1,0)";
-			animTextureDisabled = "#(argb,8,8,3)color(1,1,1,0)";
-			animTextureOver = "#(argb,8,8,3)color(1,1,1,0)";
-			animTextureFocused = "#(argb,8,8,3)color(0,0,0,0)";
-			animTexturePressed = "#(argb,8,8,3)color(1,1,1,0)";
-			animTextureDefault = "#(argb,8,8,3)color(0,0,0,0)";
-			
-			class Attributes
-			{
-				align = "center";
-				size = "0.875";
-			};
-		};
-		class KB_ButtonAlt: outlw_MR_RscButtonMenu
-		{
-			idc = 2552;
-			text = "Alt";
-			
-			action = "[2] call outlw_KB_modifierSwitch;";
-			
-			x = 26.1875 * GUI_GRID_W + GUI_GRID_X;
-			y = 12.625 * GUI_GRID_H + GUI_GRID_Y;
-			w = 2.875 * GUI_GRID_W;
-			h = 1 * GUI_GRID_H;
-			
-			colorFocused[] = {1,1,1,0.5};
-			colorBackgroundFocused[] = {0,0,0,0};
-			colorBackground[] = {0,0,0,0};
-			colorBackground2[] = {1,1,1,0.5};
-			
-			textureNoShortcut = "#(argb,8,8,3)color(0,0,0,0)";
-			animTextureNormal = "#(argb,8,8,3)color(1,1,1,0)";
-			animTextureDisabled = "#(argb,8,8,3)color(1,1,1,0)";
-			animTextureOver = "#(argb,8,8,3)color(1,1,1,0)";
-			animTextureFocused = "#(argb,8,8,3)color(0,0,0,0)";
-			animTexturePressed = "#(argb,8,8,3)color(1,1,1,0)";
-			animTextureDefault = "#(argb,8,8,3)color(0,0,0,0)";
-			
-			class Attributes
-			{
-				align = "center";
-				size = "0.875";
-			};
-		};
-		class KB_BG_KeyDescription: outlw_MR_RscPicture
-		{
-			idc = 2570;
-			text = "addons\MGR\Images\MR_TargetGradient.paa";
-			
-			x = 10.875 * GUI_GRID_W + GUI_GRID_X;
-			y = 11.375 * GUI_GRID_H + GUI_GRID_Y;
-			w = 9 * GUI_GRID_W;
-			h = 1 * GUI_GRID_H;
-		};
-		class KB_BG_ModDescription: outlw_MR_RscPicture
-		{
-			idc = 2571;
-			text = "addons\MGR\Images\MR_TargetGradient.paa";
-			
-			x = 10.875 * GUI_GRID_W + GUI_GRID_X;
-			y = 12.625 * GUI_GRID_H + GUI_GRID_Y;
-			w = 9 * GUI_GRID_W;
-			h = 1 * GUI_GRID_H;
-		};
-		class KB_KeyDescription: outlw_MR_RscStructuredText
-		{
-			idc = 2572;
-			text = "$STR_MGR_KEYBINDING_LABEL";
-			
-			x = 10.875 * GUI_GRID_W + GUI_GRID_X;
-			y = 11.375 * GUI_GRID_H + GUI_GRID_Y;
-			w = 9 * GUI_GRID_W;
-			h = 1 * GUI_GRID_H;
-			
-			class Attributes
-			{
-				align = "right";
-			};
-		};
-		class KB_ModDescription: outlw_MR_RscStructuredText
-		{
-			idc = 2573;
-			text = "$STR_MGR_MODIFIERS_LABEL";
-			
-			x = 10.875 * GUI_GRID_W + GUI_GRID_X;
-			y = 12.625 * GUI_GRID_H + GUI_GRID_Y;
-			w = 9 * GUI_GRID_W;
-			h = 1 * GUI_GRID_H;
-			
-			class Attributes
-			{
-				align = "right";
-			};
+			x = MGRK_X(MGRK_W - 11.5); y = MGRK_Y(16.6); w = MGR_GW(10); h = MGR_GH(2.8);
 		};
 	};
 };
-
-
-
-
-
-
-
-

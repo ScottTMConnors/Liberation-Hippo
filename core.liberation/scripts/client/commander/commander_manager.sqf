@@ -12,10 +12,13 @@ if (GRLIB_Commander_mode) then {
 				_closestSector = [100, _pos, GRLIB_AvailAttackSectors] call F_getNearestSector;
 				if (_closestSector in opfor_sectors) then {
 					playSoundUI ["a3\ui_f\data\sound\cfgnotifications\tacticalping3.wss", 0.5, 1.2];
+					private _name = (markerText _closestSector splitString "(") param [0, ""];
 					if (GRLIB_player_commander) then {
 						[player, _closestSector] remoteExec ["activate_sector_remote_call", 2];
+						["Attack ordered", format ["Next battle: <t color='#75CCB8'>%1</t>.", _name], "good", 5] call HPC_fnc_toast;
 					} else {
 						[player, _closestSector] remoteExec ["vote_sector_remote_call", 2];
+						["Vote cast", format ["You voted to attack <t color='#75CCB8'>%1</t>.", _name], "info", 5] call HPC_fnc_toast;
 					};
 					GRLIB_Com_lastClicked = time;
 				};

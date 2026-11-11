@@ -32,10 +32,10 @@ class TXU_GUI_RscButton
 	borderSize = 0;
 	colorText[] = {1,1,1,1};
 	colorDisabled[] = {1,1,1,0.25};
-	colorBackground[] = {0,0,0,0.5};
-	colorBackgroundDisabled[] = {0,0,0,0.5};
-	colorBackgroundActive[] = {0,0,0,1};
-	colorFocused[] = {0,0,0,1};
+	colorBackground[] = {0.12,0.15,0.16,0.92};
+	colorBackgroundDisabled[] = {0.10,0.12,0.13,0.6};
+	colorBackgroundActive[] = {0.20,0.42,0.38,0.95};
+	colorFocused[] = {0.12,0.15,0.16,0.92};
 	colorShadow[] = {0,0,0,0};
 	colorBorder[] = {0,0,0,1};
 	soundEnter[] =
@@ -66,30 +66,30 @@ class TXU_GUI_RscButton
 
 class TXU_TS_INFOBUTTON1 : TXU_GUI_RscButton
 {
-	text = "Visit our Reddit community";
+	text = "Liberation RX Reddit (upstream project)";
 	url = "https://www.reddit.com/r/Liberation_RX/";
 	w = 0.5;
 	colorText[] = {0,1,1,1};
 	colorDisabled[] = {1,1,1,0.25};
-	colorBackground[] = {0.275,0.275,0.408,0.5};
-	colorBackgroundDisabled[] = {0,0,0,0.5};
-	colorBackgroundActive[] = {0.275,0.275,0.408,1};
-	colorFocused[] = {0,0,0,1};
+	colorBackground[] = {0.12,0.15,0.16,0.92};
+	colorBackgroundDisabled[] = {0.10,0.12,0.13,0.6};
+	colorBackgroundActive[] = {0.20,0.42,0.38,0.95};
+	colorFocused[] = {0.12,0.15,0.16,0.92};
 	colorShadow[] = {1,0,1,0};
-	colorBorder[] = {0,1,0,1};
+	colorBorder[] = {0,0,0,0};
 	colorSelect[] = {0,1,0,1};
 	soundSelect[] = {};
 };
 
 class TXU_TS_INFOBUTTON2 : TXU_TS_INFOBUTTON1
 {
-	text = "Join our Discord community";
-	url = "https://discord.gg/uCRzJ7wauR";
+	text = "Join the Hippos Conquest Discord";
+	url = "https://discord.gg/HcXyqEaDVb";
 };
 
 class TXU_TS_INFOBUTTON3 : TXU_TS_INFOBUTTON1
 {
-	text = "Click to join LRX Teamspeak";
+	text = "Liberation RX TeamSpeak (upstream project)";
 	url = "ts3server://liberation-rx.duckdns.org?addbookmark=Liberation RX";
 };
 

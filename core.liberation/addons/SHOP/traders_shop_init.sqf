@@ -8,7 +8,7 @@ SHOP_list = [
 
 {
     if (_x getVariable ["GRLIB_SHOP_group", false]) then {
-        (agent _x) addAction ["<t color='#00F080'>" + localize "STR_SHOP_ENTER" + "</t> <img size='1' image='res\ui_recycle.paa'/>", "addons\SHOP\traders_shop.sqf","",-900,true,true,"","", 5];
+        (agent _x) addAction [([localize "STR_SHOP_ENTER", "res\ui_recycle.paa", "accent"] call HPC_fnc_actionTitle), "addons\SHOP\traders_shop.sqf","",-900,true,true,"","", 5];
     };
 } forEach agents;
 

@@ -56,6 +56,7 @@ HPC_fnc_cmdDrawDests = {
     if (isNull _display) exitWith {};
     private _chosen = HPC_cmdDests param [lbCurSel (_display displayCtrl 111), []];
     private _pulse = 0.5 + 0.4 * sin (diag_tickTime * 300);
+    private _labels = ctrlMapScale _map < 0.2;
     {
         if !(_x isEqualTo []) then {
             _x params ["_type", "_key", "_pos"];
@@ -65,7 +66,7 @@ HPC_fnc_cmdDrawDests = {
                     case "fob": {[0.4, 0.85, 1, 0.9]};
                     default {[0.35, 0.65, 1, 0.6]};
                 };
-                _map drawIcon [[["mil_objective", "mil_flag"] select (_type != "attack")] call HPC_fnc_mapIcon, _color, _pos, 22, 22, 0];
+                _map drawIcon [[["mil_objective", "mil_flag"] select (_type != "attack")] call HPC_fnc_mapIcon, _color, _pos, 22, 22, 0, ["", _x param [3, ""]] select _labels, 1, 0.03, "RobotoCondensedBold", "right"];
             };
         };
     } forEach HPC_cmdDests;
@@ -79,8 +80,11 @@ HPC_fnc_cmdDrawDests = {
     };
 };
 
+private _groupsList = _display displayCtrl 110;
+private _destList = _display displayCtrl 111;
 private _map = _display ctrlCreate ["RscMapControl", 140];
-_map ctrlMapSetPosition [safezoneX + 0.335 * safezoneW, safezoneY + 0.168 * safezoneH, 0.38 * safezoneW, 0.698 * safezoneH];
+// The dialog reserves the map area with its MapFrame placeholder (idc 141).
+_map ctrlMapSetPosition (ctrlPosition (_display displayCtrl 141));
 _map ctrlAddEventHandler ["Draw", {_this call HPC_fnc_mapDraw; _this call HPC_fnc_cmdDrawDests}];
 _map ctrlAddEventHandler ["MouseButtonDown", {
     params ["_ctrl", "_button", "_mx", "_my"];
@@ -110,15 +114,16 @@ if !(active_sectors isEqualTo []) then {_focus = markerPos (active_sectors selec
 _map ctrlMapAnimAdd [0, 0.18, _focus];
 ctrlMapAnimCommit _map;
 
-private _groupsList = _display displayCtrl 110;
-private _destList = _display displayCtrl 111;
 private _roleOrder = createHashMapFromArray [["infantry", 0], ["light", 1], ["heavy", 2]];
-// One "auto after capture" checkbox per list row, in a column left of the list.
-private _rowHeight = 0.03 * safezoneH;
+// One "auto after capture" checkbox per visible list row, in the column left of the list
+// (rowHeight of HPC_CmdList is 2.0 grid units; one unit = safezoneH / 54).
+private _rowHeight = 2 * safezoneH / 54;
+(ctrlPosition _groupsList) params ["_listX", "_listY", "", "_listH"];
+private _checkSize = _rowHeight * 0.7;
 private _checks = [];
-for "_i" from 0 to 18 do {
+for "_i" from 0 to (floor (_listH / _rowHeight) - 1) do {
     private _check = _display ctrlCreate ["RscCheckBox", 200 + _i];
-    _check ctrlSetPosition [safezoneX + 0.07 * safezoneW, safezoneY + 0.2 * safezoneH + _i * _rowHeight + 0.002 * safezoneH, 0.016 * safezoneW, _rowHeight - 0.004 * safezoneH];
+    _check ctrlSetPosition [_listX - _checkSize - 0.35 * _checkSize, _listY + _i * _rowHeight + (_rowHeight - _checkSize) / 2, _checkSize * 0.75, _checkSize];
     _check ctrlSetTooltip "Auto after capture. Checked: once this group takes its target it returns to automatic. Unchecked: it stays and defends the captured sector, or holds its last objective.";
     _check ctrlShow false;
     _check ctrlCommit 0;
@@ -142,27 +147,35 @@ private _fillDestinations = {
     lbClear _destList;
     HPC_cmdDests = [];
     private _add = {
-        params ["_text", "_row", ["_color", [0.9, 0.93, 0.95, 1]]];
+        params ["_text", "_row", ["_color", [0.92, 0.94, 0.95, 1]], ["_icon", ""]];
         private _index = _destList lbAdd _text;
         _destList lbSetColor [_index, _color];
+        if (_icon != "") then {
+            _destList lbSetPicture [_index, [_icon] call HPC_fnc_mapIcon];
+            _destList lbSetPictureColor [_index, _color];
+            _destList lbSetPictureColorSelected [_index, _color];
+        };
+        if !(_row isEqualTo []) then {_row set [3, _text]};
         HPC_cmdDests pushBack _row;
     };
     private _heading = {
         params ["_text"];
-        [_text, [], [0.88, 0.69, 0.25, 1]] call _add;
+        [_text, [], [0.46, 0.80, 0.72, 1]] call _add;
     };
-    ["Automatic - AI picks its own objective", ["auto", "", []], [0.7, 0.8, 0.9, 1]] call _add;
-    ["ATTACK  (active sectors)"] call _heading;
-    if (active_sectors isEqualTo []) then {["   none - start a battle first", [], [0.5, 0.55, 0.6, 1]] call _add};
-    {["   " + markerText _x, ["attack", _x, markerPos _x], [1, 0.55, 0.48, 1]] call _add} forEach active_sectors;
-    ["DEFEND FOB"] call _heading;
+    ["Automatic: AI picks its own objective", ["auto", "", []], [0.62, 0.69, 0.72, 1]] call _add;
+    ["ATTACK  -  ACTIVE SECTORS"] call _heading;
+    if (active_sectors isEqualTo []) then {["   None yet: start a battle first", [], [0.5, 0.55, 0.6, 1]] call _add};
+    {[markerText _x, ["attack", _x, markerPos _x], [1, 0.55, 0.48, 1], "mil_objective"] call _add} forEach active_sectors;
+    ["DEFEND  -  FOB"] call _heading;
+    if (GRLIB_all_fobs isEqualTo []) then {["   No FOB built", [], [0.5, 0.55, 0.6, 1]] call _add};
     {
-        ["   FOB " + ((missionNamespace getVariable ["military_alphabet", []]) param [_forEachIndex, str (_forEachIndex + 1)]), ["fob", +_x, +_x], [0.55, 0.88, 1, 1]] call _add;
+        ["FOB " + ((missionNamespace getVariable ["military_alphabet", []]) param [_forEachIndex, str (_forEachIndex + 1)]), ["fob", +_x, +_x], [0.55, 0.88, 1, 1], "mil_flag"] call _add;
     } forEach GRLIB_all_fobs;
-    ["DEFEND SECTOR"] call _heading;
+    ["DEFEND  -  SECTOR"] call _heading;
     private _friendly = blufor_sectors apply {[markerText _x, _x]};
     _friendly sort true;
-    {["   " + (_x select 0), ["defend", _x select 1, markerPos (_x select 1)], [0.6, 0.75, 1, 1]] call _add} forEach _friendly;
+    if (_friendly isEqualTo []) then {["   No friendly sector", [], [0.5, 0.55, 0.6, 1]] call _add};
+    {[_x select 0, ["defend", _x select 1, markerPos (_x select 1)], [0.6, 0.75, 1, 1], "mil_flag"] call _add} forEach _friendly;
     private _keep = HPC_cmdDests findIf {!(_x isEqualTo []) && {(_x select 0) == (_previous param [0, ""])} && {(_x select 1) isEqualTo (_previous param [1, ""])}};
     _destList lbSetCurSel _keep;
 };
@@ -207,22 +220,20 @@ while {!isNull _display} do {
             _groupsList lbSetColor [_forEachIndex, switch (true) do {
                 case _combat: {[1, 0.55, 0.45, 1]};
                 case _ordered: {[1, 0.86, 0.4, 1]};
-                default {[0.85, 0.9, 0.95, 1]};
+                default {[0.92, 0.94, 0.95, 1]};
             }];
             _groupsList lbSetTooltip [_forEachIndex, format ["%1 - %2 alive%3", _name, _alive, ["", " - in combat"] select _combat]];
         } forEach HPC_cmdGroups;
         {if (_forEachIndex >= count HPC_cmdGroups && {ctrlShown _x}) then {_x ctrlShow false}} forEach _checks;
 
         (_display displayCtrl 103) ctrlSetText format [
-            "%1 groups under your command  |  %2 following your orders  |  %3 active objective%4  |  orders apply within seconds",
+            "%1 groups under your command   -   %2 following your orders   -   %3 active objective%4",
             count HPC_cmdGroups,
             {!((_x getVariable ["HPC_cmdOrder", []]) isEqualTo [])} count HPC_cmdGroups,
             count active_sectors,
             ["s", ""] select (count active_sectors == 1)
         ];
-        if (HPC_cmdGroups isEqualTo []) then {
-            (_display displayCtrl 104) ctrlSetText "No assault squads or armor yet. They deploy from your FOBs once a battle starts.";
-        };
+        (_display displayCtrl 105) ctrlSetText (["", "No assault squads or armor yet." + endl + "They deploy from your FOBs once a battle starts."] select (HPC_cmdGroups isEqualTo []));
     };
 
     HPC_mapSelected = ((lbSelection _groupsList) apply {HPC_cmdGroups param [_x, grpNull]}) select {!isNull _x};

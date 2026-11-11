@@ -67,6 +67,8 @@ while { dialog && alive player } do {
 		} foreach _sell_list_dlg;
 
 		lbSetCurSel [110, -1];
+		ctrlShow [130, count _sell_list_dlg == 0];
+		ctrlSetText [131, format ["%1 item(s) with cargo nearby%2", count _sell_list_dlg, ["", " - at a FOB"] select _nearfob]];
 		_refresh = false;
 	};
 

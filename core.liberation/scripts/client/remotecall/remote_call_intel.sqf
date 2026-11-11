@@ -3,14 +3,14 @@ params ["_notif_type", "_notif_data"];
 
 if (_notif_type == 0) exitWith {
 	if (_notif_data) then {
-		["lib_intel_hostage"] call BIS_fnc_showNotification;
+		["lib_intel_hostage"] call HPC_fnc_notify;
 	} else {
-		["lib_intel_prisoner"] call BIS_fnc_showNotification;
+		["lib_intel_prisoner"] call HPC_fnc_notify;
 	};
 };
 
 if (_notif_type == 1) exitWith {
-	["lib_intel_document"] call BIS_fnc_showNotification;
+	["lib_intel_document"] call HPC_fnc_notify;
 };
 
 if (_notif_type == 2) exitWith {
@@ -18,7 +18,7 @@ if (_notif_type == 2) exitWith {
 	waitUntil { sleep 0.5; secondary_objective_position_marker distance2D zeropos > 300 };
 
 	private _location_name = [secondary_objective_position_marker] call F_getLocationName;
-	["lib_intel_fob", [_location_name]] call BIS_fnc_showNotification;
+	["lib_intel_fob", [_location_name]] call HPC_fnc_notify;
 
 	private _secondary_random_position_marker = secondary_objective_position_marker getPos [800, floor random 360];
 	private _secondary_marker = createMarkerLocal ["secondarymarker", _secondary_random_position_marker];
@@ -33,7 +33,7 @@ if (_notif_type == 2) exitWith {
 };
 
 if (_notif_type == 3) exitWith {
-	["lib_secondary_fob_destroyed"] call BIS_fnc_showNotification;
+	["lib_secondary_fob_destroyed"] call HPC_fnc_notify;
 	deleteMarkerLocal "secondarymarker";
 	deleteMarkerLocal "secondarymarkerzone";
 	secondary_objective_position_marker = zeropos;
@@ -44,15 +44,15 @@ if (_notif_type == 4) exitWith {
 	if (!isNil "_notif_data") then { _spawn_position = _notif_data };
 	if (_spawn_position distance2D zeropos > 300) then {
 		private _location_name = [_spawn_position] call F_getLocationName;
-		["lib_intel_convoy", [_location_name]] call BIS_fnc_showNotification;
+		["lib_intel_convoy", [_location_name]] call HPC_fnc_notify;
 	};
 };
 
 if (_notif_type == 5) exitWith {
 	if (_notif_data) then {
-		["lib_secondary_convoy_success"] call BIS_fnc_showNotification;
+		["lib_secondary_convoy_success"] call HPC_fnc_notify;
 	} else {
-		["lib_secondary_convoy_failed"] call BIS_fnc_showNotification;
+		["lib_secondary_convoy_failed"] call HPC_fnc_notify;
 	};
 };
 
@@ -62,7 +62,7 @@ if (_notif_type == 6) exitWith {
 	waitUntil {sleep 0.5; secondary_objective_position_marker distance2D zeropos > 300 };
 
 	private _location_name = [secondary_objective_position_marker] call F_getLocationName;
-	["lib_intel_sar", [_location_name]] call BIS_fnc_showNotification;
+	["lib_intel_sar", [_location_name]] call HPC_fnc_notify;
 
 	private _secondary_random_position_marker = secondary_objective_position_marker getPos [800, floor random 360];
 	private _secondary_marker = createMarkerLocal ["secondarymarker", _secondary_random_position_marker];
@@ -78,10 +78,10 @@ if (_notif_type == 6) exitWith {
 
 if (_notif_type == 7 || _notif_type == 8) exitWith {
 	if (_notif_type == 7) then {
-		["lib_intel_sar_failed"] call BIS_fnc_showNotification;
+		["lib_intel_sar_failed"] call HPC_fnc_notify;
 	};
 	if (_notif_type == 8) then {
-		["lib_intel_sar_succeeded"] call BIS_fnc_showNotification;
+		["lib_intel_sar_succeeded"] call HPC_fnc_notify;
 	};
 	deleteMarkerLocal "secondarymarker";
 	deleteMarkerLocal "secondarymarkerzone";

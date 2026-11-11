@@ -10,9 +10,7 @@ if (side _unit == GRLIB_side_friendly) then {
 };
 
 if (isPlayer _unit) exitWith {
-    private _msg = format ["<t color='#80FF80' size='1.0'>Second Chance !</t><br/>"];
-    private _data = [_msg, 0, -1, 8, 0, -5, 5];
-    _data spawn BIS_fnc_dynamicText;
+    ["Second chance", "You were saved from a fatal hit.", "good", 5] call HPC_fnc_toast;
     _unit setUnconscious true;
     [3000] call BIS_fnc_bloodEffect;
     "colorCorrections" ppEffectAdjust [1, 1.6, -0.35, [1, 1, 1, 0], [1, 1, 1, 0], [0.75, 0.25, 0, 1.0]];

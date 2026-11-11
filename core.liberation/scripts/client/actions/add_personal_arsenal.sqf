@@ -8,4 +8,4 @@ private _cargo = [_vehicle, true] call F_getCargo;
 GRLIB_personal_arsenal = [GRLIB_personal_box, true] call F_getCargo;
 player setVariable ["GRLIB_personal_arsenal", GRLIB_personal_arsenal, true];
 
-hintSilent format ["Transfer %1 cargo,\nto your Arsenal.", [_vehicle] call F_getLRXName];
+hintSilent format ["Transferring %1 cargo\nto your arsenal.", [_vehicle] call F_getLRXName];

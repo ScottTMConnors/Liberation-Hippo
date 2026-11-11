@@ -138,7 +138,7 @@ while {true} do {
 					if (!_disabled && isNull _R3F_LOG_heliporte) then {
 						if (_taruAttachAction < 0) then {
 							_txt = gettext(configFile >> 'cfgvehicles' >> (typeOf _newpod) >> 'displayName');
-							_taruAttachAction = _vehicle addAction [format["<img size='1.5'image='\a3\Ui_f\data\map\Markers\Military\pickup_ca.paa'/> Attach: %1",_txt],{_this call HALV_attachTarupods;},_newpod, 999, true, true, "User5", "player isEqualTo driver _target"];
+							_taruAttachAction = _vehicle addAction [([format ["Attach: %1",_txt], "\a3\Ui_f\data\map\Markers\Military\pickup_ca.paa", "info"] call HPC_fnc_actionTitle),{_this call HALV_attachTarupods;},_newpod, 999, true, true, "User5", "player isEqualTo driver _target"];
 						};
 					} else {
 						_vehicle removeAction _taruAttachAction;
@@ -157,17 +157,17 @@ while {true} do {
 			if (!isNull _currentpod && isNull(getSlingLoad _vehicle) && isNull _R3F_LOG_heliporte) then {
 				_txt = gettext (configFile >> 'cfgvehicles' >> (typeOf _currentpod) >> 'displayName');
 				if (_tarudetachAction < 0) then {
-					_tarudetachAction = _vehicle addAction [format["<img size='1.5'image='\a3\Ui_f\data\map\Markers\Military\end_ca.paa'/> Drop: %1",_txt],{_this spawn HALV_detachTarupods;},_currentpod, 999, true, true,"User5","player isEqualTo driver _target"];
+					_tarudetachAction = _vehicle addAction [([format ["Drop: %1",_txt], "\a3\Ui_f\data\map\Markers\Military\end_ca.paa", "info"] call HPC_fnc_actionTitle),{_this spawn HALV_detachTarupods;},_currentpod, 999, true, true,"User5","player isEqualTo driver _target"];
 				};
 				if (_tarudetachAction > -1) then {
 					_pos = getPosATL _vehicle;
 					if (surfaceIsWater _pos) then {_pos = getPosASL _vehicle;};
 					if (_pos select 2 < 25 && _changed) then {
-						_vehicle setUserActionText [_tarudetachAction,format["<img size='1.5'image='\a3\Ui_f\data\map\Markers\Military\end_ca.paa'/> Drop: %1",_txt]];
+						_vehicle setUserActionText [_tarudetachAction,([format ["Drop: %1",_txt], "\a3\Ui_f\data\map\Markers\Military\end_ca.paa", "info"] call HPC_fnc_actionTitle)];
 						_changed = false;
 					};
 					if (_pos select 2 > 25 && !_changed) then {
-						_vehicle setUserActionText [_tarudetachAction,format["<img size='1.5'image='\a3\Ui_f\data\map\VehicleIcons\iconparachute_ca.paa'/> Para Drop: %1",_txt]];
+						_vehicle setUserActionText [_tarudetachAction,([format ["Para drop: %1",_txt], "\a3\Ui_f\data\map\VehicleIcons\iconparachute_ca.paa", "info"] call HPC_fnc_actionTitle)];
 						_changed = true;
 					};
 				};

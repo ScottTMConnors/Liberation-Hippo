@@ -109,7 +109,7 @@ _waitUntilExec = {
 			[_sound, objNull, false, ATLToASL _missionPos, 5, 1, 1000] call F_playSound;
 		};
 		sleep 5;
-		private _msg = ["<t color='#FFFFFF' size='2'>You have been Detected!!<br/><br/>Enemies launch the </t><t color='#ff0000' size='3'>RED ALERT</t><t color='#FFFFFF' size='2'> !!</t>", "PLAIN", -1, false, true];
+		private _msg = ["<t color='#FFFFFF' size='2'>You have been detected!<br/><br/>The enemy has raised the </t><t color='#ff0000' size='3'>RED ALERT</t><t color='#FFFFFF' size='2'>!</t>", "PLAIN", -1, false, true];
 		{
 			[_msg] remoteExec ["titleText", owner _x];
 		} forEach ([_missionPos, GRLIB_sector_size] call F_getNearbyPlayers);

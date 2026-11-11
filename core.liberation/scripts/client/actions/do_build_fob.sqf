@@ -19,7 +19,7 @@ if (_box_type == FOB_box_outpost && count (GRLIB_all_outposts) >= GRLIB_max_outp
 	gamelogic globalChat _msg;
 };
 if (count (GRLIB_all_fobs select { surfaceIsWater _x }) > 0 && _box_type == FOB_boat_typename) exitWith {
-	private _msg = format ["Only one Naval FOB Allowed!"];
+	private _msg = format ["Only one naval FOB is allowed."];
 	hint _msg;
 	gamelogic globalChat _msg
 };
@@ -34,7 +34,7 @@ if (_box_type == FOB_boat_typename && _sea_deep < _min_deep) exitWith {
 	gamelogic globalChat _msg;
 };
 if (_box_type == FOB_truck_typename && count (crew _box) > 0) exitWith {
-	private _msg = format ["No Crew in %1 Allowed!", ([_box_type] call F_getLRXName)];
+	private _msg = format ["Remove all crew from the %1 before deploying it.", ([_box_type] call F_getLRXName)];
 	hint _msg;
 	gamelogic globalChat _msg;
 };

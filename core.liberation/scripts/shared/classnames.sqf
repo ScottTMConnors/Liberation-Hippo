@@ -62,7 +62,7 @@ if (GRLIB_MFR_enabled) then {
 if (isServer) then {
 	[] call F_calcUnitsCost;
 	publicVariable "infantry_units";
-} else { waitUntil {uiSleep 1; !isNil "infantry_units"} };
+} else { waitUntil {uiSleep 0.1; !isNil "infantry_units"} };
 
 // All the UAVs must be declared here
 // uavs_west = [];  			// non AI drones (darter, etc) - player can take control

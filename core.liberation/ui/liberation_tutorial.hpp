@@ -1,145 +1,119 @@
+// How to play: chapter list on the left, article on the right.
+#define TUT_W (66 * HPC_GX)
+#define TUT_H (38 * HPC_GY)
+#define TUT_X (safezoneX + (safezoneW - TUT_W) / 2)
+#define TUT_Y (safezoneY + (safezoneH - TUT_H) / 2)
+#define TUT_PAD (1.2 * HPC_GX)
+#define TUT_LW (19 * HPC_GX)
+#define TUT_RX (TUT_X + TUT_PAD + TUT_LW + 1.5 * HPC_GX)
+#define TUT_RW (TUT_W - 2 * TUT_PAD - TUT_LW - 1.5 * HPC_GX)
+#define TUT_BODY_Y (TUT_Y + 7 * HPC_GY)
+#define TUT_BODY_H (TUT_H - 12.4 * HPC_GY)
+
 class liberation_tutorial {
 	idd = 5353;
-    onLoad = "if (isNil 'HPC_fnc_scaleDialog') then {_this call compile preprocessFileLineNumbers 'scripts\client\misc\HPC_scaleDialog.sqf'} else {_this call HPC_fnc_scaleDialog};";
 	movingEnable = false;
-	controlsBackground[] = {};
-
-	controls[] = { "OuterBG2", "OuterBG_F2", "OuterBG1", "OuterBG_F1", "InnerBG1", "InnerBG_F1", "InnerBG2", "InnerBG_F2",
-	  "Header","HeaderTuto",  "TutorialList", "CloseButton", "TutoControlGroup"};
-
+	controlsBackground[] = {"Panel", "ArticleBG"};
+	controls[] = {"Accent", "Header", "Subtitle", "ButtonX", "Divider", "LabelChapters", "TutorialList", "HeaderTuto", "TutoControlGroup", "CloseButton"};
 	objects[] = {};
 
-	class OuterBG1 : StdBG{
-		colorBackground[] = COLOR_BROWN;
-		x = (0.2 * safezoneW + safezoneX) - (2 * BORDERSIZE);
-		y = (0.2 * safezoneH + safezoneY) - (3 * BORDERSIZE);
-		w = (0.15 * safezoneW) + (4 * BORDERSIZE);
-		h = (0.6 * safezoneH) + (6 * BORDERSIZE);
+	class Panel : HPC_Panel {
+		x = TUT_X; y = TUT_Y; w = TUT_W; h = TUT_H;
+		colorBackground[] = HPC_C_PANEL_SOLID;
 	};
-	class OuterBG_F1 : OuterBG1 {
-		style = ST_FRAME;
+	class ArticleBG : HPC_Text {
+		x = TUT_RX; y = TUT_BODY_Y; w = TUT_RW; h = TUT_BODY_H;
+		colorBackground[] = {0,0,0,0.18};
 	};
-	class OuterBG2 : StdBG{
-		colorBackground[] = COLOR_BROWN;
-		x = (0.35 * safezoneW + safezoneX) + (3 * BORDERSIZE);
-		y = (0.2 * safezoneH + safezoneY) - (3 * BORDERSIZE);
-		w = (0.45 * safezoneW);
-		h = (0.6 * safezoneH) + (6 * BORDERSIZE);
+	class Accent : HPC_Text {
+		x = TUT_X; y = TUT_Y; w = 0.28 * HPC_GX; h = 4.2 * HPC_GY;
+		colorBackground[] = HPC_C_ACCENT;
 	};
-	class OuterBG_F2 : OuterBG2 {
-		style = ST_FRAME;
-	};
-	class InnerBG1 : OuterBG1 {
-		colorBackground[] = COLOR_GREEN;
-		x = (0.2 * safezoneW + safezoneX)  - ( BORDERSIZE);
-		y = 0.25 * safezoneH + safezoneY - (1.5 * BORDERSIZE);
-		w = (0.15 * safezoneW) +  (2 * BORDERSIZE);
-		h = 0.55 * safezoneH  + (3 * BORDERSIZE);
-	};
-	class InnerBG_F1 : InnerBG1 {
-		style = ST_FRAME;
-	};
-	class InnerBG2 : OuterBG2 {
-		colorBackground[] = COLOR_GREEN_ALPHA;
-		x = (0.35 * safezoneW + safezoneX) + (4 * BORDERSIZE);
-		y = 0.25 * safezoneH + safezoneY - (1.5 * BORDERSIZE);
-		w = (0.45 * safezoneW) - (2 * BORDERSIZE ) ;
-		h = 0.55 * safezoneH  + (3 * BORDERSIZE);
-	};
-	class InnerBG_F2 : InnerBG2 {
-		style = ST_FRAME;
-	};
-	class Header : StdHeader{
-		x = 0.2 * safezoneW + safezoneX - (BORDERSIZE);
-		y = 0.19 * safezoneH + safezoneY;
-		w = 0.15 * safezoneW + ( 2 * BORDERSIZE);
-		h = 0.05 * safezoneH - (BORDERSIZE);
+	class Header : HPC_Heading {
+		x = TUT_X + TUT_PAD; y = TUT_Y + 0.5 * HPC_GY; w = TUT_W - 5 * HPC_GX; h = 2.2 * HPC_GY;
+		sizeEx = 1.55 * HPC_GY;
 		text = $STR_TUTO_TITLE;
 	};
-	class HeaderTuto : Header{
-		idc = 514;
-		x = (0.35 * safezoneW + safezoneX) + ( 4 * BORDERSIZE);
-		w = (0.45 * safezoneW) - (2 * BORDERSIZE);
-		text = "1. Introduction";
+	class Subtitle : HPC_Label {
+		x = TUT_X + TUT_PAD; y = TUT_Y + 2.5 * HPC_GY; w = TUT_W - 2 * TUT_PAD; h = 1.4 * HPC_GY;
+		font = "RobotoCondensed";
+		sizeEx = 0.95 * HPC_GY;
+		text = "Pick a chapter to learn how Hippos Conquest plays.";
 	};
-	class TutorialList : StdListBox {
-		idc = 513;
-		x = 0.2 * safezoneW + safezoneX;
-		w = 0.15 * safezoneW;
-		y = 0.25 * safezoneH + safezoneY;
-		h = (0.5 * safezoneH) - (1.5 * BORDERSIZE);
-		shadow = 2;
-		onLBSelChanged="";
-	};
-	class CloseButton : StdButton{
-		idc = 512;
-		x = (0.2 * safezoneW + safezoneX);
-		y = (0.75 * safezoneH + safezoneY);
-		w = (0.15 * safezoneW);
-		h = (0.05 * safezoneH);
-		sizeEx = 0.05 * safezoneH;
-		text = $STR_TUTO_GOTIT;
+	class ButtonX : HPC_Button {
+		x = TUT_X + TUT_W - 2.8 * HPC_GX; y = TUT_Y + 0.9 * HPC_GY; w = 1.9 * HPC_GX; h = 1.9 * HPC_GY;
+		colorBackground[] = {1,1,1,0.06};
+		colorFocused[] = {1,1,1,0.06};
+		colorBackgroundActive[] = HPC_C_DANGER;
+		text = "X";
+		tooltip = "Close";
 		action = "howtoplay = 0";
 	};
-
-	class TutoControlGroup  {
-
-	 	type = 15;
-	 	idc = -1;
-	 	style = 0;
-		x = (0.35 * safezoneW + safezoneX) + (4 * BORDERSIZE);
-		y = 0.25 * safezoneH + safezoneY - (1.5 * BORDERSIZE);
-		w = (0.45 * safezoneW) - (2 * BORDERSIZE);
-		h = 0.55 * safezoneH  + (3 * BORDERSIZE);
-		colorScrollbar[] = COLOR_WHITE;
-
-	 	class VScrollbar
-	 	{
-	 		color[] = COLOR_WHITE;
-	 		width = 0.01 * safezoneW;
+	class Divider : HPC_Text {
+		x = TUT_X + TUT_PAD; y = TUT_Y + 4.6 * HPC_GY; w = TUT_W - 2 * TUT_PAD; h = 0.1 * HPC_GY;
+		colorBackground[] = HPC_C_LINE;
+	};
+	class LabelChapters : HPC_Label {
+		x = TUT_X + TUT_PAD; y = TUT_Y + 5.4 * HPC_GY; w = TUT_LW; h = 1.4 * HPC_GY;
+		text = "CHAPTERS";
+	};
+	class TutorialList : HPC_ListBox {
+		idc = 513;
+		x = TUT_X + TUT_PAD; y = TUT_BODY_Y; w = TUT_LW; h = TUT_BODY_H;
+		rowHeight = 2.0 * HPC_GY;
+		colorBackground[] = {0,0,0,0.18};
+		onLBSelChanged = "";
+	};
+	class HeaderTuto : HPC_Label {
+		idc = 514;
+		x = TUT_RX; y = TUT_Y + 5.4 * HPC_GY; w = TUT_RW; h = 1.4 * HPC_GY;
+		colorText[] = HPC_C_ACCENT;
+		text = "1. Introduction";
+	};
+	class TutoControlGroup {
+		type = 15;
+		idc = -1;
+		style = 0;
+		x = TUT_RX + 0.8 * HPC_GX; y = TUT_BODY_Y + 0.6 * HPC_GY; w = TUT_RW - 1.2 * HPC_GX; h = TUT_BODY_H - 1.2 * HPC_GY;
+		class VScrollbar {
+			color[] = {1,1,1,0.5};
+			width = 0.5 * HPC_GX;
 			autoScrollSpeed = -1;
 			autoScrollDelay = 5;
 			autoScrollRewind = 0;
-	 	};
-
-	 	class HScrollbar
-	 	{
-	 		color[] = COLOR_WHITE;
-	 		height = 0.012 * safezoneH;
-	 	};
-
-	 	class ScrollBar
-	 	{
-			color[] = COLOR_WHITE;
-			colorActive[] = COLOR_WHITE;
-			colorDisabled[] = COLOR_WHITE;
+		};
+		class HScrollbar {
+			color[] = {1,1,1,0};
+			height = 0;
+		};
+		class ScrollBar {
+			color[] = {1,1,1,0.5};
+			colorActive[] = {1,1,1,1};
+			colorDisabled[] = {1,1,1,0.3};
 			thumb = "\A3\ui_f\data\gui\cfg\scrollbar\thumb_ca.paa";
 			arrowEmpty = "\A3\ui_f\data\gui\cfg\scrollbar\arrowEmpty_ca.paa";
 			arrowFull = "\A3\ui_f\data\gui\cfg\scrollbar\arrowFull_ca.paa";
 			border = "\A3\ui_f\data\gui\cfg\scrollbar\border_ca.paa";
-	 	};
-
-	 	class Controls
-	 	{
-	 		class TutoStructuredText
-	 		{
-	 			idc = 515;
-	 			type = CT_STRUCTURED_TEXT;
-	 			colorBackground[] = COLOR_NOALPHA;
-	 			style = ST_LEFT;
-	 			x = 0;
-	 			y = 0;
-	 			w = (0.45 * safezoneW) - (2 * BORDERSIZE);
-	 			h = (0.8 * safezoneH);
-	 			text = "AAA";
-	 			size = 0.02 * safezoneH;
-	 			sizeEx = 0.02 * safezoneH;
-	 			shadow = 2;
- 				font = FONTM;
- 				color = "#e0e0e0";
- 				align = "left";
- 				valign = "top";
-	 		};
-	 	};
-	 };
+		};
+		class Controls {
+			class TutoStructuredText : HPC_StructuredText {
+				idc = 515;
+				x = 0; y = 0; w = TUT_RW - 2.2 * HPC_GX; h = TUT_BODY_H - 1.2 * HPC_GY;
+				size = 1.05 * HPC_GY;
+				class Attributes {
+					font = "RobotoCondensed";
+					color = "#EBEFF1";
+					align = "left";
+					valign = "top";
+					shadow = 0;
+				};
+			};
+		};
+	};
+	class CloseButton : HPC_ButtonAccent {
+		idc = 512;
+		x = TUT_X + TUT_W - TUT_PAD - 14 * HPC_GX; y = TUT_Y + TUT_H - 4.4 * HPC_GY; w = 14 * HPC_GX; h = 3.2 * HPC_GY;
+		text = $STR_TUTO_GOTIT;
+		action = "howtoplay = 0";
+	};
 };

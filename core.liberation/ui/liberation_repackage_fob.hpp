@@ -1,103 +1,109 @@
+// Repackage FOB: centred card with one large tile per packaging option.
+// do_repackage_fob.sqf enables/disables the tiles (121 box, 122 truck, 123 boat).
+#define RPK_W (36 * HPC_GX)
+#define RPK_H (20 * HPC_GY)
+#define RPK_X (safezoneX + (safezoneW - RPK_W) / 2)
+#define RPK_Y (safezoneY + (safezoneH - RPK_H) / 2)
+#define RPK_PAD (1.1 * HPC_GX)
+#define RPK_IX (RPK_X + RPK_PAD)
+#define RPK_IW (RPK_W - 2 * RPK_PAD)
+#define RPK_TILE_W ((RPK_IW - 1.2 * HPC_GX) / 3)
+#define RPK_TILE_STEP (RPK_TILE_W + 0.6 * HPC_GX)
+#define RPK_TILE_Y (RPK_Y + 10.6 * HPC_GY)
+#define RPK_TILE_H (7.6 * HPC_GY)
+
 class liberation_repackage_fob {
 	idd = 5755;
-    onLoad = "if (isNil 'HPC_fnc_scaleDialog') then {_this call compile preprocessFileLineNumbers 'scripts\client\misc\HPC_scaleDialog.sqf'} else {_this call HPC_fnc_scaleDialog};";
 	movingEnable = false;
-	controlsBackground[] = { "OuterBG", "RecycleBG", "OuterBG_F", "InnerBG", "InnerBG_F" };
-	controls[] = { "Header", "ButtonClose", "Infotext","TruckButton","BoxButton","BoatButton"};
+	controlsBackground[] = { "Panel" };
+	controls[] = { "Accent", "Header", "Subtitle", "ButtonClose", "Divider", "Infotext", "LabelOptions",
+		"BoxButton", "TruckButton", "BoatButton", "BoxImage", "TruckImage", "BoatImage" };
 	objects[] = {};
 
-	class RecycleBG : BgPicture {
-		x = (0.35 * safezoneW + safezoneX) - ( 2 * BORDERSIZE);
-		y = (0.4 * safezoneH + safezoneY) - (3 * BORDERSIZE);
-		w = (0.3 * safezoneW) + (4 * BORDERSIZE);
-		h = (0.2 * safezoneH) + (6 * BORDERSIZE);
+	class Panel : HPC_Panel {
+		colorBackground[] = HPC_C_PANEL_SOLID;
+		x = RPK_X; y = RPK_Y; w = RPK_W; h = RPK_H;
 	};
-	class OuterBG : StdBG{
-		colorBackground[] = COLOR_BROWN;
-		x = (0.35 * safezoneW + safezoneX) - ( 2 * BORDERSIZE);
-		y = (0.4 * safezoneH + safezoneY) - (3 * BORDERSIZE);
-		w = (0.3 * safezoneW) + (4 * BORDERSIZE);
-		h = (0.2 * safezoneH) + (6 * BORDERSIZE);
+	class Accent : HPC_Text {
+		x = RPK_X; y = RPK_Y; w = 0.28 * HPC_GX; h = 4.2 * HPC_GY;
+		colorBackground[] = HPC_C_ACCENT;
 	};
-	class OuterBG_F : OuterBG {
-		style = ST_FRAME;
-	};
-	class InnerBG : OuterBG {
-		colorBackground[] = COLOR_GREEN;
-		x = (0.35 * safezoneW + safezoneX)  - ( BORDERSIZE);
-		y = 0.45 * safezoneH + safezoneY - (1.5 * BORDERSIZE);
-		w = (0.3 * safezoneW) +  (2 * BORDERSIZE);
-		h = 0.15 * safezoneH  + (3 * BORDERSIZE);
-	};
-	class InnerBG_F : InnerBG {
-		style = ST_FRAME;
-	};
-	class Header : StdHeader{
-		x = 0.35 * safezoneW + safezoneX - (BORDERSIZE);
-		y = 0.39 * safezoneH + safezoneY;
-		w = 0.3 * safezoneW + ( 2 * BORDERSIZE);
-		h = 0.05 * safezoneH - (BORDERSIZE);
+	class Header : HPC_Heading {
+		x = RPK_IX; y = RPK_Y + 0.5 * HPC_GY; w = RPK_IW - 3 * HPC_GX; h = 2.2 * HPC_GY;
+		sizeEx = 1.55 * HPC_GY;
 		text = $STR_FOB_REPACKAGE_TITLE;
 	};
-	class ButtonClose : StdButton{
+	class Subtitle : HPC_Label {
+		x = RPK_IX; y = RPK_Y + 2.5 * HPC_GY; w = RPK_IW - 3 * HPC_GX; h = 1.4 * HPC_GY;
+		font = "RobotoCondensed";
+		sizeEx = 0.95 * HPC_GY;
+		text = "Pack up this FOB so it can be moved and redeployed.";
+	};
+	class ButtonClose : HPC_Button {
 		idc = 101;
-		x = 0.632 * safezoneW + safezoneX;
-		w = 0.015 * safezoneW;
-		h = 0.02 * safezoneH;
-		y = 0.402 * safezoneH + safezoneY;
+		x = RPK_X + RPK_W - 2.8 * HPC_GX; y = RPK_Y + 0.9 * HPC_GY; w = 1.9 * HPC_GX; h = 1.9 * HPC_GY;
+		colorBackground[] = {1,1,1,0.06};
+		colorFocused[] = {1,1,1,0.06};
+		colorBackgroundActive[] = HPC_C_DANGER;
 		text = "X";
+		tooltip = "Cancel";
 		action = "closeDialog 0";
 	};
-	class Infotext : StdText{
-		idc = -1;
-		style = ST_CENTER;
-		x = (0.35 * safezoneW + safezoneX);
-		w = (0.3 * safezoneW);
-		h = (0.03 * safezoneH);
-		y = (0.45 * safezoneH + safezoneY);
-		colorText[] = {0.9, 0.9, 0.9, 1};
+	class Divider : HPC_Text {
+		x = RPK_IX; y = RPK_Y + 4.6 * HPC_GY; w = RPK_IW; h = 0.1 * HPC_GY;
+		colorBackground[] = HPC_C_LINE;
+	};
+	class Infotext : HPC_Text {
+		x = RPK_IX; y = RPK_Y + 5.4 * HPC_GY; w = RPK_IW; h = 2 * HPC_GY;
+		sizeEx = 1.05 * HPC_GY;
 		text = $STR_FOB_REPACKAGE_CONFIRM;
 	};
+	class LabelOptions : HPC_Label {
+		x = RPK_IX; y = RPK_Y + 8.9 * HPC_GY; w = RPK_IW; h = 1.3 * HPC_GY;
+		text = "REPACKAGE AS";
+	};
 
-	class BoxButton : StdButton{
+	// Option tiles: the button label sits at the bottom of the tile (text
+	// is centred, so a large tile with the icon above reads as a card).
+	class OptionButton : HPC_Button {
+		y = RPK_TILE_Y; w = RPK_TILE_W; h = RPK_TILE_H;
+		colorBackground[] = {0.12,0.15,0.16,0.9};
+		colorFocused[] = {0.12,0.15,0.16,0.9};
+		colorBackgroundActive[] = HPC_C_ACCENT_DIM;
+		style = ST_CENTER;
+	};
+	class BoxButton : OptionButton {
 		idc = 121;
-		x = (0.38 * safezoneW + safezoneX) - (BORDERSIZE);
-		y = (0.50 * safezoneH + safezoneY);
-		w = (0.08 * safezoneW) - (BORDERSIZE);
-		h = (0.045 * safezoneH);
-		sizeEx = 0.023 * safezoneH;
+		x = RPK_IX + 0 * RPK_TILE_STEP;
 		text = $STR_FOBBOX;
 		action = "dorepackage = 1;";
 	};
-	class TruckButton : StdButton{
+	class TruckButton : OptionButton {
 		idc = 122;
-		x = (0.46 * safezoneW + safezoneX);
-		y = (0.50 * safezoneH + safezoneY);
-		w = (0.08 * safezoneW) - (BORDERSIZE);
-		h = (0.045 * safezoneH);
-		sizeEx = 0.023 * safezoneH;
+		x = RPK_IX + 1 * RPK_TILE_STEP;
 		text = $STR_FOBTRUCK;
 		action = "dorepackage = 2;";
 	};
-	class BoatButton : StdButton{
+	class BoatButton : OptionButton {
 		idc = 123;
-		x = (0.54 * safezoneW + safezoneX) + (BORDERSIZE);
-		y = (0.50 * safezoneH + safezoneY);
-		w = (0.08 * safezoneW);
-		h = (0.045 * safezoneH);
-		sizeEx = 0.023 * safezoneH;
+		x = RPK_IX + 2 * RPK_TILE_STEP;
 		text = $STR_FOBBOAT;
 		action = "dorepackage = 3;";
-	};	
-	// class CancelButton : StdButton{
-	// 	idc = -1;
-	// 	x = (0.54 * safezoneW + safezoneX) + (BORDERSIZE);
-	// 	y = (0.55 * safezoneH + safezoneY);
-	// 	w = (0.08 * safezoneW);
-	// 	h = (0.045 * safezoneH);
-	// 	sizeEx = 0.023 * safezoneH;
-	// 	text = $STR_RECYCLING_CANCEL;
-	// 	action = "closeDialog 0";
-	// };
-
+	};
+	class OptionImage : HPC_Picture {
+		y = RPK_TILE_Y + 0.6 * HPC_GY; w = RPK_TILE_W; h = 2.4 * HPC_GY;
+		colorText[] = {1,1,1,0.85};
+	};
+	class BoxImage : OptionImage {
+		x = RPK_IX + 0 * RPK_TILE_STEP;
+		text = "\A3\ui_f\data\map\vehicleicons\iconCrateAmmo_ca.paa";
+	};
+	class TruckImage : OptionImage {
+		x = RPK_IX + 1 * RPK_TILE_STEP;
+		text = "\A3\ui_f\data\map\vehicleicons\iconTruck_ca.paa";
+	};
+	class BoatImage : OptionImage {
+		x = RPK_IX + 2 * RPK_TILE_STEP;
+		text = "\A3\ui_f\data\map\vehicleicons\iconShip_ca.paa";
+	};
 };

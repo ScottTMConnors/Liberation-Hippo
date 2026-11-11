@@ -1,425 +1,334 @@
+// Build menu: large two-pane shop. Category tabs and filters across the top,
+// item list on the left, preview, costs and purchase buttons on the right.
+#define BLD_W (70 * HPC_GX)
+#define BLD_H (44 * HPC_GY)
+#define BLD_X (safezoneX + (safezoneW - BLD_W) / 2)
+#define BLD_Y (safezoneY + 5 * HPC_GY)
+#define BLD_PAD (1.1 * HPC_GX)
+#define BLD_IX (BLD_X + BLD_PAD)
+#define BLD_LIST_W (42 * HPC_GX)
+#define BLD_TAB_W (7.95 * HPC_GX)
+#define BLD_TAB_STEP (8.55 * HPC_GX)
+#define BLD_TAB_Y (BLD_Y + 5.3 * HPC_GY)
+#define BLD_FLT_Y (BLD_Y + 11.0 * HPC_GY)
+#define BLD_HDR_Y (BLD_Y + 14.0 * HPC_GY)
+#define BLD_COL_Y (BLD_Y + 16.2 * HPC_GY)
+#define BLD_LIST_Y (BLD_Y + 18.0 * HPC_GY)
+#define BLD_LIST_H (24.9 * HPC_GY)
+#define BLD_DX (BLD_IX + BLD_LIST_W + 1.2 * HPC_GX)
+#define BLD_DW (BLD_W - 2 * BLD_PAD - BLD_LIST_W - 1.2 * HPC_GX)
+#define BLD_DIX (BLD_DX + 0.8 * HPC_GX)
+#define BLD_DIW (BLD_DW - 1.6 * HPC_GX)
+
 class liberation_build {
 	idd = 5501;
 	movingEnable = false;
-	controlsBackground[] = {};
+	controlsBackground[] = {"Panel", "DetailsBG", "ListBG"};
 
-	controls[] = {"OuterBG", "RecycleBG", "OuterBG_F", "InnerBG", "InnerBG_F", "Header",
-	"ButtonClose","BuildInfantryButton","BuildTransportVehicleButton",
+	controls[] = {"Accent", "Header", "Subtitle", "ButtonClose", "Divider",
+	"BuildInfantryButton","BuildTransportVehicleButton",
 	"BuildCombatVehicleButton","BuildAerialButton","BuildDefenceButton",
 	"BuildSupportButton","BuildSquadButton","BuildBuildingButton","BuildInfantryImage",
-	"BuildTransportVehicleImage","BuildCombatVehicleImage","BuildAerialImage","ManpowerImageShadow","AmmoImageShadow","FuelImageShadow",
-	"BuildDefenceImage","BuildSupportImage","BuildSquadImage","BuildBuildingImage","ListBG","ManpowerImage","AmmoImage","FuelImage",
-	"BuildList","BuildButton","LabelManpower","LabelAmmo","LabelFuel","LabelCap","BuildMannedButton","PageLabel",
-    "BuildPreview", "LinkedSector", "CatalogSearchLabel", "CatalogSearch", "CatalogFaction", "CatalogType", "CatalogUnlocked", "CatalogClear", "CatalogExpand", "CatalogCollapse", "CatalogReset", "CatalogCount"
+	"BuildTransportVehicleImage","BuildCombatVehicleImage","BuildAerialImage",
+	"BuildDefenceImage","BuildSupportImage","BuildSquadImage","BuildBuildingImage",
+	"LabelSearch", "LabelFaction", "LabelType", "LabelOptions",
+	"ColumnItem", "ManpowerImage","AmmoImage","FuelImage",
+	"BuildList","LabelPreview","BuildPreview","ItemDetails","LinkedSector","LabelAvailable",
+	"LabelManpower","LabelAmmo","LabelFuel","LabelCap","BuildMannedButton","BuildButton","PageLabel",
+	"CatalogSearchLabel", "CatalogSearch", "CatalogFaction", "CatalogType", "CatalogUnlocked", "CatalogClear", "CatalogExpand", "CatalogCollapse", "CatalogReset", "CatalogCount"
 	};
 
 	objects[] = {};
 
-	class RecycleBG : BgPicture {
-		x = (0.2 * safezoneW + safezoneX) - ( 2 * BORDERSIZE);
-		y = (0.11 * safezoneH + safezoneY) - (3 * BORDERSIZE);
-		w = (0.6 * safezoneW) + (4 * BORDERSIZE);
-		h = (0.78 * safezoneH) + (6 * BORDERSIZE);
+	class Panel : HPC_Panel {
+		colorBackground[] = HPC_C_PANEL_SOLID;
+		x = BLD_X; y = BLD_Y; w = BLD_W; h = BLD_H;
 	};
-	class OuterBG : StdBG{
-		colorBackground[] = COLOR_BROWN;
-		x = (0.2 * safezoneW + safezoneX) - ( 2 * BORDERSIZE);
-		y = (0.11 * safezoneH + safezoneY) - (3 * BORDERSIZE);
-		w = (0.6 * safezoneW) + (4 * BORDERSIZE);
-		h = (0.78 * safezoneH) + (6 * BORDERSIZE);
+	class Accent : HPC_Text {
+		x = BLD_X; y = BLD_Y; w = 0.28 * HPC_GX; h = 4.2 * HPC_GY;
+		colorBackground[] = HPC_C_ACCENT;
 	};
-	class OuterBG_F : OuterBG {
-		style = ST_FRAME;
-	};
-	class InnerBG : OuterBG {
-		colorBackground[] = COLOR_GREEN;
-		x = (0.2 * safezoneW + safezoneX)  - ( BORDERSIZE);
-		y = 0.175 * safezoneH + safezoneY - (1.5 * BORDERSIZE);
-		w = (0.6 * safezoneW) +  (2 * BORDERSIZE);
-		h = 0.715 * safezoneH  + (3 * BORDERSIZE);
-	};
-	class InnerBG_F : InnerBG {
-		style = ST_FRAME;
-	};
-	class Header : StdHeader{
+	class Header : HPC_Heading {
 		idc = 1011;
-		x = 0.2 * safezoneW + safezoneX - (BORDERSIZE);
-		y = 0.097 * safezoneH + safezoneY;
-		w = 0.6 * safezoneW + ( 2 * BORDERSIZE);
-		h = 0.065 * safezoneH - (BORDERSIZE);
-		//text = $STR_BUILD_TITLE;
+		x = BLD_IX; y = BLD_Y + 0.5 * HPC_GY; w = BLD_W - 6 * HPC_GX; h = 2.2 * HPC_GY;
+		sizeEx = 1.55 * HPC_GY;
+		text = "BUILD";
 	};
-	class ButtonClose : StdButton{
+	class Subtitle : HPC_Label {
+		x = BLD_IX; y = BLD_Y + 2.5 * HPC_GY; w = BLD_W - 6 * HPC_GX; h = 1.4 * HPC_GY;
+		font = "RobotoCondensed";
+		sizeEx = 0.95 * HPC_GY;
+		text = "Recruit units and buy vehicles, defences and supplies at this base.";
+	};
+	class ButtonClose : HPC_Button {
 		idc = 101;
-		x = 0.77 * safezoneW + safezoneX;
-		w = 0.03 * safezoneW;
-		h = 0.026 * safezoneH;
-		y = 0.1035 * safezoneH + safezoneY;
+		x = BLD_X + BLD_W - 2.8 * HPC_GX; y = BLD_Y + 0.9 * HPC_GY; w = 1.9 * HPC_GX; h = 1.9 * HPC_GY;
+		colorBackground[] = {1,1,1,0.06};
+		colorFocused[] = {1,1,1,0.06};
+		colorBackgroundActive[] = HPC_C_DANGER;
 		text = "X";
+		tooltip = "Close";
 		action = "closeDialog 0";
 	};
-	class BuildTypeImage {
-		idc = -1;
-		type = CT_STATIC;
-		style = ST_PICTURE;
-		colorText[] = {0, 0, 0, 1};
-        colorBackground[] = {0, 0, 0, 1};
-		font = FONTM;
-		sizeEx = 0.023;
-		y = (0.17825 * safezoneH + safezoneY);
-		w = (0.04 * safezoneW);
-		h = (0.0455 * safezoneH);
-		moving = false;
+	class Divider : HPC_Text {
+		x = BLD_IX; y = BLD_Y + 4.6 * HPC_GY; w = BLD_W - 2 * BLD_PAD; h = 0.1 * HPC_GY;
+		colorBackground[] = HPC_C_LINE;
 	};
-	class BuildTypeButton : StdButton{
-		colorBackgroundActive[] = { 0,1,0,0.5 };
-		colorFocused[] = { 0, 1, 0, 0.5 };
-		y = (0.175 * safezoneH + safezoneY);
-		w = (0.046 * safezoneW);
-		h = (0.052 * safezoneH);
+
+	// Category tabs: button behind, icon drawn on top. The opener script
+	// colours the active tab and sets each tab's tooltip.
+	class BuildTypeButton : HPC_Button {
+		y = BLD_TAB_Y; w = BLD_TAB_W; h = 4.4 * HPC_GY;
+		colorBackground[] = {0.12,0.15,0.16,0.9};
+		colorFocused[] = {0.12,0.15,0.16,0.9};
+		colorBackgroundActive[] = HPC_C_ACCENT_DIM;
 		text = "";
+	};
+	class BuildTypeImage : HPC_Picture {
+		y = BLD_TAB_Y + 0.6 * HPC_GY; w = BLD_TAB_W; h = 3.2 * HPC_GY;
+	};
+	class BuildInfantryButton : BuildTypeButton {
+		idc = 102; action = "buildtype=1"; x = BLD_IX + 0 * BLD_TAB_STEP;
 	};
 	class BuildInfantryImage : BuildTypeImage {
-		idc = 1025;
-		x = (0.304 * safezoneW + safezoneX);
+		idc = 1025; x = BLD_IX + 0 * BLD_TAB_STEP;
 		text = "\a3\Ui_F_Curator\Data\Displays\RscDisplayCurator\modeUnits_ca.paa";
 	};
-	class BuildInfantryButton : BuildTypeButton{
-		idc = 102;
-		text = "";
-		action = "buildtype=1";
-		x = (0.3 * safezoneW + safezoneX);
+	class BuildTransportVehicleButton : BuildTypeButton {
+		idc = 103; action = "buildtype=2"; x = BLD_IX + 1 * BLD_TAB_STEP;
 	};
 	class BuildTransportVehicleImage : BuildTypeImage {
-		idc = 1035;
-		x = (0.354 * safezoneW + safezoneX);
+		idc = 1035; x = BLD_IX + 1 * BLD_TAB_STEP;
 		text = "\A3\ui_f\data\map\vehicleicons\iconCar_ca.paa";
 	};
-	class BuildTransportVehicleButton : BuildTypeButton{
-		idc = 103;
-		text = "";
-		action = "buildtype=2";
-		x = (0.35 * safezoneW + safezoneX);
+	class BuildCombatVehicleButton : BuildTypeButton {
+		idc = 104; action = "buildtype=3"; x = BLD_IX + 2 * BLD_TAB_STEP;
 	};
 	class BuildCombatVehicleImage : BuildTypeImage {
-		idc = 1045;
-		x = (0.404 * safezoneW + safezoneX);
+		idc = 1045; x = BLD_IX + 2 * BLD_TAB_STEP;
 		text = "\A3\ui_f\data\map\vehicleicons\iconTank_ca.paa";
 	};
-	class BuildCombatVehicleButton : BuildTypeButton{
-		idc = 104;
-		text = "";
-		action = "buildtype=3";
-		x = (0.4 * safezoneW + safezoneX);
+	class BuildAerialButton : BuildTypeButton {
+		idc = 105; action = "buildtype=4"; x = BLD_IX + 3 * BLD_TAB_STEP;
 	};
 	class BuildAerialImage : BuildTypeImage {
-		idc = 1055;
-		x = (0.454 * safezoneW + safezoneX);
+		idc = 1055; x = BLD_IX + 3 * BLD_TAB_STEP;
 		text = "\A3\ui_f\data\map\vehicleicons\iconHelicopter_ca.paa";
 	};
-	class BuildAerialButton : BuildTypeButton{
-		idc = 105;
-		text = "";
-		action = "buildtype=4";
-		x = (0.45 * safezoneW + safezoneX);
+	class BuildDefenceButton : BuildTypeButton {
+		idc = 106; action = "buildtype=5"; x = BLD_IX + 4 * BLD_TAB_STEP;
 	};
 	class BuildDefenceImage : BuildTypeImage {
-		idc = 1065;
-		x = (0.504 * safezoneW + safezoneX);
+		idc = 1065; x = BLD_IX + 4 * BLD_TAB_STEP;
 		text = "\A3\ui_f\data\map\vehicleicons\iconStaticCannon_ca.paa";
 	};
-	class BuildDefenceButton : BuildTypeButton{
-		idc = 106;
-		text = "";
-		action = "buildtype=5";
-		x = (0.5 * safezoneW + safezoneX);
+	class BuildBuildingButton : BuildTypeButton {
+		idc = 109; action = "buildtype=6"; x = BLD_IX + 5 * BLD_TAB_STEP;
 	};
 	class BuildBuildingImage : BuildTypeImage {
-		idc = 1095;
-		x = (0.554 * safezoneW + safezoneX);
+		idc = 1095; x = BLD_IX + 5 * BLD_TAB_STEP;
 		text = "\A3\ui_f\data\map\mapcontrol\Bunker_CA.paa";
 	};
-	class BuildBuildingButton : BuildTypeButton{
-		idc = 109;
-		text = "";
-		action = "buildtype=6";
-		x = (0.55 * safezoneW + safezoneX);
+	class BuildSupportButton : BuildTypeButton {
+		idc = 107; action = "buildtype=7"; x = BLD_IX + 6 * BLD_TAB_STEP;
 	};
 	class BuildSupportImage : BuildTypeImage {
-		idc = 1075;
-		x = (0.604 * safezoneW + safezoneX);
+		idc = 1075; x = BLD_IX + 6 * BLD_TAB_STEP;
 		text = "\A3\ui_f\data\map\vehicleicons\iconCrateAmmo_ca.paa";
 	};
-	class BuildSupportButton : BuildTypeButton{
-		idc = 107;
-		text = "";
-		action = "buildtype=7";
-		x = (0.6 * safezoneW + safezoneX);
+	class BuildSquadButton : BuildTypeButton {
+		idc = 108; action = "buildtype=8"; x = BLD_IX + 7 * BLD_TAB_STEP;
 	};
 	class BuildSquadImage : BuildTypeImage {
-		idc = 1085;
-		x = (0.654 * safezoneW + safezoneX);
+		idc = 1085; x = BLD_IX + 7 * BLD_TAB_STEP;
 		text = "\a3\Ui_F_Curator\Data\Displays\RscDisplayCurator\modeGroups_ca.paa";
 	};
-	class BuildSquadButton : BuildTypeButton{
-		idc = 108;
+
+	// Search and filter row
+	class LabelSearch : HPC_Label {
+		x = BLD_IX; y = BLD_FLT_Y - 1.4 * HPC_GY; w = 10 * HPC_GX; h = 1.3 * HPC_GY;
+		text = "SEARCH";
+	};
+	// Kept for the idc; the SEARCH section label replaces its text.
+	class CatalogSearchLabel : HPC_Text {
+		idc = 1700;
 		text = "";
-		action = "buildtype=8";
-		x = (0.65 * safezoneW + safezoneX);
+	};
+	class CatalogSearch : HPC_Edit {
+		idc = 1701;
+		x = BLD_IX; y = BLD_FLT_Y; w = 17.6 * HPC_GX; h = 2.2 * HPC_GY;
+		tooltip = "Search names or classnames";
+	};
+	class CatalogClear : HPC_Button {
+		idc = 1705;
+		x = BLD_IX + 17.6 * HPC_GX; y = BLD_FLT_Y; w = 2.2 * HPC_GX; h = 2.2 * HPC_GY;
+		colorBackground[] = {0.12,0.15,0.16,0.95};
+		colorBackgroundActive[] = HPC_C_DANGER;
+		text = "X";
+		tooltip = "Clear the search text.";
+	};
+	class LabelFaction : HPC_Label {
+		x = BLD_IX + 20.6 * HPC_GX; y = BLD_FLT_Y - 1.4 * HPC_GY; w = 10 * HPC_GX; h = 1.3 * HPC_GY;
+		text = "FACTION";
+	};
+	class CatalogFaction : HPC_Combo {
+		idc = 1702;
+		x = BLD_IX + 20.6 * HPC_GX; y = BLD_FLT_Y; w = 15 * HPC_GX; h = 2.2 * HPC_GY;
+		tooltip = "Filter faction";
+	};
+	class LabelType : HPC_Label {
+		x = BLD_IX + 36.2 * HPC_GX; y = BLD_FLT_Y - 1.4 * HPC_GY; w = 10 * HPC_GX; h = 1.3 * HPC_GY;
+		text = "TYPE";
+	};
+	class CatalogType : HPC_Combo {
+		idc = 1703;
+		x = BLD_IX + 36.2 * HPC_GX; y = BLD_FLT_Y; w = 13.4 * HPC_GX; h = 2.2 * HPC_GY;
+		tooltip = "Filter item type. When all types are shown, click a type heading to collapse or expand it.";
+	};
+	class LabelOptions : HPC_Label {
+		x = BLD_IX + 50.2 * HPC_GX; y = BLD_FLT_Y - 1.4 * HPC_GY; w = 10 * HPC_GX; h = 1.3 * HPC_GY;
+		text = "OPTIONS";
+	};
+	class CatalogUnlocked : HPC_Button {
+		idc = 1704;
+		x = BLD_IX + 50.2 * HPC_GX; y = BLD_FLT_Y; w = 9.6 * HPC_GX; h = 2.2 * HPC_GY;
+		sizeEx = 0.9 * HPC_GY;
+		text = "Unlocked only: OFF";
+		tooltip = "Hide items locked by rank or an uncaptured base. Unlocked items remain visible even if you cannot yet afford them.";
+	};
+	class CatalogReset : HPC_Button {
+		idc = 1708;
+		x = BLD_IX + 60.4 * HPC_GX; y = BLD_FLT_Y; w = 7.4 * HPC_GX; h = 2.2 * HPC_GY;
+		sizeEx = 0.9 * HPC_GY;
+		text = "Reset filters";
+		tooltip = "Clear search, faction and type filters, show locked items, and expand groups.";
 	};
 
-	class IconImage {
-		idc = -1;
-		type = CT_STATIC;
-		style = ST_PICTURE;
-		colorText[] = {1, 1, 1, 1};
-        colorBackground[] = {0, 0, 0, 1};
-		font = FONTM;
-		sizeEx = 0.023;
-		y = (0.266 * safezoneH + safezoneY);
-		w = (0.03 * safezoneW);
-		h = (0.0325 * safezoneH);
-		moving = false;
+	// Item list pane
+	class ListBG : HPC_Panel {
+		colorBackground[] = HPC_C_PANEL_LIGHT;
+		x = BLD_IX; y = BLD_COL_Y; w = BLD_LIST_W; h = BLD_LIST_Y + BLD_LIST_H - BLD_COL_Y;
+	};
+	class PageLabel : HPC_Heading {
+		idc = 151;
+		x = BLD_IX; y = BLD_HDR_Y; w = 15 * HPC_GX; h = 2 * HPC_GY;
+		sizeEx = 1.2 * HPC_GY;
+	};
+	class CatalogCount : HPC_Label {
+		idc = 1709;
+		x = BLD_IX + 15 * HPC_GX; y = BLD_HDR_Y + 0.2 * HPC_GY; w = 13 * HPC_GX; h = 1.6 * HPC_GY;
+		font = "RobotoCondensed";
+		text = "";
+	};
+	class CatalogExpand : HPC_Button {
+		idc = 1706;
+		x = BLD_IX + BLD_LIST_W - 13.4 * HPC_GX; y = BLD_HDR_Y + 0.1 * HPC_GY; w = 6.6 * HPC_GX; h = 1.8 * HPC_GY;
+		sizeEx = 0.85 * HPC_GY;
+		text = "Expand all";
+		tooltip = "Expand all matching type groups.";
+	};
+	class CatalogCollapse : CatalogExpand {
+		idc = 1707;
+		x = BLD_IX + BLD_LIST_W - 6.6 * HPC_GX;
+		text = "Collapse all";
+		tooltip = "Collapse all matching type groups.";
+	};
+	class ColumnItem : HPC_Label {
+		x = BLD_IX + 0.6 * HPC_GX; y = BLD_COL_Y; w = 20 * HPC_GX; h = 1.8 * HPC_GY;
+		text = "ITEM";
+	};
+	// Cost column icons, aligned with BuildList columns 1-3.
+	class IconImage : HPC_Picture {
+		style = ST_PICTURE + ST_KEEP_ASPECT_RATIO;
+		y = BLD_COL_Y + 0.15 * HPC_GY; w = 1.5 * HPC_GX; h = 1.5 * HPC_GY;
 	};
 	class ManpowerImage : IconImage {
-		x = (0.638 * safezoneW + safezoneX);
-		text = "res\ui_manpo.paa";
+		x = BLD_IX + 0.73 * BLD_LIST_W; text = "res\ui_manpo.paa"; tooltip = "Manpower cost";
 	};
 	class AmmoImage : IconImage {
-		x = (0.692 * safezoneW + safezoneX);
-		text = "res\ui_ammo.paa";
+		x = BLD_IX + 0.82 * BLD_LIST_W; text = "res\ui_ammo.paa"; tooltip = "Ammo cost";
 	};
 	class FuelImage : IconImage {
-		x = (0.746 * safezoneW + safezoneX);
-		text = "res\ui_fuel.paa";
+		x = BLD_IX + 0.91 * BLD_LIST_W; text = "res\ui_fuel.paa"; tooltip = "Fuel cost";
 	};
-	class ManpowerImageShadow : IconImage {
-		x = (0.638 * safezoneW + safezoneX)  + 0.003;
-		text = "res\ui_manpo.paa";
-		colorText[] = {0, 0, 0, 1};
-		y = (0.266 * safezoneH + safezoneY) + 0.005;
-	};
-	class AmmoImageShadow : IconImage {
-		x = (0.692 * safezoneW + safezoneX) + 0.003;
-		text = "res\ui_ammo.paa";
-		colorText[] = {0, 0, 0, 1};
-		y = (0.266 * safezoneH + safezoneY) + 0.005;
-	};
-	class FuelImageShadow : IconImage {
-		x = (0.746 * safezoneW + safezoneX)  + 0.003;
-		text = "res\ui_fuel.paa";
-		colorText[] = {0, 0, 0, 1};
-		y = (0.266 * safezoneH + safezoneY) + 0.005;
-	};
-
-    class CatalogSearchLabel : StdText {
-        idc = 1700;
-        x = 0.2 * safezoneW + safezoneX;
-        y = 0.305 * safezoneH + safezoneY;
-        w = 0.09 * safezoneW;
-        h = 0.0299 * safezoneH;
-        sizeEx = 0.023 * safezoneH;
-        text = "Search";
-    };
-    class CatalogSearch : StdText {
-        idc = 1701;
-        type = CT_EDIT;
-        style = ST_LEFT;
-        x = 0.294 * safezoneW + safezoneX;
-        y = 0.305 * safezoneH + safezoneY;
-        w = 0.286 * safezoneW;
-        h = 0.0299 * safezoneH;
-        text = "";
-        tooltip = "Search names or classnames";
-        colorBackground[] = {0,0,0,0.8};
-        colorDisabled[] = {0.4,0.4,0.4,1};
-        colorSelection[] = {0.2,0.6,0.2,1};
-        autocomplete = "";
-        sizeEx = 0.024 * safezoneH;
-    };
-    class CatalogFaction : StdCombo {
-        idc = 1702;
-        x = 0.2 * safezoneW + safezoneX;
-        y = 0.3375 * safezoneH + safezoneY;
-        w = 0.39 * safezoneW;
-        h = 0.0299 * safezoneH;
-        sizeEx = 0.023 * safezoneH;
-        tooltip = "Filter faction";
-    };
-    class CatalogType : CatalogFaction {
-        idc = 1703;
-        x = 0.6 * safezoneW + safezoneX;
-        w = 0.2 * safezoneW;
-        tooltip = "Filter item type. When all types are shown, click a type heading to collapse or expand it.";
-    };
-    class CatalogUnlocked : StdButton {
-        idc = 1704;
-        x = 0.63 * safezoneW + safezoneX;
-        y = 0.305 * safezoneH + safezoneY;
-        w = 0.17 * safezoneW;
-        h = 0.0299 * safezoneH;
-        sizeEx = 0.020 * safezoneH;
-        text = "Unlocked only: OFF";
-        tooltip = "Hide items locked by rank or an uncaptured base. Unlocked items remain visible even if you cannot yet afford them.";
-    };
-    class CatalogClear : StdButton {
-        idc = 1705;
-        x = 0.59 * safezoneW + safezoneX;
-        y = 0.305 * safezoneH + safezoneY;
-        w = 0.03 * safezoneW;
-        h = 0.0299 * safezoneH;
-        sizeEx = 0.02 * safezoneH;
-        text = "X";
-        tooltip = "Clear the search text.";
-    };
-    class CatalogExpand : CatalogClear {
-        idc = 1706;
-        x = 0.42 * safezoneW + safezoneX;
-        y = 0.24 * safezoneH + safezoneY;
-        w = 0.085 * safezoneW;
-        h = 0.025 * safezoneH;
-        text = "Expand all";
-        tooltip = "Expand all matching type groups.";
-    };
-    class CatalogCollapse : CatalogExpand {
-        idc = 1707;
-        x = 0.51 * safezoneW + safezoneX;
-        text = "Collapse all";
-        tooltip = "Collapse all matching type groups.";
-    };
-    class CatalogReset : CatalogExpand {
-        idc = 1708;
-        x = 0.6 * safezoneW + safezoneX;
-        w = 0.2 * safezoneW;
-        text = "Reset filters";
-        tooltip = "Clear search, faction and type filters, show locked items, and expand groups.";
-    };
-    class CatalogCount : StdText {
-        idc = 1709;
-        x = 0.2 * safezoneW + safezoneX;
-        y = 0.278 * safezoneH + safezoneY;
-        w = 0.42 * safezoneW;
-        h = 0.022 * safezoneH;
-        sizeEx = 0.018 * safezoneH;
-        colorText[] = {0.72,0.84,0.91,1};
-        text = "";
-    };
-
-	class BuildList : StdListNBox {
+	class BuildList : HPC_ListNBox {
 		idc = 110;
-		x = 0.2 * safezoneW + safezoneX;
-		w = 0.6 * safezoneW;
-		y = 0.37 * safezoneH + safezoneY;
-		h = (0.3835 * safezoneH) - (2 * BORDERSIZE);
+		x = BLD_IX; y = BLD_LIST_Y; w = BLD_LIST_W; h = BLD_LIST_H;
 		columns[] = {0, 0.73, 0.82, 0.91};
-		onLBSelChanged="";
-		shadow = 2;
-		sizeEx = 0.020 * safezoneH;
-        rowHeight = 0.025 * safezoneH;
-        colorBackground[] = {0.035,0.045,0.06,0.96};
-        colorSelectBackground[] = {0.08,0.3,0.4,1};
-        colorSelectBackground2[] = {0.08,0.3,0.4,1};
-        colorSelect[] = {1,1,1,1};
-        colorSelect2[] = {1,1,1,1};
-		colorPicture[] = {1,1,1,1};
-		colorPictureSelected[] = {0,1,0,1};
-		colorPictureDisabled[] = {0.4,0.4,0.4,1};
+		onLBSelChanged = "";
 	};
-	class ListBG : OuterBG {
-		colorBackground[] = COLOR_GREEN;
-		x = 0.2 * safezoneW + safezoneX;
-		w = 0.6 * safezoneW;
-		y = 0.37 * safezoneH + safezoneY;
-		h = (0.39 * safezoneH) - (2 * BORDERSIZE);
+
+	// Details pane
+	class DetailsBG : HPC_Panel {
+		colorBackground[] = HPC_C_PANEL_LIGHT;
+		x = BLD_DX; y = BLD_HDR_Y; w = BLD_DW; h = BLD_LIST_Y + BLD_LIST_H - BLD_HDR_Y;
 	};
-	class LabelResource : StdText{
-		x = (0.2 * safezoneW + safezoneX);
-		w = (0.18 * safezoneW);
-		sizeEx = 0.023 * safezoneH;
-		h = (0.039 * safezoneH);
+	class LabelPreview : HPC_Label {
+		x = BLD_DIX; y = BLD_HDR_Y + 0.4 * HPC_GY; w = BLD_DIW; h = 1.3 * HPC_GY;
+		text = "SELECTED ITEM";
 	};
-	class LabelManpower : LabelResource{
+	class BuildPreview : HPC_Picture {
+		idc = 162;
+		x = BLD_DIX; y = BLD_HDR_Y + 1.9 * HPC_GY; w = BLD_DIW; h = 9 * HPC_GY;
+		colorBackground[] = {0,0,0,0.35};
+	};
+	// Name, cost breakdown, crew and blockers for the selected row.
+	class ItemDetails : HPC_StructuredText {
+		idc = 163;
+		x = BLD_DIX; y = BLD_HDR_Y + 11.2 * HPC_GY; w = BLD_DIW; h = 7.4 * HPC_GY;
+		size = 0.95 * HPC_GY;
+		class Attributes {
+			font = "RobotoCondensed";
+			color = "#EBEFF1";
+			align = "left";
+			valign = "top";
+			shadow = 0;
+		};
+	};
+	class LinkedSector : HPC_StructuredText {
+		idc = 161;
+		x = BLD_DIX; y = BLD_HDR_Y + 18.7 * HPC_GY; w = BLD_DIW; h = 2.0 * HPC_GY;
+		size = 0.9 * HPC_GY;
+	};
+	class LabelAvailable : HPC_Label {
+		x = BLD_DIX; y = BLD_HDR_Y + 20.8 * HPC_GY; w = BLD_DIW; h = 1.3 * HPC_GY;
+		text = "AVAILABLE";
+	};
+	class LabelResource : HPC_Text {
+		w = BLD_DIW / 2; h = 1.5 * HPC_GY;
+		sizeEx = 0.95 * HPC_GY;
+	};
+	class LabelManpower : LabelResource {
 		idc = 131;
-		y = (0.76 * safezoneH + safezoneY);
+		x = BLD_DIX; y = BLD_HDR_Y + 22.0 * HPC_GY;
 		colorText[] = {0.5, 0.9, 0.65, 1};
 	};
-	class LabelAmmo : LabelResource{
+	class LabelAmmo : LabelResource {
 		idc = 132;
-		y = (0.786 * safezoneH + safezoneY);
+		x = BLD_DIX + BLD_DIW / 2; y = BLD_HDR_Y + 22.0 * HPC_GY;
 		colorText[] = {0.95, 0.65, 0.58, 1};
 	};
-	class LabelFuel : LabelResource{
+	class LabelFuel : LabelResource {
 		idc = 133;
-		y = (0.812 * safezoneH + safezoneY);
+		x = BLD_DIX; y = BLD_HDR_Y + 23.4 * HPC_GY;
 		colorText[] = {0.95, 0.84, 0.47, 1};
 	};
-	class LabelCap : LabelResource{
+	class LabelCap : LabelResource {
 		idc = 134;
-		y = (0.838 * safezoneH + safezoneY);
-		colorText[] = {0.8, 0.8, 0.8, 1};
+		x = BLD_DIX + BLD_DIW / 2; y = BLD_HDR_Y + 23.4 * HPC_GY;
+		colorText[] = HPC_C_MUTED;
 	};
-	class PageLabel : StdText{
-		idc = 151;
-		x = (0.2 * safezoneW + safezoneX);
-		y = (0.24 * safezoneH + safezoneY);
-		w = (0.21 * safezoneW);
-		h = (0.035 * safezoneH);
-		sizeEx = 0.03 * safezoneH;
-	};
-
-	class BuildButton : StdButton{
-		idc = 120;
-		x = (0.6 * safezoneW + safezoneX);
-		y = (0.825 * safezoneH + safezoneY);
-		w = (0.2 * safezoneW);
-		h = (0.0585 * safezoneH);
-		sizeEx = 0.03 * safezoneH;
-		text = $STR_BUILD_BUTTON;
-		action = "dobuild = 1;";
-	};
-	class BuildMannedButton : StdButton{
+	class BuildMannedButton : HPC_Button {
 		idc = 121;
-		x = (0.6 * safezoneW + safezoneX);
-		y = (0.76 * safezoneH + safezoneY);
-		w = (0.2 * safezoneW);
-		h = (0.0585 * safezoneH);
-		sizeEx = 0.02 * safezoneH;
+		x = BLD_DIX; y = BLD_LIST_Y + BLD_LIST_H - 3.5 * HPC_GY; w = BLD_DIW * 0.42; h = 2.9 * HPC_GY;
+		sizeEx = 0.95 * HPC_GY;
 		text = $STR_BUILD_CREW;
 		action = "dobuild = 1; manned = true;";
 	};
-	class LinkedSector{
-		idc = 161;
-		type = CT_STRUCTURED_TEXT;
-		colorBackground[] = COLOR_NOALPHA;
-		style = ST_LEFT;
-		x = 0.39 * safezoneW + safezoneX;
-		y = 0.85 * safezoneH + safezoneY;
-		w = 0.19 * safezoneW;
-		h = 0.045 * safezoneH;
-		text= "";
-		size = 0.02 * safezoneH;
-		sizeEx = 0.02 * safezoneH;
-		shadow = 2;
-		font = FONTM;
-		color = "#e0e000";
-		align = "right";
-		valign = "top";
-	};
-	class BuildPreview{
-		idc = 162;
-		type = CT_STATIC;
-		style = ST_PICTURE + ST_KEEP_ASPECT_RATIO;
-		x = 0.39 * safezoneW + safezoneX;
-		y = 0.755 * safezoneH + safezoneY;
-		w = 0.19 * safezoneW;
-		h = 0.09 * safezoneH;
-		colorBackground[] = {0,0,0,0};
-		colorText[] = {1,1,1,1};
-		text = "";
-		size = 0.02 * safezoneH;
-		sizeEx = 0.02 * safezoneH;
-		shadow = 2;
-		font = FONTM;
-		color = "#e0e000";
+	class BuildButton : HPC_ButtonAccent {
+		idc = 120;
+		x = BLD_DIX + BLD_DIW * 0.45; y = BLD_LIST_Y + BLD_LIST_H - 3.5 * HPC_GY; w = BLD_DIW * 0.55; h = 2.9 * HPC_GY;
+		text = $STR_BUILD_BUTTON;
+		action = "dobuild = 1;";
 	};
 };

@@ -8,21 +8,21 @@ if (!isNil "_unit") exitWith {
 	[_r1, nil, true] remoteExec ["BIS_fnc_moduleLightning", 0];
 	_r1 spawn { sleep 10; deleteVehicle _this }; // the strike target is global; do not leave one per kill
 	private _msg = format [localize "STR_TK_INFO2", name _unit];
-	[_msg, 0, 0, 5, 0, 0, 90] spawn BIS_fnc_dynamicText;
+	["Team kill", _msg, "bad", 6, true] call HPC_fnc_toast;
 	sleep 3;
 };
 
 private _kill = BTC_logic getVariable [PAR_Grp_ID, 0];
 if (_kill < GRLIB_tk_count - 1) then {
 	waitUntil {!(isNull (findDisplay 46))};
-	private _msg = format ["STOP TEAMKILLING !!<br/><br/>%1 Warning left..", (GRLIB_tk_count - _kill)];
-	[_msg, 0, 0, 5, 0, 0, 90] spawn BIS_fnc_dynamicText;
+	private _msg = format ["Stop team killing. %1 warning(s) left.", (GRLIB_tk_count - _kill)];
+	["Team kill", _msg, "bad", 8, true] call HPC_fnc_toast;
 };
 
 if (_kill == GRLIB_tk_count - 1) then {
 	waitUntil {!(isNull (findDisplay 46))};
-	private _msg = format ["STOP TEAMKILLING, <t color='#ff0000'>LAST WARNING...</t>"];
-	[_msg, 0, 0, 5, 0, 0, 90] spawn BIS_fnc_dynamicText;
+	private _msg = "Stop team killing. This is your last warning.";
+	["Team kill", _msg, "bad", 10, true] call HPC_fnc_toast;
 };
 
 if (_kill >= GRLIB_tk_count) then {

@@ -8,9 +8,12 @@ permission_playerid = -1;
 permission_toset = -1;
 save_changes = false;
 
-color_authorized = [0,0.9,0,1];
-color_denied = [0.9,0,0,1];
-fontsize = 0.017 * safezoneH;
+color_authorized = [0.46,0.85,0.55,1];
+color_denied = [0.90,0.40,0.36,1];
+fontsize = 0.95 * (safezoneH / 54);
+permission_gx = safezoneH * 0.75 / 54;
+permission_gy = safezoneH / 54;
+permission_rowh = 2.2 * permission_gy;
 
 _modify_permissions = [];
 {
@@ -26,10 +29,10 @@ waitUntil { dialog };
 
 permission_create_activetext = compileFinal '
 
-	params [ "_idx", "_column", "_permission", "_text", "_tooltip" ];
+	params [ "_idx", "_row", "_column", "_permission", "_text", "_tooltip" ];
 
-	_control = (findDisplay 5118) ctrlCreate [ "RscActiveText", ((10 * _idx) + 111) + _column, (findDisplay 5118) displayCtrl 9969 ];
-	_control ctrlSetPosition [ 0.072 * _column * safeZoneW, (_idx * 0.025) * safezoneH, 0.072 * safeZoneW, 0.025  * safezoneH];
+	private _control = (findDisplay 5118) ctrlCreate [ "RscActiveText", ((10 * _idx) + 111) + _column, (findDisplay 5118) displayCtrl 9969 ];
+	_control ctrlSetPosition [ (16 + 7.5 * (_column - 1)) * permission_gx, _row * permission_rowh, 7.5 * permission_gx, permission_rowh ];
 	_control ctrlSetText _text;
 	_control ctrlSetFontHeight fontsize;
 	_control ctrlSetTooltip _tooltip;
@@ -55,59 +58,48 @@ _idx = 2;
 } foreach allPlayers;
 
 
+private _row = 0;
 {
 	_nextplayer = _x;
 	_idx = _nextplayer select 2;
 
-	if ( _idx % 2 == 0 ) then {
-
-		_control = (findDisplay 5118) ctrlCreate [ "RscBackground", -1, (findDisplay 5118) displayCtrl 9969 ];
-		_control ctrlSetPosition [ 0,  (_idx * 0.025) * safezoneH, 0.595 * safeZoneW, 0.025  * safezoneH];
-		_control ctrlSetBackgroundColor [0.75,1,0.75,0.12];
-		_control ctrlCommit 0;
-	};
-
-	_control = (findDisplay 5118) ctrlCreate [ "RscText", (10 * _idx), (findDisplay 5118) displayCtrl 9969 ];
-	_control ctrlSetPosition [ 0,  (_idx * 0.025) * safezoneH, 0.072 * safeZoneW, 0.025  * safezoneH];
-	_control ctrlSetText (_nextplayer select 1);
-	_control ctrlSetFontHeight fontsize;
+	_control = (findDisplay 5118) ctrlCreate [ "HPC_Text", -1, (findDisplay 5118) displayCtrl 9969 ];
+	_control ctrlSetPosition [ 0, _row * permission_rowh, 77 * permission_gx, permission_rowh - 0.1 * permission_gy ];
+	_control ctrlSetBackgroundColor ([[0.12,0.15,0.16,0.55], [0.12,0.15,0.16,0.25]] select (_row % 2));
 	_control ctrlCommit 0;
 
-	[ _idx, 1, 0, localize "STR_PERMISSIONS_LIGHT", localize "STR_PERMISSIONS_TOOLTIP_LIGHT" ] call  permission_create_activetext;
-	[ _idx, 2, 1, localize "STR_PERMISSIONS_ARMORED", localize "STR_PERMISSIONS_TOOLTIP_ARMORED" ] call  permission_create_activetext;
-	[ _idx, 3, 2, localize "STR_PERMISSIONS_AIR", localize "STR_PERMISSIONS_TOOLTIP_AIR" ] call  permission_create_activetext;
-	[ _idx, 4, 3, localize "STR_PERMISSIONS_CONSTRUCTION", localize "STR_PERMISSIONS_TOOLTIP_CONSTRUCTION" ] call  permission_create_activetext;
-	[ _idx, 5, 4, localize "STR_PERMISSIONS_RECYCLING", localize "STR_PERMISSIONS_TOOLTIP_RECYCLING" ] call  permission_create_activetext;
-	[ _idx, 6, 5, localize "STR_PERMISSIONS_MISC", localize "STR_PERMISSIONS_TOOLTIP_MISC" ] call  permission_create_activetext;
+	_control = (findDisplay 5118) ctrlCreate [ "HPC_Text", (10 * _idx), (findDisplay 5118) displayCtrl 9969 ];
+	_control ctrlSetPosition [ 0.6 * permission_gx, _row * permission_rowh, 15.2 * permission_gx, permission_rowh ];
+	_control ctrlSetText (_nextplayer select 1);
+	_control ctrlSetFontHeight fontsize;
+	if (_idx == 0) then { _control ctrlSetTextColor [0.46,0.80,0.72,1] };
+	_control ctrlCommit 0;
 
-	_control = (findDisplay 5118) ctrlCreate [ "RscButton", ((10 * _idx) + 111) + 7, (findDisplay 5118) displayCtrl 9969 ];
-	_control ctrlSetPosition [ ((0.075 * 7) - 0.02) * safeZoneW, ((_idx * 0.025) * safezoneH) + 0.0025, (0.035 * safeZoneW), 0.022  * safezoneH];
+	[ _idx, _row, 1, 0, localize "STR_PERMISSIONS_LIGHT", localize "STR_PERMISSIONS_TOOLTIP_LIGHT" ] call  permission_create_activetext;
+	[ _idx, _row, 2, 1, localize "STR_PERMISSIONS_ARMORED", localize "STR_PERMISSIONS_TOOLTIP_ARMORED" ] call  permission_create_activetext;
+	[ _idx, _row, 3, 2, localize "STR_PERMISSIONS_AIR", localize "STR_PERMISSIONS_TOOLTIP_AIR" ] call  permission_create_activetext;
+	[ _idx, _row, 4, 3, localize "STR_PERMISSIONS_CONSTRUCTION", localize "STR_PERMISSIONS_TOOLTIP_CONSTRUCTION" ] call  permission_create_activetext;
+	[ _idx, _row, 5, 4, localize "STR_PERMISSIONS_RECYCLING", localize "STR_PERMISSIONS_TOOLTIP_RECYCLING" ] call  permission_create_activetext;
+	[ _idx, _row, 6, 5, localize "STR_PERMISSIONS_MISC", localize "STR_PERMISSIONS_TOOLTIP_MISC" ] call  permission_create_activetext;
+
+	_control = (findDisplay 5118) ctrlCreate [ "HPC_Button", ((10 * _idx) + 111) + 7, (findDisplay 5118) displayCtrl 9969 ];
+	_control ctrlSetPosition [ 61.4 * permission_gx, (_row * permission_rowh) + 0.25 * permission_gy, 5.6 * permission_gx, permission_rowh - 0.5 * permission_gy ];
 	_control ctrlSetText (localize "STR_PERMISSIONS_ALL");
 	_control ctrlSetFontHeight fontsize;
 	_control ctrlSetTooltip (localize "STR_PERMISSIONS_TOOLTIP_ALL");
 	buttonSetAction [ ((10 * _idx) + 111) + 7, format [ "permission_playerid = %1; permission_toset = 666;", _idx ] ];
 	_control ctrlCommit 0;
 
-	_control = (findDisplay 5118) ctrlCreate [ "RscButton", ((10 * _idx) + 111) + 8, (findDisplay 5118) displayCtrl 9969 ];
-	_control ctrlSetPosition [ ((0.075 * 7) + 0.02) * safeZoneW, (_idx * 0.025) * safezoneH + 0.0025, 0.035 * safeZoneW, 0.022  * safezoneH];
+	_control = (findDisplay 5118) ctrlCreate [ "HPC_Button", ((10 * _idx) + 111) + 8, (findDisplay 5118) displayCtrl 9969 ];
+	_control ctrlSetPosition [ 67.4 * permission_gx, (_row * permission_rowh) + 0.25 * permission_gy, 5.6 * permission_gx, permission_rowh - 0.5 * permission_gy ];
 	_control ctrlSetText (localize "STR_PERMISSIONS_NONE");
 	_control ctrlSetFontHeight fontsize;
 	_control ctrlSetTooltip (localize "STR_PERMISSIONS_TOOLTIP_NONE");
 	buttonSetAction [ ((10 * _idx) + 111) + 8, format [ "permission_playerid = %1; permission_toset = 999;", _idx ] ];
 	_control ctrlCommit 0;
 
+	_row = _row + 1;
 } foreach _players_array;
-
-private _display = findDisplay 5118;
-private _scale = _display getVariable ["HPC_dialogScale",1];
-{
-    if (!isNull ctrlParentControlsGroup _x) then {
-        private _position = ctrlPosition _x;
-        _x ctrlSetPosition (_position apply {_x * _scale});
-        _x ctrlSetFontHeight (0.02 * safezoneH * _scale);
-        _x ctrlCommit 0;
-    };
-} forEach (allControls _display);
 
 while { dialog && alive player } do {
 

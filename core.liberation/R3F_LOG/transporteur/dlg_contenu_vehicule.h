@@ -10,7 +10,15 @@
 
 #include "dlg_constantes.h"
 
-#define R3F_LOG_DLG_CV_JAUGE_CHARGEMENT_H 0.027
+// Vehicle cargo screen on the HPC grid: title strip, load gauge, content list.
+#define R3F_LOG_IDC_DLG_CV_VIDE (R3F_LOG_ID_TRANSPORTEUR_START + 14)
+#define R3F_CV_W (34 * HPC_GX)
+#define R3F_CV_H (36 * HPC_GY)
+#define R3F_CV_X (safezoneX + (safezoneW - R3F_CV_W) / 2)
+#define R3F_CV_Y (safezoneY + 9 * HPC_GY)
+#define R3F_CV_PAD (1.1 * HPC_GX)
+#define R3F_CV_IW (R3F_CV_W - 2 * R3F_CV_PAD)
+#define R3F_CV_BW ((R3F_CV_IW - 1 * HPC_GX) / 2)
 
 class R3F_LOG_dlg_contenu_vehicule
 {
@@ -20,195 +28,101 @@ class R3F_LOG_dlg_contenu_vehicule
 
 	controlsBackground[] =
 	{
+		R3F_LOG_dlg_CV_fond_noir,
 		R3F_LOG_dlg_CV_titre_fond,
-		R3F_LOG_dlg_CV_fond_noir
+		R3F_LOG_dlg_CV_jauge_fond
 	};
 	objects[] = {};
 	controls[] =
 	{
 		R3F_LOG_dlg_CV_titre,
+		R3F_LOG_dlg_CV_sous_titre,
+		R3F_LOG_dlg_CV_ligne,
+		R3F_LOG_dlg_CV_label_charge,
 		R3F_LOG_dlg_CV_capacite_vehicule,
 		R3F_LOG_dlg_CV_jauge_chargement,
+		R3F_LOG_dlg_CV_label_contenu,
 		R3F_LOG_dlg_CV_liste_contenu,
+		R3F_LOG_dlg_CV_vide,
 
 		R3F_LOG_dlg_CV_credits,
 		R3F_LOG_dlg_CV_btn_decharger,
-		R3F_LOG_dlg_CV_btn_fermer
+		R3F_LOG_dlg_CV_btn_fermer,
+		R3F_LOG_dlg_CV_btn_x
 	};
 
-	// D�finition des classes de base
-	class R3F_LOG_dlg_CV_texte
+	class R3F_LOG_dlg_CV_texte : HPC_Text {};
+	class R3F_LOG_dlg_CV_btn : HPC_Button {};
+
+	class R3F_LOG_dlg_CV_liste : HPC_ListBox
 	{
-		idc = -1;
-		type = CT_STATIC;
-		style = ST_LEFT;
-		x = 0.0; w = 0.3;
-		y = 0.0; h = 0.03;
-		sizeEx = 0.023;
-		colorBackground[] = {0,0,0,0};
-		colorText[] = {1,1,1,1};
-		font = "PuristaMedium";
-		text = "";
+		colorBackground[] = {0,0,0,0.18};
 	};
 
-	class R3F_LOG_dlg_CV_btn
+	class R3F_LOG_dlg_CV_fond_noir : HPC_Panel
 	{
-		idc = -1;
-		type = 16;
-		style = 0;
-
-		text = "btn";
-		action = "";
-
-		x = 0; w = 0.17;
-		y = 0; h = 0.045;
-
-		font = "PuristaLight";
-		size = 0.038;
-		sizeEx = 0.038;
-
-		animTextureNormal = "#(argb,8,8,3)color(1,1,1,1)";
-		animTextureDisabled = "#(argb,8,8,3)color(1,1,1,1)";
-		animTextureOver = "#(argb,8,8,3)color(1,1,1,0.5)";
-		animTextureFocused = "#(argb,8,8,3)color(1,1,1,1)";
-		animTexturePressed = "#(argb,8,8,3)color(1,1,1,1)";
-		animTextureDefault = "#(argb,8,8,3)color(1,1,1,1)";
-		textureNoShortcut = "#(argb,8,8,3)color(0,0,0,0)";
-		colorBackground[] = {0,0,0,0.8};
-		colorBackground2[] = {1,1,1,0.5};
-		colorBackgroundFocused[] = {1,1,1,0.5};
-		color[] = {1,1,1,1};
-		color2[] = {1,1,1,1};
-		colorText[] = {1,1,1,1};
-		colorFocused[] = {1,1,1,1};
-		colorDisabled[] = {1,1,1,0.25};
-		period = 0.6;
-		periodFocus = 0.6;
-		periodOver = 0.6;
-		shadow = 0;
-
-		class HitZone
-		{
-			left = 0.000;
-			top = 0.000;
-			right = 0.000;
-			bottom = 0.000;
-		};
-
-		class ShortcutPos
-		{
-			left = 0.000;
-			top = 0.000;
-			w = 0.023;
-			h = 0.050;
-		};
-
-		class TextPos
-		{
-			left = 0.010;
-			top = 0.000;
-			right = 0.000;
-			bottom = 0.000;
-		};
-
-		soundEnter[] = {"\A3\ui_f\data\sound\RscButtonMenu\soundEnter",0.09,1};
-		soundPush[] = {"\A3\ui_f\data\sound\RscButtonMenu\soundPush",0.09,1};
-		soundClick[] = {"\A3\ui_f\data\sound\RscButtonMenu\soundClick",0.09,1};
-		soundEscape[] = {"\A3\ui_f\data\sound\RscButtonMenu\soundEscape",0.09,1};
-
-		class Attributes
-		{
-			font = "PuristaLight";
-			color = "#E5E5E5";
-			align = "left";
-			shadow = "false";
-		};
-
-		class AttributesImage
-		{
-			font = "PuristaLight";
-			color = "#E5E5E5";
-			align = "left";
-		};
+		x = R3F_CV_X; y = R3F_CV_Y; w = R3F_CV_W; h = R3F_CV_H;
 	};
 
-	class R3F_LOG_dlg_CV_liste
-	{
-		type = CT_LISTBOX;
-		style = ST_MULTI;
-		idc = -1;
-		text = "";
-		w = 0.275;
-		h = 0.04;
-		wholeHeight = 0.45;
-		rowHeight = 0.06;
-		font = "PuristaSemibold";
-		sizeEx = 0.035;
-		soundSelect[] = {"",0.1,1};
-		soundExpand[] = {"",0.1,1};
-		soundCollapse[] = {"",0.1,1};
-		maxHistoryDelay = 1;
-		autoScrollSpeed = -1;
-		autoScrollDelay = 5;
-		autoScrollRewind = 0;
-
-		shadow = 0;
-		colorShadow[] = {0,0,0,0.5};
-		color[] = {1,1,1,1};
-		colorText[] = {1,1,1,1.0};
-		colorDisabled[] = {1,1,1,0.25};
-		colorScrollbar[] = {1,0,0,0};
-		colorSelect[] = {0,0,0,1};
-		colorSelect2[] = {0,0,0,1};
-		colorSelectBackground[] = {0.95,0.95,0.95,1};
-		colorSelectBackground2[] = {1,1,1,0.5};
-		colorBackground[] = {0,0,0,0};
-		period = 1.2;
-
-		class ListScrollBar
-		{
-			color[] = {1,1,1,0.6};
-			colorActive[] = {1,1,1,1};
-			colorDisabled[] = {1,1,1,0.3};
-			thumb = "\A3\ui_f\data\gui\cfg\scrollbar\thumb_ca.paa";
-			arrowFull = "\A3\ui_f\data\gui\cfg\scrollbar\arrowFull_ca.paa";
-			arrowEmpty = "\A3\ui_f\data\gui\cfg\scrollbar\arrowEmpty_ca.paa";
-			border = "\A3\ui_f\data\gui\cfg\scrollbar\border_ca.paa";
-		};
-	};
-	// FIN D�finition des classes de base
-
-
+	// accent bar of the title strip
 	class R3F_LOG_dlg_CV_titre_fond : R3F_LOG_dlg_CV_texte
 	{
-		x = 0.26; w = 0.45;
-		y = 0.145 - R3F_LOG_DLG_CV_JAUGE_CHARGEMENT_H-0.005; h = 0.07;
-		colorBackground[] = {"(profilenamespace getvariable ['GUI_BCG_RGB_R',0.69])","(profilenamespace getvariable ['GUI_BCG_RGB_G',0.75])","(profilenamespace getvariable ['GUI_BCG_RGB_B',0.5])","(profilenamespace getvariable ['GUI_BCG_RGB_A',0.8])"};
+		x = R3F_CV_X; y = R3F_CV_Y; w = 0.28 * HPC_GX; h = 4.2 * HPC_GY;
+		colorBackground[] = HPC_C_ACCENT;
 	};
 
-	class R3F_LOG_dlg_CV_titre : R3F_LOG_dlg_CV_texte
+	class R3F_LOG_dlg_CV_titre : HPC_Heading
 	{
 		idc = R3F_LOG_IDC_DLG_CV_TITRE;
-		x = 0.26; w = 0.45;
-		y = 0.145 - R3F_LOG_DLG_CV_JAUGE_CHARGEMENT_H-0.005; h = 0.04;
-		sizeEx = 0.05;
+		x = R3F_CV_X + R3F_CV_PAD; y = R3F_CV_Y + 0.5 * HPC_GY; w = R3F_CV_W - 5 * HPC_GX; h = 2.2 * HPC_GY;
+		sizeEx = 1.55 * HPC_GY;
 		text = "";
 	};
 
-	class R3F_LOG_dlg_CV_capacite_vehicule : R3F_LOG_dlg_CV_texte
+	class R3F_LOG_dlg_CV_sous_titre : HPC_Label
+	{
+		x = R3F_CV_X + R3F_CV_PAD; y = R3F_CV_Y + 2.5 * HPC_GY; w = R3F_CV_IW; h = 1.4 * HPC_GY;
+		font = "RobotoCondensed";
+		sizeEx = 0.95 * HPC_GY;
+		text = "Objects loaded in this vehicle. Double-click one to unload it.";
+	};
+
+	class R3F_LOG_dlg_CV_btn_x : R3F_LOG_dlg_CV_btn
+	{
+		x = R3F_CV_X + R3F_CV_W - 2.8 * HPC_GX; y = R3F_CV_Y + 0.9 * HPC_GY; w = 1.9 * HPC_GX; h = 1.9 * HPC_GY;
+		colorBackground[] = {1,1,1,0.06};
+		colorFocused[] = {1,1,1,0.06};
+		colorBackgroundActive[] = HPC_C_DANGER;
+		text = "X";
+		tooltip = "Close";
+		action = "closeDialog 0;";
+	};
+
+	class R3F_LOG_dlg_CV_ligne : R3F_LOG_dlg_CV_texte
+	{
+		x = R3F_CV_X + R3F_CV_PAD; y = R3F_CV_Y + 4.6 * HPC_GY; w = R3F_CV_IW; h = 0.1 * HPC_GY;
+		colorBackground[] = HPC_C_LINE;
+	};
+
+	class R3F_LOG_dlg_CV_label_charge : HPC_Label
+	{
+		x = R3F_CV_X + R3F_CV_PAD; y = R3F_CV_Y + 5.5 * HPC_GY; w = R3F_CV_IW; h = 1.4 * HPC_GY;
+		text = "LOAD";
+	};
+
+	class R3F_LOG_dlg_CV_capacite_vehicule : HPC_Label
 	{
 		idc = R3F_LOG_IDC_DLG_CV_CAPACITE_VEHICULE;
-		x = 0.255; w = 0.4;
-		y = 0.185 - R3F_LOG_DLG_CV_JAUGE_CHARGEMENT_H-0.005; h = 0.03;
-		sizeEx = 0.03;
+		style = ST_RIGHT;
+		colorText[] = HPC_C_TEXT;
+		x = R3F_CV_X + R3F_CV_PAD; y = R3F_CV_Y + 5.5 * HPC_GY; w = R3F_CV_IW; h = 1.4 * HPC_GY;
 		text = "";
 	};
 
-	class R3F_LOG_dlg_CV_fond_noir : R3F_LOG_dlg_CV_texte
+	class R3F_LOG_dlg_CV_jauge_fond : R3F_LOG_dlg_CV_texte
 	{
-		x = 0.26;  w = 0.45;
-		y = 0.220 - R3F_LOG_DLG_CV_JAUGE_CHARGEMENT_H-0.005; h = R3F_LOG_DLG_CV_JAUGE_CHARGEMENT_H + 0.010 + 0.54 - 0.005;
-		colorBackground[] = {0,0,0,0.5};
+		x = R3F_CV_X + R3F_CV_PAD; y = R3F_CV_Y + 7.1 * HPC_GY; w = R3F_CV_IW; h = 1.1 * HPC_GY;
+		colorBackground[] = HPC_C_ROW;
 	};
 
 	class R3F_LOG_dlg_CV_jauge_chargement
@@ -216,50 +130,63 @@ class R3F_LOG_dlg_contenu_vehicule
 		idc = R3F_LOG_IDC_DLG_CV_JAUGE_CHARGEMENT;
 		type = CT_PROGRESS;
 		style = ST_LEFT;
-		x = 0.26 + 0.0035;  w = 0.45 - 0.007;
-		y = 0.220 - R3F_LOG_DLG_CV_JAUGE_CHARGEMENT_H-0.005 + 0.0035; h = R3F_LOG_DLG_CV_JAUGE_CHARGEMENT_H;
-		shadow = 2;
-		colorBar[] = {0.9,0.9,0.9,0.9};
-		colorExtBar[] = {1,1,1,1};
-		colorFrame[] = {1,1,1,1};
+		x = R3F_CV_X + R3F_CV_PAD; y = R3F_CV_Y + 7.1 * HPC_GY; w = R3F_CV_IW; h = 1.1 * HPC_GY;
+		shadow = 0;
+		colorBar[] = HPC_C_ACCENT;
+		colorExtBar[] = {0,0,0,0};
+		colorFrame[] = {0,0,0,0};
 		texture = "";
 		textureExt = "";
+	};
+
+	class R3F_LOG_dlg_CV_label_contenu : HPC_Label
+	{
+		x = R3F_CV_X + R3F_CV_PAD; y = R3F_CV_Y + 9.0 * HPC_GY; w = R3F_CV_IW; h = 1.4 * HPC_GY;
+		text = "CONTENTS";
 	};
 
 	class R3F_LOG_dlg_CV_liste_contenu : R3F_LOG_dlg_CV_liste
 	{
 		idc = R3F_LOG_IDC_DLG_CV_LISTE_CONTENU;
-		x = 0.26; w = 0.45;
-		y = 0.22 + 0.005; h = 0.54 - 0.005;
+		x = R3F_CV_X + R3F_CV_PAD; y = R3F_CV_Y + 10.6 * HPC_GY; w = R3F_CV_IW; h = R3F_CV_H - 16.2 * HPC_GY;
 		onLBDblClick = "0 spawn R3F_LOG_FNCT_transporteur_decharger;";
 		onLBSelChanged = "uiNamespace setVariable [""R3F_LOG_dlg_CV_lbCurSel_data"", (_this select 0) lbData (_this select 1)];";
 	};
 
-	class R3F_LOG_dlg_CV_credits : R3F_LOG_dlg_CV_texte
+	// empty state, shown by voir_contenu_vehicule.sqf
+	class R3F_LOG_dlg_CV_vide : HPC_Label
 	{
-		idc = R3F_LOG_IDC_DLG_CV_CREDITS;
-		x = 0.255; w = 0.19;
-		y = 0.813; h = 0.02;
-		colorText[] = {0.5,0.5,0.5,0.75};
-		font = "PuristaLight";
-		sizeEx = 0.02;
-		text = "";
+		idc = R3F_LOG_IDC_DLG_CV_VIDE;
+		style = ST_CENTER;
+		font = "RobotoCondensed";
+		sizeEx = HPC_GY;
+		x = R3F_CV_X + R3F_CV_PAD; y = R3F_CV_Y + 18 * HPC_GY; w = R3F_CV_IW; h = 2 * HPC_GY;
+		text = "This vehicle carries no cargo";
 	};
 
-	class R3F_LOG_dlg_CV_btn_decharger : R3F_LOG_dlg_CV_btn
+	class R3F_LOG_dlg_CV_credits : HPC_Label
 	{
-		idc = R3F_LOG_IDC_DLG_CV_BTN_DECHARGER;
-		x = 0.365; y = 0.765;
-		sizeEx = 0.02;
+		idc = R3F_LOG_IDC_DLG_CV_CREDITS;
+		font = "RobotoCondensed";
+		sizeEx = 0.75 * HPC_GY;
+		colorText[] = {0.62,0.69,0.72,0.6};
+		x = R3F_CV_X + R3F_CV_PAD; y = R3F_CV_Y + R3F_CV_H - 1.3 * HPC_GY; w = R3F_CV_IW; h = 1.1 * HPC_GY;
 		text = "";
-		action = "0 spawn R3F_LOG_FNCT_transporteur_decharger;";
 	};
 
 	class R3F_LOG_dlg_CV_btn_fermer : R3F_LOG_dlg_CV_btn
 	{
 		idc = R3F_LOG_IDC_DLG_CV_BTN_FERMER;
-		x = 0.54; y = 0.765;
+		x = R3F_CV_X + R3F_CV_PAD; y = R3F_CV_Y + R3F_CV_H - 5.0 * HPC_GY; w = R3F_CV_BW; h = 3.2 * HPC_GY;
 		text = "";
 		action = "closeDialog 0;";
+	};
+
+	class R3F_LOG_dlg_CV_btn_decharger : HPC_ButtonAccent
+	{
+		idc = R3F_LOG_IDC_DLG_CV_BTN_DECHARGER;
+		x = R3F_CV_X + R3F_CV_W - R3F_CV_PAD - R3F_CV_BW; y = R3F_CV_Y + R3F_CV_H - 5.0 * HPC_GY; w = R3F_CV_BW; h = 3.2 * HPC_GY;
+		text = "";
+		action = "0 spawn R3F_LOG_FNCT_transporteur_decharger;";
 	};
 };

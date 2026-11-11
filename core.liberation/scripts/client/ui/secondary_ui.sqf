@@ -16,7 +16,8 @@ createDialog "liberation_secondary";
 waitUntil { dialog };
 
 {
-	lbAdd [ 101, localize _x ];
+	private _row = lbAdd [ 101, localize _x ];
+	(findDisplay 6842 displayCtrl 101) lbSetTextRight [_row, format ["%1 intel", GRLIB_secondary_missions_costs select _forEachIndex]];
 } foreach _mission_list;
 
 private ["_oldchoice", "_images", "_briefings", "_missioncost", "_missiontext", "_secondary_ok"];
@@ -47,6 +48,9 @@ while { dialog && alive player && dostartsecondary == 0 } do {
 		_missiontext = format [localize (_briefings select _oldchoice), _missioncost];
 		ctrlSetText [ 106, _images select _oldchoice ];
 		(_display displayCtrl (102)) ctrlSetStructuredText parseText _missiontext;
+		private _txt = _display displayCtrl 102;
+		_txt ctrlSetPositionH ((ctrlTextHeight _txt) max ((ctrlPosition (ctrlParentControlsGroup _txt)) select 3));
+		_txt ctrlCommit 0;
 	};
 
 	_secondary_ok = !(_oldchoice == 3 && !GRLIB_player_admin);

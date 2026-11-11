@@ -154,10 +154,10 @@
 #undef COLOR_BRIGHTGREEN
 #endif
 
-#define COLOR_BROWN { 0.18, 0.14, 0.11, 0.75 }
-#define COLOR_GREEN { 0.2, 0.23, 0.18, 0.75 }
-#define COLOR_LIGHTGREEN { 0.4, 0.55, 0.36, 0.4 }
-#define COLOR_LIGHTGRAY { 0.6, 0.6, 0.6, 0.8 }
+#define COLOR_BROWN { 0.035, 0.045, 0.05, 0.88 }
+#define COLOR_GREEN { 0.09, 0.11, 0.12, 0.55 }
+#define COLOR_LIGHTGREEN { 0.46, 0.80, 0.72, 0.16 }
+#define COLOR_LIGHTGRAY { 0.20, 0.42, 0.38, 0.95 }
 #define COLOR_WHITE { 1, 1, 1, 1 }
 #define COLOR_NOALPHA { 0, 0, 0, 0 }
 #define COLOR_BLUFOR { 0, 0.3, 1, 1 }
@@ -166,14 +166,14 @@
 #define COLOR_WHITE_TRANSP { 1, 1, 1, 0.5 }
 #define COLOR_BLACK { 0, 0, 0, 1 }
 #define COLOR_BLACK_ALPHA { 0, 0, 0, 0.85 }
-#define COLOR_GREEN_ALPHA { 0.2, 0.23, 0.18, 0.4 }
-#define COLOR_GREEN_NOALPHA { 0.2, 0.23, 0.18, 1 }
-#define COLOR_LIGHTGRAY_ALPHA { 0.6, 0.6, 0.6, 0.55 }
+#define COLOR_GREEN_ALPHA { 0.09, 0.11, 0.12, 0.45 }
+#define COLOR_GREEN_NOALPHA { 0.12, 0.15, 0.16, 1 }
+#define COLOR_LIGHTGRAY_ALPHA { 1, 1, 1, 0.12 }
 #define COLOR_BLUFOR_NOALPHA { 0, 0, 1, 1 }
 #define COLOR_OPFOR_NOALPHA { 1, 0, 0, 1 }
 #define COLOR_RED_DISABLED { 1,0,0,0.4 }
 #define COLOR_BLEEDOUT { 0.66,0,0,0.8 }
-#define COLOR_BRIGHTGREEN { 0.2,1,0.2,1 }
+#define COLOR_BRIGHTGREEN { 0.62, 0.92, 0.84, 1 }
 
 #define BORDERSIZE      0.01
 #define BASE_Y 			0.075
@@ -267,11 +267,31 @@ class RscCombo {
 	};
 };
 
+// Extended options: two columns (squads | display, view distance, terrain)
+// on a screen-height grid. ui\hippo_theme.hpp is included after this file,
+// so the grid and colours are repeated here as local GO_* macros.
+#define GO_GY (safezoneH / 54)
+#define GO_GX (safezoneH * 0.75 / 54)
+#define GO_W (74 * GO_GX)
+#define GO_H (36 * GO_GY)
+#define GO_X (safezoneX + 0.5 * safezoneW - 0.5 * GO_W)
+#define GO_Y (safezoneY + 0.5 * safezoneH - 0.5 * GO_H)
+#define GO_PAD (1.1 * GO_GX)
+#define GO_LX (GO_X + GO_PAD)
+#define GO_LW (34 * GO_GX)
+#define GO_RX (GO_X + 38.4 * GO_GX)
+#define GO_RW (34.5 * GO_GX)
+#define GO_C_TEXT {0.92,0.94,0.95,1}
+#define GO_C_MUTED {0.62,0.69,0.72,1}
+#define GO_C_ACCENT {0.46,0.80,0.72,1}
+#define GO_C_ACCENT_DIM {0.20,0.42,0.38,0.95}
+#define GO_C_LINE {1,1,1,0.10}
+
 class GREUH_Menu {
 	idd = 5565;
 	movingEnable = false;
-	controlsBackground[] = {};
-	controls[] = {"GREUH_OuterBG", "BgPicture", "GREUH_OuterBG_F","GREUH_InnerBG", "GREUH_InnerBG_F","GREUH_Header","GREUH_SquadLabel",
+	controlsBackground[] = {"GREUH_OuterBG", "GREUH_ListBG"};
+	controls[] = {"GREUH_Accent","GREUH_Header","GREUH_Subtitle","GREUH_Divider","GREUH_ColumnLine","GREUH_SquadLabel",
 	"GREUH_SquadZone","GREUH_PlatoonLabel","GREUH_ViewDistance","GREUH_WorldQuality",
 	"GREUH_Close","GREUH_ButtonWorldVeryLow","GREUH_ButtonWorldLow","GREUH_ButtonWorldNormal","GREUH_ButtonWorldHigh",
 	"GREUH_Slider","GREUH_SliderVD","GREUH_LabelMarkers","GREUH_TeammatesYes","GREUH_TeammatesNo","GREUH_LabelPlatoon",
@@ -281,583 +301,464 @@ class GREUH_Menu {
 	"GREUH_Squad_InnerBG_F","GREUH_ButtonName_Rename","GREUH_ButtonName_Abort","GREUH_Squad_TextField","GREUH_LabelVD",
 	"GREUH_SliderVeh","GREUH_LabelVDVeh","GREUH_SliderVDVeh","GREUH_SliderObj","GREUH_LabelVDObj","GREUH_SliderVDObj",
 	"GREUH_ButtonLock","GREUH_LabelNametags","GREUH_NametagsActive","GREUH_NametagsYes","GREUH_NametagsNo",
-	"GREUH_FPSLabel","GREUH_FPSEdit","GREUH_earplug","GREUH_Slider2","GREUH_SliderEP","GREUH_LabelEP"};
+	"GREUH_FPSLabel","GREUH_FPSEdit","GREUH_earplug","GREUH_Slider2","GREUH_SliderEP","GREUH_LabelEP","GREUH_Done"};
 
 	objects[] = {};
 
-	class BgPicture {
-		idc = -1;
-		type = CT_STATIC;
-		style = ST_PICTURE;
-		colorText[] = {0.5, 0.4, 0.25, 0.6};
-		colorBackground[] = {0, 0, 0, 1};
-		font = FONTM;
-		sizeEx = 0.023;
-		moving = false;
-		text = "res\camo03.jpg";
-		x = (0.15 * safezoneW + safezoneX) - ( 2 * BORDERSIZE);
-		y = ((BASE_Y + 0.02) * safezoneH) + safezoneY - (3 * BORDERSIZE);
-		w = (0.2 * safezoneW) + (4 * BORDERSIZE);
-		h = (0.79 * safezoneH) + (6 * BORDERSIZE);
-	};
-
-	class GREUH_OuterBG {
-		idc = -1;
-		type =  CT_STATIC;
-		style = ST_SINGLE;
-		colorText[] = COLOR_BLACK;
-		colorBackground[] = COLOR_BROWN;
-		font = FONTM;
-		sizeEx = 0.023;
-		x = (0.15 * safezoneW + safezoneX) - ( 2 * BORDERSIZE);
-		y = ((BASE_Y + 0.02) * safezoneH) + safezoneY - (3 * BORDERSIZE);
-		w = (0.2 * safezoneW) + (4 * BORDERSIZE);
-		h = (0.79 * safezoneH) + (6 * BORDERSIZE);
-		text = "";
-	};
-	class GREUH_OuterBG_F : GREUH_OuterBG {
-		style = ST_FRAME;
-	};
-	class GREUH_InnerBG : GREUH_OuterBG {
-		colorBackground[] = COLOR_GREEN;
-		x = (0.15 * safezoneW + safezoneX)  - ( BORDERSIZE);
-		y = ((BASE_Y + 0.07) * safezoneH) + safezoneY - (1.5 * BORDERSIZE);
-		w = 0.2 * safezoneW +  (2 * BORDERSIZE);
-		h = 0.74 * safezoneH  + (3 * BORDERSIZE);
-	};
-	class GREUH_InnerBG_F : GREUH_InnerBG {
-		style = ST_FRAME;
-	};
+	// Local base classes
 	class GREUH_StdText {
 		idc = -1;
-		type =  CT_STATIC;
+		type = CT_STATIC;
 		style = ST_LEFT;
-		colorText[] = COLOR_WHITE;
-		colorBackground[] = COLOR_NOALPHA;
-		font = FONTM;
-		sizeEx = 0.02 * safezoneH;
-		shadow = 2;
-	};
-	class GREUH_RscStructuredText{
-		type = 13;
-		idc = -1;
-		style = 0;
-		colorText[] = {1,1,1,1};
-		class Attributes
-		{
-		font = "PuristaMedium";
-		color = "#ffffff";
-		align = "left";
-		shadow = 1;
-		};
-		x = 0;
-		y = 0;
-		h = 0.035;
-		w = 0.1;
+		x = 0; y = 0; w = 0; h = 0;
+		colorText[] = GO_C_TEXT;
+		colorBackground[] = {0,0,0,0};
+		font = "RobotoCondensed";
+		sizeEx = GO_GY;
+		shadow = 0;
 		text = "";
-		size = "(((((safezoneW / safezoneH) min 1.2) / 1.2) / 25) * 1)";
-		shadow = 1;
-    };
-	class GREUH_StdHeader : GREUH_StdText {
-		style = ST_CENTER;
-		sizeEx = 0.03 * safezoneH;
 	};
-	class GREUH_Header : GREUH_StdHeader {
-		x = 0.15 * safezoneW + safezoneX - (BORDERSIZE);
-		y = ((BASE_Y + 0.01) * safezoneH) + safezoneY;
-		w = 0.2 * safezoneW + ( 2 * BORDERSIZE);
-		h = 0.05 * safezoneH - (BORDERSIZE);
-		text = "Extended Options";
-		colorBackground[] = COLOR_LIGHTGRAY;
+	class GREUH_Label : GREUH_StdText {
+		font = "PuristaMedium";
+		sizeEx = 0.8 * GO_GY;
+		colorText[] = GO_C_MUTED;
+		h = 1.4 * GO_GY;
+	};
+	class GREUH_RegularLabel : GREUH_StdText {
+		h = 2.2 * GO_GY;
+	};
+	class GREUH_ActiveLabel : GREUH_RegularLabel {
+		style = ST_RIGHT;
+		font = "PuristaMedium";
+		sizeEx = 0.85 * GO_GY;
+		colorText[] = GO_C_ACCENT;
+		text = "ACTIVE";
+	};
+	class GREUH_DefaultZone : GREUH_StdText {
+		style = ST_CENTER;
+		font = "PuristaMedium";
+		sizeEx = 0.85 * GO_GY;
+		colorText[] = GO_C_MUTED;
+		colorBackground[] = {0.07,0.08,0.09,0.96};
+		text = "Disabled on this server";
 	};
 	class GREUH_ButtonGeneric {
 		idc = -1;
 		type = CT_BUTTON;
 		style = ST_CENTER;
+		x = 0; y = 0; w = 0; h = 2.6 * GO_GY;
 		default = false;
-		font = FONTM;
-		sizeEx = 0.018 * safezoneH;
-		colorText[] = { 0, 0, 0, 1 };
-		colorFocused[] = { 1, 1, 1, 1 };
-		colorDisabled[] = { 0.2, 0.2, 0.2, 0.7 };
-		colorBackground[] = { 0.8, 0.8, 0.8, 0.8 };
-		colorBackgroundDisabled[] = { 0.5, 0.5, 0.5, 0.5 };
-		colorBackgroundActive[] = { 1, 1, 1, 1 };
-		offsetX = 0.003;
-		offsetY = 0.003;
-		offsetPressedX = 0.002;
-		offsetPressedY = 0.002;
-		colorShadow[] = { 0, 0, 0, 0.5 };
-		colorBorder[] = { 0, 0, 0, 1 };
+		font = "PuristaSemibold";
+		sizeEx = 0.95 * GO_GY;
+		colorText[] = GO_C_TEXT;
+		colorFocused[] = {0.16,0.20,0.21,0.95};
+		colorDisabled[] = {1,1,1,0.3};
+		colorBackground[] = {0.16,0.20,0.21,0.95};
+		colorBackgroundDisabled[] = {0.10,0.12,0.13,0.6};
+		colorBackgroundActive[] = {0.26,0.33,0.34,1};
+		offsetX = 0;
+		offsetY = 0;
+		offsetPressedX = 0.001;
+		offsetPressedY = 0.001;
+		colorShadow[] = {0,0,0,0};
+		colorBorder[] = {0,0,0,0};
 		borderSize = 0;
-		soundEnter[] = { "", 0, 1 };          // no sound
-		soundPush[] = {"\a3\Ui_f\data\Sound\CfgIngameUI\hintExpand", 0.891251, 1};
-		soundClick[] = { "", 0, 1 };          // no sound
-		soundEscape[] = { "", 0, 1 };          // no sound
-		x = 0.15 * safezoneW + safezoneX;
-		w = 0.2 * safezoneW; h = 0.03 * safezoneH;
+		soundEnter[] = {"\A3\ui_f\data\sound\RscButton\soundEnter",0.09,1};
+		soundPush[] = {"\A3\ui_f\data\sound\RscButton\soundPush",0.09,1};
+		soundClick[] = {"\A3\ui_f\data\sound\RscButton\soundClick",0.09,1};
+		soundEscape[] = {"\A3\ui_f\data\sound\RscButton\soundEscape",0.09,1};
 		text = "";
 		action = "";
-		shadow = 1;
+		shadow = 0;
+		tooltip = "";
 	};
-	class GREUH_Label : GREUH_StdHeader {
-		x = 0.15 * safezoneW + safezoneX;
-		w = 0.2 * safezoneW;
-		h = 0.03 * safezoneH;
-		sizeEx = 0.02 * safezoneH;
-		colorBackground[] = COLOR_LIGHTGREEN;
+	class GREUH_ButtonAccent : GREUH_ButtonGeneric {
+		colorText[] = {0.03,0.06,0.06,1};
+		colorFocused[] = GO_C_ACCENT;
+		colorBackground[] = GO_C_ACCENT;
+		colorBackgroundActive[] = {0.62,0.92,0.84,1};
+		sizeEx = 1.2 * GO_GY;
+	};
+	class GREUH_SliderBase {
+		idc = -1;
+		type = CT_SLIDER;
+		style = SL_HORZ;
+		h = 2 * GO_GY;
+		color[] = GO_C_MUTED;
+		coloractive[] = GO_C_ACCENT;
+		colorDisabled[] = {1,1,1,0.3};
+		text = "";
+		shadow = 0;
+	};
+	class GREUH_ValueLabel : GREUH_StdText {
+		style = ST_RIGHT;
+		font = "PuristaMedium";
+		h = 2 * GO_GY;
 	};
 
-	class GREUH_DefaultZone : GREUH_StdText {
-		style = ST_CENTER;
-		x = 0.15 * safezoneW + safezoneX;
-		w = 0.2 * safezoneW;
-		colorText[] = COLOR_LIGHTGRAY;
-		colorBackground[] = COLOR_RED_DISABLED;
-		text = "- disabled -";
+	// Frame
+	class GREUH_OuterBG : GREUH_StdText {
+		x = GO_X; y = GO_Y; w = GO_W; h = GO_H;
+		colorBackground[] = {0.035,0.045,0.05,0.80};
 	};
-	class GREUH_RegularLabel : GREUH_Label {
-		colorBackground[] = COLOR_NOALPHA;
-		style = ST_LEFT;
+	class GREUH_ListBG : GREUH_StdText {
+		x = GO_LX; y = GO_Y + 7 * GO_GY; w = 23 * GO_GX; h = 13.4 * GO_GY;
+		colorBackground[] = {0,0,0,0.18};
+	};
+	class GREUH_Accent : GREUH_StdText {
+		x = GO_X; y = GO_Y; w = 0.28 * GO_GX; h = 4.2 * GO_GY;
+		colorBackground[] = GO_C_ACCENT;
+	};
+	class GREUH_Header : GREUH_StdText {
+		x = GO_X + GO_PAD; y = GO_Y + 0.5 * GO_GY; w = GO_W - 6 * GO_GX; h = 2.2 * GO_GY;
+		font = "PuristaSemibold";
+		sizeEx = 1.55 * GO_GY;
+		text = "OPTIONS";
+	};
+	class GREUH_Subtitle : GREUH_Label {
+		x = GO_X + GO_PAD; y = GO_Y + 2.5 * GO_GY; w = GO_W - 2 * GO_PAD;
+		font = "RobotoCondensed";
+		sizeEx = 0.95 * GO_GY;
+		text = "Player squads, map awareness, view distance, terrain detail and ear plugs.";
 	};
 	class GREUH_Close : GREUH_ButtonGeneric {
 		idc = 6677;
-		x = 0.335 * safezoneW + safezoneX;
-		w = 0.015 * safezoneW;  h = 0.02 * safezoneH;
-		y = ((BASE_Y + 0.015) * safezoneH) + safezoneY;
+		x = GO_X + GO_W - 2.8 * GO_GX; y = GO_Y + 0.9 * GO_GY; w = 1.9 * GO_GX; h = 1.9 * GO_GY;
+		colorBackground[] = {1,1,1,0.06};
+		colorFocused[] = {1,1,1,0.06};
+		colorBackgroundActive[] = {0.90,0.40,0.36,1};
 		text = "X";
+		tooltip = "Close";
 		action = "closeDialog 0";
+	};
+	class GREUH_Divider : GREUH_StdText {
+		x = GO_X + GO_PAD; y = GO_Y + 4.6 * GO_GY; w = GO_W - 2 * GO_PAD; h = 0.1 * GO_GY;
+		colorBackground[] = GO_C_LINE;
+	};
+	class GREUH_ColumnLine : GREUH_StdText {
+		x = GO_X + 36.6 * GO_GX; y = GO_Y + 5.4 * GO_GY; w = 0.08 * GO_GX; h = 25.4 * GO_GY;
+		colorBackground[] = GO_C_LINE;
+	};
+	class GREUH_Done : GREUH_ButtonAccent {
+		x = GO_X + GO_W - GO_PAD - 10 * GO_GX; y = GO_Y + GO_H - 4.4 * GO_GY; w = 10 * GO_GX; h = 3.2 * GO_GY;
+		text = "DONE";
+		action = "closeDialog 0";
+	};
+
+	// Left column: squad management
+	class GREUH_SquadLabel : GREUH_Label {
+		idc = 510;
+		x = GO_LX; y = GO_Y + 5.4 * GO_GY; w = GO_LW;
+		text = "PLAYER SQUADS";
 	};
 	class GREUH_SquadZone : GREUH_DefaultZone {
 		idc = 501;
-		y = ((BASE_Y + 0.11) * safezoneH) + safezoneY;
-		h = (0.2 * safezoneH) - (2 * BORDERSIZE);
-	};
-	class GREUH_SquadLabel : GREUH_Label {
-		idc = 510;
-		y = ((BASE_Y + 0.07) * safezoneH) + safezoneY;
-		text = "Squad Management";
+		x = GO_LX; y = GO_Y + 7 * GO_GY; w = GO_LW; h = 13.4 * GO_GY;
 	};
 	class GREUH_SquadList : RscListBox {
 		idc = 515;
-		x = 0.15 * safezoneW + safezoneX;
-		w = 0.15 * safezoneW;
-		y = ((BASE_Y + 0.11) * safezoneH) + safezoneY;
-		h = (0.2 * safezoneH) - (2 * BORDERSIZE);
+		x = GO_LX; y = GO_Y + 7 * GO_GY; w = 23 * GO_GX; h = 13.4 * GO_GY;
+		font = "RobotoCondensed";
+		sizeEx = GO_GY;
+		rowHeight = 2 * GO_GY;
+		colorText[] = GO_C_TEXT;
+		colorBackground[] = {0,0,0,0};
+		colorSelectBackground[] = GO_C_ACCENT_DIM;
+		colorSelectBackground2[] = GO_C_ACCENT_DIM;
+		colorSelect[] = {1,1,1,1};
+		colorSelect2[] = {1,1,1,1};
 	};
 	class GREUH_ButtonSquad : GREUH_ButtonGeneric {
-		x = 0.3 * safezoneW + safezoneX + BORDERSIZE;
-		w = ((0.2 * safezoneW) / 4) - BORDERSIZE;
+		x = GO_LX + 24 * GO_GX;
+		w = 10 * GO_GX;
 	};
 	class GREUH_ButtonJoin : GREUH_ButtonSquad {
 		idc = 511;
 		text = "Join";
+		tooltip = "Join the selected squad";
 		action = "squadaction = 'join'";
-		y = ((BASE_Y + 0.11) * safezoneH) + safezoneY;
+		y = GO_Y + 7 * GO_GY;
 	};
 	class GREUH_ButtonNew : GREUH_ButtonSquad {
 		idc = 512;
 		text = "Leave";
+		tooltip = "Leave your squad and start a new one";
 		action = "squadaction = 'leave'";
-		y = ((BASE_Y + 0.15) * safezoneH) + safezoneY;
+		y = GO_Y + 10 * GO_GY;
 	};
 	class GREUH_ButtonRename : GREUH_ButtonSquad {
 		idc = 513;
 		text = "Rename";
+		tooltip = "Rename your squad (leader only)";
 		action = "squadaction = 'rename'";
-		y = ((BASE_Y + 0.19) * safezoneH) + safezoneY;
+		y = GO_Y + 13 * GO_GY;
 	};
-	// class GREUH_ButtonLeader : GREUH_ButtonSquad {
-	// 	idc = 514;
-	// 	text = "Leader";
-	// 	action = "squadaction = 'leader'";
-	// 	y = ((BASE_Y + 0.23) * safezoneH) + safezoneY;
-	// };
 	class GREUH_ButtonLock : GREUH_ButtonSquad {
 		idc = 516;
 		text = "Lock";
+		tooltip = "Lock or unlock the selected squad";
 		action = "squadaction = 'lock'";
-		y = ((BASE_Y + 0.27) * safezoneH) + safezoneY;
+		y = GO_Y + 17.8 * GO_GY;
 	};
-	class GREUH_Squad_OuterBG : GREUH_OuterBG {
+	// Rename box, shown by the script under the squad list
+	class GREUH_Squad_OuterBG : GREUH_StdText {
 		idc = 521;
-		style = ST_SINGLE;
-		x = (0.37 * safezoneW + safezoneX) - (BORDERSIZE);
-		y = ((BASE_Y + 0.18) * safezoneH) + safezoneY - (1.5 * BORDERSIZE);
-		w = 0.2 * safezoneW +  (2 * BORDERSIZE);
-		h = 0.05 * safezoneH  + (3 * BORDERSIZE);
+		x = GO_LX; y = GO_Y + 21 * GO_GY; w = GO_LW; h = 3.6 * GO_GY;
+		colorBackground[] = {0.10,0.125,0.135,0.70};
 	};
-	class GREUH_Squad_InnerBG : GREUH_OuterBG {
+	class GREUH_Squad_InnerBG : GREUH_StdText {
 		idc = 522;
-		colorBackground[] = COLOR_GREEN;
-		x = (0.37 * safezoneW + safezoneX);
-		y = ((BASE_Y + 0.18) * safezoneH) + safezoneY;
-		w = 0.2 * safezoneW;
-		h = 0.05 * safezoneH;
+		x = GO_LX; y = GO_Y + 21 * GO_GY; w = 0.28 * GO_GX; h = 3.6 * GO_GY;
+		colorBackground[] = GO_C_ACCENT;
 	};
-	class GREUH_Squad_OuterBG_F : GREUH_Squad_OuterBG {
+	class GREUH_Squad_OuterBG_F : GREUH_StdText {
 		idc = 523;
-		style = ST_FRAME;
 	};
-	class GREUH_Squad_InnerBG_F : GREUH_Squad_InnerBG {
+	class GREUH_Squad_InnerBG_F : GREUH_StdText {
 		idc = 524;
-		style = ST_FRAME;
 	};
-	class GREUH_ButtonName : GREUH_ButtonGeneric {
-		w = ((0.2 * safezoneW) / 5) - BORDERSIZE;
-		y = ((BASE_Y + 0.19) * safezoneH) + safezoneY;
-	};
-	class GREUH_ButtonName_Rename : GREUH_ButtonName {
+	class GREUH_ButtonName_Rename : GREUH_ButtonAccent {
 		idc = 525;
-		x = 0.4875 * safezoneW + safezoneX;
+		x = GO_LX + 23.6 * GO_GX; y = GO_Y + 21.5 * GO_GY; w = 5 * GO_GX;
+		sizeEx = 0.95 * GO_GY;
 		text = "Rename";
 		action = "squadname = ctrlText 527";
 	};
-	class GREUH_ButtonName_Abort : GREUH_ButtonName {
+	class GREUH_ButtonName_Abort : GREUH_ButtonGeneric {
 		idc = 526;
-		x = (0.4875 * safezoneW + safezoneX) + ((0.2 * safezoneW) / 5);
+		x = GO_LX + 29 * GO_GX; y = GO_Y + 21.5 * GO_GY; w = 5 * GO_GX;
 		text = "Cancel";
 		action = "squadaction = ''";
 	};
-	class GREUH_Squad_TextField : GREUH_ButtonName {
+	class GREUH_Squad_TextField {
 		idc = 527;
 		type = CT_EDIT;
 		style = ST_LEFT;
-		x = (0.37 * safezoneW + safezoneX) + BORDERSIZE;
-		w = 0.11 * safezoneW;
+		x = GO_LX + 0.8 * GO_GX; y = GO_Y + 21.5 * GO_GY; w = 22.2 * GO_GX; h = 2.6 * GO_GY;
+		font = "RobotoCondensed";
+		sizeEx = GO_GY;
 		text = "";
-		action = "";
-		colorText[] = COLOR_WHITE;
-		colorSelection[] = COLOR_BRIGHTGREEN;
 		autocomplete = "";
+		shadow = 0;
+		colorBackground[] = {0,0,0,0.35};
+		colorText[] = GO_C_TEXT;
+		colorSelection[] = GO_C_ACCENT_DIM;
+		colorDisabled[] = {1,1,1,0.3};
 	};
 
-	// free idc 561 - 567
-
-	class GREUH_PlatoonZone : GREUH_DefaultZone {
-		idc = 601;
-		y = ((BASE_Y + 0.35) * safezoneH) + safezoneY;
-		h = (0.04 * safezoneH) - (2 * BORDERSIZE);
+	// Left column: ear plugs
+	class GREUH_earplug : GREUH_Label {
+		idc = 1101;
+		x = GO_LX; y = GO_Y + 26.6 * GO_GY; w = GO_LW;
+		text = "EAR PLUGS";
 	};
+	class GREUH_LabelEP : GREUH_StdText {
+		idc = 1104;
+		x = GO_LX; y = GO_Y + 28.4 * GO_GY; w = 6 * GO_GX; h = 2 * GO_GY;
+		text = "Volume";
+	};
+	class GREUH_Slider2 : GREUH_SliderBase {
+		idc = 1102;
+		x = GO_LX + 6.5 * GO_GX; y = GO_Y + 28.4 * GO_GY; w = 21 * GO_GX;
+		text = "Volume";
+		onSliderPosChanged = "desired_vehvolume = (sliderPosition 1102)";
+	};
+	class GREUH_SliderEP : GREUH_ValueLabel {
+		idc = 1103;
+		x = GO_LX + 28 * GO_GX; y = GO_Y + 28.4 * GO_GY; w = 6 * GO_GX;
+	};
+
+	// Right column: display and awareness
 	class GREUH_PlatoonLabel : GREUH_Label {
 		idc = 610;
-		y = ((BASE_Y + 0.31) * safezoneH) + safezoneY;
-		text = "Platoon & Squad Awareness";
+		x = GO_RX; y = GO_Y + 5.4 * GO_GY; w = GO_RW;
+		text = "DISPLAY & AWARENESS";
 	};
 	class GREUH_LabelPlatoon : GREUH_RegularLabel {
 		idc = 611;
-		y = ((BASE_Y + 0.35) * safezoneH) + safezoneY;
-		text = "Show platoon overlay : ";
+		x = GO_RX; y = GO_Y + 7 * GO_GY; w = 18 * GO_GX;
+		text = "Show platoon overlay";
 	};
-	class GREUH_LabelPlatoonActive : GREUH_RegularLabel {
+	class GREUH_LabelPlatoonActive : GREUH_ActiveLabel {
 		idc = 612;
-		style = ST_RIGHT;
-		colorText[] = COLOR_BRIGHTGREEN;
-		text = "active";
-		x = 0.2 * safezoneW + safezoneX;
-		w = 0.1 * safezoneW;
-		y = ((BASE_Y + 0.35) * safezoneH) + safezoneY;
+		x = GO_RX + 18 * GO_GX; y = GO_Y + 7 * GO_GY; w = 6.4 * GO_GX;
 	};
 	class GREUH_PlatoonYes : GREUH_ButtonGeneric {
 		idc = 613;
-		w = ((0.08 * safezoneW) / 4);
-		y = ((BASE_Y + 0.35) * safezoneH) + safezoneY;
-		x = 0.305 * safezoneW + safezoneX;
+		x = GO_RX + 25.2 * GO_GX; y = GO_Y + 7 * GO_GY; w = 4.4 * GO_GX; h = 2.2 * GO_GY;
 		text = "Yes";
 		action = "show_platoon = true";
 	};
-	class GREUH_PlatoonNo : GREUH_ButtonGeneric {
+	class GREUH_PlatoonNo : GREUH_PlatoonYes {
 		idc = 614;
-		w = ((0.08 * safezoneW) / 4);
-		y = ((BASE_Y + 0.35) * safezoneH) + safezoneY;
-		x = (0.32 + BORDERSIZE) * safezoneW + safezoneX;
+		x = GO_RX + 30 * GO_GX;
 		text = "No";
 		action = "show_platoon = false";
 	};
-	class GREUH_ViewZone : GREUH_DefaultZone {
-		idc = 701;
-		y = ((BASE_Y + 0.51) * safezoneH) + safezoneY;
-		h = (0.04 * safezoneH) - (2 * BORDERSIZE);
+	class GREUH_PlatoonZone : GREUH_DefaultZone {
+		idc = 601;
+		x = GO_RX; y = GO_Y + 7 * GO_GY; w = GO_RW; h = 2.2 * GO_GY;
 	};
+	class GREUH_LabelNametags : GREUH_LabelPlatoon {
+		idc = 961;
+		y = GO_Y + 9.6 * GO_GY;
+		text = "Show player nametags";
+	};
+	class GREUH_NametagsActive : GREUH_LabelPlatoonActive {
+		idc = 962;
+		y = GO_Y + 9.6 * GO_GY;
+	};
+	class GREUH_NametagsYes : GREUH_PlatoonYes {
+		idc = 963;
+		y = GO_Y + 9.6 * GO_GY;
+		action = "show_nametags = true";
+	};
+	class GREUH_NametagsNo : GREUH_PlatoonNo {
+		idc = 964;
+		y = GO_Y + 9.6 * GO_GY;
+		action = "show_nametags = false";
+	};
+	class GREUH_MarkersZone : GREUH_PlatoonZone {
+		idc = 901;
+		y = GO_Y + 9.6 * GO_GY;
+	};
+	class GREUH_LabelMarkers : GREUH_LabelPlatoon {
+		idc = 911;
+		y = GO_Y + 12.2 * GO_GY;
+		text = "Show teammates on map";
+	};
+	class GREUH_LabelMarkersActive : GREUH_LabelPlatoonActive {
+		idc = 912;
+		y = GO_Y + 12.2 * GO_GY;
+	};
+	class GREUH_TeammatesYes : GREUH_PlatoonYes {
+		idc = 913;
+		y = GO_Y + 12.2 * GO_GY;
+		action = "show_teammates = true";
+	};
+	class GREUH_TeammatesNo : GREUH_PlatoonNo {
+		idc = 914;
+		y = GO_Y + 12.2 * GO_GY;
+		action = "show_teammates = false";
+	};
+	class GREUH_LabelZone : GREUH_PlatoonZone {
+		idc = 910;
+		y = GO_Y + 12.2 * GO_GY;
+	};
+
+	// Right column: view distance
 	class GREUH_ViewDistance : GREUH_Label {
 		idc = 711;
-		y = ((BASE_Y + 0.47) * safezoneH) + safezoneY;
-		text = "Adjust View Distance";
+		x = GO_RX; y = GO_Y + 15.2 * GO_GY; w = GO_RW;
+		text = "VIEW DISTANCE";
 	};
-	class GREUH_Slider {
-		idc = 712;
-		type = CT_SLIDER;
-		style = SL_HORZ;
-		x = 0.19 * safezoneW + safezoneX;
-		w = 0.12 * safezoneW;
-		y = ((BASE_Y + 0.515) * safezoneH) + safezoneY;
-		h = 0.025 * safezoneH;
-		text = "View Distance";
-		color[] = { 1, 1, 1, 1 };
-		coloractive[] = { 1, 1, 1, 1 };
-		onSliderPosChanged = "desiredviewdistance_inf = (sliderPosition 712)";
+	class GREUH_ViewZone : GREUH_DefaultZone {
+		idc = 701;
+		x = GO_RX; y = GO_Y + 16.8 * GO_GY; w = GO_RW; h = 8.8 * GO_GY;
 	};
-	class GREUH_SliderVD : GREUH_Label {
-		idc = 713;
-		style = ST_LEFT;
-		x = 0.31 * safezoneW + safezoneX;
-		w = 0.05 * safezoneW;
-		y = ((BASE_Y + 0.505) * safezoneH) + safezoneY;
-		h = 0.03 * safezoneH;
-		colorBackground[] = COLOR_NOALPHA;
-		text = "";
-	};
-	class GREUH_LabelVD : GREUH_Label {
+	class GREUH_LabelVD : GREUH_StdText {
 		idc = 714;
-		style = ST_LEFT;
-		x = 0.15 * safezoneW + safezoneX;
-		w = 0.05 * safezoneW;
-		y = ((BASE_Y + 0.505) * safezoneH) + safezoneY;
-		h = 0.03 * safezoneH;
-		colorBackground[] = COLOR_NOALPHA;
+		x = GO_RX; y = GO_Y + 16.8 * GO_GY; w = 6 * GO_GX; h = 2 * GO_GY;
 		text = "Infantry";
 	};
-	class GREUH_SliderVeh {
-		idc = 722;
-		type = CT_SLIDER;
-		style = SL_HORZ;
-		x = 0.19 * safezoneW + safezoneX;
-		w = 0.12 * safezoneW;
-		y = ((BASE_Y + 0.545) * safezoneH) + safezoneY;
-		h = 0.025 * safezoneH;
+	class GREUH_Slider : GREUH_SliderBase {
+		idc = 712;
+		x = GO_RX + 6.5 * GO_GX; y = GO_Y + 16.8 * GO_GY; w = 20 * GO_GX;
 		text = "View Distance";
-		color[] = { 1, 1, 1, 1 };
-		coloractive[] = { 1, 1, 1, 1 };
-		onSliderPosChanged = "desiredviewdistance_veh = (sliderPosition 722)";
+		onSliderPosChanged = "desiredviewdistance_inf = (sliderPosition 712)";
 	};
-	class GREUH_SliderVDVeh : GREUH_Label {
-		idc = 723;
-		style = ST_LEFT;
-		x = 0.31 * safezoneW + safezoneX;
-		w = 0.05 * safezoneW;
-		y = ((BASE_Y + 0.535) * safezoneH) + safezoneY;
-		h = 0.03 * safezoneH;
-		colorBackground[] = COLOR_NOALPHA;
-		text = "";
+	class GREUH_SliderVD : GREUH_ValueLabel {
+		idc = 713;
+		x = GO_RX + 27 * GO_GX; y = GO_Y + 16.8 * GO_GY; w = 7.5 * GO_GX;
 	};
-	class GREUH_LabelVDVeh : GREUH_Label {
+	class GREUH_LabelVDVeh : GREUH_LabelVD {
 		idc = 724;
-		style = ST_LEFT;
-		x = 0.15 * safezoneW + safezoneX;
-		w = 0.05 * safezoneW;
-		y = ((BASE_Y + 0.535) * safezoneH) + safezoneY;
-		h = 0.03 * safezoneH;
-		colorBackground[] = COLOR_NOALPHA;
+		y = GO_Y + 19 * GO_GY;
 		text = "Vehicles";
 	};
-	class GREUH_SliderObj {
-		idc = 732;
-		type = CT_SLIDER;
-		style = SL_HORZ;
-		x = 0.19 * safezoneW + safezoneX;
-		w = 0.12 * safezoneW;
-		y = ((BASE_Y + 0.575) * safezoneH) + safezoneY;
-		h = 0.025 * safezoneH;
-		text = "View Distance";
-		color[] = { 1, 1, 1, 1 };
-		coloractive[] = { 1, 1, 1, 1 };
-		onSliderPosChanged = "desiredviewdistance_obj = (sliderPosition 732)";
+	class GREUH_SliderVeh : GREUH_Slider {
+		idc = 722;
+		y = GO_Y + 19 * GO_GY;
+		onSliderPosChanged = "desiredviewdistance_veh = (sliderPosition 722)";
 	};
-	class GREUH_SliderVDObj : GREUH_Label {
-		idc = 733;
-		style = ST_LEFT;
-		x = 0.31 * safezoneW + safezoneX;
-		w = 0.05 * safezoneW;
-		y = ((BASE_Y + 0.565) * safezoneH) + safezoneY;
-		h = 0.03 * safezoneH;
-		colorBackground[] = COLOR_NOALPHA;
-		text = "";
+	class GREUH_SliderVDVeh : GREUH_SliderVD {
+		idc = 723;
+		y = GO_Y + 19 * GO_GY;
 	};
-	class GREUH_LabelVDObj : GREUH_Label {
+	class GREUH_LabelVDObj : GREUH_LabelVD {
 		idc = 734;
-		style = ST_LEFT;
-		x = 0.15 * safezoneW + safezoneX;
-		w = 0.05 * safezoneW;
-		y = ((BASE_Y + 0.565) * safezoneH) + safezoneY;
-		h = 0.03 * safezoneH;
-		colorBackground[] = COLOR_NOALPHA;
+		y = GO_Y + 21.2 * GO_GY;
 		text = "Objects";
 	};
-	class GREUH_FPSLabel : GREUH_Label {
+	class GREUH_SliderObj : GREUH_Slider {
+		idc = 732;
+		y = GO_Y + 21.2 * GO_GY;
+		onSliderPosChanged = "desiredviewdistance_obj = (sliderPosition 732)";
+	};
+	class GREUH_SliderVDObj : GREUH_SliderVD {
+		idc = 733;
+		y = GO_Y + 21.2 * GO_GY;
+	};
+	class GREUH_FPSLabel : GREUH_StdText {
 		idc = 724;
-		style = ST_LEFT;
-		x = 0.15 * safezoneW + safezoneX;
-		w = 0.3 * safezoneW;
-		y = ((BASE_Y + 0.61) * safezoneH) + safezoneY;
-		h = 0.03 * safezoneH;
-		colorBackground[] = COLOR_NOALPHA;
-		sizeEx = 0.018 * safezoneH;
-		text = "Adjust view distance to keep FPS above";
+		x = GO_RX; y = GO_Y + 23.6 * GO_GY; w = 26 * GO_GX; h = 2 * GO_GY;
+		colorText[] = GO_C_MUTED;
+		sizeEx = 0.9 * GO_GY;
+		text = "Lower view distance to keep FPS above (0 = off)";
 	};
 	class GREUH_FPSEdit {
 		idc = 960;
 		type = CT_EDIT;
-		style = ST_LEFT + ST_FRAME;
-		x = 0.317 * safezoneW + safezoneX;
-		w = 0.03 * safezoneW;
-		y = ((BASE_Y + 0.61) * safezoneH) + safezoneY;
-		h = 0.03 * safezoneH;
-		colorBackground[] = {0,0,0,0};
-		colorText[] = {1,1,1,1};
-		colorSelection[] = {1,1,1,0.25};
-		colorDisabled[] = { 0.2, 0.2, 0.2, 0.7 };
-		colorBackgroundDisabled[] = { 0.5, 0.5, 0.5, 0.5 };
-		font = FONTM;
-		sizeEx = 0.02 * safezoneH;
+		style = ST_RIGHT;
+		x = GO_RX + 28.5 * GO_GX; y = GO_Y + 23.6 * GO_GY; w = 6 * GO_GX; h = 2 * GO_GY;
+		colorBackground[] = {0,0,0,0.35};
+		colorText[] = GO_C_TEXT;
+		colorSelection[] = GO_C_ACCENT_DIM;
+		colorDisabled[] = {1,1,1,0.3};
+		font = "PuristaMedium";
+		sizeEx = GO_GY;
 		autocomplete = "";
 		text = "";
 		shadow = 0;
 	};
-	class GREUH_WorldZone : GREUH_DefaultZone {
-		idc = 801;
-		y = ((BASE_Y + 0.7) * safezoneH) + safezoneY;
-		h = (0.04 * safezoneH) - (2 * BORDERSIZE);
-	};
+
+	// Right column: terrain detail
 	class GREUH_WorldQuality : GREUH_Label {
 		idc = 810;
-		y = ((BASE_Y + 0.66) * safezoneH) + safezoneY;
-		text = "Adjust Terrain Details";
+		x = GO_RX; y = GO_Y + 26.6 * GO_GY; w = GO_RW;
+		text = "TERRAIN DETAIL";
+	};
+	class GREUH_WorldZone : GREUH_DefaultZone {
+		idc = 801;
+		x = GO_RX; y = GO_Y + 28.2 * GO_GY; w = GO_RW; h = 2.6 * GO_GY;
 	};
 	class GREUH_ButtonWorld : GREUH_ButtonGeneric {
-		w = ((0.2 * safezoneW) / 4) - BORDERSIZE;
-		y = ((BASE_Y + 0.7) * safezoneH) + safezoneY;
+		w = 8.4 * GO_GX;
+		y = GO_Y + 28.2 * GO_GY;
 	};
 	class GREUH_ButtonWorldVeryLow : GREUH_ButtonWorld {
 		idc = 812;
-		x = 0.15 * safezoneW + safezoneX;
+		x = GO_RX;
 		text = "Low";
 		action = "setTerrainGrid 40; hint 'Terrain details set to Low'";
 	};
 	class GREUH_ButtonWorldLow : GREUH_ButtonWorld {
 		idc = 813;
-		x = (0.15 * safezoneW + safezoneX) + (((0.2 * safezoneW) / 4) * 1);
+		x = GO_RX + 8.7 * GO_GX;
 		text = "Normal";
 		action = "setTerrainGrid 25; hint 'Terrain details set to Normal'";
 	};
 	class GREUH_ButtonWorldNormal : GREUH_ButtonWorld {
 		idc = 814;
-		x = (0.15 * safezoneW + safezoneX) + (((0.2 * safezoneW) / 4) * 2);
+		x = GO_RX + 17.4 * GO_GX;
 		text = "High";
 		action = "setTerrainGrid 12.5; hint 'Terrain details set to High'";
 	};
 	class GREUH_ButtonWorldHigh : GREUH_ButtonWorld {
 		idc = 815;
-		x = (0.15 * safezoneW + safezoneX) + (((0.2 * safezoneW) / 4) * 3);
+		x = GO_RX + 26.1 * GO_GX;
 		text = "Ultra";
 		action = "setTerrainGrid 3.125; hint 'Terrain details set to Ultra'";
-	};
-	class GREUH_MarkersZone : GREUH_DefaultZone {
-		idc = 901;
-		y = ((BASE_Y + 0.39) * safezoneH) + safezoneY;
-		h = (0.04 * safezoneH) - (2 * BORDERSIZE);
-	};
-	class GREUH_LabelNametags : GREUH_RegularLabel {
-		idc = 961;
-		y = ((BASE_Y + 0.39) * safezoneH) + safezoneY;
-		text = "Show player nametags : ";
-	};
-	class GREUH_NametagsActive : GREUH_RegularLabel {
-		idc = 962;
-		style = ST_RIGHT;
-		colorText[] = COLOR_BRIGHTGREEN;
-		text = "active";
-		x = 0.2 * safezoneW + safezoneX;
-		w = 0.1 * safezoneW;
-		y = ((BASE_Y + 0.39) * safezoneH) + safezoneY;
-	};
-	class GREUH_NametagsYes : GREUH_ButtonGeneric {
-		idc = 963;
-		w = ((0.08 * safezoneW) / 4);
-		y = ((BASE_Y + 0.39) * safezoneH) + safezoneY;
-		x = 0.305 * safezoneW + safezoneX;
-		text = "Yes";
-		action = "show_nametags = true";
-	};
-	class GREUH_NametagsNo : GREUH_ButtonGeneric {
-		idc = 964;
-		w = ((0.08 * safezoneW) / 4);
-		y = ((BASE_Y + 0.39) * safezoneH) + safezoneY;
-		x = (0.32 + BORDERSIZE) * safezoneW + safezoneX;
-		text = "No";
-		action = "show_nametags = false";
-	};
-	class GREUH_LabelZone : GREUH_DefaultZone {
-		idc = 910;
-		y = ((BASE_Y + 0.43) * safezoneH) + safezoneY;
-		h = (0.04 * safezoneH) - (2 * BORDERSIZE);
-	};
-	class GREUH_LabelMarkers : GREUH_RegularLabel {
-		idc = 911;
-		y = ((BASE_Y + 0.43) * safezoneH) + safezoneY;
-		text = "Show teammates on map : ";
-	};
-	class GREUH_LabelMarkersActive : GREUH_RegularLabel {
-		idc = 912;
-		style = ST_RIGHT;
-		colorText[] = COLOR_BRIGHTGREEN;
-		text = "active";
-		x = 0.2 * safezoneW + safezoneX;
-		w = 0.1 * safezoneW;
-		y = ((BASE_Y + 0.43) * safezoneH) + safezoneY;
-	};
-	class GREUH_TeammatesYes : GREUH_ButtonGeneric {
-		idc = 913;
-		w = ((0.08 * safezoneW) / 4);
-		y = ((BASE_Y + 0.43) * safezoneH) + safezoneY;
-		x = 0.305 * safezoneW + safezoneX;
-		text = "Yes";
-		action = "show_teammates = true";
-	};
-	class GREUH_TeammatesNo : GREUH_ButtonGeneric {
-		idc = 914;
-		w = ((0.08 * safezoneW) / 4);
-		y = ((BASE_Y + 0.43) * safezoneH) + safezoneY;
-		x = (0.32 + BORDERSIZE) * safezoneW + safezoneX;
-		text = "No";
-		action = "show_teammates = false";
-	};
-	class GREUH_earplug : GREUH_Label {
-		idc = 1101;
-		y = ((BASE_Y + 0.742) * safezoneH) + safezoneY;
-		text = "Adjust Ear Plug Volume";
-	};
-	class GREUH_Slider2 {
-		idc = 1102;
-		type = CT_SLIDER;
-		style = SL_HORZ;
-		x = 0.19 * safezoneW + safezoneX;
-		w = 0.12 * safezoneW;
-		y = ((BASE_Y + 0.782) * safezoneH) + safezoneY;
-		h = 0.025 * safezoneH;
-		text = "Volume";
-		color[] = { 1, 1, 1, 1 };
-		coloractive[] = { 1, 1, 1, 1 };
-		onSliderPosChanged = "desired_vehvolume = (sliderPosition 1102)";
-	};
-	class GREUH_SliderEP : GREUH_Label {
-		idc = 1103;
-		style = ST_LEFT;
-		x = 0.31 * safezoneW + safezoneX;
-		w = 0.05 * safezoneW;
-		y = ((BASE_Y + 0.772) * safezoneH) + safezoneY;
-		h = 0.03 * safezoneH;
-		colorBackground[] = COLOR_NOALPHA;
-		text = "";
-	};
-	class GREUH_LabelEP : GREUH_Label {
-		idc = 1104;
-		style = ST_LEFT;
-		x = 0.15 * safezoneW + safezoneX;
-		w = 0.05 * safezoneW;
-		y = ((BASE_Y + 0.772) * safezoneH) + safezoneY;
-		h = 0.03 * safezoneH;
-		colorBackground[] = COLOR_NOALPHA;
-		text = "Volume";
 	};
 };
 
@@ -868,17 +769,17 @@ class GreuhButton {
 	default = false;
 	font = FONTM;
 	sizeEx = 0.018 * safezoneH;
-	colorText[] = { 0, 0, 0, 1 };
-	colorFocused[] = { 1, 1, 1, 1 };
-	colorDisabled[] = { 0.2, 0.2, 0.2, 0.7 };
-	colorBackground[] = { 0.8, 0.8, 0.8, 0.8 };
-	colorBackgroundDisabled[] = { 0.5, 0.5, 0.5, 0.5 };
-	colorBackgroundActive[] = { 1, 1, 1, 1 };
-	offsetX = 0.003;
-	offsetY = 0.003;
-	offsetPressedX = 0.002;
-	offsetPressedY = 0.002;
-	colorShadow[] = { 0, 0, 0, 0.5 };
+	colorText[] = { 0.92, 0.94, 0.95, 1 };
+	colorFocused[] = { 0.16, 0.20, 0.21, 0.95 };
+	colorDisabled[] = { 1, 1, 1, 0.3 };
+	colorBackground[] = { 0.16, 0.20, 0.21, 0.95 };
+	colorBackgroundDisabled[] = { 0.10, 0.12, 0.13, 0.6 };
+	colorBackgroundActive[] = { 0.20, 0.42, 0.38, 1 };
+	offsetX = 0;
+	offsetY = 0;
+	offsetPressedX = 0.001;
+	offsetPressedY = 0.001;
+	colorShadow[] = { 0, 0, 0, 0 };
 	colorBorder[] = { 0, 0, 0, 1 };
 	borderSize = 0;
 	soundEnter[] = { "", 0, 1 };          // no sound

@@ -1,184 +1,129 @@
+// Send resources: balance tiles on top, recipient and amounts below.
+#define SND_W (38 * HPC_GX)
+#define SND_H (31 * HPC_GY)
+#define SND_X (safezoneX + (safezoneW - SND_W) / 2)
+#define SND_Y (safezoneY + (safezoneH - SND_H) / 2)
+#define SND_PAD (1.2 * HPC_GX)
+#define SND_IW (SND_W - 2 * SND_PAD)
+#define SND_TILE_W ((SND_IW - 1 * HPC_GX) / 2)
+#define SND_LBL_W (9 * HPC_GX)
+
 class liberation_send_resources {
-  	idd = 2337;
-    onLoad = "if (isNil 'HPC_fnc_scaleDialog') then {_this call compile preprocessFileLineNumbers 'scripts\client\misc\HPC_scaleDialog.sqf'} else {_this call HPC_fnc_scaleDialog};";
+	idd = 2337;
 	name = "liberation_send_resources";
 	movingEnable = false;
 	enableSimulation = true;
-	class controlsBackground {
-		class OuterBG1: StdBG {
-			colorBackground[] = COLOR_BROWN;
-			x = 0.19175 * safezoneW + safezoneX;
-			y = 0.1324 * safezoneH + safezoneY;
-			w = 0.25 * safezoneW;
-			h = 0.62 * safezoneH;
-		};
-		class OuterBG_F1: OuterBG1 {
-				style = ST_FRAME;
-		};
-		class InnerBG1: OuterBG1 {
-			colorBackground[] = COLOR_GREEN;
-			x = 0.1985 * safezoneW + safezoneX;
-			y = 0.1916 * safezoneH + safezoneY;
-			w = 0.2375 * safezoneW;
-			h = 0.512 * safezoneH;
-		};
-		class InnerBG_F1: InnerBG1 {
-			style = ST_FRAME;
-		};
+	controlsBackground[] = {"Panel", "AmmoTile", "FuelTile"};
+	controls[] = {"Accent", "Header", "Subtitle", "ButtonX", "Divider", "LabelBalance", "AmmoImage", "PlayerAmmoText", "FuelImage", "PlayerFuelText", "LabelTransfer", "PlayerText", "PlayerList", "AmmoText", "AmmoList", "FuelText", "FuelList", "CancelButton", "SendAmmo"};
+	objects[] = {};
+
+	class Panel : HPC_Panel {
+		x = SND_X; y = SND_Y; w = SND_W; h = SND_H;
+		colorBackground[] = HPC_C_PANEL_SOLID;
 	};
-
-	class controls {
-		class Header: StdHeader {
-			text = $STR_SEND_MENU;
-			x = 0.1985 * safezoneW + safezoneX;
-			y = 0.1444 * safezoneH + safezoneY;
-			w = 0.2375 * safezoneW;
-			h = 0.04 * safezoneH;
-		};
-		class GREUH_RscStructuredText {
-			type = 13;
-			idc = -1;
-			style = 0;
-			colorText[] = {1,1,1,1};
-			class Attributes
-			{
-				font = "PuristaMedium";
-				color = "#ffffff";
-				align = "left";
-				shadow = 1;
-			};
-			x = 0;
-			y = 0;
-			h = 0.035;
-			w = 0.1;
-			text = "";
-			size = "(((((safezoneW / safezoneH) min 1.2) / 1.2) / 25) * 1)";
-			shadow = 1;
-		};
-		class IconImage {
-			idc = -1;
-			type = CT_STATIC;
-			style = ST_PICTURE;
-			colorText[] = {1, 1, 1, 1};
-			colorBackground[] = {0, 0, 0, 1};
-			sizeEx = 0.023;
-			x = (0.206094 * safezoneW + safezoneX);
-			y = 0.2294 * safezoneH + safezoneY;
-			w = (0.015 * safezoneW);
-			h = (0.025 * safezoneH);
-			moving = false;
-			font = FONTM;
-			text = "";
-		};
-		class AmmoImageShadow : IconImage {
-			x = (0.206094 * safezoneW + safezoneX) + 0.003;
-			y = (0.2294 * safezoneH + safezoneY) + 0.005;
-			text = "res\ui_ammo.paa";
-			colorText[] = {0, 0, 0, 1};
-		};
-		class AmmoImage : IconImage {
-			x = (0.206094 * safezoneW + safezoneX);
-			y = 0.2294 * safezoneH + safezoneY;
-			text = "res\ui_ammo.paa";
-		};
-		class PlayerAmmoText: StdText {
-			idc = 230;
-			x = 0.226094 * safezoneW + safezoneX;
-			y = 0.2294 * safezoneH + safezoneY;
-			w = 0.071875 * safezoneW;
-			h = 0.033 * safezoneH;
-			font = "PuristaMedium";
-			colorText[] = {0.75, 0, 0, 1};
-			size = "(((((safezoneW / safezoneH) min 1.2) / 1.2) / 25) * 1)";
-			shadow = 1;
-		};
-		class FuelImageShadow : IconImage {
-			x = (0.306094 * safezoneW + safezoneX) + 0.003;
-			y = (0.2294 * safezoneH + safezoneY) + 0.005;
-			text = "res\ui_fuel.paa";
-			colorText[] = {0, 0, 0, 1};
-		};
-		class FuelImage : IconImage {
-			x = (0.306094 * safezoneW + safezoneX);
-			y = 0.2294 * safezoneH + safezoneY;
-			text = "res\ui_fuel.paa";
-		};
-		class PlayerFuelText: StdText {
-			idc = 234;
-			x = 0.326094 * safezoneW + safezoneX;
-			y = 0.2294 * safezoneH + safezoneY;
-			w = 0.071875 * safezoneW;
-			h = 0.033 * safezoneH;
-			font = "PuristaMedium";
-			colorText[] = {0.75, 0.75, 0, 1};
-			size = "(((((safezoneW / safezoneH) min 1.2) / 1.2) / 25) * 1)";
-			shadow = 1;
-		};
-		class PlayerText: GREUH_RscStructuredText {
-			idc = -1;
-			text = $STR_SEND_PLAYER;
-			x = 0.206094 * safezoneW + safezoneX;
-			y = 0.2976 * safezoneH + safezoneY;
-			w = 0.061875 * safezoneW;
-			h = 0.033 * safezoneH;
-
-		};
-		class PlayerList: StdCombo {
-			idc = 231;
-			x = 0.263437 * safezoneW + safezoneX;
-			y = 0.2976 * safezoneH + safezoneY;
-			w = 0.149531 * safezoneW;
-			h = 0.033 * safezoneH;
-			//sizeEx = 0.018 * safezoneH * GUI_GRID_H * GUI_GRID_H;
-		};
-		class AmmoText: GREUH_RscStructuredText {
-			idc = -1;
-			text = $STR_SEND_AMMO;
-			x = 0.206094 * safezoneW + safezoneX;
-			y = 0.3658 * safezoneH + safezoneY;
-			w = 0.061875 * safezoneW;
-			h = 0.033 * safezoneH;
-		};
-		class AmmoList: StdCombo {
-			idc = 232;
-			x = 0.263437 * safezoneW + safezoneX;
-			y = 0.3658 * safezoneH + safezoneY;
-			w = 0.149531 * safezoneW;
-			h = 0.033 * safezoneH;
-		};
-		class FuelText: GREUH_RscStructuredText {
-			idc = -1;
-			text = $STR_SEND_FUEL;
-			x = 0.206094 * safezoneW + safezoneX;
-			y = 0.4340 * safezoneH + safezoneY;
-			w = 0.061875 * safezoneW;
-			h = 0.033 * safezoneH;
-		};
-		class FuelList: StdCombo {
-			idc = 233;
-			x = 0.263437 * safezoneW + safezoneX;
-			y = 0.4340 * safezoneH + safezoneY;
-			w = 0.149531 * safezoneW;
-			h = 0.033 * safezoneH;
-		};
-		class CancelButton: StdButton {
-			idc = -1;
-			action = "closeDialog 0";
-			text = "Exit";
-			x = 0.2100 * safezoneW + safezoneX;
-			y = 0.71 * safezoneH + safezoneY;
-			w = 0.09 * safezoneW;
-			h = 0.035 * safezoneH;
-			default = true;
-		};
-		class SendAmmo : StdButton {
-			idc = -1;
-			text = $STR_SEND_ACTION;
-			onButtonClick = "send_ammo = 1";
-			x = 0.3300 * safezoneW + safezoneX;
-			y = 0.71 * safezoneH + safezoneY;
-			w = 0.09 * safezoneW;
-			h = 0.035 * safezoneH;
-		};
+	class AmmoTile : HPC_Text {
+		x = SND_X + SND_PAD; y = SND_Y + 7 * HPC_GY; w = SND_TILE_W; h = 3.4 * HPC_GY;
+		colorBackground[] = HPC_C_ROW;
+	};
+	class FuelTile : AmmoTile {
+		x = SND_X + SND_PAD + SND_TILE_W + 1 * HPC_GX;
+	};
+	class Accent : HPC_Text {
+		x = SND_X; y = SND_Y; w = 0.28 * HPC_GX; h = 4.2 * HPC_GY;
+		colorBackground[] = HPC_C_ACCENT;
+	};
+	class Header : HPC_Heading {
+		x = SND_X + SND_PAD; y = SND_Y + 0.5 * HPC_GY; w = SND_W - 5 * HPC_GX; h = 2.2 * HPC_GY;
+		sizeEx = 1.55 * HPC_GY;
+		text = "SEND RESOURCES";
+	};
+	class Subtitle : HPC_Label {
+		x = SND_X + SND_PAD; y = SND_Y + 2.5 * HPC_GY; w = SND_IW; h = 1.4 * HPC_GY;
+		font = "RobotoCondensed";
+		sizeEx = 0.95 * HPC_GY;
+		text = "Transfer ammo and fuel from your account to another player.";
+	};
+	class ButtonX : HPC_Button {
+		x = SND_X + SND_W - 2.8 * HPC_GX; y = SND_Y + 0.9 * HPC_GY; w = 1.9 * HPC_GX; h = 1.9 * HPC_GY;
+		colorBackground[] = {1,1,1,0.06};
+		colorFocused[] = {1,1,1,0.06};
+		colorBackgroundActive[] = HPC_C_DANGER;
+		text = "X";
+		tooltip = "Close";
+		action = "closeDialog 0";
+	};
+	class Divider : HPC_Text {
+		x = SND_X + SND_PAD; y = SND_Y + 4.6 * HPC_GY; w = SND_IW; h = 0.1 * HPC_GY;
+		colorBackground[] = HPC_C_LINE;
+	};
+	class LabelBalance : HPC_Label {
+		x = SND_X + SND_PAD; y = SND_Y + 5.4 * HPC_GY; w = SND_IW; h = 1.4 * HPC_GY;
+		text = "YOUR BALANCE";
+	};
+	class AmmoImage : HPC_Picture {
+		x = SND_X + SND_PAD + 0.6 * HPC_GX; y = SND_Y + 7.6 * HPC_GY; w = 2.2 * HPC_GX; h = 2.2 * HPC_GY;
+		text = "res\ui_ammo.paa";
+	};
+	class PlayerAmmoText : HPC_Text {
+		idc = 230;
+		x = SND_X + SND_PAD + 3.4 * HPC_GX; y = SND_Y + 7.4 * HPC_GY; w = SND_TILE_W - 3.8 * HPC_GX; h = 2.6 * HPC_GY;
+		font = "PuristaSemibold";
+		sizeEx = 1.15 * HPC_GY;
+		colorText[] = {0.95,0.45,0.40,1};
+	};
+	class FuelImage : AmmoImage {
+		x = SND_X + SND_PAD + SND_TILE_W + 1.6 * HPC_GX;
+		text = "res\ui_fuel.paa";
+	};
+	class PlayerFuelText : PlayerAmmoText {
+		idc = 234;
+		x = SND_X + SND_PAD + SND_TILE_W + 4.4 * HPC_GX;
+		colorText[] = {0.95,0.85,0.35,1};
+	};
+	class LabelTransfer : LabelBalance {
+		y = SND_Y + 11.8 * HPC_GY;
+		text = "TRANSFER";
+	};
+	class PlayerText : HPC_Text {
+		x = SND_X + SND_PAD; y = SND_Y + 13.4 * HPC_GY; w = SND_LBL_W; h = 2.4 * HPC_GY;
+		text = $STR_SEND_PLAYER;
+	};
+	class PlayerList : StdCombo {
+		idc = 231;
+		x = SND_X + SND_PAD + SND_LBL_W; y = SND_Y + 13.4 * HPC_GY; w = SND_IW - SND_LBL_W; h = 2.4 * HPC_GY;
+		font = "RobotoCondensed";
+		sizeEx = 1.05 * HPC_GY;
+		wholeHeight = 14 * HPC_GY;
+		colorBackground[] = {0.12,0.15,0.16,0.95};
+		colorSelectBackground[] = HPC_C_ACCENT_DIM;
+		colorSelect[] = {1,1,1,1};
+		colorText[] = HPC_C_TEXT;
+	};
+	class AmmoText : PlayerText {
+		y = SND_Y + 16.4 * HPC_GY;
+		text = $STR_SEND_AMMO;
+	};
+	class AmmoList : PlayerList {
+		idc = 232;
+		y = SND_Y + 16.4 * HPC_GY;
+	};
+	class FuelText : PlayerText {
+		y = SND_Y + 19.4 * HPC_GY;
+		text = $STR_SEND_FUEL;
+	};
+	class FuelList : PlayerList {
+		idc = 233;
+		y = SND_Y + 19.4 * HPC_GY;
+	};
+	class CancelButton : HPC_Button {
+		x = SND_X + SND_W - SND_PAD - 25 * HPC_GX; y = SND_Y + SND_H - 4.4 * HPC_GY; w = 10 * HPC_GX; h = 3.2 * HPC_GY;
+		text = "Exit";
+		action = "closeDialog 0";
+		default = true;
+	};
+	class SendAmmo : HPC_ButtonAccent {
+		x = SND_X + SND_W - SND_PAD - 14 * HPC_GX; y = SND_Y + SND_H - 4.4 * HPC_GY; w = 14 * HPC_GX; h = 3.2 * HPC_GY;
+		text = $STR_SEND_ACTION;
+		onButtonClick = "send_ammo = 1";
 	};
 };
