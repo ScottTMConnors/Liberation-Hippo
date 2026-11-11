@@ -13,7 +13,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-GAME = Path('E:/SteamLibrary/steamapps/common/Arma 3')
+import os
+GAME = Path(os.environ.get('ARMA3_DIR', 'C:/Program Files (x86)/Steam/steamapps/common/Arma 3'))
 ERRORS = re.compile(r'Error in expression|Error position:|Error (?:Undefined variable|Missing|Type|Generic|Zero divisor)|Script .* not found|File .* line \d+.*Error|Config : some input after EndOfFile|Warning Message:.*(?:not found|cannot|No entry|not an array)|Include file .* not found', re.I)
 
 def classify_errors(content):

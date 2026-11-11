@@ -4,7 +4,7 @@ param(
     [ValidateRange(1,3)][int]$Count = 2,
     [string]$Password = '',
     [string[]]$Mods = @(),
-    [string]$GameDirectory = 'E:\SteamLibrary\steamapps\common\Arma 3',
+    [string]$GameDirectory = $(if ($env:ARMA3_DIR) {$env:ARMA3_DIR} else {'C:\Program Files (x86)\Steam\steamapps\common\Arma 3'}),
     [string]$ProfilesRoot = (Join-Path $env:LOCALAPPDATA 'HipposConquest\Headless')
 )
 $ErrorActionPreference = 'Stop'

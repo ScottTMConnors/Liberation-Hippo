@@ -11,12 +11,10 @@ from PIL import Image
 REPO = os.path.normpath(os.path.join(os.path.dirname(__file__), "..", ".."))
 MISSION = os.path.join(REPO, "core.liberation")
 CACHE = os.path.join(REPO, "mybuild", "ui_render_cache")
-GAME_DIRS = [
-    r"F:\Medium500\Applications\Steam\steamapps\common\Arma 3",
-]
-IMAGETOPAA = [
-    r"F:\Medium500\Applications\Steam\steamapps\common\Arma 3 Tools\ImageToPAA\ImageToPAA.exe",
-]
+# Set ARMA3_DIR / ARMA3_TOOLS_DIR for non-default Steam libraries.
+_STEAM = r"C:\Program Files (x86)\Steam\steamapps\common"
+GAME_DIRS = [os.environ.get("ARMA3_DIR") or os.path.join(_STEAM, "Arma 3")]
+IMAGETOPAA = [os.path.join(os.environ.get("ARMA3_TOOLS_DIR") or os.path.join(_STEAM, "Arma 3 Tools"), "ImageToPAA", "ImageToPAA.exe")]
 
 
 def load_stringtable(path=os.path.join(MISSION, "stringtable.xml")):

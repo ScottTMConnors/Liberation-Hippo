@@ -1,9 +1,7 @@
 """Conservative, deterministic multi-file SQF release compaction.
 
 Author: thehungrehippo. Ported from Arma3BuildingDestruction for LiberationRX.
-The UltimateGore SQFMinifier was inspected read-only on 2026-10-20 as requested.
-The original implementation was independently written there; no external tool, command
-catalogue, preferences, assemblies or UltimateGore path is required at runtime.
+No external tool, command catalogue or path is required at runtime.
 
 Default compaction preserves the EXACT non-comment token sequence, all literal
 contents and all variable names. It reduces release text/load input, not the

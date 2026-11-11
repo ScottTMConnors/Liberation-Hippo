@@ -12,7 +12,8 @@ from datetime import datetime
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
-GAME=Path('E:/SteamLibrary/steamapps/common/Arma 3')
+import os
+GAME=Path(os.environ.get('ARMA3_DIR', 'C:/Program Files (x86)/Steam/steamapps/common/Arma 3'))
 
 def sha(path): return hashlib.sha256(path.read_bytes()).hexdigest()
 

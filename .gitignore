@@ -7,3 +7,5 @@ maps/Liberation_RX.Utes/*
 /.vs
 /.gitignore
 tools/server/local/
+AGENTS.local.md
+CLAUDE.local.md

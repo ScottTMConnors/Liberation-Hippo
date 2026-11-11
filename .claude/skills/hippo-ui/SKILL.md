@@ -45,7 +45,7 @@ script-created controls exist only via --data).
 
 ## Calibrate the renderer (only when it drifts)
 1. Fresh capture: `python tools/hippo_testing/run.py --ui-shots --clients 1
-   --game-directory "F:/Medium500/Applications/Steam/steamapps/common/Arma 3"`
+   --game-directory "$ARMA3_DIR"`
    (follow AGENTS.md for the virtual display). Shots land in
    `mybuild/hippo_tests/<run>/shots/`.
 2. Render the same dialog at the same `--size` with `--data` matching the

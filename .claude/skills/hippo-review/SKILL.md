@@ -31,7 +31,7 @@ every command used.
 Read AGENTS.md first (game path, virtual display, console recovery).
 
 ```bash
-python tools/hippo_testing/run.py --game-directory "F:/Medium500/Applications/Steam/steamapps/common/Arma 3" --timeout 240
+python tools/hippo_testing/run.py --game-directory "$ARMA3_DIR" --timeout 240
 ```
 
 Results land in `mybuild/hippo_tests/<run_id>/` (manifest JSON + RPTs). Other
