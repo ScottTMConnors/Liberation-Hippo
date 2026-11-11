@@ -17,6 +17,7 @@ $profile = Join-Path $RuntimeDirectory "profiles\HC$slot"
 New-Item -ItemType Directory -Path $profile -Force | Out-Null
 $arguments = @(Get-HippoSessionArgs $session) + @('-client',"-ip=$($session.bindAddress)","-connect=$($session.bindAddress)","-port=$($session.port)","-name=HippoHC$slot",('-profiles="'+$profile+'"'))
 $child = Start-Process -FilePath (Join-Path $game 'arma3server_x64.exe') -ArgumentList $arguments -WorkingDirectory $game -WindowStyle Hidden -PassThru
+try { $child.PriorityClass = 'High' } catch { Write-Warning "Could not raise HC priority: $_" }
 $session.processes = @($session.processes) + [pscustomobject]@{role="HC$slot";pid=$child.Id;started=$child.StartTime.ToUniversalTime().ToString('o');profile=$profile}
 $session.headlessCount = @($session.processes | Where-Object role -match '^HC[1-3]$').Count
 $temporary = Join-Path $RuntimeDirectory "session-$PID.tmp"

@@ -154,6 +154,7 @@ try {
     # mission loading. Build private access lists into the PBO instead (README).
     $argsServer = $common + @("-ip=$($c.bindAddress)","-port=$($c.port)",'-name=HippoLAN',('-profiles="'+$profile+'"'),('-config="'+$cfg+'"'),('-cfg="'+$basic+'"'),'-loadMissionToMemory')
     $p = Start-Process -FilePath $exe -ArgumentList $argsServer -WorkingDirectory $c.gameDirectory -WindowStyle Hidden -PassThru
+    try { $p.PriorityClass = 'High' } catch { Write-Warning "Could not raise server priority: $_" }
     $owned += [pscustomobject]@{role='server';pid=$p.Id;started=$p.StartTime.ToUniversalTime().ToString('o');profile=$profile}
     Start-Sleep -Seconds 5
     if ($p.HasExited) { throw 'Server exited during startup; inspect the server RPT.' }

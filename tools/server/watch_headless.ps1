@@ -39,6 +39,7 @@ try {
         New-Item -ItemType Directory -Path $profile -Force | Out-Null
         $argsHC = $common + @('-client',"-ip=$($session.bindAddress)","-connect=$($session.bindAddress)","-port=$($session.port)","-name=HippoHC$i",('-profiles="'+$profile+'"'))
         $child = Start-Process -FilePath $exe -ArgumentList $argsHC -WorkingDirectory $game -WindowStyle Hidden -PassThru
+        try { $child.PriorityClass = 'High' } catch {}
         $session.processes = @($session.processes) + [pscustomobject]@{role="HC$i";pid=$child.Id;started=$child.StartTime.ToUniversalTime().ToString('o');profile=$profile}
         $session.headlessState = 'launching'
         Write-Session $session
