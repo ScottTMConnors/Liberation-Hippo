@@ -92,6 +92,25 @@ private _footOk = _footTeam isEqualType grpNull && {_foot in units _footTeam} &&
 if (_footTeam isEqualType grpNull) then { [_footTeam] call HPC_fnc_fireteamDisband };
 ["fireteam.foot", _footOk && {_foot in units GRLIB_player_group}] call _assert;
 
+// a fireteam wiped out raises a toast; the map overlay lists your fireteams in green
+private _lostTeam = [[_foot]] call HPC_fnc_fireteamMake;
+private _lostOk = false;
+if (_lostTeam isEqualType grpNull) then {
+	openMap true;
+	sleep 3;
+	private _drawn = HPC_mapForces findIf { (_x select 0) isEqualTo _lostTeam && {(_x select 7) == "mine"} } >= 0;
+	openMap false;
+	HPC_ftLastLost = -1;
+	private _number = _lostTeam getVariable ["HPC_fireteamNumber", 0];
+	_foot setDamage 1;
+	private _by = diag_tickTime + 15;
+	waitUntil { sleep 0.5; HPC_ftLastLost == _number || {diag_tickTime > _by} };
+	_lostOk = _drawn && {HPC_ftLastLost == _number};
+	diag_log ["HPC_FIRETEAM_LOST", _drawn, HPC_ftLastLost, _number, alive _foot, units _lostTeam, _lostTeam in ([] call HPC_fnc_fireteamList), netId _lostTeam, HPC_ftDisbanded];
+	_foot = [player getPos [5, 90]] call _recruit;
+};
+["fireteam.lostToast", _lostOk] call _assert;
+
 // an AI leading the squad keeps the crew mounted
 GRLIB_player_group selectLeader _gunner;
 [GRLIB_player_group] call HPC_fnc_keepCrews;

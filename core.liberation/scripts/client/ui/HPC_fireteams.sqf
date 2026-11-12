@@ -74,8 +74,8 @@ if (isNil "HPC_fnc_ftDraw") then { HPC_fnc_ftDraw = compileFinal {
 			private _chosen = _x isEqualTo _selected;
 			private _color = [[0.3, 0.62, 1, 0.9], [1, 0.86, 0.4, 1]] select _chosen;
 			private _vehicle = objectParent _leader;
-			private _icon = ["b_inf", "b_motor_inf"] select !isNull _vehicle;
-			_map drawIcon [[_icon] call HPC_fnc_mapIcon, _color, getPosASLVisual _leader, [24, 30] select _chosen, [24, 30] select _chosen, 0, ["", groupId _x] select (_labels || _chosen), 1, 0.035, "RobotoCondensedBold", "right"];
+			// the map overlay draws the fireteam itself; mark the selected one
+			if (_chosen) then { _map drawIcon [["mil_circle"] call HPC_fnc_mapIcon, _color, getPosASLVisual _leader, 40, 40, 0] };
 			private _order = _x getVariable ["HPC_ftOrder", []];
 			private _target = _order param [1, []];
 			if ((_order param [0, ""]) in ["move", "attack", "defend"] && {count _target >= 2}) then {

@@ -285,6 +285,21 @@ if (!_woundOk) then {
     diag_log ["HPC_MOD_DAMAGE", alive player, [player] call PAR_is_wounded, damage player, HPC_testModHits];
 };
 ["mods.damage", _woundOk] call _assert;
+// Revive the player the way PAR_fn_sortie does (damage, unconscious state, get-up animation)
+// and wait for PAR's good end, so the Zeus and build checks below run on a player on his feet:
+// a downed player's revive screen keeps reopening over the Zeus display.
+if (alive player && {[player] call PAR_is_wounded}) then {
+    player setDamage 0.25;
+    player setUnconscious false;
+    player setVariable ["PAR_isUnconscious", false, true];
+    player setVariable ["PAR_isDragged", 0, true];
+    player switchMove "AinjPpneMstpSnonWrflDnon_rolltofront";
+    player playMoveNow "AinjPpneMstpSnonWrflDnon_rolltofront";
+    private _upBy = diag_tickTime + 30;
+    waitUntil { sleep 0.5; (!captive player && {isNull findDisplay 5566}) || {diag_tickTime > _upBy} };
+    sleep 2;
+    diag_log ["HPC_FIXTURE_REVIVED", captive player, isNull findDisplay 5566, lifeState player];
+};
 
 // ---- Limited Zeus ----
 _deadline = diag_tickTime + 20;
@@ -767,7 +782,7 @@ GRLIB_virtual_garage = [];
 player setVariable ["GRLIB_virtual_garage", [], true];
 player setVariable ["HPC_cargo_home", [[], []], true];
 call compile preprocessFileLineNumbers "hippo_tests\client_fireteams.sqf";
-["RUN_DONE|52"] call _emit;
+["RUN_DONE|53"] call _emit;
 // --hold only: a staged firefight for visual inspection of the map overlay and command window.
 if (missionNamespace getVariable ["HPC_testHold", false]) then {
     player allowDamage false;

@@ -346,5 +346,28 @@ if (!isNull (uiNamespace getVariable ["HPC_FireteamsDisplay", displayNull])) the
     (uiNamespace getVariable ["HPC_FireteamsDisplay", displayNull]) closeDisplay 1;
 };
 
+// Map: your fireteam (green), your parked vehicle with its info card, AI forces (blue)
+private _shotVeh = createVehicle ["B_MRAP_01_hmg_F", player getPos [60, getDir player], [], 0, "NONE"];
+_shotVeh setVariable ["GRLIB_vehicle_owner", PAR_Grp_ID, true];
+_shotVeh setFuel 0.55;
+private _shotUnit = GRLIB_player_group createUnit [blufor_squad_inf select 0, player getPos [40, getDir player + 60], [], 0, "NONE"];
+[_shotUnit] joinSilent GRLIB_player_group;
+_shotUnit setVariable ["PAR_Grp_ID", format ["Bros_%1", PAR_Grp_ID], true];
+PAR_AI_bros pushBackUnique _shotUnit;
+private _shotTeam = [[_shotUnit]] call HPC_fnc_fireteamMake;
+openMap true;
+uiSleep 1;
+mapAnimAdd [0, 0.02, getPosATL player];
+mapAnimCommit;
+uiSleep 3;
+private _shotScreen = ((findDisplay 12) displayCtrl 51) ctrlMapWorldToScreen (getPosATL _shotVeh);
+setMousePosition _shotScreen;
+uiSleep 2.5;
+["46_map_assets",1.5] call HPC_uiShot;
+openMap false;
+if (_shotTeam isEqualType grpNull) then { [_shotTeam] call HPC_fnc_fireteamDisband };
+PAR_AI_bros = PAR_AI_bros - [_shotUnit];
+deleteVehicle _shotUnit;
+deleteVehicle _shotVeh;
 diag_log format ["HPC_UISHOT_DONE|%1",HPC_testRun];
 ["RUN_DONE|8"] call _emit;

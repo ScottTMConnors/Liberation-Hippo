@@ -153,6 +153,80 @@ HPC_fnc_mapOrderText = compileFinal toString {
     ["Auto", _pos, false]
 };
 
+// Player assets: every player's fireteams and built squads, and player-owned vehicles.
+// Colours tell owners apart: AI forces blue, yours green, other players' purple.
+HPC_mapColorMine = [0.4, 0.9, 0.45, 1];
+HPC_mapColorPlayers = [0.8, 0.55, 1, 1];
+HPC_mapVehicles = []; // [vehicle, icon, color, label, mine]
+// owner tag (player UID) of a fireteam or built squad, or ""
+HPC_fnc_mapAssetOwner = compileFinal toString {
+    params ["_group"];
+    private _owner = _group getVariable ["HPC_fireteamOwner", ""];
+    if (_owner != "") exitWith {_owner};
+    private _tag = ((leader _group) getVariable ["PAR_Grp_ID", ""]) splitString "_";
+    if (count _tag == 2 && {(_tag select 0) == "AI"}) exitWith {_tag select 1};
+    ""
+};
+HPC_fnc_mapOwnerName = compileFinal toString {
+    params ["_uid"];
+    private _index = allPlayers findIf {getPlayerUID _x == _uid};
+    if (_index < 0) then {"an offline player"} else {name (allPlayers select _index)}
+};
+HPC_fnc_mapVehicleIcon = compileFinal toString {
+    params ["_vehicle", ["_prefix", "b_"]];
+    private _config = configOf _vehicle;
+    _prefix + (switch (true) do {
+        case (_vehicle isKindOf "Plane"): {"plane"};
+        case (_vehicle isKindOf "Air"): {"air"};
+        case (_vehicle isKindOf "Ship"): {"naval"};
+        case (_vehicle isKindOf "StaticWeapon"): {"mortar"};
+        case (_vehicle isKindOf "Tank"): {"armor"};
+        case (_vehicle isKindOf "Wheeled_APC_F"): {"mech_inf"};
+        case (getNumber (_config >> "transportRepair") > 0 || {getNumber (_config >> "transportAmmo") > 0} || {getNumber (_config >> "transportFuel") > 0}): {"support"};
+        default {"motor_inf"};
+    })
+};
+// Info card of a player-owned vehicle (same style as the group cards).
+HPC_fnc_mapVehicleTooltip = compileFinal toString {
+    params ["_vehicle"];
+    private _owner = _vehicle getVariable ["GRLIB_vehicle_owner", ""];
+    private _mine = _owner == PAR_Grp_ID;
+    private _entry = HPC_mapVehicles select {(_x select 0) isEqualTo _vehicle};
+    private _cat = if (_entry isEqualTo []) then {["player", "mine"] select _mine} else {(_entry select 0) select 4};
+    private _crew = (crew _vehicle) select {alive _x};
+    private _hits = (getAllHitPointsDamage _vehicle) param [2, []];
+    private _worst = selectMax _hits;
+    if (isNil "_worst") then {_worst = 0};
+    _worst = _worst max damage _vehicle;
+    private _pct = {format ["%1%2", round (100 * _this), "%"]};
+    private _status = switch (true) do {
+        case (!canMove _vehicle): {"<t color='#FF8C59'>Disabled</t>"};
+        case (_crew isEqualTo []): {"Empty"};
+        default {format ["Crewed by %1", (_crew select [0, 4]) apply {if (isPlayer _x) then {name _x} else {[_x] call F_getUnitPositionId}} joinString ", "]};
+    };
+    private _team = "";
+    { private _number = (group _x) getVariable ["HPC_fireteamNumber", 0]; if (_number > 0) exitWith {_team = groupId group _x} } forEach _crew;
+    [
+        format ["<t font='PuristaBold' size='1' color='%1'>%2</t><t align='right' size='0.85' color='%1'>%3</t><br/>",
+            switch (_cat) do {case "mine": {"#66E673"}; case "enemy": {"#FF5A47"}; case "empty": {"#C7B880"}; default {"#CC8CFF"}},
+            toUpper getText (configOf _vehicle >> "displayName"),
+            switch (_cat) do {
+                case "mine": {"YOURS"};
+                case "enemy": {"ENEMY"};
+                case "empty": {"UNCLAIMED"};
+                default {[_owner] call HPC_fnc_mapOwnerName};
+            }],
+        format ["<img image='%1' size='2.2'/><br/>", getText (configOf _vehicle >> "picture")],
+        format ["<t size='0.85' color='#C9D4DE'>Fuel %1   Damage %2</t><br/>", fuel _vehicle call _pct, _worst call _pct],
+        format ["<t size='0.85' color='#9DC6F0'>%1%2</t>", _status, ["", "<br/>" + _team] select (_team != "")],
+        switch (_cat) do {
+            case "enemy": {"<br/><t size='0.8' color='#8FA3B4'>Abandoned by the enemy: capture it to claim it.</t>"};
+            case "empty": {"<br/><t size='0.8' color='#8FA3B4'>Nobody owns it: anyone can take it.</t>"};
+            default {""};
+        }
+    ] joinString ""
+};
+
 HPC_fnc_mapDraw = compileFinal toString {
     params ["_map"];
     private _scale = ctrlMapScale _map;
@@ -170,6 +244,21 @@ HPC_fnc_mapDraw = compileFinal toString {
     };
     if (HPC_mapShowForces) then {
         {
+            _x params ["_vehicle", "_icon", "_color", "_label", "_cat"];
+            private _mine = _cat == "mine";
+            if (alive _vehicle && {_cat != "enemy" || {HPC_mapShowIntel}}) then {
+                private _pos = getPosASLVisual _vehicle;
+                // a ring marks your own vehicles
+                if (_mine) then {_map drawIcon [_ring, [_color select 0, _color select 1, _color select 2, 0.7], _pos, 30, 30, 0]};
+                if (!canMove _vehicle) then {_map drawIcon [_ring, [1, 0.55, 0.2, 0.8], _pos, 24, 24, 0]};
+                _map drawIcon [_icon, _color, _pos, 21, 21, 0, if (_close || {_mine && {_scale < 0.35}}) then {_label} else {""}, 1, 0.03, "RobotoCondensedBold", "right"];
+                if (_mainMap) then {
+                    private _distance = (_map ctrlMapWorldToScreen _pos) distance2D _mouse;
+                    if (_distance < _hoverDistance) then {_hover = _vehicle; _hoverDistance = _distance};
+                };
+            };
+        } forEach HPC_mapVehicles;
+        {
             _x params ["_group", "_icon", "_color", "_label", "_size", "_target", "_ordered", "_kind"];
             private _leader = leader _group;
             if (!isNull _leader && {alive _leader}) then {
@@ -178,13 +267,13 @@ HPC_fnc_mapDraw = compileFinal toString {
                     if (_ordered) then {
                         _map drawLine [_pos, _target, [1, 0.82, 0.25, 0.85]];
                     } else {
-                        if (_close) then {_map drawLine [_pos, _target, [0.35, 0.65, 1, 0.3]]};
+                        if (_close || {_kind == "mine"}) then {_map drawLine [_pos, _target, [_color select 0, _color select 1, _color select 2, [0.3, 0.6] select (_kind == "mine")]]};
                     };
                 };
                 if (combatBehaviour _group == "COMBAT") then {
                     _map drawIcon [_ring, [1, 0.3, 0.2, _pulse], _pos, _size * 1.7, _size * 1.7, 0];
                 };
-                private _text = if (_close || {_kind in ["warfare", "guard"] && {_scale < 0.35}}) then {_label} else {""};
+                private _text = if (_close || {_kind in ["warfare", "guard", "mine", "player"] && {_scale < 0.35}}) then {_label} else {""};
                 _map drawIcon [_icon, [_group, _color] call _flash, _pos, _size, _size, 0, _text, 1, 0.032, "RobotoCondensedBold", "right"];
                 if (_mainMap) then {
                     private _distance = (_map ctrlMapWorldToScreen _pos) distance2D _mouse;
@@ -218,7 +307,7 @@ HPC_fnc_mapDraw = compileFinal toString {
     if (_mainMap) then {
         HPC_mapHover = _hover;
         if (!isNull _hover) then {
-            _map drawIcon [_ring, [1, 1, 1, 0.85], getPosASLVisual leader _hover, 38, 38, 0];
+            _map drawIcon [_ring, [1, 1, 1, 0.85], getPosASLVisual (if (_hover isEqualType grpNull) then {leader _hover} else {_hover}), 38, 38, 0];
         };
     };
     {
@@ -259,6 +348,20 @@ HPC_fnc_mapTooltipText = compileFinal toString {
             };
         };
     } forEach units _group;
+    private _owner = [_group] call HPC_fnc_mapAssetOwner;
+    if (!_enemy && {_owner != ""}) exitWith {
+        private _mine = _owner == PAR_Grp_ID;
+        private _fireteam = (_group getVariable ["HPC_fireteamNumber", 0]) > 0;
+        private _vehicles = [];
+        { if (!isNull objectParent _x && {!(objectParent _x in _vehicles)}) then {_vehicles pushBack objectParent _x} } forEach units _group;
+        [
+            format ["<t font='PuristaBold' size='1' color='%1'>%2</t><t align='right' size='0.85' color='#C9D4DE'>%3 alive</t><br/>",
+                ["#CC8CFF", "#66E673"] select _mine, toUpper ([groupId _group, "SQUAD"] select !_fireteam), {alive _x} count units _group],
+            format ["<t size='0.85' color='%1'>%2</t><br/>", ["#CC8CFF", "#66E673"] select _mine, if (_mine) then {"Yours"} else {"Commanded by " + ([_owner] call HPC_fnc_mapOwnerName)}],
+            if (_vehicles isEqualTo []) then {""} else {format ["<img image='%1' size='1.8'/> <t size='0.8' color='#C9D4DE'>%2</t><br/>", getText (configOf (_vehicles select 0) >> "picture"), getText (configOf (_vehicles select 0) >> "displayName")]},
+            if (_fireteam) then {format ["<t size='0.85' color='#9DC6F0'>%1</t>", [_group] call HPC_fnc_fireteamState]} else {""}
+        ] joinString ""
+    };
     private _title = if (_enemy) then {
         if (_vehicles isEqualTo []) then {"ENEMY INFANTRY"} else {toUpper getText (configOf (_vehicles select 0) >> "displayName")}
     } else {
@@ -375,6 +478,10 @@ private _summary = {
             ["b_inf", "#66D1FF", "FOB guards", _counts getOrDefault ["guard", 0]] call _row,
             ["b_inf", "#94B8DB", "Base staff groups", _counts getOrDefault ["staff", 0]] call _row,
             ["b_inf", "#F2C75A", "Other friendly AI", (_counts getOrDefault ["mission", 0]) + (_counts getOrDefault ["garrison", 0]) + (_counts getOrDefault ["other", 0])] call _row,
+            ["b_inf", "#66E673", "Your fireteams and squads", _counts getOrDefault ["mine", 0]] call _row,
+            ["b_motor_inf", "#66E673", "Your vehicles", {(_x select 4) == "mine"} count HPC_mapVehicles] call _row,
+            ["n_motor_inf", "#C7B880", "Empty vehicles", {(_x select 4) == "empty"} count HPC_mapVehicles] call _row,
+            ["b_inf", "#CC8CFF", "Other players' squads", _counts getOrDefault ["player", 0]] call _row,
             format ["<t color='#C9D4DE'>Under commander orders</t><t align='right' color='#FFD04D'>%1</t><br/>", _ordered]
         ];
     } else {
@@ -382,9 +489,10 @@ private _summary = {
     };
     _lines append [
         ["o_inf", "#FF5A47", "Enemy groups spotted", if (HPC_mapShowIntel) then {count HPC_mapIntel} else {"hidden"}] call _row,
+        ["o_motor_inf", "#FF5A47", "Empty enemy vehicles known", if (HPC_mapShowIntel) then {{(_x select 4) == "enemy"} count HPC_mapVehicles} else {"hidden"}] call _row,
         format ["<t color='#C9D4DE'>Active objectives</t><t align='right' color='#FF6B5A'>%1</t><br/>", count active_sectors],
         format ["<t color='#C9D4DE'>Commander</t><t align='right' color='#FFFFFF'>%1</t><br/>", if (_commander isEqualTo []) then {"none"} else {name (_commander select 0)}],
-        "<t size='0.75' color='#8FA3B4'>Hover a group for details. Red ring = in combat, gold = your orders, ? = last known.</t>"
+        "<t size='0.75' color='#8FA3B4'>Blue = AI forces, green = yours, purple = other players', red = enemy, khaki = empty. Hover a group or vehicle for details. Red ring = in combat, gold = commander orders, ? = last known.</t>"
     ];
     _lines joinString ""
 };
@@ -442,7 +550,75 @@ while {true} do {
                 _forces pushBack [_group, [_marker] call HPC_fnc_mapIcon, _color, _label, _size, _target, _ordered, _kind];
             } forEach (call HPC_fnc_mapForceGroups);
         };
+        // every player's fireteams and built squads: yours always, others' when friendly
+        // forces are shown (or for the commander)
+        private _showOthers = GRLIB_show_blufor >= 1 || _commander;
+        {
+            private _group = _x;
+            private _owner = [_group] call HPC_fnc_mapAssetOwner;
+            private _mine = _owner == PAR_Grp_ID;
+            if (_owner != "" && {_mine || _showOthers}) then {
+                private _alive = {alive _x} count units _group;
+                private _fireteam = (_group getVariable ["HPC_fireteamNumber", 0]) > 0;
+                private _name = ["Squad", groupId _group] select _fireteam;
+                if (!_mine) then {_name = format ["%1 (%2)", _name, [_owner] call HPC_fnc_mapOwnerName]};
+                private _label = format ["%1 - %2%3", _name, _alive, ["", ", " + ([_group] call HPC_fnc_fireteamState)] select _fireteam];
+                private _order = _group getVariable ["HPC_ftOrder", []];
+                private _target = if ((_order param [0, ""]) in ["move", "attack", "defend"]) then {_order param [1, []]} else {[]};
+                _forces pushBack [_group, [[_group] call HPC_fnc_mapNatoType] call HPC_fnc_mapIcon, [HPC_mapColorPlayers, HPC_mapColorMine] select _mine, _label, 24, _target, false, ["player", "mine"] select _mine];
+            };
+        } forEach ((groups GRLIB_side_friendly) select {alive leader _x && {!isPlayer leader _x} && {(units _x) findIf {isPlayer _x} < 0}});
         HPC_mapForces = _forces;
+
+        // vehicles: player-owned ones no drawn group is riding (yours green, others' purple),
+        // empty enemy vehicles our side knows about (red) and empty unclaimed vehicles (khaki).
+        // Crewed enemy vehicles are part of the enemy groups of the intel layer.
+        private _riders = _forces apply {_x select 0};
+        private _vehicles = [];
+        {
+            private _vehicle = _x;
+            private _owner = _vehicle getVariable ["GRLIB_vehicle_owner", ""];
+            private _empty = (crew _vehicle) findIf {alive _x} < 0;
+            private _hostile = (_vehicle getVariable ["GRLIB_vehicle_reward", false]) || {typeOf _vehicle in all_hostile_classnames};
+            private _cat = switch (true) do {
+                case (_owner == PAR_Grp_ID): {"mine"};
+                case !(_owner in ["", "server", "public", "lrx"]): {"player"};
+                case (_hostile && {_vehicle distance2D lhd > GRLIB_fob_range}): {"enemy"};
+                case (_owner in ["", "public"] && {_vehicle distance2D lhd > GRLIB_fob_range}): {"empty"};	// not the base's own vehicles
+                default {""};
+            };
+            private _show = switch (_cat) do {
+                case "mine": {(crew _vehicle) findIf {alive _x && {group _x in _riders}} < 0};
+                case "player": {_showOthers && {(crew _vehicle) findIf {alive _x && {group _x in _riders}} < 0}};
+                case "enemy": {_empty && {GRLIB_side_friendly knowsAbout _vehicle >= HPC_intelThreshold || {_vehicle distance2D player < 400}}};
+                case "empty": {_empty};
+                default {false};
+            };
+            if (_show) then {
+                private _name = [typeOf _vehicle] call F_getLRXName;
+                private _label = switch (_cat) do {
+                    case "mine": {_name + " (yours)"};
+                    case "player": {format ["%1 (%2)", _name, [_owner] call HPC_fnc_mapOwnerName]};
+                    case "enemy": {_name + " (enemy, empty)"};
+                    default {_name + " (empty)"};
+                };
+                private _color = switch (_cat) do {
+                    case "mine": {HPC_mapColorMine};
+                    case "player": {HPC_mapColorPlayers};
+                    case "enemy": {HPC_mapEnemyColor};
+                    default {[0.78, 0.72, 0.5, 0.9]};
+                };
+                private _prefix = switch (_cat) do {case "enemy": {"o_"}; case "empty": {"n_"}; default {"b_"}};
+                _vehicles pushBack [_vehicle, [[_vehicle, _prefix] call HPC_fnc_mapVehicleIcon] call HPC_fnc_mapIcon, _color, _label, _cat];
+            };
+        } forEach (vehicles select {
+            alive _x && {(_x getVariable ["GRLIB_taxi_owner", ""]) == ""} && {!isObjectHidden _x} && {isNull attachedTo _x} &&
+            {isNull (_x getVariable ["R3F_LOG_est_transporte_par", objNull])} && {isNil {_x getVariable "HPC_warfare"}} &&
+            {isNil {_x getVariable "GRLIB_vehicle_init"}} && {isNil {_x getVariable "HPC_ambientTraffic"}} &&
+            {!(_x isKindOf "CAManBase")} && {!(_x isKindOf "StaticWeapon")} &&
+            {(_x isKindOf "LandVehicle") || {_x isKindOf "Air"} || {_x isKindOf "Ship"}}
+        });
+        HPC_mapVehicles = _vehicles;
 
         // Enemy intel: the server's merged list plus what the player's own group knows.
         private _known = +(missionNamespace getVariable ["HPC_intelGroups", []]);
@@ -497,9 +673,10 @@ while {true} do {
     private _tooltip = _display displayCtrl _tooltipIdc;
     if (!isNull _tooltip) then {
         private _group = HPC_mapHover;
-        if (visibleMap && {!isNull _group} && {alive leader _group}) then {
+        private _isGroup = _group isEqualType grpNull;
+        if (visibleMap && {!isNull _group} && {alive (if (_isGroup) then {leader _group} else {_group})}) then {
             if (!(_group isEqualTo _tooltipGroup) || {_now - _tooltipAt > 1}) then {
-                _tooltip ctrlSetStructuredText parseText ([_group] call HPC_fnc_mapTooltipText);
+                _tooltip ctrlSetStructuredText parseText (if (_isGroup) then {[_group] call HPC_fnc_mapTooltipText} else {[_group] call HPC_fnc_mapVehicleTooltip});
                 _tooltipGroup = _group;
                 _tooltipAt = _now;
             };

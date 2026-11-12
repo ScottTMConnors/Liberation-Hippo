@@ -48,6 +48,8 @@ while {true} do {
 		(_x getVariable ["GRLIB_taxi_owner", ""] != "") ||
 		(
 			!(_x getVariable ['R3F_LOG_disabled', false]) &&
+			// player-owned, enemy and empty vehicles are drawn (with info cards) by HPC_mapOverlay.sqf
+			!((_x isKindOf "LandVehicle") || {_x isKindOf "Air"} || {_x isKindOf "Ship"}) &&
 			(_x getVariable ["GRLIB_vehicle_owner", ""] != "server")
 		)
 	};

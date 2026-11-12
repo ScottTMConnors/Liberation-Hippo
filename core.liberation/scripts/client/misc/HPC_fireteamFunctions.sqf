@@ -100,6 +100,9 @@ HPC_fnc_fireteamMake = compileFinal {
 HPC_fnc_fireteamDisband = compileFinal {
 	params ["_group"];
 	if (isNull _group) exitWith {};
+	// recorded first: the group is deleted once its soldiers have left it
+	if (isNil "HPC_ftDisbanded") then { HPC_ftDisbanded = [] };
+	HPC_ftDisbanded pushBackUnique netId _group;	// not "wiped out" (numbers are reused)
 	private _vehicle = _group getVariable ["HPC_fireteamVehicle", objNull];
 	if (!isNull _vehicle) then { _vehicle setVariable ["HPC_crewCareToken", -1] };
 	private _units = (units _group) select { alive _x };
@@ -112,7 +115,6 @@ HPC_fnc_fireteamDisband = compileFinal {
 	} forEach _units;
 	if (alive player && {!([player] call PAR_is_wounded)} && {leader GRLIB_player_group != player}) then { GRLIB_player_group selectLeader player };
 	[GRLIB_player_group] call HPC_fnc_keepCrews;
-	deleteMarkerLocal format ["HPC_fireteam_%1", _group getVariable ["HPC_fireteamNumber", 0]];
 	HPC_fireteams = HPC_fireteams - [_group];
 };
 

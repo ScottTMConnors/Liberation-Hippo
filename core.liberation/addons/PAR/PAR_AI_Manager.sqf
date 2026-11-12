@@ -12,6 +12,8 @@ while {true} do {
 
 	{
 		_unit = _x;
+		// the list is built before this pass, which sleeps per unit: skip units deleted or killed meanwhile
+		if (isNull _unit || {!alive _unit}) then { continue };
 		if (_unit in PAR_AI_bros) then {
 			// Blood trail
 			if (damage _unit > 0.6 && isNull objectParent _unit && !(surfaceIsWater (getPos _unit))) then {
