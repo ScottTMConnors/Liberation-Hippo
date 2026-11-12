@@ -81,7 +81,7 @@ stats_sectors_liberated = stats_sectors_liberated + 1;
 // Check Victory
 if ([] call F_checkVictory) exitWith { sleep 15; [] spawn blufor_victory };
 
-if (GRLIB_Commander_mode) then { [] call manage_sectors_commander };
+[] call manage_sectors_commander;
 
 if (GRLIB_endgame == 0 && GRLIB_global_stop == 0) then {
 	if (

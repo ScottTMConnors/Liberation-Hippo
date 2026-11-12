@@ -24,10 +24,8 @@ if (_sector in attack_in_progress_cooldown) then {
 sector_attack_in_progress pushBack _sector;
 publicVariable "sector_attack_in_progress";
 
-if (GRLIB_Commander_mode) then {
-    GRLIB_AvailAttackSectors = [];
-    publicVariable "GRLIB_AvailAttackSectors";
-};
+GRLIB_AvailAttackSectors = [];
+publicVariable "GRLIB_AvailAttackSectors";
 
 if (_sector in A3W_sectors_in_use) then { _defenders_cooldown = true };
 private _grp = grpNull;
@@ -76,7 +74,7 @@ if (_ownership == GRLIB_side_enemy) then {
 			{ [_x, -15] call F_addReput } forEach (AllPlayers - (entities "HeadlessClient_F"));
 			private _msg = format ["You have lost control of the %1 sector, your reputation drops by %2 points.", [_sector_pos] call F_getLocationName, -15];
 			[gamelogic, _msg] remoteExec ["globalChat", 0];
-			if (GRLIB_Commander_mode) then { [] call manage_sectors_commander };
+			[] call manage_sectors_commander;
 		} else {
 			diag_log format ["Sector %1 Defended at %2", _sector, time];
 			[_sector, 3] remoteExec ["remote_call_sector", 0];
@@ -129,7 +127,7 @@ sleep 10;
 sector_attack_in_progress = sector_attack_in_progress - [_sector];
 publicVariable "sector_attack_in_progress";
 
-if (GRLIB_Commander_mode) then { [] call manage_sectors_commander };
+[] call manage_sectors_commander;
 if (!isNull _arsenal) then {_arsenal spawn {sleep 120; deleteVehicle _this}};
 if (!isNull _vehicle) then {_vehicle spawn {sleep 60; [_this, true, true] call F_vehicleClean}};
 if (count (units _grp) > 0) then {_grp spawn {sleep 60; {deleteVehicle _x} foreach (units _this); deleteGroup _this}};

@@ -11,10 +11,6 @@ if (_sector in active_sectors + blufor_sectors) exitWith {
 };
 
 private _sector_pos = markerPos _sector;
-if (([_sector_pos, (GRLIB_sector_size * 2), GRLIB_side_friendly, 1] call F_getUnitsCount) == 0 && !GRLIB_Commander_mode) exitWith {
-	diag_log format ["--- LRX Manage Sector: Sector %1 have no more enemy, aborting.", _sector];
-	[_sector,"aborted",0] call HPC_fnc_sectorState; // not a loader failure
-};
 
 private _usableMilitia = (missionNamespace getVariable ["militia_squad",[]]) select {isClass (configFile >> "CfgVehicles" >> _x)};
 private _usableRegulars = (missionNamespace getVariable ["opfor_infantry",[]]) select {isClass (configFile >> "CfgVehicles" >> _x)};
@@ -23,7 +19,7 @@ if (_usableMilitia isEqualTo [] && {_usableRegulars isEqualTo []}) exitWith {
     [_sector,"failed",0,-1,-1,_name] call HPC_fnc_sectorState;
     diag_log format ["--- Hippos Conquest: sector %1 rejected; enemy template %2 has no loaded infantry",_sector,GRLIB_mod_east];
     [gamelogic,format ["Cannot load %1: enemy faction %2 has no available infantry. Enable its required mods or select an available enemy faction before restarting.",_name,GRLIB_mod_east]] remoteExec ["globalChat",0];
-    if (GRLIB_Commander_mode) then {[] remoteExec ["manage_sectors_commander",2]};
+    [] remoteExec ["manage_sectors_commander",2];
 };
 if (_usableMilitia isEqualTo []) then {_usableMilitia = +_usableRegulars};
 
@@ -62,16 +58,12 @@ private _infsquad4 = "infantry";
 private _squad5 = [];
 private _infsquad5 = "infantry";
 private _max_prisoners = 4;
-private _sector_despawn_tickets = GRLIB_despawn_tickets;
 private _nearRadioTower = ([_sector_pos, GRLIB_side_enemy] call F_getNearestTower != "");
-private _active_players = [_sector_pos, (GRLIB_sector_size * 2)] call F_getNearbyPlayers;
 
-if (GRLIB_Commander_mode) then {
-	_active_players = (AllPlayers - (entities "HeadlessClient_F"));
-	_local_capture_size = 500;
-	_sector setMarkerTypeLocal "mil_objective";
-	_sector setMarkerColor "ColorYellow";
-};
+private _active_players = (AllPlayers - (entities "HeadlessClient_F"));
+_local_capture_size = 500;
+_sector setMarkerTypeLocal "mil_objective";
+_sector setMarkerColor "ColorYellow";
 
 private _count_players = count _active_players;
 diag_log format ["Spawn Attack Sector %1 - player in combat %2 / readiness %3 at %4", _sector, _count_players, combat_readiness, time];
@@ -384,14 +376,12 @@ private _stageAttack = {
 	};
 };
 
-if (GRLIB_Commander_mode) then {
-	_marker = createMarkerLocal [("zone_capture" + _sector), _sector_pos];
-	_marker setMarkerBrushLocal "DiagGrid";
-	_marker setMarkerShapeLocal "ELLIPSE";
-	_marker setMarkerAlphaLocal 0.7;
-	_marker setMarkerSizeLocal [_local_capture_size, _local_capture_size];
-	_marker setMarkerColor GRLIB_color_enemy_bright;
-};
+_marker = createMarkerLocal [("zone_capture" + _sector), _sector_pos];
+_marker setMarkerBrushLocal "DiagGrid";
+_marker setMarkerShapeLocal "ELLIPSE";
+_marker setMarkerAlphaLocal 0.7;
+_marker setMarkerSizeLocal [_local_capture_size, _local_capture_size];
+_marker setMarkerColor GRLIB_color_enemy_bright;
 
 // Main loop
 private _building_alive = (nearestObjects [_sector_pos, ["House"], _local_capture_size]) select {
@@ -448,7 +438,7 @@ while {true} do {
 		diag_log format ["Sector %1 mission succeeded.", _sector];
 		_sector setMarkerText _sectorName;
 		[_task,"SUCCEEDED"] call BIS_fnc_taskSetState;
-		if (GRLIB_Commander_mode) then { deleteMarker _marker };
+		deleteMarker _marker;
 		if (isServer) then {
 			[_sector] spawn sector_liberated_remote_call;
 		} else {
@@ -492,31 +482,7 @@ while {true} do {
 		};
 	};
 
-	if (!GRLIB_Commander_mode) then {
-		if (([_sector_pos, (GRLIB_sector_size + 300), GRLIB_side_friendly, 1] call F_getUnitsCount) == 0) then {
-			_sector_despawn_tickets = _sector_despawn_tickets - 1;
-		} else {
-			_sector_despawn_tickets = GRLIB_despawn_tickets;
-		};
-	};
 
-	if (_sector_despawn_tickets <= 1) exitWith { // Sleep sector
-		diag_log format ["Sector %1 mission failed.", _sector];
-		_sector setMarkerText _sectorName;
-		[_task,"FAILED"] call BIS_fnc_taskSetState;
-		[_task] spawn {
-			params ["_task"];
-			sleep 120;
-			[_task, true, true] call BIS_fnc_deleteTask;
-		};
-		{
-			if (alive _x) then {
-				[_x, -5] call F_addReput;
-				private _msg = format ["%1, You failed to capture %2, your reputation drops by %3 points...", name _x, [_sector_pos] call F_getLocationName, -5];
-				[gamelogic, _msg] remoteExec ["globalChat", owner _x];
-			};
-		} forEach _active_players;
-	};
 
 	// Sector Defense
 	if (_nearRadioTower) then {

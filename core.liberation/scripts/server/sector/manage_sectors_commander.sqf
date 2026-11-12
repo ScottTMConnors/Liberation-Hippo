@@ -1,4 +1,3 @@
-if !(GRLIB_Commander_mode) exitWith {};
 waitUntil {sleep 1; !isNil "blufor_sectors"};
 
 private _roundPos = {

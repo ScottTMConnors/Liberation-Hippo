@@ -3,7 +3,7 @@ if (!isServer || missionNamespace getVariable ["HPC_battleDispatching", false]) 
 if (_sector in active_sectors) exitWith {};
 HPC_battleDispatching = true;
 private _targets = [_sector];
-if (GRLIB_Commander_mode && {missionNamespace getVariable ["HPC_NearbyBattles", true]}) then {
+if (missionNamespace getVariable ["HPC_NearbyBattles", true]) then {
     private _position = markerPos _sector;
     { if (_x != _sector && {(markerPos _x) distance2D _position < GRLIB_Commander_radius}) then { _targets pushBackUnique _x } } forEach opfor_sectors;
 };

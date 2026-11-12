@@ -1,5 +1,5 @@
 // Hippos Conquest autonomous warfare. This manager only owns the forces it creates.
-if (!isServer || !GRLIB_Commander_mode || !HPC_AIWarfare) exitWith {};
+if (!isServer || !HPC_AIWarfare) exitWith {};
 if (missionNamespace getVariable ["HPC_warfareRunning", false]) exitWith {};
 HPC_warfareRunning = true;
 

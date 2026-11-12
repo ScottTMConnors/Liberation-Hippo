@@ -11545,8 +11545,23 @@
 			<Portuguese>Apenas jogador</Portuguese>
 			<Czech>Pouze hráč</Czech>
 		</Key>
+		<Key ID="STR_PARAMCAT_BATTLES">
+			<Original>BATTLES</Original>
+		</Key>
+		<Key ID="STR_PARAMCAT_WORLD">
+			<Original>WORLD AND SIDE MISSIONS</Original>
+		</Key>
+		<Key ID="STR_PARAMCAT_MEDICAL">
+			<Original>MEDICAL AND RESPAWN</Original>
+		</Key>
+		<Key ID="STR_PARAMCAT_SUPPORT">
+			<Original>SUPPORT AND MOBILITY</Original>
+		</Key>
+		<Key ID="STR_PARAMCAT_INTERFACE">
+			<Original>INTERFACE</Original>
+		</Key>
 		<Key ID="STR_PARAMCAT_GAME">
-			<Original>GAME</Original>
+			<Original>CAMPAIGN AND DIFFICULTY</Original>
 			<Russian>ИГРА</Russian>
 			<French>JEU</French>
 			<Chinesesimp>游戏</Chinesesimp>
@@ -11555,7 +11570,7 @@
 			<Czech>HRA</Czech>
 		</Key>
 		<Key ID="STR_PARAMCAT_PLAYER">
-			<Original>PLAYER</Original>
+			<Original>PLAYERS AND SQUADS</Original>
 			<Russian>ИГРОК</Russian>
 			<French>JOUEUR</French>
 			<Chinesesimp>玩家</Chinesesimp>
@@ -11564,7 +11579,7 @@
 			<Czech>HRÁČ</Czech>
 		</Key>
 		<Key ID="STR_PARAMCAT_ARSENAL">
-			<Original>ARSENAL</Original>
+			<Original>ARSENAL AND EQUIPMENT</Original>
 			<Russian>АРСЕНАЛ</Russian>
 			<French>ARSENAL</French>
 			<Chinesesimp>军械库</Chinesesimp>
@@ -11573,7 +11588,7 @@
 			<Czech>ARZENÁL</Czech>
 		</Key>
 		<Key ID="STR_PARAMCAT_TEMPLATE">
-			<Original>FACTIONS AND TRANSPORT</Original>
+			<Original>FACTIONS AND STARTING ASSETS</Original>
 			<Russian>ШАБЛОН МОДА</Russian>
 			<French>MOD TEMPLATE</French>
 			<Chinesesimp>模组模板</Chinesesimp>
@@ -11591,7 +11606,7 @@
 			<Czech>RŮZNÉ</Czech>
 		</Key>
 		<Key ID="STR_PARAMCAT_RESTART">
-			<Original>RESTART</Original>
+			<Original>CAMPAIGN RESET</Original>
 			<Russian>ПЕРЕЗАПУСК</Russian>
 			<French>REDÉMARRAGE</French>
 			<Chinesesimp>重启</Chinesesimp>
@@ -11609,7 +11624,7 @@
 			<Czech>EXPERIMENTÁLNÍ</Czech>
 		</Key>
 		<Key ID="STR_PARAMCAT_SYSTEM">
-			<Original>SYSTEM</Original>
+			<Original>SERVER AND MODERATION</Original>
 			<Russian>СИСТЕМА</Russian>
 			<French>SYSTÈME</French>
 			<Chinesesimp>系统</Chinesesimp>
@@ -11618,7 +11633,7 @@
 			<Czech>SYSTÉM</Czech>
 		</Key>
 		<Key ID="STR_PARAMCAT_FOB">
-			<Original>FOB</Original>
+			<Original>FOBS AND VEHICLES</Original>
 			<Russian>FOB</Russian>
 			<French>FOB</French>
 			<Chinesesimp>FOB</Chinesesimp>

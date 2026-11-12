@@ -20,9 +20,7 @@ waitUntil {sleep 1; !isNil "sector_timer"};
 if (isNil "cinematic_camera_started") then { cinematic_camera_started = false };
 if (isNil "halojumping") then { halojumping = false };
 
-if (GRLIB_Commander_mode) then {
-	[] execVM "scripts\client\ui\ui_manager_commander.sqf";
-};
+[] execVM "scripts\client\ui\ui_manager_commander.sqf";
 
 private _color_F = getArray (configFile >> "CfgMarkerColors" >> GRLIB_color_friendly >> "color") call BIS_fnc_colorConfigToRGBA;
 private _color_E = getArray (configFile >> "CfgMarkerColors" >> GRLIB_color_enemy >> "color") call BIS_fnc_colorConfigToRGBA;
@@ -138,7 +136,7 @@ while {true} do {
 		};
 
 		if (_uiticks % 4 == 0) then {
-			// Capture zone marker around the nearest sector (or the objective in commander mode).
+			// Capture zone marker around the active objective (or the nearest sector).
 			_fob_sector = false;
 			_nearest_active_sector = "";
 			if (GRLIB_player_near_lhd) then {
@@ -152,7 +150,7 @@ while {true} do {
 					_nearest_active_sector = [GRLIB_sector_size] call F_getNearestSector;
 				};
 			};
-			if (GRLIB_Commander_mode && {count active_sectors > 0}) then {
+			if (count active_sectors > 0) then {
 				_nearest_active_sector = active_sectors select 0;
 				_fob_sector = false;
 			};
@@ -180,13 +178,11 @@ while {true} do {
 		private _body = "<t font='PuristaSemibold' color='#9EE3D3' size='0.85'>OPERATIONS</t><br/>";
 		if (active_sectors isEqualTo []) then {
 			private _idle = "Select an objective on the map";
-			if (GRLIB_Commander_mode) then {
-				if (count GRLIB_AvailAttackSectors > 0) then {
-					if (!GRLIB_player_commander && GRLIB_Commander_VoteEnabled) then { _idle = "Vote for an objective on the map" };
-					if (!GRLIB_player_commander && !GRLIB_Commander_VoteEnabled) then { _idle = "Standing by for orders" };
-				} else {
-					_idle = ["Standing by for orders", "Deploy an FOB to start a mission"] select (GRLIB_player_commander && count GRLIB_all_fobs == 0);
-				};
+			if (count GRLIB_AvailAttackSectors > 0) then {
+				if (!GRLIB_player_commander && GRLIB_Commander_VoteEnabled) then { _idle = "Vote for an objective on the map" };
+				if (!GRLIB_player_commander && !GRLIB_Commander_VoteEnabled) then { _idle = "Standing by for orders" };
+			} else {
+				_idle = ["Standing by for orders", "Deploy an FOB to start a mission"] select (GRLIB_player_commander && count GRLIB_all_fobs == 0);
 			};
 			_body = _body + format ["<t color='#B5C2C7'>%1</t>", _idle];
 		} else {

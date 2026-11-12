@@ -14,7 +14,7 @@ if ([] call is_admin) then { [true] call player_admin_actions };
 
 // Extended Options
 // Commander orders for AI Warfare groups
-player addAction [(["Command AI forces", "\a3\Ui_F_Curator\Data\Displays\RscDisplayCurator\modeGroups_ca.paa", "accent"] call HPC_fnc_actionTitle),"scripts\client\commander\HPC_commandAI.sqf","",-990,false,true,"","(missionNamespace getVariable ['GRLIB_player_commander', false]) && {GRLIB_Commander_mode} && {HPC_AIWarfare}"];
+player addAction [(["Command AI forces", "\a3\Ui_F_Curator\Data\Displays\RscDisplayCurator\modeGroups_ca.paa", "accent"] call HPC_fnc_actionTitle),"scripts\client\commander\HPC_commandAI.sqf","",-990,false,true,"","(missionNamespace getVariable ['GRLIB_player_commander', false]) && {HPC_AIWarfare}"];
 
 player addAction [([localize "STR_EXTENDED_OPTIONS", "\a3\ui_f\data\igui\cfg\simpletasks\types\Use_ca.paa", "default"] call HPC_fnc_actionTitle),"GREUH\scripts\GREUH_dialog.sqf","",-999,false,true,"","GRLIB_player_is_menuok"];
 

@@ -187,17 +187,14 @@ publicVariable "active_sectors";
 GRLIB_sector_spawning = false;
 publicVariable "GRLIB_sector_spawning";
 
-if (GRLIB_Commander_mode) then {
-	// Commander functions
-	manage_sectors_commander = compileFinal preprocessFileLineNumbers "scripts\server\sector\manage_sectors_commander.sqf";
-	commander_voteHandler = compileFinal preprocessFileLineNumbers "scripts\server\sector\commander_sector_vote.sqf";
-	// Commander mode
-	GRLIB_connectMarkers = createHashMap;
-	GRLIB_Sector_Votes = createHashMap;
-	publicVariable "GRLIB_Sector_Votes";
-	[] spawn manage_sectors_commander;
-	[] spawn commander_voteHandler;
-};
+// Sector selection: commander picks and player votes
+manage_sectors_commander = compileFinal preprocessFileLineNumbers "scripts\server\sector\manage_sectors_commander.sqf";
+commander_voteHandler = compileFinal preprocessFileLineNumbers "scripts\server\sector\commander_sector_vote.sqf";
+GRLIB_connectMarkers = createHashMap;
+GRLIB_Sector_Votes = createHashMap;
+publicVariable "GRLIB_Sector_Votes";
+[] spawn manage_sectors_commander;
+[] spawn commander_voteHandler;
 
 global_locked_group = [];
 publicVariable "global_locked_group";
@@ -210,6 +207,6 @@ GRLIB_init_server = true;
 publicVariable "GRLIB_init_server";
 diag_log "--- Server Init stop ---";
 
-if (GRLIB_Commander_mode && HPC_AIWarfare) then { [] execVM "scripts\server\game\defenderattackersystem.sqf" };
+if (HPC_AIWarfare) then { [] execVM "scripts\server\game\defenderattackersystem.sqf" };
 [] execVM "scripts\shared\HPC_intelScan.sqf";
 [] execVM "scripts\shared\HPC_shotRelay.sqf";

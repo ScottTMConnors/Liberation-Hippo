@@ -146,8 +146,6 @@ GRLIB_cleanup_vehicles = [GRLIB_PARAM_CleanupVehicles] call lrx_getParamValue;
 GRLIB_Commander_AutoStart = [GRLIB_PARAM_CommanderAutoStart] call lrx_getParamValue;
 GRLIB_Commander_VoteTime = [GRLIB_PARAM_CommanderVoteTimeout] call lrx_getParamValue;
 GRLIB_day_factor = [GRLIB_PARAM_DayDuration] call lrx_getParamValue;
-GRLIB_despawn_tickets = [GRLIB_PARAM_SectorDespawn] call lrx_getParamValue;
-GRLIB_hide_opfor = [GRLIB_PARAM_HideOpfor] call lrx_getParamValue;
 GRLIB_MineProbability = [GRLIB_PARAM_MineProbability] call lrx_getParamValue;
 GRLIB_night_factor = [GRLIB_PARAM_NightDuration] call lrx_getParamValue;
 GRLIB_param_wipe_keepcontext = [GRLIB_PARAM_KeepContext] call lrx_getParamValue;
@@ -161,7 +159,7 @@ GRLIB_weather_param = [GRLIB_PARAM_Weather] call lrx_getParamValue;
 
 // Transfom true/false Param
 GRLIB_Commander_AutoStart = (GRLIB_Commander_AutoStart == 1);
-GRLIB_hide_opfor = (GRLIB_hide_opfor == 1);
+GRLIB_hide_opfor = true;	// military-base vehicle reward markers stay hidden
 
 // Validate Mod Selection
 if (typeName GRLIB_mod_west != "STRING" || typeName GRLIB_mod_east != "STRING") then { abort_loading = true };

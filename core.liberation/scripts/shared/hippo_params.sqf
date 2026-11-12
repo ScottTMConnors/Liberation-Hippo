@@ -11,14 +11,14 @@
     [GRLIB_PARAM_ValueKey, 1], [GRLIB_PARAM_NameKey, "AI Warfare"],
     [GRLIB_PARAM_OptionLabelKey, ["Disabled","Enabled"]], [GRLIB_PARAM_OptionValuesKey, [0,1]],
     [GRLIB_PARAM_CategoryKey, GRLIB_PARAM_MiscCatKey],
-    [GRLIB_PARAM_DescriptionKey, "Autonomous faction squads, FOB defenders and friendly vehicles in commander mode. Ready headless clients can simulate these groups automatically; capture and save controllers remain on the server. Requires a mission restart."],
+    [GRLIB_PARAM_DescriptionKey, "Autonomous FOB guards, friendly assault squads and armored vehicle crews, and enemy squads attacking your FOBs. Headless clients share the work when present."],
     [GRLIB_PARAM_OptionDescriptionKey, ["Disabled","Enabled"]]
 ]],
 ["HippoNearbyBattles", createHashMapFromArray [
-    [GRLIB_PARAM_ValueKey, 1], [GRLIB_PARAM_NameKey, "Battle Scope"],
+    [GRLIB_PARAM_ValueKey, 1], [GRLIB_PARAM_NameKey, "Battle size"],
     [GRLIB_PARAM_OptionLabelKey, ["Selected sector only","Selected and nearby sectors"]], [GRLIB_PARAM_OptionValuesKey, [0,1]],
     [GRLIB_PARAM_CategoryKey, GRLIB_PARAM_MiscCatKey],
-    [GRLIB_PARAM_DescriptionKey, "Activate nearby enemy sectors as well as the selected sector. Disabled activates only the selected sector. Other settings take effect on mission restart."],
+    [GRLIB_PARAM_DescriptionKey, "Attack only the chosen sector, or also activate enemy sectors near it."],
     [GRLIB_PARAM_OptionDescriptionKey, ["Selected sector only","Selected and nearby sectors"]]
 ]],
 ["HippoSecondChance", createHashMapFromArray [

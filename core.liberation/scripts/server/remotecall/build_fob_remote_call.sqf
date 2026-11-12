@@ -89,7 +89,7 @@ diag_log format ["FOB %1 (%2) created at %3", _fob_name, _fob_pos, time];
 stats_fobs_built = stats_fobs_built + 1;
 GRLIB_redraw_marker_fob = true;
 
-if (GRLIB_Commander_mode) then { [] call manage_sectors_commander };
+[] call manage_sectors_commander;
 
 sleep 5;
 GRLIB_fob_inuse = nil;

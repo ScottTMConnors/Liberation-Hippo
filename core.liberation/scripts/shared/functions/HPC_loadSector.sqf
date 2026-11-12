@@ -31,5 +31,5 @@ if (count _state > 0 && {_state select 0 == "loading"}) then {
     publicVariable "GRLIB_sector_spawning";
     _sector setMarkerText format ["%1 - loading failed",_name];
     diag_log format ["--- Hippos Conquest: sector %1 loader failed or exceeded its timeout",_sector];
-    if (GRLIB_Commander_mode) then {[] remoteExec ["manage_sectors_commander",2]};
+    [] remoteExec ["manage_sectors_commander",2];
 };

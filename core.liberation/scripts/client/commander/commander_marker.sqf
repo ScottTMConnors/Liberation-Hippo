@@ -1,4 +1,3 @@
-if !(GRLIB_Commander_mode) exitWith {};
 
 waituntil {sleep 1; GRLIB_player_spawned};
 sleep 5;

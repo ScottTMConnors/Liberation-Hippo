@@ -489,7 +489,7 @@ while {true} do {
                     [_button, [[0.16, 0.20, 0.21, 0.95], [0.20, 0.42, 0.38, 0.95]] select _on, [[0.62, 0.69, 0.72, 1], [0.92, 0.94, 0.95, 1]] select _on, _display displayCtrl 51] call HPC_fnc_buttonColor;
                 };
             } forEach [[1, 0, HPC_mapShowForces, "FORCES"], [4, 0, HPC_mapShowIntel, "INTEL"], [2, 0, HPC_mapShowTracers, "SHOTS"], [3, 1, true, ""]];
-            (_display displayCtrl (_panelIdc + 3)) ctrlShow (_commander && {GRLIB_Commander_mode} && {HPC_AIWarfare});
+            (_display displayCtrl (_panelIdc + 3)) ctrlShow (_commander && {HPC_AIWarfare});
         };
     };
 

@@ -1,9 +1,7 @@
 params ["_sector"];
-if (GRLIB_Commander_mode) then {
-    GRLIB_AvailAttackSectors = [];
-    if (active_sectors isEqualTo []) then {active_sectors_hc = []};
-    publicVariable "GRLIB_AvailAttackSectors";
-};
+GRLIB_AvailAttackSectors = [];
+if (active_sectors isEqualTo []) then {active_sectors_hc = []};
+publicVariable "GRLIB_AvailAttackSectors";
 
 // Keep the sector lifecycle and persistence supervisor on the server. A
 // disconnected worker must not lose capture state or duplicate the garrison.

@@ -40,7 +40,6 @@ GRLIB_PARAM_Opforcap = "Opforcap";
 GRLIB_PARAM_Difficulty = "Difficulty";
 GRLIB_PARAM_VulnerabilityTimer = "VulnerabilityTimer";
 GRLIB_PARAM_VictoryCondition = "VictoryCondition";
-GRLIB_PARAM_HideOpfor = "HideOpfor";
 GRLIB_PARAM_ShowBlufor = "ShowBlufor";
 GRLIB_PARAM_Weather = "Weather";
 GRLIB_PARAM_DayDuration = "DayDuration";
@@ -93,7 +92,6 @@ GRLIB_PARAM_Drones = "EnableDrones";
 GRLIB_PARAM_VehicleDefense = "VehicleDefense";
 GRLIB_PARAM_MaxGarageSize = "MaxGarageSize";
 GRLIB_PARAM_SectorRadius = "SectorRadius";
-GRLIB_PARAM_SectorDespawn = "SectorDespawn";
 GRLIB_PARAM_BuildingRatio = "BuildingRatio";
 GRLIB_PARAM_KeepScore = "KeepScore";
 GRLIB_PARAM_KeepContext = "KeepContext";
@@ -106,7 +104,6 @@ GRLIB_PARAM_KickIdle = "KickIdle";
 GRLIB_PARAM_TK_mode = "TK_modeOptIn";
 GRLIB_PARAM_TK_count = "TK_count";
 GRLIB_PARAM_UndercoverModeEnabled = "UndercoverMode";
-GRLIB_PARAM_CommanderModeEnabled = "CommanderMode";
 GRLIB_PARAM_CommanderModeRadius = "CommanderRadius";
 GRLIB_PARAM_CommanderVoteTimeout = "CommVoteTimeout";
 GRLIB_PARAM_CommanderAutoStart = "CommAutoStart";
@@ -128,19 +125,27 @@ GRLIB_PARAM_RestartCatKey       = localize "STR_PARAMCAT_RESTART";
 GRLIB_PARAM_ExperimentalCatKey  = localize "STR_PARAMCAT_EXPERIMENTAL";
 GRLIB_PARAM_SystemCatKey        = localize "STR_PARAMCAT_SYSTEM";
 GRLIB_PARAM_FobCatKey           = localize "STR_PARAMCAT_FOB";
-GRLIB_PARAM_CommanderCatKey     = localize "STR_PARAMCAT_COMMANDER";
+GRLIB_PARAM_BattleCatKey        = localize "STR_PARAMCAT_BATTLES";
+GRLIB_PARAM_WorldCatKey         = localize "STR_PARAMCAT_WORLD";
+GRLIB_PARAM_MedicalCatKey       = localize "STR_PARAMCAT_MEDICAL";
+GRLIB_PARAM_SupportCatKey       = localize "STR_PARAMCAT_SUPPORT";
+GRLIB_PARAM_InterfaceCatKey     = localize "STR_PARAMCAT_INTERFACE";
 
 // Categories will be displayed in this order - this can be changed whenever, but any new categories MUST be added to this list
 GRLIB_PARAM_CatOrder = [
     GRLIB_PARAM_TemplateCatKey,
     GRLIB_PARAM_GameCatKey,
-    GRLIB_PARAM_CommanderCatKey,
+    GRLIB_PARAM_BattleCatKey,
+    GRLIB_PARAM_WorldCatKey,
     GRLIB_PARAM_PlayerCatKey,
+    GRLIB_PARAM_MedicalCatKey,
+    GRLIB_PARAM_SupportCatKey,
     GRLIB_PARAM_ArsenalCatKey,
     GRLIB_PARAM_FobCatKey,
-    GRLIB_PARAM_MiscCatKey,
+    GRLIB_PARAM_InterfaceCatKey,
     GRLIB_PARAM_SystemCatKey,
     GRLIB_PARAM_RestartCatKey,
+    GRLIB_PARAM_MiscCatKey,
     GRLIB_PARAM_ExperimentalCatKey
 ];
 
@@ -248,29 +253,6 @@ _Mission_Params = [
             format [localize "STR_CLEANUP_PARAM1", 30]
         ]]
     ]],
-    [GRLIB_PARAM_SectorDespawn, createHashMapFromArray [
-        [GRLIB_PARAM_ValueKey, (10*12)],
-        [GRLIB_PARAM_NameKey, localize "STR_PARAM_SECTOR_DESPAWN"],
-        [GRLIB_PARAM_OptionLabelKey, [
-            format [localize "STR_CLEANUP_PARAM1", 5],
-            format [localize "STR_CLEANUP_PARAM1", 10],
-            format [localize "STR_CLEANUP_PARAM1", 15],
-            format [localize "STR_CLEANUP_PARAM1", 20],
-            format [localize "STR_CLEANUP_PARAM1", 25],
-            format [localize "STR_CLEANUP_PARAM1", 30]
-        ]],
-        [GRLIB_PARAM_OptionValuesKey, [(5*12),(10*12),(15*12),(20*12),(25*12),(30*12)]],
-        [GRLIB_PARAM_CategoryKey, GRLIB_PARAM_GameCatKey],
-        [GRLIB_PARAM_DescriptionKey, localize "STR_PARAM_SECTOR_DESPAWN_DESC"],
-        [GRLIB_PARAM_OptionDescriptionKey, [
-            format [localize "STR_PARAM_SECTOR_DESPAWN_OPT0", 5],
-            format [localize "STR_PARAM_SECTOR_DESPAWN_OPT0", 10],
-            format [localize "STR_PARAM_SECTOR_DESPAWN_OPT0", 15],
-            format [localize "STR_PARAM_SECTOR_DESPAWN_OPT0", 20],
-            format [localize "STR_PARAM_SECTOR_DESPAWN_OPT0", 25],
-            format [localize "STR_PARAM_SECTOR_DESPAWN_OPT0", 30]
-        ]]
-    ]],
     [GRLIB_PARAM_BuildingRatio, createHashMapFromArray [
         [GRLIB_PARAM_ValueKey, 1.5],
         [GRLIB_PARAM_NameKey, localize "STR_PARAMS_BUILDING_RATIO"],
@@ -319,18 +301,6 @@ _Mission_Params = [
             localize "STR_VICTORY_COND_OPT8",
             localize "STR_VICTORY_COND_OPT9",
             localize "STR_VICTORY_COND_OPTA"
-        ]]
-    ]],
-    [GRLIB_PARAM_HideOpfor, createHashMapFromArray [
-        [GRLIB_PARAM_ValueKey, 1],
-        [GRLIB_PARAM_NameKey, localize "STR_OPFORMARK"],
-        [GRLIB_PARAM_OptionLabelKey, [localize "STR_ALL", localize "STR_FOG_OF_WAR"]],
-        [GRLIB_PARAM_OptionValuesKey, [0,1]],
-        [GRLIB_PARAM_CategoryKey, GRLIB_PARAM_GameCatKey],
-        [GRLIB_PARAM_DescriptionKey, localize "STR_OPFORMARK_DESC"],
-        [GRLIB_PARAM_OptionDescriptionKey, [
-            localize "STR_OPFORMARK_OPT0",
-            localize "STR_OPFORMARK_OPT1"
         ]]
     ]],
     [GRLIB_PARAM_ShowBlufor, createHashMapFromArray [
@@ -795,40 +765,20 @@ _Mission_Params = [
     [GRLIB_PARAM_SquadSize, createHashMapFromArray [
         [GRLIB_PARAM_ValueKey, 2],
         [GRLIB_PARAM_NameKey, localize "STR_PARAM_SQUAD_SIZE_START"],
-        [GRLIB_PARAM_OptionLabelKey, ["0","1","2","3","4","5","6"]],
-        [GRLIB_PARAM_OptionValuesKey, [0,1,2,3,4,5,6]],
+        [GRLIB_PARAM_OptionLabelKey, ["0","1","2","3","4","5","6","7","8","9","10","11","12"]],
+        [GRLIB_PARAM_OptionValuesKey, [0,1,2,3,4,5,6,7,8,9,10,11,12]],
         [GRLIB_PARAM_CategoryKey, GRLIB_PARAM_PlayerCatKey],
         [GRLIB_PARAM_DescriptionKey, localize "STR_PARAM_SQUAD_SIZE_START_DESC"],
-        [GRLIB_PARAM_OptionDescriptionKey, [
-            localize "STR_PARAM_SQUAD_SIZE_START_OPT0",
-            localize "STR_PARAM_SQUAD_SIZE_START_OPT1",
-            localize "STR_PARAM_SQUAD_SIZE_START_OPT2",
-            localize "STR_PARAM_SQUAD_SIZE_START_OPT3",
-            localize "STR_PARAM_SQUAD_SIZE_START_OPT4",
-            localize "STR_PARAM_SQUAD_SIZE_START_OPT5",
-            localize "STR_PARAM_SQUAD_SIZE_START_OPT6"
-        ]]
+        [GRLIB_PARAM_OptionDescriptionKey, [0,1,2,3,4,5,6,7,8,9,10,11,12] apply {format ["%1 AI soldiers at the starting rank", _x]}]
     ]],
     [GRLIB_PARAM_MaxSquadSize, createHashMapFromArray [
         [GRLIB_PARAM_ValueKey, 5],
         [GRLIB_PARAM_NameKey, localize "STR_PARAM_SQUAD_SIZE"],
-        [GRLIB_PARAM_OptionLabelKey, ["0","1","2","3","4","5","6","7","8","9","10"]],
-        [GRLIB_PARAM_OptionValuesKey, [0,1,2,3,4,5,6,7,8,9,10]],
+        [GRLIB_PARAM_OptionLabelKey, ["0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20"]],
+        [GRLIB_PARAM_OptionValuesKey, [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]],
         [GRLIB_PARAM_CategoryKey, GRLIB_PARAM_PlayerCatKey],
         [GRLIB_PARAM_DescriptionKey, localize "STR_PARAM_SQUAD_SIZE_DESC"],
-        [GRLIB_PARAM_OptionDescriptionKey, [
-            localize "STR_PARAM_SQUAD_SIZE_OPT0",
-            localize "STR_PARAM_SQUAD_SIZE_OPT1",
-            localize "STR_PARAM_SQUAD_SIZE_OPT2",
-            localize "STR_PARAM_SQUAD_SIZE_OPT3",
-            localize "STR_PARAM_SQUAD_SIZE_OPT4",
-            localize "STR_PARAM_SQUAD_SIZE_OPT5",
-            localize "STR_PARAM_SQUAD_SIZE_OPT6",
-            localize "STR_PARAM_SQUAD_SIZE_OPT7",
-            localize "STR_PARAM_SQUAD_SIZE_OPT8",
-            localize "STR_PARAM_SQUAD_SIZE_OPT9",
-            localize "STR_PARAM_SQUAD_SIZE_OPT10"
-        ]]
+        [GRLIB_PARAM_OptionDescriptionKey, [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20] apply {format ["Up to %1 AI soldiers", _x]}]
     ]],
     [GRLIB_PARAM_DeathChat, createHashMapFromArray [
         [GRLIB_PARAM_ValueKey, 0],
@@ -1436,7 +1386,7 @@ _Mission_Params = [
         [GRLIB_PARAM_NameKey, localize "STR_COMMANDER_MODE_RADIUS"],
         [GRLIB_PARAM_OptionLabelKey, ["500 m","600 m","700 m","800 m","900 m","1 km","1.5 km","2 km"]],
         [GRLIB_PARAM_OptionValuesKey, [500,600,700,800,900,1000,1500,2000]],
-        [GRLIB_PARAM_CategoryKey, GRLIB_PARAM_CommanderCatKey],
+        [GRLIB_PARAM_CategoryKey, GRLIB_PARAM_BattleCatKey],
         [GRLIB_PARAM_DescriptionKey, localize "STR_COMMANDER_MODE_RADIUS_DESC"],
         [GRLIB_PARAM_OptionDescriptionKey, [
             format [localize "STR_COMMANDER_MODE_RADIUS_OPT0", "500 m"],
@@ -1462,7 +1412,7 @@ _Mission_Params = [
             format [localize "STR_CLEANUP_PARAM0", 300]
         ]],
         [GRLIB_PARAM_OptionValuesKey, [20,30,60,120,180,240,300]],
-        [GRLIB_PARAM_CategoryKey, GRLIB_PARAM_CommanderCatKey],
+        [GRLIB_PARAM_CategoryKey, GRLIB_PARAM_BattleCatKey],
         [GRLIB_PARAM_DescriptionKey, "Length of the vote timer which determines how long the voting period lasts"],
         [GRLIB_PARAM_OptionDescriptionKey, [
             format ["%1 seconds to vote for the next sector", 20],
@@ -1479,7 +1429,7 @@ _Mission_Params = [
         [GRLIB_PARAM_NameKey, "Auto-start vote timer"],
         [GRLIB_PARAM_OptionLabelKey, [localize "STR_PARAMS_DISABLED", localize "STR_PARAMS_ENABLED"]],
         [GRLIB_PARAM_OptionValuesKey, [0,1]],
-        [GRLIB_PARAM_CategoryKey, GRLIB_PARAM_CommanderCatKey],
+        [GRLIB_PARAM_CategoryKey, GRLIB_PARAM_BattleCatKey],
         [GRLIB_PARAM_DescriptionKey, "Determines if the vote timer should start automatically when there are no active sectors, if no votes, a random one is chosen"],
         [GRLIB_PARAM_OptionDescriptionKey, [
             "The first player to vote will start the timer",
@@ -1491,7 +1441,7 @@ _Mission_Params = [
         [GRLIB_PARAM_NameKey, "Allow players to vote for the next sector"],
         [GRLIB_PARAM_OptionLabelKey, [localize "STR_PARAMS_DISABLED", localize "STR_PARAMS_ENABLED"]],
         [GRLIB_PARAM_OptionValuesKey, [0,1]],
-        [GRLIB_PARAM_CategoryKey, GRLIB_PARAM_CommanderCatKey],
+        [GRLIB_PARAM_CategoryKey, GRLIB_PARAM_BattleCatKey],
         [GRLIB_PARAM_DescriptionKey, "This option allows players to vote for the next sector, useful if no commander is present"],
         [GRLIB_PARAM_OptionDescriptionKey, [
             "Only the commander can decide the next sector, or if auto-start is enabled, the system will can automatically choose a sector",
@@ -1502,7 +1452,7 @@ _Mission_Params = [
 
 // ParamsValidator
 _Mission_Params append ([] call compileFinal preprocessFileLineNumbers "scripts\shared\hippo_params.sqf");
-[_Mission_Params] call compileFinal preprocessFileLineNumbers "scripts\shared\hippo_settings_english.sqf";
+_Mission_Params = [_Mission_Params] call compileFinal preprocessFileLineNumbers "scripts\shared\hippo_settings_layout.sqf";
 
 try {
     if (isNil "_Mission_Params") then {

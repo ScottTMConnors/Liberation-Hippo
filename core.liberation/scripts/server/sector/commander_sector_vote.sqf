@@ -1,4 +1,4 @@
-if (!GRLIB_Commander_mode || !isServer) exitWith {};
+if (!isServer) exitWith {};
 sleep 20;
 
 GRLIB_IsVoteInProgress = false;
