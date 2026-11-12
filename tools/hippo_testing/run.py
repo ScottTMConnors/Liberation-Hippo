@@ -144,7 +144,7 @@ def main():
     tag=subprocess.check_output(['git','describe','--tags','upstream/master'],cwd=ROOT).decode().strip()
     (stage/'build_info.sqf').write_text(f'GRLIB_build_date="{run_id}"; GRLIB_build_time="test"; GRLIB_build_version="{tag}-hippo-test";\n')
     tests=stage/'hippo_tests'; tests.mkdir()
-    cases=['engine.compile','startup.server','telemetry.ownership','civilians.ambient','civilians.traffic','sector.fortifications','sector.walls','settings.defaults','factions.available','settings.english','skills.toggle','damage.civilian','catalog.classification','catalog.order','catalog.unlockFilter','objects.simple','cargo.restore','vehicles.emptyPools','warfare.armedPool','save.garage','save.nestedCargo','save.crateHome','save.version','save.sectorUnderAttack']
+    cases=['engine.compile','startup.server','telemetry.ownership','civilians.ambient','civilians.traffic','sector.fortifications','sector.walls','settings.defaults','factions.available','settings.english','skills.toggle','damage.civilian','catalog.classification','catalog.order','catalog.unlockFilter','objects.simple','cargo.restore','vehicles.emptyPools','warfare.armedPool','save.garage','save.nestedCargo','save.crateHome','save.version','save.sectorUnderAttack','settings.layout','warfare.armorChoose','warfare.armorBank','warfare.armorPools','warfare.spawnClearance','crew.repair','crew.abandon','minefields.laid','minefields.cleared']
     if args.targeted: cases+=['placement.pier','placement.small','placement.building']
     if args.movement: cases+=['civilians.displacement','outpost.commanderInterior','outpost.defenders']
     if args.scenario: cases+=['warfare.spawn','sector.commanderGate','sector.capture','warfare.cleanup']
@@ -156,6 +156,7 @@ def main():
     if args.missing_faction: cases=['faction.rejected','faction.savePreserved','faction.ended']
     (tests/'run.sqf').write_text((ROOT/'tools'/'hippo_testing'/'server.sqf').read_text(encoding='utf-8'),encoding='utf-8')
     shutil.copy2(ROOT/'tools/hippo_testing/review.sqf',tests/'review.sqf')
+    shutil.copy2(ROOT/'tools/hippo_testing/features.sqf',tests/'features.sqf')
     if args.targeted:
         shutil.copy2(ROOT/'tools/hippo_testing/placement.sqf',tests/'placement.sqf')
         p=tests/'run.sqf'
@@ -188,7 +189,11 @@ def main():
         code=p.read_text(encoding='utf-8')
         needle='_vehicle setVariable ["HPC_warfare", true, true];'
         if code.count(needle) != 1: raise RuntimeError('Warfare slot instrumentation target changed')
-        p.write_text(code.replace(needle,needle+'\n            _vehicle setVariable ["HPC_testWarfareSlot", [_heavy,_number]];'),encoding='utf-8')
+        code=code.replace(needle,needle+'\n            _vehicle setVariable ["HPC_testWarfareSlot", [_type,_number]];')
+        # the first vehicle placement fails once, to exercise the retry path
+        spot='private _pos = [selectRandom GRLIB_all_fobs, _class] call HPC_fnc_fobVehicleSpawnPos;'
+        if code.count(spot) != 1: raise RuntimeError('Warfare spawn instrumentation target changed')
+        p.write_text(code.replace(spot,spot+'\n            if (!(missionNamespace getVariable ["HPC_testVehicleFailureInjected", true])) then {HPC_testVehicleFailureInjected = true; _pos = []};'),encoding='utf-8')
     if args.commander: shutil.copy2(ROOT/'tools/hippo_testing/commander.sqf',tests/'commander.sqf')
     changed = subprocess.check_output(['git','-c','core.safecrlf=false','-c','core.autocrlf=false','diff','--name-only','upstream/master'], cwd=ROOT,stderr=subprocess.DEVNULL).decode().splitlines()
     changed += subprocess.check_output(['git','ls-files','--others','--exclude-standard','core.liberation'],cwd=ROOT).decode().splitlines()

@@ -31,6 +31,18 @@ switch (_what) do {
 		};
 		[_target] allowGetIn true;
 		[_target] orderGetIn true;
+		// AI does not board a locked vehicle on orders: walk over, then move in by script
+		if (locked _vehicle >= 2 && {objectParent _target != _vehicle}) then {
+			if (_target distance _vehicle > 10) exitWith { _target doMove (getPosATL _vehicle) };
+			switch (toLower _role) do {
+				case "driver": { if (isNull driver _vehicle) then { _target moveInDriver _vehicle } };
+				case "commander": { if (isNull commander _vehicle) then { _target moveInCommander _vehicle } };
+				case "gunner": { if (isNull gunner _vehicle) then { _target moveInGunner _vehicle } };
+				case "turret": { if (isNull (_vehicle turretUnit _turret)) then { _target moveInTurret [_vehicle, _turret] } };
+				default { _target moveInCargo _vehicle };
+			};
+			if (objectParent _target != _vehicle) then { _target moveInAny _vehicle };
+		};
 	};
 	case "stay": {
 		private _stay = [_arg, true] select (_arg isEqualTo []);

@@ -307,7 +307,7 @@ if (player distance2D (markerPos GRLIB_respawn_marker) < GRLIB_capture_size) the
 	player setPosATL ((getPosATL lhd) vectorAdd [floor(random 5), floor(random 5), 0.3]);
 };
 
-[false] call HPC_fnc_screenCover;	// no-op when the spawn camera already lifted it
 sleep (1 + _nb_unit);
+[false] call HPC_fnc_screenCover;	// paths without a spawn camera (boarding a ship); no-op otherwise
 player setVariable ["GRLIB_action_inuse", false, true];
 GRLIB_player_spawned = ([] call F_getValid);

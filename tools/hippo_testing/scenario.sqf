@@ -22,14 +22,9 @@ private _sector = if (_distant isEqualTo []) then {(_sectorChoices select (count
 if (_position isEqualTo []) exitWith {
     ["warfare.spawn", false] call _assert; ["sector.capture", false] call _assert; ["warfare.cleanup", false] call _assert;
 };
-// Force one vehicle placement attempt to fail, then exercise the production
-// retry path. The wrapper delegates all later calls to the real position finder.
-HPC_testOriginalWarfarePosition = HPC_fnc_warfarePosition;
+// The first vehicle placement fails once (run.py instruments the warfare script) to
+// exercise the production retry path.
 HPC_testVehicleFailureInjected = false;
-HPC_fnc_warfarePosition = {
-    if ((_this param [1,3]) == 10 && {!HPC_testVehicleFailureInjected}) exitWith {HPC_testVehicleFailureInjected = true; []};
-    _this call HPC_testOriginalWarfarePosition
-};
 GRLIB_all_fobs = [_position];
 [_sector] call start_sector;
 private _deadline = diag_tickTime + 240;
@@ -78,6 +73,5 @@ waitUntil {
     }
 };
 ["warfare.cleanup", {alive _x && {_x getVariable ["HPC_warfare", false]}} count allUnits == 0 && {{_x getVariable ["HPC_warfare", false]} count vehicles == 0}] call _assert;
-HPC_fnc_warfarePosition = HPC_testOriginalWarfarePosition;
 GRLIB_all_fobs = _fobsBefore;
 diag_log ["HPC_LOAD", "recovery", count allUnits, diag_fps];

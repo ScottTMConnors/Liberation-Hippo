@@ -110,7 +110,7 @@ HPC_fnc_fireteamDisband = compileFinal {
 		_x setVariable ["PAR_Grp_AI", GRLIB_player_group];
 		_x doFollow player;
 	} forEach _units;
-	if (isPlayer leader GRLIB_player_group || {!alive player}) then { GRLIB_player_group selectLeader player };
+	if (alive player && {!([player] call PAR_is_wounded)} && {leader GRLIB_player_group != player}) then { GRLIB_player_group selectLeader player };
 	[GRLIB_player_group] call HPC_fnc_keepCrews;
 	deleteMarkerLocal format ["HPC_fireteam_%1", _group getVariable ["HPC_fireteamNumber", 0]];
 	HPC_fireteams = HPC_fireteams - [_group];

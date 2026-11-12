@@ -110,7 +110,7 @@ GRLIB_PARAM_CommanderAutoStart = "CommAutoStart";
 GRLIB_PARAM_CommPlayerVote = "CommPlayerVote";
 GRLIB_PARAM_Alarms = "Alarms";
 GRLIB_PARAM_TownWalls = "TownWalls";
-GRLIB_PARAM_MineProbability = "MineProbability";
+GRLIB_PARAM_MineProbability = "Minefields";	// new key: the old post-capture value meant something else
 GRLIB_PARAM_ArtyMaxShot = "ArtyMaxShot";
 GRLIB_PARAM_A3WCount = "A3WCount";
 GRLIB_PARAM_A3WDelay = "A3WDelay";
@@ -595,7 +595,7 @@ _Mission_Params = [
         ]]
     ]],
     [GRLIB_PARAM_MineProbability, createHashMapFromArray [
-        [GRLIB_PARAM_ValueKey, 100],
+        [GRLIB_PARAM_ValueKey, 25],
         [GRLIB_PARAM_NameKey, localize "STR_MINE_PROBABILITY"],
         [GRLIB_PARAM_OptionLabelKey, [localize "STR_PARAMS_DISABLED","5%","10%","15%","25%","50%","75%","100%"]],
         [GRLIB_PARAM_OptionValuesKey, [0,5,10,15,25,50,75,100]],

@@ -176,7 +176,7 @@ HPC_fnc_warfareVehicle = compileFinal {
             _group setVariable ["HPC_armorPoints", [_key] call HPC_fnc_armorPoints, true];
             HPC_armorGroups set [_key, _group];
             _vehicle setVariable ["HPC_warfare", true, true];
-            _vehicle lock true;
+            _vehicle lock 3;	// locked for players only: the crew can still get back in after repairs
             // the driver (or any crew member) is the crew's mechanic
             private _mechanic = driver _vehicle;
             if (isNull _mechanic) then { _mechanic = (crew _vehicle) select 0 };

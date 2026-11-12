@@ -15,7 +15,9 @@ private _pass = {
 		if (
 			!isNull _vehicle && {alive _unit} && {!isPlayer _unit} && {alive _vehicle} &&
 			{!(_vehicle isKindOf "ParachuteBase")} && {!(_vehicle isKindOf "StaticWeapon")} &&
-			{lifeState _unit != "INCAPACITATED"}
+			{lifeState _unit != "INCAPACITATED"} &&
+			// a medic leaving his seat for a patient must not be put back
+			{isNil {_unit getVariable "PAR_busy"}} && {isNil {_unit getVariable "HPC_medicSeat"}}
 		) then {
 			if !(_vehicle in assignedVehicles _group) then { _group addVehicle _vehicle };
 			if (assignedVehicle _unit != _vehicle) then {

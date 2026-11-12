@@ -20,12 +20,14 @@ _vehicle setVariable ["HPC_crewState", "ok", true];
 private _remember = {
 	{
 		_x params ["_unit", "_role", "_cargoIndex", "_turret"];
-		if (_unit in units _group) then { _unit setVariable ["HPC_seat", [_role, _cargoIndex, _turret], true] };
+		private _seat = [_role, _cargoIndex, _turret];
+		if (_unit in units _group && {!((_unit getVariable ["HPC_seat", []]) isEqualTo _seat)}) then { _unit setVariable ["HPC_seat", _seat] };
 	} forEach (fullCrew [_vehicle, ""]);
 };
 call _remember;
 
-private _alive = { (units _group) select { alive _x && {lifeState _x != "INCAPACITATED"} } };
+// medics on a call (PAR_busy) are left to their patient until they are released
+private _alive = { (units _group) select { alive _x && {lifeState _x != "INCAPACITATED"} && {isNil {_x getVariable "PAR_busy"}} && {!(_x getVariable ["PAR_isUnconscious", false])} } };
 private _seated = { (call _alive) select { !isNil {_x getVariable "HPC_seat"} } };
 private _remount = {
 	{

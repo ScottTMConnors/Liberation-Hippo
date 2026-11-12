@@ -304,6 +304,7 @@ blufor_sectors = _gOldSectors;
 sector_attack_in_progress = _gOldAttack;
 if (HPC_testScenario) then {call compile preprocessFileLineNumbers "hippo_tests\scenario.sqf"};
 call compile preprocessFileLineNumbers "hippo_tests\review.sqf";
+call compile preprocessFileLineNumbers "hippo_tests\features.sqf";
 if (HPC_testCommander) then {call compile preprocessFileLineNumbers "hippo_tests\commander.sqf"};
 if (missionNamespace getVariable ["HPC_testHeadless",false]) then {call compile preprocessFileLineNumbers "hippo_tests\headless.sqf"};
-[format ["RUN_DONE|%1", 24 + (if (HPC_testScenario) then {4} else {0}) + (if (HPC_testCommander) then {8} else {0}) + (if (missionNamespace getVariable ["HPC_testHeadless",false]) then {12} else {0})]] call _emit;
+[format ["RUN_DONE|%1", 33 + (if (HPC_testScenario) then {4} else {0}) + (if (HPC_testCommander) then {8} else {0}) + (if (missionNamespace getVariable ["HPC_testHeadless",false]) then {12} else {0})]] call _emit;
