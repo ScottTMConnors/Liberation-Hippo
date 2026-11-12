@@ -285,14 +285,6 @@ if (!_woundOk) then {
     diag_log ["HPC_MOD_DAMAGE", alive player, [player] call PAR_is_wounded, damage player, HPC_testModHits];
 };
 ["mods.damage", _woundOk] call _assert;
-// the later checks need the player on his feet again (PAR's good end)
-if ([player] call PAR_is_wounded) then {
-    player setVariable ["PAR_isUnconscious", false, true];
-    player setUnconscious false;
-    closeDialog 0;
-    private _upBy = diag_tickTime + 20;
-    waitUntil { sleep 0.5; (!captive player && {lifeState player != "INCAPACITATED"}) || {diag_tickTime > _upBy} };
-};
 
 // ---- Limited Zeus ----
 _deadline = diag_tickTime + 20;

@@ -32,10 +32,13 @@ HPC_fnc_zeusAssign = compileFinal {
 	if (isNull _target) exitWith {};
 	private _current = getAssignedCuratorLogic _player;
 	if (_current isEqualTo _target) exitWith {};
+	// the loop below gives a curator-less player the limited Zeus: keep it away during the swap
+	_player setVariable ["HPC_zeusSwapping", true];
 	if (!isNull _current) then { unassignCurator _current };
 	if (!isNull getAssignedCuratorUnit _target) then { unassignCurator _target };
 	uiSleep 0.1;
 	_player assignCurator _target;
+	_player setVariable ["HPC_zeusSwapping", nil];
 };
 
 HPC_fnc_zeusRefresh = compileFinal {
@@ -82,7 +85,7 @@ while {true} do {
 		private _player = _x;
 		private _cur = getAssignedCuratorLogic _player;
 		if (isNull _cur) then {
-			if (alive _player) then { [_player, false] call HPC_fnc_zeusAssign };
+			if (alive _player && {!(_player getVariable ["HPC_zeusSwapping", false])}) then { [_player, false] call HPC_fnc_zeusAssign };
 		} else {
 			if (_cur getVariable ["HPC_zeusLimited", false]) then { [_player, _cur] call HPC_fnc_zeusRefresh };
 		};
