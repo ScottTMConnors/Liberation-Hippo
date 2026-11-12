@@ -18,6 +18,14 @@
 // Bottom of the list and details panes
 #define BLD_PB (BLD_LIST_Y + BLD_LIST_H)
 #define BLD_ROW_H (1.8 * HPC_GY)
+// Sortable column headers sit on the list's cost columns (columns[] of BuildList).
+#define BLD_COL_MP (BLD_IX + 0.73 * BLD_LIST_W)
+#define BLD_COL_AM (BLD_IX + 0.82 * BLD_LIST_W)
+#define BLD_COL_FU (BLD_IX + 0.91 * BLD_LIST_W)
+#define BLD_HGAP (0.12 * HPC_GX)
+#define BLD_CELL_W (0.09 * BLD_LIST_W - BLD_HGAP)
+#define BLD_ICON_DX (0.25 * HPC_GX)
+#define BLD_MARK_DX (BLD_ICON_DX + 1.75 * HPC_GX)
 #define BLD_DX (BLD_IX + BLD_LIST_W + 1.2 * HPC_GX)
 #define BLD_DW (BLD_W - 2 * BLD_PAD - BLD_LIST_W - 1.2 * HPC_GX)
 #define BLD_DIX (BLD_DX + 0.8 * HPC_GX)
@@ -192,12 +200,12 @@ class liberation_build {
 	};
 	class CatalogType : HPC_Combo {
 		idc = 1703;
-		x = BLD_IX + 36.2 * HPC_GX; y = BLD_FLT_Y; w = 11.6 * HPC_GX; h = 2.2 * HPC_GY;
+		x = BLD_IX + 36.2 * HPC_GX; y = BLD_FLT_Y; w = 11.4 * HPC_GX; h = 2.2 * HPC_GY;
 		tooltip = "Filter item type. When all types are shown, click a type heading to collapse or expand it.";
 	};
 	class CatalogTypeReset : CatalogFactionReset {
 		idc = 1711;
-		x = BLD_IX + 47.8 * HPC_GX;
+		x = BLD_IX + 47.6 * HPC_GX;
 		tooltip = "Reset the type filter to all types.";
 	};
 	class LabelOptions : HPC_Label {
@@ -268,7 +276,7 @@ class liberation_build {
 	// Clickable column headers: sort by name or a cost (click again to reverse).
 	class SortItem : HPC_Button {
 		idc = 1713;
-		x = BLD_IX; y = BLD_COL_Y; w = 0.695 * BLD_LIST_W; h = 1.8 * HPC_GY;
+		x = BLD_IX; y = BLD_COL_Y; w = 0.73 * BLD_LIST_W; h = 1.8 * HPC_GY;
 		// Faint resting tint marks the headers as buttons; teal on hover.
 		colorBackground[] = {1,1,1,0.05};
 		colorFocused[] = {1,1,1,0.05};
@@ -276,32 +284,32 @@ class liberation_build {
 		text = "";
 		tooltip = "Click to sort by name.";
 	};
-	class SortManpower : SortItem { idc = 1714; x = BLD_IX + 0.705 * BLD_LIST_W; w = 0.085 * BLD_LIST_W; tooltip = "Click to sort by manpower cost; click again to reverse."; };
-	class SortAmmo : SortManpower { idc = 1715; x = BLD_IX + 0.795 * BLD_LIST_W; tooltip = "Click to sort by ammo cost; click again to reverse."; };
-	class SortFuel : SortManpower { idc = 1716; x = BLD_IX + 0.885 * BLD_LIST_W; tooltip = "Click to sort by fuel cost; click again to reverse."; };
+	class SortManpower : SortItem { idc = 1714; x = BLD_COL_MP + BLD_HGAP; w = BLD_CELL_W; tooltip = "Click to sort by manpower cost; click again to reverse."; };
+	class SortAmmo : SortManpower { idc = 1715; x = BLD_COL_AM + BLD_HGAP; tooltip = "Click to sort by ammo cost; click again to reverse."; };
+	class SortFuel : SortManpower { idc = 1716; x = BLD_COL_FU + BLD_HGAP; tooltip = "Click to sort by fuel cost; click again to reverse."; };
 	class SortMark1 : HPC_Label {
 		idc = 1717;
-		x = BLD_IX + 0.73 * BLD_LIST_W + 1.4 * HPC_GX; y = BLD_COL_Y + 0.35 * HPC_GY; w = 1 * HPC_GX; h = 2.2 * HPC_GY;
+		x = BLD_COL_MP + BLD_MARK_DX; y = BLD_COL_Y + 0.35 * HPC_GY; w = 1.3 * HPC_GX; h = 2.2 * HPC_GY;
 		sizeEx = 2.2 * HPC_GY;
 		font = "PuristaBold";
 		colorText[] = HPC_C_ACCENT;
 		text = "";
 	};
-	class SortMark2 : SortMark1 { idc = 1718; x = BLD_IX + 0.82 * BLD_LIST_W + 1.4 * HPC_GX; };
-	class SortMark3 : SortMark1 { idc = 1719; x = BLD_IX + 0.91 * BLD_LIST_W + 1.4 * HPC_GX; };
+	class SortMark2 : SortMark1 { idc = 1718; x = BLD_COL_AM + BLD_MARK_DX; };
+	class SortMark3 : SortMark1 { idc = 1719; x = BLD_COL_FU + BLD_MARK_DX; };
 	// Cost column icons, aligned with BuildList columns 1-3.
 	class IconImage : HPC_Picture {
 		style = ST_PICTURE + ST_KEEP_ASPECT_RATIO;
 		y = BLD_COL_Y + 0.15 * HPC_GY; w = 1.5 * HPC_GX; h = 1.5 * HPC_GY;
 	};
 	class ManpowerImage : IconImage {
-		x = BLD_IX + 0.73 * BLD_LIST_W; text = "res\ui_manpo.paa"; tooltip = "Manpower cost";
+		x = BLD_COL_MP + BLD_ICON_DX; text = "res\ui_manpo.paa"; tooltip = "Manpower cost";
 	};
 	class AmmoImage : IconImage {
-		x = BLD_IX + 0.82 * BLD_LIST_W; text = "res\ui_ammo.paa"; tooltip = "Ammo cost";
+		x = BLD_COL_AM + BLD_ICON_DX; text = "res\ui_ammo.paa"; tooltip = "Ammo cost";
 	};
 	class FuelImage : IconImage {
-		x = BLD_IX + 0.91 * BLD_LIST_W; text = "res\ui_fuel.paa"; tooltip = "Fuel cost";
+		x = BLD_COL_FU + BLD_ICON_DX; text = "res\ui_fuel.paa"; tooltip = "Fuel cost";
 	};
 	class BuildList : HPC_ListNBox {
 		idc = 110;
