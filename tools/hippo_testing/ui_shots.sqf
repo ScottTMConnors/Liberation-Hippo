@@ -315,6 +315,36 @@ if ([5201,15] call _waitDisplay) then {
     ["15_redeploy_again",1.5] call HPC_uiShot;
     closeDialog 0;
 };
-uiSleep 2;
+// Settings menu: first page, then some regrouped sections (admin is logged in above).
+if (!isNil "GRLIB_CreateParamDialog") then {
+    [] spawn GRLIB_CreateParamDialog;
+    if ([5119,10] call _waitDisplay) then {
+        uiSleep 1;
+        ["44_settings",1.5] call HPC_uiShot;
+        private _sections = (findDisplay 5119) displayCtrl 9970;
+        {
+            _x params ["_index","_shot"];
+            if (_index < lbSize _sections) then {
+                _sections lbSetCurSel _index;
+                [_sections, _index] call GRLIB_jumpParamCategory;
+                [_shot,1] call HPC_uiShot;
+            };
+        } forEach [[2,"44b_settings_battles"],[5,"44c_settings_medical"],[7,"44d_settings_arsenal"],[9,"44e_settings_interface"]];
+        [] call GRLIB_cancelParams;
+        uiSleep 1;
+    };
+};
+[] call _closeDialogs;
+
+// Fireteams window
+[] execVM "scripts\client\ui\HPC_fireteams.sqf";
+private _ftEnd = diag_tickTime + 10;
+waitUntil {uiSleep 0.2; !isNull (uiNamespace getVariable ["HPC_FireteamsDisplay", displayNull]) || diag_tickTime > _ftEnd};
+if (!isNull (uiNamespace getVariable ["HPC_FireteamsDisplay", displayNull])) then {
+    uiSleep 1.5;
+    ["45_fireteams",1.5] call HPC_uiShot;
+    (uiNamespace getVariable ["HPC_FireteamsDisplay", displayNull]) closeDisplay 1;
+};
+
 diag_log format ["HPC_UISHOT_DONE|%1",HPC_testRun];
 ["RUN_DONE|8"] call _emit;

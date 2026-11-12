@@ -4,9 +4,7 @@ GRLIB_MOD_signature = GRLIB_MOD_signature + ["amf_"];
 // Weapons + Equipements (uniforme, etc..)
 (
 	"
-	tolower ((configName _x) select [0,4]) == 'amf_' &&
-	getNumber (_x >> 'scope') > 1 &&
-	([(configName _x)] call is_allowed_item)
+	tolower ((configName _x) select [0,4]) == 'amf_' && {getNumber (_x >> 'scope') > 1} && {([(configName _x)] call is_allowed_item)}
 	"
 	configClasses (configfile >> "CfgWeapons" )
 ) apply { GRLIB_whitelisted_from_arsenal pushback (configName _x) } ;
@@ -14,9 +12,7 @@ GRLIB_MOD_signature = GRLIB_MOD_signature + ["amf_"];
 // Others object (bagpack, etc..)
 (
 	"
-	tolower ((configName _x) select [0,4]) == 'amf_' &&
-	([(configName _x)] call is_allowed_item) &&
-	((configName _x) iskindof 'Bag_Base')
+	tolower ((configName _x) select [0,4]) == 'amf_' && {((configName _x) iskindof 'Bag_Base')} && {([(configName _x)] call is_allowed_item)}
 	"
 	configClasses (configfile >> "CfgVehicles" )
 ) apply { GRLIB_whitelisted_from_arsenal pushback (configName _x) } ;
@@ -24,8 +20,7 @@ GRLIB_MOD_signature = GRLIB_MOD_signature + ["amf_"];
 // Glasses
 (
 	"
-	tolower ((configName _x) select [0,4]) == 'amf_' &&
-	([(configName _x)] call is_allowed_item)
+	tolower ((configName _x) select [0,4]) == 'amf_' && {([(configName _x)] call is_allowed_item)}
 	"
 	configClasses (configfile >> "CfgGlasses" )
 ) apply { GRLIB_whitelisted_from_arsenal pushback (configName _x) } ;

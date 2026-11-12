@@ -26,8 +26,9 @@ private _lrx_get_mod_template = {
 	_mod_data;
 };
 
-waitUntil {uiSleep 0.5; !isNil "GRLIB_mod_list_west"};
-waitUntil {uiSleep 0.5; !isNil "GRLIB_mod_list_east"};
+// condition first: these are usually already set, so do not always sleep half a second
+waitUntil {!isNil "GRLIB_mod_list_west" || {uiSleep 0.1; false}};
+waitUntil {!isNil "GRLIB_mod_list_east" || {uiSleep 0.1; false}};
 private _list_west = ([GRLIB_mod_list_west,"west"] call _lrx_get_mod_template);
 private _list_east = ([GRLIB_mod_list_east,"east"] call _lrx_get_mod_template);
 

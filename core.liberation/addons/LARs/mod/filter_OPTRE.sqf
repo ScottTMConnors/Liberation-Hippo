@@ -9,10 +9,7 @@ private _OPTRE_Items = [
 
 (
 	"
-	tolower (getText (_x >> 'dlc')) == 'optre' &&
-	getNumber (_x >> 'scope') > 1 &&
-	([(configName _x)] call is_allowed_item) &&
-	([(configName _x), _OPTRE_Items] call F_startsWithMultiple)
+	tolower (getText (_x >> 'dlc')) == 'optre' && {getNumber (_x >> 'scope') > 1} && {([(configName _x), _OPTRE_Items] call F_startsWithMultiple)} && {([(configName _x)] call is_allowed_item)}
 	"
 	configClasses (configfile >> "CfgWeapons" )
 ) apply { GRLIB_whitelisted_from_arsenal pushback (configName _x) } ;
@@ -20,9 +17,7 @@ private _OPTRE_Items = [
 // Others object (bagpack, etc..)
 (
 	"
-	tolower (getText (_x >> 'dlc')) == 'optre' &&
-	([(configName _x)] call is_allowed_item) &&
-	((configName _x) iskindof 'Bag_Base')
+	tolower (getText (_x >> 'dlc')) == 'optre' && {((configName _x) iskindof 'Bag_Base')} && {([(configName _x)] call is_allowed_item)}
 	"
 	configClasses (configfile >> "CfgVehicles" )
 ) apply { GRLIB_whitelisted_from_arsenal pushback (configName _x) } ;
@@ -30,8 +25,7 @@ private _OPTRE_Items = [
 // Glasses
 (
 	"
-	tolower (getText (_x >> 'dlc')) == 'optre' &&
-	([(configName _x)] call is_allowed_item)
+	tolower (getText (_x >> 'dlc')) == 'optre' && {([(configName _x)] call is_allowed_item)}
 	"
 	configClasses (configfile >> "CfgGlasses" )
 ) apply { GRLIB_whitelisted_from_arsenal pushback (configName _x) } ;

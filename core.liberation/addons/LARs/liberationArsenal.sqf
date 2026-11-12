@@ -36,7 +36,7 @@
 if (isDedicated) exitWith {};
 
 LRX_arsenal_init_done = false;
-waitUntil { uiSleep 1; !isNil "GRLIB_filter_arsenal" };
+waitUntil { !isNil "GRLIB_filter_arsenal" };	// set by fetch_params before this runs
 
 // Filters disabled
 if (GRLIB_filter_arsenal == 0) exitWith {
@@ -49,7 +49,7 @@ if (GRLIB_filter_arsenal == 0) exitWith {
 // Personal Arsenal
 if (GRLIB_filter_arsenal == 4) exitWith {
 	waitUntil {
-		uiSleep 1;
+		uiSleep 0.2;
 		GRLIB_personal_arsenal = player getVariable "GRLIB_personal_arsenal";
 		!(isNil "GRLIB_personal_arsenal")
 	};
@@ -100,7 +100,7 @@ if (GRLIB_filter_arsenal in [1,2,3,5]) then {
 
 		// Arma3 Virtual Arsenal 
 		[myLARsBox, ["GRLIB_whitelisted_from_arsenal", "GRLIB_blacklisted_from_arsenal"], false, "Liberation", { false }] call LARs_fnc_blacklistArsenal;
-		waitUntil {uiSleep 1; !isNil {myLARsBox getVariable "LARs_arsenal_Liberation_cargo"}};
+		waitUntil {!isNil {myLARsBox getVariable "LARs_arsenal_Liberation_cargo"} || {uiSleep 0.1; false}};
 		private _cargo = myLARsBox getVariable ["LARs_arsenal_Liberation_cargo", []];
 		myLARsBox setVariable ["bis_addVirtualWeaponCargo_cargo", _cargo];
 	};

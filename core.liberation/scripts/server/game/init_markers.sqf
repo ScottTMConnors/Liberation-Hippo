@@ -6,11 +6,15 @@ GRLIB_Marker_FUEL = [];
 GRLIB_Marker_SELL = [];
 GRLIB_Marker_SHOP = [];
 
+// Unscheduled: run as one pass instead of being time-sliced behind every manager script
+// started at the same moment (this used to hold the server's "ready" flag for 15 s).
+isNil {
 if (GRLIB_Facilities) then {
 	// Load fixed positions
 	[] call compileFinal preprocessFileLineNumbers "fixed_position.sqf";
 
 	private ["_vehicle", "_spawn_pos", "_marker"];
+["markers.fixedPositions"] call HPC_fnc_loadMark;
 	// ATM Markers
 	{
 		_marker = createMarkerLocal [format ["marked_atm%1", _forEachIndex], _x];
@@ -41,6 +45,7 @@ if (GRLIB_Facilities) then {
 		};
 	} forEach sectors_factory;
 
+["markers.repair"] call HPC_fnc_loadMark;
 	// FUEL
 	{
 		_marker = createMarkerLocal [format ["marked_fuel%1", _forEachIndex], _x];
@@ -72,6 +77,7 @@ if (GRLIB_Facilities) then {
 		};
 	} forEach GRLIB_Marker_SRV;
 
+["markers.sell"] call HPC_fnc_loadMark;
 	// SHOP
 	private ["_shop", "_desk_dir", "_desk_pos", "_desk", "_man", "_man_pos", "_offset", "_str"];
 	private _getRatio = { parseNumber(0.70 min (0.45 + random 0.25) toFixed 2) };
@@ -134,6 +140,7 @@ if (GRLIB_Facilities) then {
 	GRLIB_Marker_SHOP = _marker_SHOP;
 };
 
+["markers.shop"] call HPC_fnc_loadMark;
 // LRX Auto Name Sector
 {
 	private _marker = _x;
@@ -161,6 +168,7 @@ if (GRLIB_Facilities) then {
  };
 } forEach (sectors_capture + sectors_bigtown + sectors_factory + sectors_military);
 
+["markers.names"] call HPC_fnc_loadMark;
 // Base markers color
 if (GRLIB_fob_type == 0) then {
 	"huronmarker" setMarkerTextLocal "Huron";
@@ -169,6 +177,7 @@ if (GRLIB_fob_type == 0) then {
 	deleteMarkerLocal "huronmarker";
 };
 "base_chimera" setMarkerColor GRLIB_color_friendly;
+};
 
 GRLIB_marker_init = true;
 

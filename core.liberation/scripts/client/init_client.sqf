@@ -14,6 +14,7 @@ if !([] call F_getValid) exitWith {
 
 titleText [localize "STR_TITLE_PLEASE_WAIT", "PLAIN", 100];
 waitUntil { uiSleep 0.1; !isNil "GRLIB_init_server" };
+["client.serverReady"] call HPC_fnc_loadMark;
 titleText ["", "PLAIN", 100];
 
 diag_log "--- Client Init start ---";
@@ -99,6 +100,7 @@ if (GRLIB_kick_idle > 0) then {
 };
 
 waitUntil {uiSleep 0.1; !isNil "BTC_logic"};
+["client.checks"] call HPC_fnc_loadMark;
 if (GRLIB_respawn_cooldown > 0) then {
 	private _cooldown = BTC_logic getVariable [format ["%1_last_respawn", PAR_Grp_ID], 0];
 	if (_cooldown > time) then {
@@ -173,6 +175,7 @@ HPC_clientLoadingStage = [0.85,"Preparing your player and squad..."];
 GRLIB_player_group = createGroup [GRLIB_side_friendly, true];
 [GRLIB_player_group, "add"] remoteExec ["addel_group_remote_call", 2];
 waitUntil { uiSleep 0.1; player getVariable ["GRLIB_score_set", 0] == 1 && player in (units GRLIB_player_group) };
+["client.score"] call HPC_fnc_loadMark;
 
 [] call compileFinal preprocessFileLineNumbers "addons\VAM\RPT_init_client.sqf";
 
@@ -183,6 +186,7 @@ diag_log "--- LRX: Build Arsenal Classnames ---";
 [] call compileFinal preprocessFileLineNumbers "addons\LARs\default_classnames.sqf";
 [] spawn compileFinal preprocessFileLineNumbers "addons\LARs\liberationArsenal.sqf";
 waitUntil { uiSleep 0.1; LRX_arsenal_init_done };
+["client.arsenal"] call HPC_fnc_loadMark;
 
 // LRX Addons
 [] execVM "addons\PAR\PAR_AI_Revive.sqf";
@@ -204,6 +208,7 @@ waitUntil { uiSleep 0.1; LRX_arsenal_init_done };
 LRX_init_done = true;
 
 HPC_clientLoadingStage = [1,"Ready"];
+["client.ready"] call HPC_fnc_loadMark;
 [true] call HPC_fnc_loadingEnd; // stay black until the intro camera takes over
 
 // Start intro

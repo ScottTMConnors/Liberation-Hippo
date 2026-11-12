@@ -26,6 +26,12 @@ titleText ["","PLAIN", 100];
 [] call compileFinal preprocessFileLineNumbers "build_info.sqf";
 diag_log format ["LRX version %1 - build version: %2 / build date: %3", localize "STR_MISSION_VERSION", GRLIB_build_version, GRLIB_build_date];
 
+// Startup timing marks (RPT "HPC_LOADTIME|machine|stage|seconds since mission start").
+HPC_loadT0 = diag_tickTime;
+HPC_fnc_loadMark = compileFinal {
+	private _who = if (isServer) then {"server"} else {["hc", "client"] select hasInterface};
+	diag_log format ["HPC_LOADTIME|%1|%2|%3", _who, _this select 0, (diag_tickTime - HPC_loadT0) toFixed 2];
+};
 diag_log "--- Init start ---";
 titleText ["-- Hippos Conquest --","PLAIN", 100];
 
@@ -61,15 +67,20 @@ if (isServer) then {
 };
 
 [] call compileFinal preprocessFileLineNumbers "scripts\shared\liberation_functions.sqf";
+["functions"] call HPC_fnc_loadMark;
 [] call compileFinal preprocessFileLineNumbers "scripts\shared\fetch_params.sqf";
+["sharedParams"] call HPC_fnc_loadMark;
 [] call compileFinal preprocessFileLineNumbers "scripts\server\sector\init_sectors.sqf";
+["sectors"] call HPC_fnc_loadMark;
 [] call compileFinal preprocessFileLineNumbers "scripts\shared\init_shared.sqf";
+["shared"] call HPC_fnc_loadMark;
 if (isServer) then {[] call compileFinal preprocessFileLineNumbers "scripts\server\game\vehicle_attribution.sqf"};
 
 // Client init
 if (!isDedicated && hasInterface) then {
 	[] spawn {
 		[] call compileFinal preprocessFileLineNumbers "scripts\client\fetch_params.sqf";
+		["clientParams"] call HPC_fnc_loadMark;
 		if (!isServer) then {
 			[] call compileFinal preprocessFileLineNumbers "scripts\shared\classnames.sqf";
 			if (GRLIB_ACE_enabled) then {
@@ -79,6 +90,7 @@ if (!isDedicated && hasInterface) then {
 			};
 		};
 		[] call compileFinal preprocessFileLineNumbers "scripts\client\client_functions.sqf";
+		["clientFunctions"] call HPC_fnc_loadMark;
 		[] spawn compileFinal preprocessFileLineNumbers "scripts\client\init_client.sqf";
 	};
 };
@@ -99,6 +111,7 @@ if (abort_loading) exitWith {
 if (isServer) then {
 	[] call compileFinal preprocessFileLineNumbers "scripts\server\server_functions.sqf";
 	[] call compileFinal preprocessFileLineNumbers "scripts\server\fetch_params.sqf";
+	["serverParams"] call HPC_fnc_loadMark;
     if (abort_loading) exitWith {};
 	[] call compileFinal preprocessFileLineNumbers "scripts\shared\classnames.sqf";
     if (abort_loading) exitWith {};
@@ -108,6 +121,7 @@ if (isServer) then {
 		[] spawn compileFinal preprocessFileLineNumbers "R3F_LOG\init.sqf";
 	};
 	[] call compileFinal preprocessFileLineNumbers "scripts\server\init_server.sqf";
+	["serverInit"] call HPC_fnc_loadMark;
 };
 
 if (abort_loading) exitWith {

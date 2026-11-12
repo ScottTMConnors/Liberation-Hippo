@@ -10,10 +10,7 @@ GRLIB_MOD_signature = GRLIB_MOD_signature + _A3_Items + ["B_","O_","I_","U_"];
 
 (
 	"
-	((getText (_x >> 'author')) == 'Bohemia Interactive' || (getText (_x >> 'author')) == 'Rotators Collective') &&
-	getNumber (_x >> 'scope') > 1 &&
-	([(configName _x)] call is_allowed_item) &&
-	([(configName _x), _A3_Items] call F_startsWithMultiple)
+	((getText (_x >> 'author')) == 'Bohemia Interactive' || (getText (_x >> 'author')) == 'Rotators Collective') && {getNumber (_x >> 'scope') > 1} && {([(configName _x), _A3_Items] call F_startsWithMultiple)} && {([(configName _x)] call is_allowed_item)}
 	"
 	configClasses (configfile >> "CfgWeapons" )
 ) apply { GRLIB_whitelisted_from_arsenal pushback (configName _x) } ;
@@ -21,9 +18,7 @@ GRLIB_MOD_signature = GRLIB_MOD_signature + _A3_Items + ["B_","O_","I_","U_"];
 // Others object (backpack, etc..)
 (
 	"
-	((getText (_x >> 'author')) == 'Bohemia Interactive' || (getText (_x >> 'author')) == 'Rotators Collective') &&
-	([(configName _x)] call is_allowed_item) &&
-	((configName _x) iskindof 'Bag_Base')
+	((getText (_x >> 'author')) == 'Bohemia Interactive' || (getText (_x >> 'author')) == 'Rotators Collective') && {((configName _x) iskindof 'Bag_Base')} && {([(configName _x)] call is_allowed_item)}
 	"
 	configClasses (configfile >> "CfgVehicles" )
 ) apply { GRLIB_whitelisted_from_arsenal pushback (configName _x) } ;
@@ -31,8 +26,7 @@ GRLIB_MOD_signature = GRLIB_MOD_signature + _A3_Items + ["B_","O_","I_","U_"];
 // Glasses
 (
 	"
-	((getText (_x >> 'author')) == 'Bohemia Interactive' || (getText (_x >> 'author')) == 'Rotators Collective') &&
-	([(configName _x)] call is_allowed_item)
+	((getText (_x >> 'author')) == 'Bohemia Interactive' || (getText (_x >> 'author')) == 'Rotators Collective') && {([(configName _x)] call is_allowed_item)}
 	"
 	configClasses (configfile >> "CfgGlasses" )
 ) apply { GRLIB_whitelisted_from_arsenal pushback (configName _x) } ;

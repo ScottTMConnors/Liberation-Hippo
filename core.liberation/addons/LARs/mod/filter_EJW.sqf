@@ -4,9 +4,7 @@ GRLIB_MOD_signature = GRLIB_MOD_signature + ["ej_"];
 // Weapons + Equipements (uniforme, etc..)
 (
 	"
-	tolower (getText (_x >> 'dlc')) == 'u100' &&
-	getNumber (_x >> 'scope') > 1 &&
-	([(configName _x)] call is_allowed_item)
+	tolower (getText (_x >> 'dlc')) == 'u100' && {getNumber (_x >> 'scope') > 1} && {([(configName _x)] call is_allowed_item)}
 	"
 	configClasses (configfile >> "CfgWeapons" )
 ) apply { GRLIB_whitelisted_from_arsenal pushback (configName _x) } ;
@@ -14,9 +12,7 @@ GRLIB_MOD_signature = GRLIB_MOD_signature + ["ej_"];
 // Others object (backpack, etc..)
 (
 	"
-	tolower (getText (_x >> 'dlc')) == 'u100' &&
-	([(configName _x)] call is_allowed_item) &&
-	((configName _x) iskindof 'Bag_Base')
+	tolower (getText (_x >> 'dlc')) == 'u100' && {((configName _x) iskindof 'Bag_Base')} && {([(configName _x)] call is_allowed_item)}
 	"
 	configClasses (configfile >> "CfgVehicles" )
 ) apply { GRLIB_whitelisted_from_arsenal pushback (configName _x) } ;
@@ -24,8 +20,7 @@ GRLIB_MOD_signature = GRLIB_MOD_signature + ["ej_"];
 // Glasses
 (
 	"
-	tolower (getText (_x >> 'dlc')) == 'u100' &&
-	([(configName _x)] call is_allowed_item)
+	tolower (getText (_x >> 'dlc')) == 'u100' && {([(configName _x)] call is_allowed_item)}
 	"
 	configClasses (configfile >> "CfgGlasses" )
 ) apply { GRLIB_whitelisted_from_arsenal pushback (configName _x) } ;

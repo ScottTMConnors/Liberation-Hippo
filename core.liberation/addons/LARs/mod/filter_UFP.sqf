@@ -5,8 +5,7 @@ GRLIB_MOD_signature = GRLIB_MOD_signature + ["afou_weap_","U_B_afou_","vest_afou
 // Weapons + Equipements (uniforms, etc..)
 (
 	"
-	getNumber (_x >> 'scope') > 1 &&
-	([(configName _x)] call is_allowed_item)
+	getNumber (_x >> 'scope') > 1 && {([(configName _x)] call is_allowed_item)}
 	"
 	configClasses (configfile >> "CfgWeapons" )
 ) apply { GRLIB_whitelisted_from_arsenal pushback (configName _x) } ;
@@ -14,8 +13,7 @@ GRLIB_MOD_signature = GRLIB_MOD_signature + ["afou_weap_","U_B_afou_","vest_afou
 // Others object (backpack, etc..)
 (
 	"
-	([(configName _x)] call is_allowed_item) &&
-	((configName _x) iskindof 'Bag_Base')
+	((configName _x) iskindof 'Bag_Base') && {([(configName _x)] call is_allowed_item)}
 	"
 	configClasses (configfile >> "CfgVehicles" )
 ) apply { GRLIB_whitelisted_from_arsenal pushback (configName _x) } ;

@@ -19,7 +19,6 @@ infantry_units = [];
 		};
 		_unit_cost = [_unit] call F_loadoutPrice;
 		deleteVehicle _unit;
-		uiSleep 0.1;
 	};
 	infantry_units pushBack [_unit_class, _unit_mp, _unit_cost, 0, _unit_rank, _unit_desc];
 } foreach infantry_units_west;

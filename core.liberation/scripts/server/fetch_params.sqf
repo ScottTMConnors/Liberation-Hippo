@@ -122,7 +122,6 @@ publicVariable "GRLIB_mod_list_west";
 publicVariable "GRLIB_mod_list_east";
 publicVariable "GRLIB_mod_list_name";
 publicVariable "GRLIB_LRX_params";
-uiSleep 0.5;
 
 if (!GRLIB_ParamsInitialized) then {
 	diag_log "--- LRX: Waiting for Admin to configure Mission ---";

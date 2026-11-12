@@ -93,7 +93,7 @@ while {true} do {
 
 			_score = _nextplayer getVariable ["GREUH_score_count", 0];
 			_nextplayer addScore (_score - score _nextplayer);
-			uiSleep 0.1;
+			uiSleep 0.02;
 		};
 	} foreach (AllPlayers - (entities "HeadlessClient_F"));
 
@@ -101,5 +101,10 @@ while {true} do {
 		GRLIB_player_scores = _newscores;
 		publicVariable "GRLIB_player_scores";
 	};
-	uiSleep 5;
+	// a joining player's loading screen waits for GRLIB_score_set: serve newcomers at once
+	private _next = diag_tickTime + 5;
+	waitUntil {
+		uiSleep 0.25;
+		diag_tickTime > _next || {(allPlayers findIf { getPlayerUID _x != "" && {_x getVariable ["GRLIB_score_set", 0] == 0} && {!(_x isKindOf "HeadlessClient_F")} }) >= 0}
+	};
 };

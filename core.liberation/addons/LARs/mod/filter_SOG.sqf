@@ -7,10 +7,7 @@ if (GRLIB_mod_west == "SOG_VIETCONG") then { _exclude = "vn_b" };
 // Weapons + Equipements (uniforme, etc..)
 (
 	"
-	tolower ((configName _x) select [0,3]) == 'vn_' &&
-	getNumber (_x >> 'scope') > 1 &&
-	!([_exclude, (configName _x), true] call F_startsWith) &&
-	([(configName _x)] call is_allowed_item)
+	tolower ((configName _x) select [0,3]) == 'vn_' && {getNumber (_x >> 'scope') > 1} && {!([_exclude, (configName _x), true] call F_startsWith)} && {([(configName _x)] call is_allowed_item)}
 	"
 	configClasses (configfile >> "CfgWeapons" )
 ) apply { GRLIB_whitelisted_from_arsenal pushback (configName _x) } ;
@@ -18,11 +15,7 @@ if (GRLIB_mod_west == "SOG_VIETCONG") then { _exclude = "vn_b" };
 // Others object (bagpack, etc..)
 (
 	"
-	tolower ((configName _x) select [0,3]) == 'vn_' &&
-	!([_exclude, (configName _x), true] call F_startsWith) &&
-	([(configName _x)] call is_allowed_item) &&
-	((configName _x) find '_Bag' == -1 ) &&
-	((configName _x) iskindof 'Bag_Base')
+	tolower ((configName _x) select [0,3]) == 'vn_' && {((configName _x) find '_Bag' == -1 )} && {((configName _x) iskindof 'Bag_Base')} && {!([_exclude, (configName _x), true] call F_startsWith)} && {([(configName _x)] call is_allowed_item)}
 	"
 	configClasses (configfile >> "CfgVehicles" )
 ) apply { GRLIB_whitelisted_from_arsenal pushback (configName _x) } ;
@@ -30,9 +23,7 @@ if (GRLIB_mod_west == "SOG_VIETCONG") then { _exclude = "vn_b" };
 // Glasses
 (
 	"
-	tolower ((configName _x) select [0,3]) == 'vn_' &&
-	!([_exclude, (configName _x), true] call F_startsWith) &&
-	([(configName _x)] call is_allowed_item)
+	tolower ((configName _x) select [0,3]) == 'vn_' && {!([_exclude, (configName _x), true] call F_startsWith)} && {([(configName _x)] call is_allowed_item)}
 	"
 	configClasses (configfile >> "CfgGlasses" )
 ) apply { GRLIB_whitelisted_from_arsenal pushback (configName _x) } ;

@@ -119,6 +119,7 @@ GRLIB_side_friendly setFriend [GRLIB_side_enemy, 0];
 	};
 } forEach (allMissionObjects "");
 
+["server.owners"] call HPC_fnc_loadMark;
 // Init Chimera unit look
 [] call compileFinal preprocessFileLineNumbers "scripts\server\game\chimera_units_overide.sqf";
 
@@ -133,6 +134,7 @@ if (abort_loading) exitWith {
 	publicVariable "abort_loading_msg";
 };
 
+["server.loadGame"] call HPC_fnc_loadMark;
 opfor_sectors = sectors_allSectors - blufor_sectors;
 publicVariable "opfor_sectors";
 HPC_serverLoadingStage = [0.65,"Preparing the world and map markers..."];
@@ -199,7 +201,9 @@ publicVariable "GRLIB_Sector_Votes";
 global_locked_group = [];
 publicVariable "global_locked_group";
 
-waituntil { uiSleep 1; !isNil "GRLIB_marker_init" };
+["server.managers"] call HPC_fnc_loadMark;
+waituntil { uiSleep 0.1; !isNil "GRLIB_marker_init" };
+["server.markers"] call HPC_fnc_loadMark;
 
 HPC_serverLoadingStage = [0.80,"World ready. Preparing your player..."];
 publicVariable "HPC_serverLoadingStage";

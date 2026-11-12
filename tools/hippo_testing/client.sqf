@@ -761,7 +761,8 @@ diag_log ["HPC_CARGO_RESULTS", _results, player getVariable ["HPC_cargo_home", [
 GRLIB_virtual_garage = [];
 player setVariable ["GRLIB_virtual_garage", [], true];
 player setVariable ["HPC_cargo_home", [[], []], true];
-["RUN_DONE|43"] call _emit;
+call compile preprocessFileLineNumbers "hippo_tests\client_fireteams.sqf";
+["RUN_DONE|52"] call _emit;
 // --hold only: a staged firefight for visual inspection of the map overlay and command window.
 if (missionNamespace getVariable ["HPC_testHold", false]) then {
     player allowDamage false;

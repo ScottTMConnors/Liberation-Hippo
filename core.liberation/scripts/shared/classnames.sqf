@@ -22,6 +22,7 @@ HPC_factionLightVehicles = +light_vehicles;
 HPC_factionHeavyVehicles = +heavy_vehicles;
 [] call HPC_fnc_catalogInit;
 
+["classnames.catalog"] call HPC_fnc_loadMark;
 diag_log "--- LRX: Check West Classnames ---";
 private _blufor_vehicles = [];
 { _blufor_vehicles pushBackUnique (_x select 0) } forEach (infantry_units_west + light_vehicles + heavy_vehicles + air_vehicles + static_vehicles + support_vehicles_west + buildings_west);
@@ -181,7 +182,9 @@ if (isNil "GRLIB_color_enemy") then {
 };
 
 // *** MILITIA ***
+["classnames.west"] call HPC_fnc_loadMark;
 [] call compileFinal preprocessFileLineNumbers "scripts\loadouts\init_loadouts.sqf";
+["classnames.loadouts"] call HPC_fnc_loadMark;
 if (isNil "militia_squad") exitWith {
 	diag_log format ["--- LRX Template Error: in template (%1), ""%2"" definition is NOT present in classnames_east.sqf !", GRLIB_mod_east, "militia_squad"];
 	abort_loading = true;
@@ -604,6 +607,7 @@ if (GRLIB_naval_type == 3) then {
 
 // FOB Defense buildings
 all_fob_defense_classnames = [];
+["classnames.lists"] call HPC_fnc_loadMark;
 [] call compileFinal preprocessFileLineNumbers "addons\FOB\fob_defense_init.sqf";
 fob_defenses_blacklist = [] + GRLIB_recycleable_blacklist + all_friendly_classnames + all_hostile_classnames;
 {
@@ -668,6 +672,7 @@ GRLIB_quick_delete = [
 ] + GRLIB_camo_net;
 
 // Filter Mods
+["classnames.fobDefense"] call HPC_fnc_loadMark;
 diag_log "--- LRX: Check Classnames ---";
 infantry_units = [ infantry_units ] call F_filterMods;
 light_vehicles = [ light_vehicles ] call F_filterMods;
@@ -869,4 +874,5 @@ GRLIB_force_cleanup_classnames = [
 	"gm_missile_milan_heat_dm92_empty"
 ];
 
+["classnames.check"] call HPC_fnc_loadMark;
 diag_log "--- LRX: Classnames Loaded ---";
