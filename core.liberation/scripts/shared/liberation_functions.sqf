@@ -161,6 +161,7 @@ HPC_fnc_restoreOrders = compileFinal preprocessFileLineNumbers "scripts\shared\f
 HPC_fnc_catalogType = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_catalogType.sqf";
 HPC_fnc_catalogGroup = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_catalogGroup.sqf";
 HPC_fnc_catalogOrder = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_catalogOrder.sqf";
+HPC_fnc_fatalHit = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_fatalHit.sqf"; // revive damage cutoff
 HPC_fnc_catalogInit = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_catalogInit.sqf";
 HPC_fnc_catalogFilters = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_catalogFilters.sqf";
 HPC_fnc_templateAvailable = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_templateAvailable.sqf";

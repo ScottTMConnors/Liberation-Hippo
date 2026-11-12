@@ -9,6 +9,12 @@ if (_unit == player) then {
 	1 fadeSound 0;
 	_unit connectTerminalToUAV objNull;
 
+	// Killed outright (no unconscious phase): keep the gear for the grave and respawn.
+	if !(_unit getVariable ["PAR_isUnconscious", false]) then {
+		PAR_backup_loadout = [_unit] call F_getCargoUnit;
+		GRLIB_death_loadout = getUnitLoadout _unit;
+	};
+
 	// Grave + Save Stuff
 	private _pos = getPosATL _unit;
 	private _dir = getDir _unit;

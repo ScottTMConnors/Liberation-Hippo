@@ -1,4 +1,8 @@
 // Run once during classnames initialization, before derived lists and unit pricing.
+// The mission template's own classes: the build menu's default faction filter.
+HPC_templateClasses = createHashMap;
+{ HPC_templateClasses set [toLower (_x select 0), true] } forEach
+    (infantry_units_west + light_vehicles + heavy_vehicles + air_vehicles + static_vehicles + support_vehicles_west);
 if (!HPC_AllFactions) exitWith {};
 if (isServer) then {
     private _known = createHashMap;

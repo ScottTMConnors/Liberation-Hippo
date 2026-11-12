@@ -128,11 +128,24 @@ _display setVariable ["HPC_collapsed", []];
 (_display displayCtrl 1708) ctrlAddEventHandler ["ButtonClick", {
     private _display = ctrlParent (_this select 0);
     (_display displayCtrl 1701) ctrlSetText "";
-    {(_display displayCtrl _x) lbSetCurSel 0} forEach [1702,1703];
+    (_display displayCtrl 1702) lbSetCurSel (_display getVariable ["HPC_factionDefault", 0]);
+    {(_display displayCtrl _x) lbSetCurSel 0} forEach [1703,1712];
     HPC_catalogOnlyUnlocked = false;
     _display setVariable ["HPC_collapsed",[]];
     build_refresh = true;
 }];
+// Per-dropdown resets: faction to the mission faction, type to all types.
+(_display displayCtrl 1710) ctrlAddEventHandler ["ButtonClick", {
+    private _display = ctrlParent (_this select 0);
+    (_display displayCtrl 1702) lbSetCurSel (_display getVariable ["HPC_factionDefault", 0]);
+}];
+(_display displayCtrl 1711) ctrlAddEventHandler ["ButtonClick", {
+    (ctrlParent (_this select 0) displayCtrl 1703) lbSetCurSel 0;
+}];
+// Sort order, kept for the session.
+private _sortControl = _display displayCtrl 1712;
+{ _sortControl lbAdd _x } forEach ["Name", "Manpower: low-high", "Manpower: high-low", "Ammo: low-high", "Ammo: high-low", "Fuel: low-high", "Fuel: high-low"];
+_sortControl lbSetCurSel (missionNamespace getVariable ["HPC_catalogSort", 0]);
 (_display displayCtrl 110) ctrlAddEventHandler ["LBSelChanged", {
     params ["_control", "_row"];
     if (_row < 0) exitWith {};
@@ -192,10 +205,13 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
 	if (_old_buildtype != buildtype) then { build_refresh = true };
     private _resources = [[player] call F_getScore, player getVariable ["GREUH_ammo_count",0], player getVariable ["GREUH_fuel_count",0], resources_infantry, infantry_cap, count PAR_AI_bros, +blufor_sectors];
     if !(_resources isEqualTo _oldResources) then {_oldResources = _resources; _score = _resources select 0; build_refresh = true};
-    private _filters = [ctrlText (_display displayCtrl 1701), lbCurSel (_display displayCtrl 1702), lbCurSel (_display displayCtrl 1703)];
+    private _filters = [ctrlText (_display displayCtrl 1701), lbCurSel (_display displayCtrl 1702), lbCurSel (_display displayCtrl 1703), lbCurSel (_display displayCtrl 1712)];
     if !(_filters isEqualTo _oldFilters) then {build_refresh = true; _oldFilters = _filters};
 
 	if (build_refresh) then {
+        // Rebuild in one frame (unscheduled) so the list never shows half-filled.
+        private _scroll = if (_old_buildtype == buildtype) then {ctrlScrollValues (_display displayCtrl 110)} else {[]};
+        isNil {
         _onlyUnlocked = missionNamespace getVariable ["HPC_catalogOnlyUnlocked",false];
         call _updateUnlockButton;
 		private _previousClass = if (count HPC_buildSelection == 2 && {_old_buildtype == buildtype}) then {HPC_buildSelection select 1 select 0} else {""};
@@ -233,7 +249,8 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
 			if (count _build_list == 0) then { _msg = "No items match these filters." };
 		};
 
-        private _ordered = [_build_list,buildtype,_score,_onlyUnlocked,GRLIB_vehicle_to_military_base_links,blufor_sectors] call HPC_fnc_catalogOrder;
+        HPC_catalogSort = (lbCurSel (_display displayCtrl 1712)) max 0;
+        private _ordered = [_build_list,buildtype,_score,_onlyUnlocked,GRLIB_vehicle_to_military_base_links,blufor_sectors,HPC_catalogSort] call HPC_fnc_catalogOrder;
         _build_list = _ordered apply {_x select 4};
         if (_build_list isEqualTo [] && {_msg == ""}) then {_msg = "No unlocked items match these filters."};
         private _groups = [];
@@ -442,7 +459,10 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
         if (_restoreRow < 0) then {_restoreRow = _rowItems findIf {_x >= 0}};
         lnbSetCurSelRow [110, _restoreRow];
         // The refresh may reset the filter combos; snapshot them so that reset isn't seen as a change.
-        _oldFilters = [ctrlText (_display displayCtrl 1701), lbCurSel (_display displayCtrl 1702), lbCurSel (_display displayCtrl 1703)];
+        _oldFilters = [ctrlText (_display displayCtrl 1701), lbCurSel (_display displayCtrl 1702), lbCurSel (_display displayCtrl 1703), lbCurSel (_display displayCtrl 1712)];
+        // Same page: keep the list where the player had scrolled it.
+        if (_scroll isNotEqualTo []) then {(_display displayCtrl 110) ctrlSetScrollValues [_scroll select 0, -1]};
+        }; // isNil
 	};
 
 	private _selectedRow = lnbCurSelRow 110;

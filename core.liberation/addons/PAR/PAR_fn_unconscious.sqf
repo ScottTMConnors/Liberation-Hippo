@@ -13,6 +13,7 @@ _unit setVariable ["PAR_isDragged", 0, true];
 if (_unit == player) then {
 	if (GRLIB_disable_death_chat) then { for "_channel" from 0 to 4 do { _channel enableChannel false } };
 	PAR_backup_loadout = [_unit] call F_getCargoUnit;
+	GRLIB_death_loadout = getUnitLoadout _unit;
 } else {
 	_unit setVariable ["GRLIB_can_speak", false, true];
 	[_unit] call PAR_deathSound;

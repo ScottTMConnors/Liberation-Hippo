@@ -22,6 +22,27 @@ if (isNil {player getVariable "GREUH_stuff_price"}) then {
 	};
 };
 
+// Loadout carried at death, paid again in ammo like the respawn loadout.
+if (isNil {player getVariable "GREUH_stuff_price"} && {!isNil "GRLIB_death_loadout"} && {GRLIB_death_loadout isNotEqualTo []}) then {
+	private _death_loadout = GRLIB_death_loadout;
+	GRLIB_death_loadout = nil;
+	player setUnitLoadout _death_loadout;
+	[player] call F_filterLoadout;
+	private _price = [player] call F_loadoutPrice;
+	if ((player getVariable ["GREUH_ammo_count", 0]) >= _price) then {
+		player setVariable ["GREUH_stuff_price", 0, true];
+		[player] call F_payLoadout;
+		hintSilent format ["Loadout restored (%1 ammo).", _price];
+	} else {
+		private _msg = format ["Can't restore your loadout (%1 ammo): %2", _price, localize "STR_GRLIB_NOAMMO"];
+		hintSilent _msg;
+		gamelogic globalChat _msg;
+		// drop it again: the default loadout below starts from an empty unit
+		removeAllWeapons player; removeAllItems player; removeAllAssignedItems player;
+		removeUniform player; removeVest player; removeBackpack player; removeHeadgear player; removeGoggles player;
+	};
+};
+
 if (isNil {player getVariable "GREUH_stuff_price"}) then {
 	if (GRLIB_forced_loadout == 0) then {
 		// Lobby loadout

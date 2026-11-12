@@ -55,5 +55,27 @@ if !(player getVariable ["GRLIB_squad_context_loaded", false]) then {
 	[player] remoteExec ["load_squad_context_remote_call", 2];
 };
 
+// Reclaim the crews of vehicles built with crew before a disconnect.
+[] spawn {
+	sleep 5;
+	private _crew = allUnits select {
+		private _veh = objectParent _x;
+		alive _x && {!isPlayer _x} && {group _x != group player} && {!isPlayer leader group _x} && {
+			(_x getVariable ["HPC_crewOwner", ""]) == PAR_Grp_ID ||
+			// crews built before the tag existed: AI in a vehicle this player owns
+			{!isNull _veh && {(_veh getVariable ["GRLIB_vehicle_owner", ""]) == PAR_Grp_ID} && {!unitIsUAV _veh} && {!(typeOf _veh in static_vehicles_AI)} && {side group _x == GRLIB_side_friendly}}
+		}
+	};
+	if (_crew isNotEqualTo []) then {
+		private _oldGroups = [];
+		{ _oldGroups pushBackUnique group _x } forEach _crew;
+		_crew joinSilent (group player);
+		{ _x setVariable ["HPC_crewOwner", PAR_Grp_ID, true] } forEach _crew;
+		sleep 2;
+		{ if (units _x isEqualTo []) then { [_x] remoteExec ["deleteGroup", 2] } } forEach _oldGroups;
+		gamelogic globalChat format ["%1 vehicle crew member(s) rejoined your squad.", count _crew];
+	};
+};
+
 GRLIB_player_configured = true;
 diag_log format ["--- LRX Player %1 initialized ---", name player];

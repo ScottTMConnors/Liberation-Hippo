@@ -1,7 +1,7 @@
 disableSerialization;
 params ["_display", "_entries", "_page"];
 private _applicable = _page in [1,2,3,4,5,6,7,9];
-{(_display displayCtrl _x) ctrlShow _applicable} forEach [1700,1701,1702,1703,1705];
+{(_display displayCtrl _x) ctrlShow _applicable} forEach [1700,1701,1702,1703,1705,1710,1711];
 if (!_applicable) exitWith {+_entries};
 private _factionControl = _display displayCtrl 1702;
 private _typeControl = _display displayCtrl 1703;
@@ -24,6 +24,13 @@ if ((_display getVariable ["HPC_filterPage", -1]) != _page) then {
     lbClear _typeControl;
     _factionControl lbAdd "All available factions";
     _factionControl lbSetData [0, ""];
+    // With every loaded faction available, default to the mission's own faction.
+    private _factionDefault = 0;
+    if (missionNamespace getVariable ["HPC_AllFactions", false]) then {
+        _factionDefault = _factionControl lbAdd "Mission faction";
+        _factionControl lbSetData [_factionDefault, "#mission"];
+    };
+    _display setVariable ["HPC_factionDefault", _factionDefault];
     _typeControl lbAdd "All types";
     _typeControl lbSetData [0, ""];
     private _factions = [];
@@ -42,7 +49,7 @@ if ((_display getVariable ["HPC_filterPage", -1]) != _page) then {
     _types sort true;
     {private _row = _factionControl lbAdd (_x select 0); _factionControl lbSetData [_row, _x select 1]} forEach _factions;
     {private _row = _typeControl lbAdd _x; _typeControl lbSetData [_row, _x]} forEach _types;
-    _factionControl lbSetCurSel 0;
+    _factionControl lbSetCurSel _factionDefault;
     _typeControl lbSetCurSel 0;
 };
 _typeControl ctrlShow true;
@@ -52,7 +59,8 @@ private _type = _typeControl lbData (lbCurSel _typeControl);
 _entries select {
     private _class = _x select 0;
     private _data = [_class] call _metadata;
-    (_faction == "" || (_data select 0) == _faction) &&
+    (_faction == "" || {(_data select 0) == _faction} ||
+        {_faction == "#mission" && {_page > 5 || {toLower _class in (missionNamespace getVariable ["HPC_templateClasses", createHashMap])}}}) &&
     {(_type == "" || {(_data select 1) == _type})} &&
     {(_search == "" || {(_data select 2) find _search >= 0})}
 };

@@ -134,6 +134,8 @@ if (_unit == player) then {
 					_damage = 0;
 				};
 			};
+			// Too severe to revive (destroyed vehicle, big explosion): die outright.
+			if (_damage > 0 && {!([_unit] call PAR_is_wounded)} && {!(captive _unit)} && {[_unit, _damage] call HPC_fnc_fatalHit}) exitWith {_damage};
 			private _veh_unit = objectParent _unit;
 			if (time > (_unit getVariable ["GRLIB_isProtected", 0]) && _damage > 0) then {
 				private _lucky = _unit getVariable ["GRLIB_isLucky", (floor random 3)];
@@ -259,6 +261,7 @@ if (_unit == player) then {
 	if (PAR_revive != 0) then {
 		[_unit, "HandleDamage", {
 			params ["_unit","","_damage"];
+			if (_damage > 0 && {!([_unit] call PAR_is_wounded)} && {!(captive _unit)} && {[_unit, _damage] call HPC_fnc_fatalHit}) exitWith {_damage};
 			private _veh_unit = objectParent _unit;
 			if (time > (_unit getVariable ["GRLIB_isProtected", 0]) && _damage > 0) then {
 				private _lucky = _unit getVariable ["GRLIB_isLucky", (floor random 3)];

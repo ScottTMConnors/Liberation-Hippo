@@ -10,9 +10,10 @@
  },
  "1702": {
   "rows": [
-   "All available factions"
+   "All available factions",
+   "Mission faction"
   ],
-  "sel": 0
+  "sel": 1
  },
  "1703": {
   "rows": [
@@ -190,5 +191,12 @@
  },
  "122": {
   "text": "Spawn with crew (+4 manpower)"
+ },
+ "1712": {
+  "rows": [
+   "Name",
+   "Manpower: low-high"
+  ],
+  "sel": 0
  }
 }

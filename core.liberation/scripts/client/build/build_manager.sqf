@@ -497,6 +497,8 @@ while {true} do {
 				// the crew joins the builder's squad
 				private _crewGrp = group _vehicle;
 				(crew _vehicle) joinSilent (group player);
+				// tag the crew so it rejoins this player after a reconnect
+				{ _x setVariable ["HPC_crewOwner", PAR_Grp_ID, true] } forEach (crew _vehicle);
 				if (_crewGrp != group player) then { deleteGroup _crewGrp };
 			};
 
