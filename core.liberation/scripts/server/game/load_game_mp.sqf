@@ -123,7 +123,24 @@ if (!isNil "_lrx_liberation_savegame") then {
 		*********************************"];
 		abort_loading = true;
 	};
-	diag_log format ["--- LRX Load Game start at %1", time];
+	// Slot 6 holds the save layout version (unused before versioning, so 1)
+	private _save_version = _lrx_liberation_savegame param [6, 1];
+	if !(_save_version isEqualType 0) then { _save_version = 1 };
+	if (_save_version > HPC_save_version) exitWith {
+		abort_loading_msg = format [
+		"********************************
+
+		FATAL! - The savegame was made by a newer version of the mission (save v%1, mission v%2)
+
+
+		Loading Aborted to protect data integrity.
+
+		Update the mission...
+
+		*********************************", _save_version, HPC_save_version];
+		abort_loading = true;
+	};
+	diag_log format ["--- LRX Load Game start at %1 (save v%2)", time, _save_version];
 
 	blufor_sectors = _lrx_liberation_savegame select 0;
 	if (isNil "blufor_sectors") then { blufor_sectors = [] };

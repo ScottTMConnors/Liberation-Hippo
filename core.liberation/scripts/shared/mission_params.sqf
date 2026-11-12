@@ -1301,7 +1301,7 @@ _Mission_Params = [
         ]]
     ]],
     [GRLIB_PARAM_AutoSave, createHashMapFromArray [
-        [GRLIB_PARAM_ValueKey, (30*60)],
+        [GRLIB_PARAM_ValueKey, (15*60)],
         [GRLIB_PARAM_NameKey, localize "STR_AUTO_SAVE"],
         [GRLIB_PARAM_OptionLabelKey, [
             localize "STR_PARAMS_DISABLED",

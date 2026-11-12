@@ -506,7 +506,47 @@ private _hint = ["STR_SPECIALDELI_MESSAGE1", "#ff0000", "Town", "Captain Test"];
 private _hintText = format ([localize (_hint select 0)] + (_hint select [1]));
 diag_log ["HPC_HINT_FORMAT", _hintText];
 ["missions.hintFormat", (_hintText find "Captain Test") >= 0 && {(_hintText find "Town") >= 0}] call _assert;
-["RUN_DONE|31"] call _emit;
+// Garage round trip: the server saves this player's distant vehicle into the garage and
+// reloads the player from that save; the vehicle is then retrieved with its cargo.
+HPC_testGarageResult = nil;
+[player] remoteExec ["HPC_testGarageFn", 2];
+_deadline = diag_tickTime + 30;
+waitUntil {sleep 0.2; diag_tickTime > _deadline || {!isNil "HPC_testGarageResult"}};
+private _gRes = missionNamespace getVariable ["HPC_testGarageResult", [false, "", 0]];
+_deadline = diag_tickTime + 10;
+waitUntil {sleep 0.2; diag_tickTime > _deadline || {((player getVariable ["GRLIB_virtual_garage", []]) findIf {(_x select 0) == (_gRes select 1)}) >= 0}};
+private _gGarage = player getVariable ["GRLIB_virtual_garage", []];
+private _gIdx = _gGarage findIf {(_x select 0) == (_gRes select 1)};
+private _gOk = false;
+if ((_gRes select 0) && {_gIdx >= 0}) then {
+    build_unit = _gGarage select _gIdx;
+    buildtype = GRLIB_BuildTypeDirect;
+    dobuild = 1;
+    _deadline = diag_tickTime + 15;
+    waitUntil {sleep 0.2; diag_tickTime > _deadline || {!isNull findDisplay 312}};
+    if (!isNull findDisplay 312) then {
+        sleep 1;
+        curatorCamera setPosASL (AGLToASL (player modelToWorld [-8, -5, 25]));
+        curatorCamera setVectorDirAndUp [vectorDir player vectorMultiply 0.5 vectorAdd [0, 0, -0.85], [0, 0, 1]];
+        setMousePosition [0.5, 0.5];
+        _deadline = diag_tickTime + 10;
+        waitUntil {sleep 0.2; diag_tickTime > _deadline || {build_valid && build_confirmed == 1}};
+        if (build_valid) then { build_confirmed = 2; repeatbuild = false };
+        _deadline = diag_tickTime + 15;
+        waitUntil {sleep 0.2; diag_tickTime > _deadline || {dobuild == 0}};
+        private _gVeh = build_vehicle;
+        _deadline = diag_tickTime + 10;
+        waitUntil {sleep 0.5; diag_tickTime > _deadline || {!isNull _gVeh && {"FirstAidKit" in ((getItemCargo _gVeh) select 0)}}};
+        private _gItems = if (isNull _gVeh) then {[[],[]]} else {getItemCargo _gVeh};
+        private _gAid = (_gItems select 0) find "FirstAidKit";
+        _gOk = !isNull _gVeh && {typeOf _gVeh == (_gRes select 1)} && {_gAid >= 0} && {((_gItems select 1) select _gAid) == 3};
+        diag_log ["HPC_GARAGE_RETRIEVE", _gRes, _gVeh, _gItems];
+        if (!isNull _gVeh) then { deleteVehicle _gVeh };
+    };
+};
+diag_log ["HPC_GARAGE_CLIENT", _gRes, _gIdx, count _gGarage];
+["garage.restartRetrieve", (_gRes select 0) && {(_gRes select 2) >= 1} && {_gOk}] call _assert;
+["RUN_DONE|32"] call _emit;
 // --hold only: a staged firefight for visual inspection of the map overlay and command window.
 if (missionNamespace getVariable ["HPC_testHold", false]) then {
     player allowDamage false;

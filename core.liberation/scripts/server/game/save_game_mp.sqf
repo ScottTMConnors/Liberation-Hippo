@@ -4,6 +4,10 @@ if (missionNamespace getVariable ["abort_loading",false]) exitWith {};
 if (!isNil "GRLIB_server_stopped") exitWith {};
 if (!isNil "GRLIB_save_in_progress") exitWith {};
 
+// The whole save runs as one uninterrupted (unscheduled) step: the world cannot change
+// halfway through gathering it, and two saves can never overlap.
+isNil {
+private ["_uid", "_score", "_fobpos", "_nextbuildings", "_stats"];	// never leak into the caller's scope
 diag_log format ["--- LRX Save start at %1", time];
 GRLIB_save_in_progress = true;
 
@@ -40,7 +44,7 @@ if (GRLIB_endgame >= 1 || GRLIB_global_stop == 1) then {
 		time_of_day,
 		0,
 		[],
-		[],
+		HPC_save_version,
 		GRLIB_mod_west,
 		GRLIB_mod_east,
 		[2,2,1,0],
@@ -79,6 +83,16 @@ if (GRLIB_endgame >= 1 || GRLIB_global_stop == 1) then {
             _all_buildings pushBackUnique _object;
         };
     } forEach (allSimpleObjects lib_simpleObjects);
+	// Player-owned vehicles go to their owner's garage (below), wherever they are and even
+	// while moving; only what sits in R3F/LRX cargo travels with its carrier instead.
+	private _garage_on = GRLIB_garage_size > 0;
+	if (_garage_on) then {
+		_all_buildings append (vehicles select {
+			alive _x && {typeOf _x in GRLIB_classnames_to_save_blu} && {!(typeOf _x in GRLIB_vehicles_light)} &&
+			{isNull attachedTo _x} && {isNull (_x getVariable ["R3F_LOG_est_transporte_par", objNull])} &&
+			{!((_x getVariable ["GRLIB_vehicle_owner", ""]) in ["", "server", "public", "lrx"])}
+		});
+	};
     _all_buildings = _all_buildings arrayIntersect _all_buildings;
 
 	// Filter low score Player
@@ -92,6 +106,30 @@ if (GRLIB_endgame >= 1 || GRLIB_global_stop == 1) then {
 			_player_scores pushback _x;
 		};
 	} forEach GRLIB_player_scores;
+
+	// Online players' contexts are refreshed first so the save holds their current garage
+	{
+		private _uid = getPlayerUID _x;
+		if (_uid in _keep_score_id) then { [_x, _uid] call save_context };
+	} forEach (allPlayers select {!(_x isKindOf "HeadlessClient_F")});
+
+	// Save Context
+	private _player_context = [];
+	private _buffer = [];
+	{
+		_uid = _x;
+		_buffer = localNamespace getVariable [format ["player_context_%1", _uid], []];
+		if (count _buffer > 0) then {
+			_player_context pushBack _buffer;
+		} else {
+			{if (_x select 0 == _uid) exitWith {_player_context pushBack _x}} foreach GRLIB_player_context;
+		}
+	} forEach _keep_score_id;
+	GRLIB_player_context = _player_context;
+
+	// Garage additions per owner UID; only owners with a full context can receive them
+	private _garage_add = createHashMap;
+	{ if (count _x >= 5) then { _garage_add set [_x select 0, []] } } forEach _player_context;
 
 	// Save Objects
 	{
@@ -141,6 +179,17 @@ if (GRLIB_endgame >= 1 || GRLIB_global_stop == 1) then {
 						private _lst_a3 = []; //[_x, true] call F_getCargo;
 						private	_lst_r3f = [_x] call save_r3f_object_direct;
 						private	_lst_lrx = [_x] call save_lrx_object_direct;
+						if (_garage_on && {_owner in _garage_add} && {!_hascrew} && {_nextclass != playerbox_typename}) exitWith {
+							(_garage_add get _owner) pushBack [
+								_nextclass,
+								_x getVariable ["GRLIB_vehicle_color", ""],
+								[_x] call F_getVehicleAmmoDef,
+								_compo,
+								[_x, true] call F_getCargo,
+								_lst_r3f,
+								_lst_lrx
+							];
+						};
 						if ([_x] call F_vehicleSafeZone) then { _owner = "" };
 						buildings_to_save pushback [_nextclass, _savedpos, _nextdir, _hascrew, _owner, _color, _color_name, _lst_a3, _lst_r3f, _lst_lrx, _compo];
 					};
@@ -161,20 +210,6 @@ if (GRLIB_endgame >= 1 || GRLIB_global_stop == 1) then {
 		_uid = _x select 0;
 		if (_uid in _keep_score_id) then {_permissions pushback _x};
 	} forEach GRLIB_permissions;
-
-	// Save Context
-	private _player_context = [];
-	private _buffer = [];
-	{
-		_uid = _x;
-		_buffer = localNamespace getVariable [format ["player_context_%1", _uid], []];
-		if (count _buffer > 0) then {
-			_player_context pushBack _buffer;
-		} else {
-			{if (_x select 0 == _uid) exitWith {_player_context pushBack _x}} foreach GRLIB_player_context;
-		}
-	} forEach _keep_score_id;
-	GRLIB_player_context = _player_context;
 
 	// Time
 	time_of_day = date select 3;
@@ -211,15 +246,29 @@ if (GRLIB_endgame >= 1 || GRLIB_global_stop == 1) then {
 	_stats pushback stats_fobs_lost;
 	_stats pushback stats_readiness_earned;
 
+	// Context written to the save: a copy with each owner's vehicles added to their garage.
+	// The live context and the vehicles in the world are left as they are.
+	private _saved_context = _player_context apply {
+		private _added = _garage_add getOrDefault [_x select 0, []];
+		if (count _added == 0) then { _x } else {
+			private _copy = +_x;
+			_copy set [4, (+(_copy select 4)) + _added];
+			_copy
+		};
+	};
+	private _garaged = 0;
+	{ _garaged = _garaged + count _y } forEach _garage_add;
+	if (_garaged > 0) then { diag_log format ["--- LRX Save: %1 player vehicle(s) stored in garages", _garaged] };
+
 	// Save Blob
 	private _lrx_liberation_savegame = [
-		(blufor_sectors - sector_attack_in_progress),
+		+blufor_sectors,	// sectors under attack stay friendly
 		GRLIB_all_fobs,
 		buildings_to_save,
 		time_of_day,
 		round combat_readiness,
 		GRLIB_sector_defense,
-		[],
+		HPC_save_version,
 		GRLIB_mod_west,
 		GRLIB_mod_east,
 		GRLIB_warehouse,
@@ -227,7 +276,7 @@ if (GRLIB_endgame >= 1 || GRLIB_global_stop == 1) then {
 		[round infantry_weight max 33, round armor_weight max 33, round air_weight max 33],
 		GRLIB_vehicle_to_military_base_links,
 		_permissions,
-		GRLIB_player_context,
+		_saved_context,
 		resources_intel,
 		_player_scores
 	];
@@ -239,3 +288,4 @@ if (GRLIB_endgame >= 1 || GRLIB_global_stop == 1) then {
 };
 
 GRLIB_save_in_progress = nil;
+};

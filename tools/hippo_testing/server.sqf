@@ -6,6 +6,33 @@ private _assert = {
     ["CASE_DONE|" + _case] call _emit;
 };
 ["RUN_START|1"] call _emit;
+// MP garage round trip, called by the client: its vehicle far from any FOB is saved into its
+// garage, then the client is reloaded from that save as on a server restart.
+HPC_testGarageFn = {
+    params ["_player"];
+    private _uid = getPlayerUID _player;
+    private _class = ((GRLIB_classnames_to_save_blu - GRLIB_vehicles_light - [playerbox_typename]) select {_x isKindOf "Car"}) param [0, ""];
+    private _pos = [(getPos _player) getPos [2500, 180], 0, 300, 8, 0, 0.3, 0] call BIS_fnc_findSafePos;
+    private _veh = createVehicle [_class, _pos, [], 0, "NONE"];
+    _veh setVariable ["GRLIB_vehicle_owner", _uid, true];
+    clearItemCargoGlobal _veh;
+    _veh addItemCargoGlobal ["FirstAidKit", 3];
+    private _before = count (_player getVariable ["GRLIB_virtual_garage", []]);
+    [] call save_game_mp;
+    private _blob = profileNamespace getVariable [GRLIB_save_key, []];
+    private _ctx = (_blob select 14) select {(_x select 0) == _uid};
+    private _saved = count _ctx == 1 && {((_ctx select 0) select 4) findIf {(_x select 0) == _class} >= 0};
+    // Restart: the vehicle is gone from the world and the context comes from the save
+    deleteVehicle _veh;
+    localNamespace setVariable [format ["player_context_%1", _uid], nil];
+    GRLIB_player_context = +(_blob select 14);
+    _player setVariable ["GRLIB_player_context_loaded", false];
+    [_player, _uid] call load_player_context;
+    private _garage = _player getVariable ["GRLIB_virtual_garage", []];
+    diag_log ["HPC_GARAGE_MP", _class, _saved, _before, count _garage, _uid, alive _player, (_blob select 14) apply {[_x select 0, count _x, count (_x param [4, []])]}];
+    HPC_testGarageResult = [_saved, _class, count _garage - _before];
+    (owner _player) publicVariableClient "HPC_testGarageResult";
+};
 // Test helper the client calls by name (remoteExec of named functions only).
 HPC_testShooterFn = {
     // An enemy fires about 3 km from the player, with or without a friendly soldier beside it.
@@ -188,8 +215,49 @@ diag_log ["HPC_SIMPLE_DIAGNOSTIC", count _loaded, _serialized, _enumerated, _tag
 GRLIB_all_fobs = _oldFobs;
 deleteVehicle _unit;
 deleteGroup _group;
+
+// Save: player vehicles go to the owner's garage (anywhere, even moving), the save carries
+// its layout version, sectors under attack stay friendly, and repeated saves do not duplicate.
+private _gUid = "HPC_TEST_GARAGE_UID";
+private _gClasses = (GRLIB_classnames_to_save_blu - GRLIB_vehicles_light - [playerbox_typename]) select {_x isKindOf "Car"};
+private _gClass = _gClasses param [0, ""];
+private _gPos = (markerPos "base_chimera") getPos [2500, 90];
+_gPos = [_gPos, 0, 300, 8, 0, 0.3, 0] call BIS_fnc_findSafePos;
+private _gVeh = createVehicle [_gClass, _gPos, [], 0, "NONE"];
+_gVeh setVariable ["GRLIB_vehicle_owner", _gUid, true];
+clearItemCargoGlobal _gVeh;
+_gVeh addItemCargoGlobal ["FirstAidKit", 3];
+private _gSector = (sectors_allSectors - blufor_sectors) param [0, ""];
+private _gOldSectors = +blufor_sectors;
+private _gOldAttack = +sector_attack_in_progress;
+blufor_sectors pushBack _gSector;
+sector_attack_in_progress pushBack _gSector;
+GRLIB_player_scores pushBack [_gUid, GRLIB_min_score_player + 1000, 0, 0];
+GRLIB_player_context pushBack [_gUid, [], [], [], [], []];
+_gVeh setVelocityModelSpace [0, 12, 0];
+sleep 0.5;
+private _gMoving = speed _gVeh > 5;
+[] call save_game_mp;
+[] call save_game_mp;
+private _gBlob = profileNamespace getVariable [GRLIB_save_key, []];
+private _gCtx = (_gBlob select 14) select {(_x select 0) == _gUid};
+private _gGarage = if (count _gCtx == 1) then {(_gCtx select 0) select 4} else {[]};
+private _gEntry = _gGarage param [0, []];
+private _gCargo = (_gEntry param [4, []]) select {_x isEqualTo ["FirstAidKit", 3]};
+private _gInWorld = (_gBlob select 2) findIf {(_x select 0) == _gClass && {(_x select 1) distance2D _gPos < 300}} >= 0;
+private _gLive = GRLIB_player_context select {(_x select 0) == _gUid};
+private _gLiveEmpty = count _gLive == 1 && {((_gLive select 0) select 4) isEqualTo []};
+diag_log ["HPC_SAVE_GARAGE", _gClass, _gMoving, count _gGarage, _gEntry, _gInWorld, _gLiveEmpty, _gBlob select 6, _gSector in (_gBlob select 0), alive _gVeh];
+["save.garage", _gClass != "" && {_gMoving} && {count _gGarage == 1} && {(_gEntry select 0) == _gClass} && {count _gEntry == 7} && {count _gCargo == 1} && {!_gInWorld} && {_gLiveEmpty} && {alive _gVeh}] call _assert;
+["save.version", (_gBlob select 6) isEqualTo HPC_save_version] call _assert;
+["save.sectorUnderAttack", _gSector != "" && {_gSector in (_gBlob select 0)}] call _assert;
+deleteVehicle _gVeh;
+GRLIB_player_scores = GRLIB_player_scores select {(_x select 0) != _gUid};
+GRLIB_player_context = GRLIB_player_context select {(_x select 0) != _gUid};
+blufor_sectors = _gOldSectors;
+sector_attack_in_progress = _gOldAttack;
 if (HPC_testScenario) then {call compile preprocessFileLineNumbers "hippo_tests\scenario.sqf"};
 call compile preprocessFileLineNumbers "hippo_tests\review.sqf";
 if (HPC_testCommander) then {call compile preprocessFileLineNumbers "hippo_tests\commander.sqf"};
 if (missionNamespace getVariable ["HPC_testHeadless",false]) then {call compile preprocessFileLineNumbers "hippo_tests\headless.sqf"};
-[format ["RUN_DONE|%1", 19 + (if (HPC_testScenario) then {4} else {0}) + (if (HPC_testCommander) then {8} else {0}) + (if (missionNamespace getVariable ["HPC_testHeadless",false]) then {12} else {0})]] call _emit;
+[format ["RUN_DONE|%1", 22 + (if (HPC_testScenario) then {4} else {0}) + (if (HPC_testCommander) then {8} else {0}) + (if (missionNamespace getVariable ["HPC_testHeadless",false]) then {12} else {0})]] call _emit;

@@ -139,6 +139,8 @@ publicVariable "HPC_serverLoadingStage";
 A3W_Mission_count = [GRLIB_PARAM_A3WCount] call lrx_getParamValue;
 A3W_Mission_delay = [GRLIB_PARAM_A3WDelay] call lrx_getParamValue;
 GRLIB_autosave_timer = [GRLIB_PARAM_AutoSave] call lrx_getParamValue;
+GRLIB_garage_size = [GRLIB_PARAM_MaxGarageSize] call lrx_getParamValue;
+HPC_save_version = 2;	// savegame layout version, stored in slot 6 (1 = saves before versioning)
 GRLIB_building_ai_ratio = [GRLIB_PARAM_BuildingRatio] call lrx_getParamValue;
 GRLIB_cleanup_vehicles = [GRLIB_PARAM_CleanupVehicles] call lrx_getParamValue;
 GRLIB_Commander_AutoStart = [GRLIB_PARAM_CommanderAutoStart] call lrx_getParamValue;
