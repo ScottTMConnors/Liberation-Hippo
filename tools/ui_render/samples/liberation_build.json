@@ -193,10 +193,9 @@
   "text": "Spawn with crew (+4 manpower)"
  },
  "1712": {
-  "rows": [
-   "Name",
-   "Manpower: low-high"
-  ],
-  "sel": 0
+  "text": "ITEM"
+ },
+ "1718": {
+  "text": "^"
  }
 }

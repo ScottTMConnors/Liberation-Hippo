@@ -34,11 +34,11 @@ class liberation_build {
 	"BuildSupportButton","BuildSquadButton","BuildBuildingButton","BuildInfantryImage",
 	"BuildTransportVehicleImage","BuildCombatVehicleImage","BuildAerialImage",
 	"BuildDefenceImage","BuildSupportImage","BuildSquadImage","BuildBuildingImage",
-	"LabelSearch", "LabelFaction", "LabelType", "LabelSort", "LabelOptions",
+	"LabelSearch", "LabelFaction", "LabelType", "LabelOptions",
 	"ColumnItem", "ManpowerImage","AmmoImage","FuelImage",
 	"BuildList","LabelPreview","BuildPreview","ItemDetails","LinkedSector","CostBG", "CostHeadLeft", "CostHeadRight", "CostIcon1", "CostIcon2", "CostIcon3", "CostIcon4", "CostLabel1", "CostLabel2", "CostLabel3", "CostLabel4", "CostValue1", "CostValue2", "CostValue3", "CostValue4",
 	"CrewCheck","CrewLabel","BuildButton","PageLabel",
-	"CatalogSearchLabel", "CatalogSearch", "CatalogFaction", "CatalogType", "CatalogUnlocked", "CatalogClear", "CatalogExpand", "CatalogCollapse", "CatalogReset", "CatalogCount", "CatalogFactionReset", "CatalogTypeReset", "CatalogSort"
+	"CatalogSearchLabel", "CatalogSearch", "CatalogFaction", "CatalogType", "CatalogUnlocked", "CatalogClear", "CatalogExpand", "CatalogCollapse", "CatalogReset", "CatalogCount", "CatalogFactionReset", "CatalogTypeReset", "SortMark1", "SortMark2", "SortMark3", "SortItem", "SortManpower", "SortAmmo", "SortFuel"
 	};
 
 	objects[] = {};
@@ -176,38 +176,29 @@ class liberation_build {
 	};
 	class CatalogFaction : HPC_Combo {
 		idc = 1702;
-		x = BLD_IX + 14.6 * HPC_GX; y = BLD_FLT_Y; w = 11 * HPC_GX; h = 2.2 * HPC_GY;
+		x = BLD_IX + 14.6 * HPC_GX; y = BLD_FLT_Y; w = 16 * HPC_GX; h = 2.2 * HPC_GY;
 		tooltip = "Filter faction. The default is your mission faction.";
 	};
 	class CatalogFactionReset : HPC_Button {
 		idc = 1710;
-		x = BLD_IX + 25.6 * HPC_GX; y = BLD_FLT_Y; w = 2 * HPC_GX; h = 2.2 * HPC_GY;
+		x = BLD_IX + 30.6 * HPC_GX; y = BLD_FLT_Y; w = 2 * HPC_GX; h = 2.2 * HPC_GY;
 		colorBackground[] = {0.12,0.15,0.16,0.95};
 		text = "X";
 		tooltip = "Reset the faction filter to your mission faction.";
 	};
 	class LabelType : HPC_Label {
-		x = BLD_IX + 28.2 * HPC_GX; y = BLD_FLT_Y - 1.4 * HPC_GY; w = 9 * HPC_GX; h = 1.3 * HPC_GY;
+		x = BLD_IX + 33.2 * HPC_GX; y = BLD_FLT_Y - 1.4 * HPC_GY; w = 9 * HPC_GX; h = 1.3 * HPC_GY;
 		text = "TYPE";
 	};
 	class CatalogType : HPC_Combo {
 		idc = 1703;
-		x = BLD_IX + 28.2 * HPC_GX; y = BLD_FLT_Y; w = 9.4 * HPC_GX; h = 2.2 * HPC_GY;
+		x = BLD_IX + 33.2 * HPC_GX; y = BLD_FLT_Y; w = 14.6 * HPC_GX; h = 2.2 * HPC_GY;
 		tooltip = "Filter item type. When all types are shown, click a type heading to collapse or expand it.";
 	};
 	class CatalogTypeReset : CatalogFactionReset {
 		idc = 1711;
-		x = BLD_IX + 37.6 * HPC_GX;
+		x = BLD_IX + 47.8 * HPC_GX;
 		tooltip = "Reset the type filter to all types.";
-	};
-	class LabelSort : HPC_Label {
-		x = BLD_IX + 40.2 * HPC_GX; y = BLD_FLT_Y - 1.4 * HPC_GY; w = 9 * HPC_GX; h = 1.3 * HPC_GY;
-		text = "SORT BY";
-	};
-	class CatalogSort : HPC_Combo {
-		idc = 1712;
-		x = BLD_IX + 40.2 * HPC_GX; y = BLD_FLT_Y; w = 9.4 * HPC_GX; h = 2.2 * HPC_GY;
-		tooltip = "Sort items by name or by one of their costs.";
 	};
 	class LabelOptions : HPC_Label {
 		x = BLD_IX + 50.2 * HPC_GX; y = BLD_FLT_Y - 1.4 * HPC_GY; w = 10 * HPC_GX; h = 1.3 * HPC_GY;
@@ -225,7 +216,7 @@ class liberation_build {
 		x = BLD_IX + 60.4 * HPC_GX; y = BLD_FLT_Y; w = 7.4 * HPC_GX; h = 2.2 * HPC_GY;
 		sizeEx = 0.9 * HPC_GY;
 		text = "Reset filters";
-		tooltip = "Reset search, faction, type and sort to their defaults, show locked items, and expand groups.";
+		tooltip = "Reset search, faction, type and sort order to their defaults, show locked items, and expand groups.";
 	};
 
 	// Item list pane
@@ -270,9 +261,33 @@ class liberation_build {
 		tooltip = "Collapse all matching type groups.";
 	};
 	class ColumnItem : HPC_Label {
+		idc = 1712;
 		x = BLD_IX + 0.6 * HPC_GX; y = BLD_COL_Y; w = 20 * HPC_GX; h = 1.8 * HPC_GY;
 		text = "ITEM";
 	};
+	// Clickable column headers: sort by name or a cost (click again to reverse).
+	class SortItem : HPC_Button {
+		idc = 1713;
+		x = BLD_IX; y = BLD_COL_Y; w = 0.7 * BLD_LIST_W; h = 1.8 * HPC_GY;
+		colorBackground[] = {0,0,0,0};
+		colorFocused[] = {0,0,0,0};
+		colorBackgroundActive[] = {1,1,1,0.08};
+		text = "";
+		tooltip = "Sort by name.";
+	};
+	class SortManpower : SortItem { idc = 1714; x = BLD_IX + 0.705 * BLD_LIST_W; w = 0.09 * BLD_LIST_W; tooltip = "Sort by manpower cost (click again to reverse)."; };
+	class SortAmmo : SortManpower { idc = 1715; x = BLD_IX + 0.795 * BLD_LIST_W; tooltip = "Sort by ammo cost (click again to reverse)."; };
+	class SortFuel : SortManpower { idc = 1716; x = BLD_IX + 0.885 * BLD_LIST_W; tooltip = "Sort by fuel cost (click again to reverse)."; };
+	class SortMark1 : HPC_Label {
+		idc = 1717;
+		x = BLD_IX + 0.73 * BLD_LIST_W + 1.6 * HPC_GX; y = BLD_COL_Y; w = 1.5 * HPC_GX; h = 1.8 * HPC_GY;
+		sizeEx = 1.4 * HPC_GY;
+		font = "PuristaBold";
+		colorText[] = HPC_C_ACCENT;
+		text = "";
+	};
+	class SortMark2 : SortMark1 { idc = 1718; x = BLD_IX + 0.82 * BLD_LIST_W + 1.6 * HPC_GX; };
+	class SortMark3 : SortMark1 { idc = 1719; x = BLD_IX + 0.91 * BLD_LIST_W + 1.6 * HPC_GX; };
 	// Cost column icons, aligned with BuildList columns 1-3.
 	class IconImage : HPC_Picture {
 		style = ST_PICTURE + ST_KEEP_ASPECT_RATIO;

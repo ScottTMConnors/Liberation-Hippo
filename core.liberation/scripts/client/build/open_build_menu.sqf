@@ -129,7 +129,8 @@ _display setVariable ["HPC_collapsed", []];
     private _display = ctrlParent (_this select 0);
     (_display displayCtrl 1701) ctrlSetText "";
     (_display displayCtrl 1702) lbSetCurSel (_display getVariable ["HPC_factionDefault", 0]);
-    {(_display displayCtrl _x) lbSetCurSel 0} forEach [1703,1712];
+    (_display displayCtrl 1703) lbSetCurSel 0;
+    HPC_catalogSort = 0;
     HPC_catalogOnlyUnlocked = false;
     _display setVariable ["HPC_collapsed",[]];
     build_refresh = true;
@@ -142,10 +143,15 @@ _display setVariable ["HPC_collapsed", []];
 (_display displayCtrl 1711) ctrlAddEventHandler ["ButtonClick", {
     (ctrlParent (_this select 0) displayCtrl 1703) lbSetCurSel 0;
 }];
-// Sort order, kept for the session.
-private _sortControl = _display displayCtrl 1712;
-{ _sortControl lbAdd _x } forEach ["Name", "Manpower: low-high", "Manpower: high-low", "Ammo: low-high", "Ammo: high-low", "Fuel: low-high", "Fuel: high-low"];
-_sortControl lbSetCurSel (missionNamespace getVariable ["HPC_catalogSort", 0]);
+// Column headers sort (kept for the session): 0 name; cost column c gives 2c-1 low-high, 2c high-low.
+{
+    (_display displayCtrl _x) setVariable ["HPC_sortColumn", _forEachIndex];
+    (_display displayCtrl _x) ctrlAddEventHandler ["ButtonClick", {
+        private _c = (_this select 0) getVariable ["HPC_sortColumn", 0];
+        private _cur = missionNamespace getVariable ["HPC_catalogSort", 0];
+        HPC_catalogSort = if (_c == 0) then {0} else {if (_cur == 2 * _c - 1) then {2 * _c} else {2 * _c - 1}};
+    }];
+} forEach [1713,1714,1715,1716];
 (_display displayCtrl 110) ctrlAddEventHandler ["LBSelChanged", {
     params ["_control", "_row"];
     if (_row < 0) exitWith {};
@@ -205,7 +211,7 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
 	if (_old_buildtype != buildtype) then { build_refresh = true };
     private _resources = [[player] call F_getScore, player getVariable ["GREUH_ammo_count",0], player getVariable ["GREUH_fuel_count",0], resources_infantry, infantry_cap, count PAR_AI_bros, +blufor_sectors];
     if !(_resources isEqualTo _oldResources) then {_oldResources = _resources; _score = _resources select 0; build_refresh = true};
-    private _filters = [ctrlText (_display displayCtrl 1701), lbCurSel (_display displayCtrl 1702), lbCurSel (_display displayCtrl 1703), lbCurSel (_display displayCtrl 1712)];
+    private _filters = [ctrlText (_display displayCtrl 1701), lbCurSel (_display displayCtrl 1702), lbCurSel (_display displayCtrl 1703), missionNamespace getVariable ["HPC_catalogSort", 0]];
     if !(_filters isEqualTo _oldFilters) then {build_refresh = true; _oldFilters = _filters};
 
 	if (build_refresh) then {
@@ -249,7 +255,9 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
 			if (count _build_list == 0) then { _msg = "No items match these filters." };
 		};
 
-        HPC_catalogSort = (lbCurSel (_display displayCtrl 1712)) max 0;
+        HPC_catalogSort = missionNamespace getVariable ["HPC_catalogSort", 0];
+        (_display displayCtrl 1712) ctrlSetText (if (HPC_catalogSort == 0) then {"ITEM  ^"} else {"ITEM"});
+        { (_display displayCtrl _x) ctrlSetText (if (ceil (HPC_catalogSort / 2) == _forEachIndex + 1) then {["v", "^"] select (HPC_catalogSort % 2)} else {""}) } forEach [1717,1718,1719];
         private _ordered = [_build_list,buildtype,_score,_onlyUnlocked,GRLIB_vehicle_to_military_base_links,blufor_sectors,HPC_catalogSort] call HPC_fnc_catalogOrder;
         _build_list = _ordered apply {_x select 4};
         if (_build_list isEqualTo [] && {_msg == ""}) then {_msg = "No unlocked items match these filters."};
@@ -459,7 +467,7 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
         if (_restoreRow < 0) then {_restoreRow = _rowItems findIf {_x >= 0}};
         lnbSetCurSelRow [110, _restoreRow];
         // The refresh may reset the filter combos; snapshot them so that reset isn't seen as a change.
-        _oldFilters = [ctrlText (_display displayCtrl 1701), lbCurSel (_display displayCtrl 1702), lbCurSel (_display displayCtrl 1703), lbCurSel (_display displayCtrl 1712)];
+        _oldFilters = [ctrlText (_display displayCtrl 1701), lbCurSel (_display displayCtrl 1702), lbCurSel (_display displayCtrl 1703), missionNamespace getVariable ["HPC_catalogSort", 0]];
         // Same page: keep the list where the player had scrolled it.
         if (_scroll isNotEqualTo []) then {(_display displayCtrl 110) ctrlSetScrollValues [_scroll select 0, -1]};
         }; // isNil
