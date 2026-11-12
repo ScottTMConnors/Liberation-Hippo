@@ -41,10 +41,6 @@ class CfgFunctions {
 			file = "scripts\client\ui";
 			class startupCover { postInit = 1; };
 		};
-		class Server {
-			file = "scripts\server\game";
-			class hcModuleAnchor { preInit = 1; };
-		};
 	};
 };
 

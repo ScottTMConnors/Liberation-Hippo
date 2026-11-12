@@ -269,7 +269,10 @@ _gCrate setVariable ["GRLIB_vehicle_owner", _gUid, true];
 _gVeh setVelocityModelSpace [0, 12, 0];
 sleep 0.5;
 private _gMoving = speed _gVeh > 5;
+// a save already running (the start-up save, a player joining) makes save_game_mp skip
+waitUntil {sleep 0.2; isNil "GRLIB_save_in_progress"};
 [] call save_game_mp;
+waitUntil {sleep 0.2; isNil "GRLIB_save_in_progress"};
 [] call save_game_mp;
 private _gBlob = profileNamespace getVariable [GRLIB_save_key, []];
 private _gCtx = (_gBlob select 14) select {(_x select 0) == _gUid};
