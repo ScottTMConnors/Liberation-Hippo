@@ -9,6 +9,7 @@ sleep 5;
 HPC_comRingIcon = getText (configFile >> "CfgMarkers" >> "mil_circle" >> "icon");
 HPC_fnc_comSectorDraw = compileFinal toString {
     params ["_map"];
+    HPC_comHoverSector = "";
     if (count active_sectors > 0 || {GRLIB_AvailAttackSectors isEqualTo []}) exitWith {};
     private _commander = GRLIB_player_commander;
     if (!_commander && {!GRLIB_Commander_VoteEnabled}) exitWith {};
@@ -20,6 +21,9 @@ HPC_fnc_comSectorDraw = compileFinal toString {
         if (_distance < _bestDistance) then {_best = _x; _bestDistance = _distance};
     } forEach GRLIB_AvailAttackSectors;
     if (_best == "") exitWith {};
+    // The click handler votes for exactly the sector ringed here.
+    HPC_comHoverSector = _best;
+    HPC_comHoverTime = diag_tickTime;
     private _pos = markerPos _best;
     _map drawIcon [HPC_comRingIcon, [0.46, 0.80, 0.72, 0.6 + 0.35 * sin (diag_tickTime * 360)], _pos, 46, 46, 0];
     _map drawIcon ["#(rgb,1,1,1)color(1,1,1,0)", [0.92, 0.94, 0.95, 1], _pos, 28, 28, 0,

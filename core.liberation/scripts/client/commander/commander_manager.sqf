@@ -9,7 +9,14 @@ if (GRLIB_Commander_mode) then {
 		params ["_units", "_pos"];
 		if (count active_sectors == 0 && count GRLIB_AvailAttackSectors > 0) then {
 			if ((time - GRLIB_Com_lastClicked) > 3 && (GRLIB_Commander_VoteEnabled || GRLIB_player_commander)) then {
-				_closestSector = [100, _pos, GRLIB_AvailAttackSectors] call F_getNearestSector;
+				// Use the sector the hover ring shows (commander_marker.sqf) so the click
+				// always matches what the player sees; fall back to a nearest search.
+				private _hover = missionNamespace getVariable ["HPC_comHoverSector", ""];
+				private _closestSector = if (_hover != "" && {diag_tickTime - (missionNamespace getVariable ["HPC_comHoverTime", -1]) < 0.5} && {_hover in GRLIB_AvailAttackSectors}) then {
+					_hover
+				} else {
+					[100, _pos, GRLIB_AvailAttackSectors] call F_getNearestSector
+				};
 				if (_closestSector in opfor_sectors) then {
 					playSoundUI ["a3\ui_f\data\sound\cfgnotifications\tacticalping3.wss", 0.5, 1.2];
 					private _name = (markerText _closestSector splitString "(") param [0, ""];
