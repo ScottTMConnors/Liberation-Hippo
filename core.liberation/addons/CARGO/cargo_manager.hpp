@@ -36,7 +36,7 @@ class HPC_cargo_manager {
 		};
 		class Title : HPC_Heading {
 			text = "CARGO";
-			x = CGM_X + CGM_PAD; y = CGM_Y + 0.5 * HPC_GY; w = CGM_W - 5 * HPC_GX; h = 2.2 * HPC_GY;
+			x = CGM_X + CGM_PAD; y = CGM_Y + 0.5 * HPC_GY; w = CGM_W - 14 * HPC_GX; h = 2.2 * HPC_GY;
 			sizeEx = 1.55 * HPC_GY;
 		};
 		class Subtitle : HPC_Label {
@@ -55,6 +55,13 @@ class HPC_cargo_manager {
 			tooltip = "Close";
 			action = "closeDialog 0";
 			default = true;
+		};
+		class GarageButton : HPC_Button {
+			idc = 2458;
+			x = CGM_X + CGM_W - 12.2 * HPC_GX; y = CGM_Y + 0.9 * HPC_GY; w = 9 * HPC_GX; h = 1.9 * HPC_GY;
+			text = "Garage";
+			tooltip = "Open your garage to store nearby vehicles or bring stored ones out.";
+			action = "HPC_cargoAction = 8";
 		};
 		class Divider : HPC_Text {
 			x = CGM_X + CGM_PAD; y = CGM_Y + 4.6 * HPC_GY; w = CGM_IW; h = 0.1 * HPC_GY;

@@ -77,12 +77,18 @@ GRLIB_checkArsenalPerso = compileFinal {
 	(GRLIB_player_is_menuok && GRLIB_filter_arsenal == 4 && GRLIB_player_near_arsenal)
 };
 
+// Garage and cargo work anywhere inside a FOB's area (GRLIB_fob_range), including next to
+// the FOB building and on decks over water; vehicles come out through build placement.
+GRLIB_checkGarageAccess = compileFinal {
+	(GRLIB_garage_size > 0 && GRLIB_player_near_fob && !GRLIB_player_near_outpost && GRLIB_player_score >= GRLIB_perm_inf)
+};
+
 GRLIB_checkGarage = compileFinal {
-	(GRLIB_player_is_menuok && GRLIB_garage_size > 0 && !(surfaceIsWater getPos player) && GRLIB_player_fobdistance > 15 && GRLIB_player_near_fob && !GRLIB_player_near_outpost && GRLIB_player_score >= GRLIB_perm_inf)
+	(GRLIB_player_is_menuok && {call GRLIB_checkGarageAccess})
 };
 
 GRLIB_checkCargo = compileFinal {
-	(GRLIB_player_is_menuok && !(surfaceIsWater getPos player) && GRLIB_player_near_fob && GRLIB_player_score >= GRLIB_perm_inf)
+	(GRLIB_player_is_menuok && GRLIB_player_near_fob && GRLIB_player_score >= GRLIB_perm_inf)
 };
 
 GRLIB_checkBuild = compileFinal {

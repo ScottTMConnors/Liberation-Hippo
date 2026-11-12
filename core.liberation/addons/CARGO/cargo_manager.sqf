@@ -549,8 +549,19 @@ while { !isNull _display && alive player } do {
 	private _movable = _stack isNotEqualTo [] && {((_stack select 3) select 0) == "item" || {(_stack select 3) select 3}};
 	{ ctrlEnable [_x, _movable] } forEach [2450, 2451, 2454, 2455];
 
+	// the garage button needs the garage itself to be usable here
+	private _garageOk = call GRLIB_checkGarageAccess;
+	if (ctrlEnabled (_display displayCtrl 2458) != _garageOk) then {
+		ctrlEnable [2458, _garageOk];
+		(_display displayCtrl 2458) ctrlSetTooltip (["The garage is only available at a FOB, once you reach the required rank.", "Open your garage to store nearby vehicles or bring stored ones out."] select _garageOk);
+	};
+
 	private _action = HPC_cargoAction;
 	HPC_cargoAction = 0;
+	if (_action == 8) exitWith {
+		closeDialog 0;
+		[] execVM "addons\VIRT\virtual_garage.sqf";
+	};
 	if (_action > 0 && {_selHolder >= 0}) then {
 		private _h = _holders select _selHolder;
 		private _dst = _targets param [lbCurSel _targetCombo, []];
