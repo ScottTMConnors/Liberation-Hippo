@@ -159,40 +159,40 @@ class liberation_build {
 	};
 	class CatalogSearch : HPC_Edit {
 		idc = 1701;
-		x = BLD_IX; y = BLD_FLT_Y; w = 11.8 * HPC_GX; h = 2.2 * HPC_GY;
+		x = BLD_IX; y = BLD_FLT_Y; w = 17.8 * HPC_GX; h = 2.2 * HPC_GY;
 		tooltip = "Search names or classnames";
 	};
 	class CatalogClear : HPC_Button {
 		idc = 1705;
-		x = BLD_IX + 11.8 * HPC_GX; y = BLD_FLT_Y; w = 2.2 * HPC_GX; h = 2.2 * HPC_GY;
+		x = BLD_IX + 17.8 * HPC_GX; y = BLD_FLT_Y; w = 2.2 * HPC_GX; h = 2.2 * HPC_GY;
 		colorBackground[] = {0.12,0.15,0.16,0.95};
 		colorBackgroundActive[] = HPC_C_DANGER;
 		text = "X";
 		tooltip = "Clear the search text.";
 	};
 	class LabelFaction : HPC_Label {
-		x = BLD_IX + 14.6 * HPC_GX; y = BLD_FLT_Y - 1.4 * HPC_GY; w = 10 * HPC_GX; h = 1.3 * HPC_GY;
+		x = BLD_IX + 20.6 * HPC_GX; y = BLD_FLT_Y - 1.4 * HPC_GY; w = 10 * HPC_GX; h = 1.3 * HPC_GY;
 		text = "FACTION";
 	};
 	class CatalogFaction : HPC_Combo {
 		idc = 1702;
-		x = BLD_IX + 14.6 * HPC_GX; y = BLD_FLT_Y; w = 16 * HPC_GX; h = 2.2 * HPC_GY;
+		x = BLD_IX + 20.6 * HPC_GX; y = BLD_FLT_Y; w = 13 * HPC_GX; h = 2.2 * HPC_GY;
 		tooltip = "Filter faction. The default is your mission faction.";
 	};
 	class CatalogFactionReset : HPC_Button {
 		idc = 1710;
-		x = BLD_IX + 30.6 * HPC_GX; y = BLD_FLT_Y; w = 2 * HPC_GX; h = 2.2 * HPC_GY;
+		x = BLD_IX + 33.6 * HPC_GX; y = BLD_FLT_Y; w = 2 * HPC_GX; h = 2.2 * HPC_GY;
 		colorBackground[] = {0.12,0.15,0.16,0.95};
 		text = "X";
 		tooltip = "Reset the faction filter to your mission faction.";
 	};
 	class LabelType : HPC_Label {
-		x = BLD_IX + 33.2 * HPC_GX; y = BLD_FLT_Y - 1.4 * HPC_GY; w = 9 * HPC_GX; h = 1.3 * HPC_GY;
+		x = BLD_IX + 36.2 * HPC_GX; y = BLD_FLT_Y - 1.4 * HPC_GY; w = 9 * HPC_GX; h = 1.3 * HPC_GY;
 		text = "TYPE";
 	};
 	class CatalogType : HPC_Combo {
 		idc = 1703;
-		x = BLD_IX + 33.2 * HPC_GX; y = BLD_FLT_Y; w = 14.6 * HPC_GX; h = 2.2 * HPC_GY;
+		x = BLD_IX + 36.2 * HPC_GX; y = BLD_FLT_Y; w = 11.6 * HPC_GX; h = 2.2 * HPC_GY;
 		tooltip = "Filter item type. When all types are shown, click a type heading to collapse or expand it.";
 	};
 	class CatalogTypeReset : CatalogFactionReset {
@@ -280,8 +280,8 @@ class liberation_build {
 	class SortFuel : SortManpower { idc = 1716; x = BLD_IX + 0.885 * BLD_LIST_W; tooltip = "Sort by fuel cost (click again to reverse)."; };
 	class SortMark1 : HPC_Label {
 		idc = 1717;
-		x = BLD_IX + 0.73 * BLD_LIST_W + 1.6 * HPC_GX; y = BLD_COL_Y; w = 1.5 * HPC_GX; h = 1.8 * HPC_GY;
-		sizeEx = 1.4 * HPC_GY;
+		x = BLD_IX + 0.73 * BLD_LIST_W + 1.6 * HPC_GX; y = BLD_COL_Y - 0.2 * HPC_GY; w = 2 * HPC_GX; h = 2.2 * HPC_GY;
+		sizeEx = 2.2 * HPC_GY;
 		font = "PuristaBold";
 		colorText[] = HPC_C_ACCENT;
 		text = "";
