@@ -10,8 +10,9 @@
 // Vehicle variable HPC_crewState: "ok", "repairing", "waiting" (fireteam guarding) or "abandoned".
 params ["_group", "_vehicle", ["_mode", "warfare"]];
 if (isNull _group || {!alive _vehicle}) exitWith {};
-if (_vehicle getVariable ["HPC_crewCareRunning", false]) exitWith {};
-_vehicle setVariable ["HPC_crewCareRunning", true];
+// one care loop per vehicle: a newer one replaces this one; HPC_crewCareToken -1 stops it
+private _token = random 1e6;
+_vehicle setVariable ["HPC_crewCareToken", _token];
 _vehicle setVariable ["HPC_crewState", "ok", true];
 [_vehicle, "keep"] call HPC_fnc_crewAct;
 
@@ -35,7 +36,7 @@ private _repairs = 0;
 
 while {
 	alive _vehicle && {count (call _alive) > 0} &&
-	{!(_vehicle getVariable ["HPC_crewCareStop", false])} &&
+	{(_vehicle getVariable ["HPC_crewCareToken", -1]) == _token} &&
 	{(_vehicle getVariable ["HPC_crewState", "ok"]) != "abandoned"}
 } do {
 	sleep 4;
@@ -85,4 +86,4 @@ while {
 		};
 	};
 };
-_vehicle setVariable ["HPC_crewCareRunning", nil];
+if ((_vehicle getVariable ["HPC_crewCareToken", -1]) == _token) then { _vehicle setVariable ["HPC_crewCareToken", nil] };

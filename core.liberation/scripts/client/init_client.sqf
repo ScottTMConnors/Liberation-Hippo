@@ -222,6 +222,7 @@ waitUntil {uiSleep 0.1; (GRLIB_player_configured && GRLIB_action_player_ready &&
 [] execVM "scripts\client\actions\dog_manager.sqf";
 [] execVM "scripts\client\actions\man_manager.sqf";
 [] execVM "scripts\client\actions\squad_manager.sqf";
+[] execVM "scripts\client\misc\HPC_fireteamManager.sqf";
 //[] execVM "scripts\client\misc\shoot_walls.sqf";
 
 // LRX client scripts

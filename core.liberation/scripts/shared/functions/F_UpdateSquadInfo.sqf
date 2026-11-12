@@ -2,7 +2,7 @@ params ["_control", "_lbCurSel", "_lbSelection"];
 
 if (_lbCurSel == -1) exitWith {};
 
-private _squad_list = [player] + PAR_AI_bros;
+private _squad_list = [player] + (PAR_AI_bros select { (_x getVariable ["HPC_fireteam", ""]) == "" });	// as in squad_management.sqf
 private _cfgVehicles = configFile >> "cfgVehicles";
 private _cfgWeapons = configFile >> "cfgWeapons";
 private _selectedmember = _squad_list select _lbCurSel;

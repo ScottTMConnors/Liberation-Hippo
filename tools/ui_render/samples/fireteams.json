@@ -1,0 +1,19 @@
+{
+  "hide": [2603, 2621, 2641],
+  "2601": {"rows": [
+    ["ON FOOT", "", "", [0.46,0.80,0.72,1]],
+    ["   Rifleman  -  Pvt. Miller", "\\A3\\ui_f\\data\\map\\vehicleicons\\iconMan_ca.paa", "", [0.62,0.92,0.84,1]],
+    ["   Autorifleman  -  Pvt. Diaz", "\\A3\\ui_f\\data\\map\\vehicleicons\\iconManMG_ca.paa", "", [0.62,0.92,0.84,1]],
+    ["   Medic  -  Cpl. Novak", "\\A3\\ui_f\\data\\map\\vehicleicons\\iconManMedic_ca.paa", "", [0.62,0.92,0.84,1]],
+    ["HUNTER HMG  (3)", "", "", [0.46,0.80,0.72,1]],
+    ["   Driver  -  Pvt. Okafor", "\\A3\\ui_f\\data\\map\\vehicleicons\\iconManEngineer_ca.paa", "", [0.62,0.92,0.84,1]],
+    ["   Gunner  -  Pvt. Lindqvist", "\\A3\\ui_f\\data\\map\\vehicleicons\\iconMan_ca.paa", "", [0.62,0.92,0.84,1]],
+    ["   Passenger  -  Pvt. Brown", "\\A3\\ui_f\\data\\map\\vehicleicons\\iconMan_ca.paa", "", [0.62,0.92,0.84,1]]
+  ], "sel": 5},
+  "2620": {"rows": [
+    ["Fireteam 1  -  Marshall  (4)", "\\A3\\ui_f\\data\\map\\markers\\nato\\b_mech_inf.paa", "", [0.3,0.62,1,1]],
+    ["Fireteam 2  -  On foot  (2)", "\\A3\\ui_f\\data\\map\\markers\\nato\\b_inf.paa", "", [0.3,0.62,1,1]]
+  ], "sel": 0},
+  "2660": {"text": "Fireteam 1: moving to the destination."},
+  "2655": {"text": "Hold fire"}
+}

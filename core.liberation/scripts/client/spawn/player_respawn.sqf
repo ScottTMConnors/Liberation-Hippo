@@ -91,5 +91,5 @@ if (count (units GRLIB_player_group) > 1) then {
 	{
         if (side _x != GRLIB_side_civilian) then { [_x] joinSilent GRLIB_player_group };
         _x setVariable ["PAR_Grp_AI", GRLIB_player_group];
-    } forEach PAR_AI_bros;
+    } forEach (PAR_AI_bros select { (_x getVariable ["HPC_fireteam", ""]) == "" });	// fireteams stay fireteams
 };

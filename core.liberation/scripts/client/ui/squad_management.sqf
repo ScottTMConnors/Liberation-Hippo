@@ -25,7 +25,7 @@ if (GRLIB_filter_arsenal == 4) then { _button_controls = _button_controls - [215
 if (GRLIB_enable_arsenal == 0) then { _button_controls = _button_controls - [212] };
 
 // Squad list
-private _squad_list = [player] + PAR_AI_bros;
+private _squad_list = [player] + (PAR_AI_bros select { (_x getVariable ["HPC_fireteam", ""]) == "" });
 
 // Create unit list
 lbClear 101;
@@ -181,7 +181,7 @@ while { dialog && alive player && _membercount > 0 } do {
 
 	// Update unit list
 	if (_update) then {
-		_squad_list = [player] + PAR_AI_bros;
+		_squad_list = [player] + (PAR_AI_bros select { (_x getVariable ["HPC_fireteam", ""]) == "" });
 		_membercount = 0;
 		lbClear 101;
 		{

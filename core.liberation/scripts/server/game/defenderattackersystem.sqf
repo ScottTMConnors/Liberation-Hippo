@@ -220,7 +220,7 @@ HPC_fnc_warfareVehicle = compileFinal {
                 private _next = time + 60;
                 waitUntil { sleep 2; time > _next || {!alive _vehicle} || {(_vehicle getVariable ["HPC_crewState", "ok"]) == "abandoned"} };
             };
-            _vehicle setVariable ["HPC_crewCareStop", true];
+            _vehicle setVariable ["HPC_crewCareToken", -1];
             HPC_armorGroups deleteAt _key;
             [_group, _vehicle] call HPC_fnc_warfareDelete;
         };

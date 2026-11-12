@@ -130,3 +130,4 @@ class CfgMusic {
 #include "ui\hippo_loading.hpp"
 #include "ui\hippo_ai_load.hpp"
 #include "ui\hippo_ai_command.hpp"
+#include "ui\hippo_fireteams.hpp"

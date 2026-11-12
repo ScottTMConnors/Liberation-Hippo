@@ -60,5 +60,6 @@ HPC_fnc_sendMedics = compileFinal toString {
 	} forEach ([] call PAR_protected_units);
 	hintSilent format ["Medic requested for %1 downed squadmate%2.", _sent, ["s", ""] select (_sent == 1)];
 };
+[] call compileFinal preprocessFileLineNumbers "scripts\client\misc\HPC_fireteamFunctions.sqf"; // fireteams
 HPC_fnc_screenCover = compileFinal preprocessFileLineNumbers "scripts\client\ui\HPC_screenCover.sqf"; // black cover for camera handoffs
 HPC_fnc_escPause =compileFinal preprocessFileLineNumbers "scripts\client\ui\HPC_escPause.sqf"; // ESC -> pause menu over must-stay screens
