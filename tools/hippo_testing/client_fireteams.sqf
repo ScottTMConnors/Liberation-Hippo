@@ -1,5 +1,14 @@
 // Client checks: fireteams, squadmates keeping their seats under an AI leader, the explicit
 // medic request and the camera-handoff cover. Called from client.sqf (needs _assert).
+// the mods.damage fixture leaves the player downed: get him back up (PAR's good end)
+if ([player] call PAR_is_wounded) then {
+	player setVariable ["PAR_isUnconscious", false, true];
+	player setUnconscious false;
+	closeDialog 0;
+	private _upBy = diag_tickTime + 20;
+	waitUntil { sleep 0.5; (!captive player && {lifeState player != "INCAPACITATED"}) || {diag_tickTime > _upBy} };
+};
+diag_log ["HPC_FIRETEAM_FIXTURE_START", [player] call PAR_is_wounded, alive player, count PAR_AI_bros];
 private _tag = format ["Bros_%1", PAR_Grp_ID];
 private _recruit = {
 	params ["_pos"];
@@ -93,13 +102,17 @@ GRLIB_player_group selectLeader player;
 ["crews.keepUnderAI", _keptOk] call _assert;
 
 // a downed squadmate only offers the Send medic action; nobody is dispatched by itself
-private _before = call GRLIB_checkSendMedic;
+// (other fixtures may leave their own downed units: only this unit's state is compared)
+private _offers = { ([] call PAR_protected_units) select { !isPlayer _x && {[_x] call PAR_is_wounded} && {isNil {_x getVariable "PAR_myMedic"}} && {!(_x getVariable ["HPC_medicRequested", false])} } };
+private _before = _foot in (call _offers);
 _foot setVariable ["PAR_isUnconscious", true];
-private _offered = call GRLIB_checkSendMedic;
+private _offered = (_foot in (call _offers)) && {call GRLIB_checkSendMedic};
 sleep 3;
 private _noAuto = isNil {_foot getVariable "PAR_myMedic"};
 _foot setVariable ["PAR_isUnconscious", false];
-["medic.sendCondition", !_before && _offered && _noAuto && {!(call GRLIB_checkSendMedic)}] call _assert;
+private _after = _foot in (call _offers);
+diag_log ["HPC_MEDIC_CONDITION", _before, _offered, _noAuto, _after, call _offers, PAR_revive, alive player, [player] call PAR_is_wounded, alive _foot, _foot in PAR_AI_bros, _foot getVariable ["PAR_myMedic", objNull], _foot getVariable ["HPC_medicRequested", false]];
+["medic.sendCondition", !_before && _offered && _noAuto && !_after] call _assert;
 
 // camera handoff cover
 [true] call HPC_fnc_screenCover;

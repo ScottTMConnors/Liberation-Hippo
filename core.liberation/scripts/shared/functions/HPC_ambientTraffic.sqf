@@ -43,6 +43,15 @@ private _origins = _towns select {_x distance2D _home < 1800};
 if (_origins isEqualTo []) then {_origins = [_home]};
 private _origin = selectRandom _origins;
 private _roads = _origin nearRoads 250;
+// cars: the first town with a free road spot, so a busy or tiny town does not void the tick
+if (_kind == "car") then {
+    {
+        private _candidateRoads = _x nearRoads 250;
+        private _free = (_candidateRoads call BIS_fnc_arrayShuffle) select [0, 12];
+        private _town = _x;
+        if (_free findIf {private _road = _x; _players findIf {_x distance2D _road < 250} < 0 && {((getPosATL _road) nearEntities ["LandVehicle",15]) isEqualTo []}} >= 0) exitWith {_origin = _town; _roads = _candidateRoads};
+    } forEach ([_origin] + ((_origins - [_origin]) call BIS_fnc_arrayShuffle));
+};
 private _class = switch (_kind) do {
     case "heli": {"C_Heli_Light_01_civil_F"};
     case "plane": {"C_Plane_Civil_01_F"};
@@ -52,16 +61,16 @@ private _class = switch (_kind) do {
     };
 };
 if (!isClass (configFile >> "CfgVehicles" >> _class)) exitWith {};
-if (_kind == "car" && {_roads isEqualTo []}) exitWith {};
+if (_kind == "car" && {_roads isEqualTo []}) exitWith {diag_log format ["--- HPC traffic: no roads near %1", _origin]};
 // Do not materialize traffic beside a player or inside another vehicle. A single
 // random pick often lands next to the car spawned a moment earlier on the same
 // road, so try a few spots before giving up on this tick.
 private _position = [];
-for "_attempt" from 1 to 8 do {
+for "_attempt" from 1 to 16 do {
     private _candidate = if (_kind == "car") then {getPosATL selectRandom _roads} else {_home getPos [2500,random 360]};
     if (_players findIf {_x distance2D _candidate < 250} < 0 && {(_candidate nearEntities ["LandVehicle",15]) isEqualTo []}) exitWith {_position = _candidate};
 };
-if (_position isEqualTo []) exitWith {};
+if (_position isEqualTo []) exitWith {diag_log format ["--- HPC traffic: no free spot for a %1 near %2", _kind, _origin]};
 if (_kind != "car") then {_position set [2,if (_kind == "plane") then {450} else {250}]};
 private _vehicle = createVehicle [_class,_position,[],0,if (_kind == "car") then {"NONE"} else {"FLY"}];
 if (isNull _vehicle) exitWith {};
@@ -69,7 +78,7 @@ _vehicle setVariable ["GRLIB_vehicle_init",true,true];
 _vehicle setVariable ["HPC_trafficExpires",time+2700];
 _vehicle setVariable ["HPC_ambientTraffic",true,true];
 private _group = civilian createVehicleCrew _vehicle;
-if (isNull _group || {isNull driver _vehicle}) exitWith {deleteVehicleCrew _vehicle; deleteVehicle _vehicle};
+if (isNull _group || {isNull driver _vehicle}) exitWith {diag_log format ["--- HPC traffic: no crew for %1", _class]; deleteVehicleCrew _vehicle; deleteVehicle _vehicle};
 // The group may be moved to a headless client; let the engine remove it there once empty.
 _group deleteGroupWhenEmpty true;
 _group setBehaviourStrong "CARELESS";

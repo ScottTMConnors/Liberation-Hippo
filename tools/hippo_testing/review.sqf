@@ -20,6 +20,9 @@ opfor_vehicles=_oldHeavy;opfor_vehicles_low_intensity=_oldLight;opfor_troup_tran
 ["vehicles.emptyPools",_fallbackOK] call _assert;
 private _waterSafe = if (surfaceIsWater [0,0,0]) then {([[0,0,0],10,0] call HPC_fnc_warfarePosition) isEqualTo []} else {true};
 ["warfare.armedPool",_waterSafe && {(["B_MRAP_01_hmg_F"] call HPC_fnc_isArmedVehicle) && {(["B_MBT_01_cannon_F"] call HPC_fnc_isArmedVehicle)} && {!(["B_MRAP_01_F"] call HPC_fnc_isArmedVehicle)} && {!(["B_Truck_01_transport_F"] call HPC_fnc_isArmedVehicle)}}] call _assert;
+// the live civilian loop would prune the test's civilians and cars mid-test
+HPC_ambientPaused = true;
+sleep 0.5;
 private _densityBefore = GRLIB_civilian_activity;
 private _ambientBefore = missionNamespace getVariable ["HPC_ambientCivilians",[]];
 HPC_ambientCivilians = [];
@@ -65,6 +68,7 @@ private _trafficOK = count HPC_ambientTraffic == 3 && {HPC_ambientTraffic findIf
 diag_log ["HPC_TRAFFIC_TEST",count HPC_ambientTraffic,HPC_ambientTraffic apply {[typeOf _x,alive driver _x,[group driver _x] call HPC_fnc_hcEligible,count waypoints group driver _x]}];
 [[],[]] call HPC_fnc_ambientTraffic;
 ["civilians.traffic",_trafficOK && {HPC_ambientTraffic isEqualTo []}] call _assert;
+HPC_ambientPaused = false;
 HPC_ambientTraffic = _trafficBefore;
 HPC_ambientCivilians = _ambientBefore;
 GRLIB_civilian_activity = _densityBefore;
