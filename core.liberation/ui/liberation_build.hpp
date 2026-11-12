@@ -281,14 +281,14 @@ class liberation_build {
 	class SortFuel : SortManpower { idc = 1716; x = BLD_IX + 0.885 * BLD_LIST_W; tooltip = "Click to sort by fuel cost; click again to reverse."; };
 	class SortMark1 : HPC_Label {
 		idc = 1717;
-		x = BLD_IX + 0.73 * BLD_LIST_W + 1.6 * HPC_GX; y = BLD_COL_Y - 0.2 * HPC_GY; w = 2 * HPC_GX; h = 2.2 * HPC_GY;
+		x = BLD_IX + 0.73 * BLD_LIST_W + 1.4 * HPC_GX; y = BLD_COL_Y + 0.35 * HPC_GY; w = 1 * HPC_GX; h = 2.2 * HPC_GY;
 		sizeEx = 2.2 * HPC_GY;
 		font = "PuristaBold";
 		colorText[] = HPC_C_ACCENT;
 		text = "";
 	};
-	class SortMark2 : SortMark1 { idc = 1718; x = BLD_IX + 0.82 * BLD_LIST_W + 1.6 * HPC_GX; };
-	class SortMark3 : SortMark1 { idc = 1719; x = BLD_IX + 0.91 * BLD_LIST_W + 1.6 * HPC_GX; };
+	class SortMark2 : SortMark1 { idc = 1718; x = BLD_IX + 0.82 * BLD_LIST_W + 1.4 * HPC_GX; };
+	class SortMark3 : SortMark1 { idc = 1719; x = BLD_IX + 0.91 * BLD_LIST_W + 1.4 * HPC_GX; };
 	// Cost column icons, aligned with BuildList columns 1-3.
 	class IconImage : HPC_Picture {
 		style = ST_PICTURE + ST_KEEP_ASPECT_RATIO;
