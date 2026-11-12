@@ -178,7 +178,7 @@ while {true} do {
 		private _body = "<t font='PuristaSemibold' color='#9EE3D3' size='0.85'>OPERATIONS</t><br/>";
 		if (active_sectors isEqualTo []) then {
 			private _idle = "Select an objective on the map";
-			if (count GRLIB_AvailAttackSectors > 0) then {
+			if (count (missionNamespace getVariable ["GRLIB_AvailAttackSectors", []]) > 0) then {	// published by the server; may not have arrived yet
 				if (!GRLIB_player_commander && GRLIB_Commander_VoteEnabled) then { _idle = "Vote for an objective on the map" };
 				if (!GRLIB_player_commander && !GRLIB_Commander_VoteEnabled) then { _idle = "Standing by for orders" };
 			} else {
