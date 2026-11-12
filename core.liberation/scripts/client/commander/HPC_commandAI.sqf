@@ -206,6 +206,9 @@ while {!isNull _display} do {
             private _group = _x;
             ([_group] call HPC_fnc_mapGroupInfo) params ["_kind", "_name", "_marker", "_alive"];
             ([_group] call HPC_fnc_mapOrderText) params ["_orderText", "_target", "_ordered"];
+            // vehicle crews show the points they have banked for their next vehicle
+            private _points = _group getVariable ["HPC_armorPoints", -1];
+            if (_points >= 0) then {_name = format ["%1 - %2 pts", _name, _points]};
             private _combat = combatBehaviour _group == "COMBAT";
             _groupsList lbSetText [_forEachIndex, format ["%1%2  [%3]  %4", ["", "! "] select _combat, _name, _alive, _orderText]];
             _groupsList lbSetPicture [_forEachIndex, [_marker] call HPC_fnc_mapIcon];

@@ -123,42 +123,76 @@ HPC_fnc_warfareInfantry = compileFinal {
         sleep (if (_enemy) then {random [120,240,480]} else {random [30,60,90]});
     };
 };
+// AI vehicle crew ("Armor N"). The crew banks points from its kills (HPC_fnc_armorPoints, fed
+// by the kill manager). When it needs a vehicle it buys one: a tank if it can afford it (with
+// some chance of an APC or an MRAP instead), else an APC (sometimes an MRAP), else a free MRAP.
+// So the campaign starts with MRAPs and heavier vehicles appear as crews earn points.
+// Vehicles spawn at least 120 m out from a FOB, clear of buildings, units and vehicles.
+// A disabled vehicle is field-repaired by the crew mechanic; one that cannot be repaired is
+// abandoned and the crew despawns (HPC_fnc_crewCare).
+HPC_armorPrices = createHashMapFromArray [["tank", 35], ["apc", 15], ["mrap", 0]];
+HPC_armorGroups = createHashMap;
+HPC_fnc_armorChoose = compileFinal {
+    params ["_points"];
+    private _roll = random 1;
+    private _tank = HPC_armorPrices get "tank";
+    private _apc = HPC_armorPrices get "apc";
+    switch (true) do {
+        case (_points >= _tank): { if (_roll < 0.65) then {"tank"} else { if (_roll < 0.9) then {"apc"} else {"mrap"} } };
+        case (_points >= _apc): { if (_roll < 0.75) then {"apc"} else {"mrap"} };
+        default {"mrap"};
+    }
+};
 HPC_fnc_warfareVehicle = compileFinal {
-    params ["_heavy", "_number"];
+    params ["_number"];
+    private _key = format ["Armor %1", _number];
+    private _typeNames = createHashMapFromArray [["tank", "Tank"], ["apc", "APC"], ["mrap", "MRAP"]];
     while {call HPC_fnc_warfareActive} do {
         waitUntil {sleep 2; !(call HPC_fnc_warfareActive) || {count GRLIB_all_fobs > 0 && count active_sectors > 0}};
         if !(call HPC_fnc_warfareActive) exitWith {};
-        private _pool = (if (_heavy) then {HPC_factionHeavyVehicles} else {HPC_factionLightVehicles}) apply {_x select 0};
-        _pool = _pool select {
-            isClass (configFile >> "CfgVehicles" >> _x) && {_x isKindOf "LandVehicle"} &&
-            {!(_x isKindOf "StaticWeapon")} &&
-            {getNumber (configFile >> "CfgVehicles" >> _x >> "isUav") == 0} &&
-            {getNumber (configFile >> "CfgVehicles" >> _x >> "artilleryScanner") == 0}
-        };
-        private _armed = _pool select {[_x] call HPC_fnc_isArmedVehicle};
-        if !(_armed isEqualTo []) then { _pool = _armed };
+        private _pools = [] call HPC_fnc_armorPools;
+        private _points = [_key] call HPC_fnc_armorPoints;
+        private _type = [_points] call HPC_fnc_armorChoose;
+        private _pool = _pools getOrDefault [_type, []];
         private _vehicle = objNull;
+        private _class = "";
         if !(_pool isEqualTo []) then {
-            private _pos = [selectRandom GRLIB_all_fobs, 10, 150] call HPC_fnc_warfarePosition;
+            _class = selectRandom _pool;
+            private _pos = [selectRandom GRLIB_all_fobs, _class] call HPC_fnc_fobVehicleSpawnPos;
             if !(_pos isEqualTo []) then {
-                _vehicle = [_pos, selectRandom _pool, 5, GRLIB_side_friendly, "infantry", true] call F_libSpawnVehicle;
+                _vehicle = [_pos, _class, 0, GRLIB_side_friendly, "infantry", true] call F_libSpawnVehicle;
             };
         };
         // A failed position or vehicle creation is transient; do not postpone a
         // missing vehicle for the full replacement cooldown.
-        private _spawned = !isNull _vehicle;
+        private _spawned = !isNull _vehicle && {count crew _vehicle > 0};
+        if (!_spawned && {!isNull _vehicle}) then { deleteVehicle _vehicle; _vehicle = objNull };
         if (_spawned) then {
+            [_key, -(HPC_armorPrices get _type)] call HPC_fnc_armorPoints;
             private _group = group driver _vehicle;
-            [_group, ["light", "heavy"] select _heavy, format [["Light armor %1", "Heavy armor %1"] select _heavy, _number]] call HPC_fnc_warfareTag;
+            if (isNull driver _vehicle) then { _group = group ((crew _vehicle) select 0) };
+            [_group, ["light", "heavy"] select (_type != "mrap"), format ["%1 (%2)", _key, _typeNames get _type]] call HPC_fnc_warfareTag;
+            _group setVariable ["HPC_armorSquad", _key, true];
+            _group setVariable ["HPC_armorPoints", [_key] call HPC_fnc_armorPoints, true];
+            HPC_armorGroups set [_key, _group];
             _vehicle setVariable ["HPC_warfare", true, true];
             _vehicle lock true;
+            // the driver (or any crew member) is the crew's mechanic
+            private _mechanic = driver _vehicle;
+            if (isNull _mechanic) then { _mechanic = (crew _vehicle) select 0 };
+            [_mechanic, "mechanic"] call HPC_fnc_crewAct;
+            [_group, _vehicle, "warfare"] spawn HPC_fnc_crewCare;
+            diag_log format ["--- HPC %1 bought a %2 (%3), %4 points left", _key, _typeNames get _type, _class, [_key] call HPC_fnc_armorPoints];
             private _previous = (getPosATL _vehicle) vectorAdd [999,999,0];
             private _stuck = 0;
             private _sector = selectRandom active_sectors;
-            while {call HPC_fnc_warfareActive && {alive _vehicle} && {{alive _x} count crew _vehicle > 0}} do {
+            while {call HPC_fnc_warfareActive && {alive _vehicle} && {{alive _x} count units _group > 0}} do {
+                private _state = _vehicle getVariable ["HPC_crewState", "ok"];
+                if (_state == "abandoned") exitWith {};
                 private _pos = getPosATL _vehicle;
                 private _stationary = _previous distance2D _pos < 5;
-                if (_stationary && (_stuck >= 3 || !canMove _vehicle)) exitWith {};
+                // a vehicle being repaired is not stuck
+                if (_stationary && {_state == "ok"} && {_stuck >= 3}) exitWith {};
                 private _order = [_group] call HPC_fnc_warfareOrder;
                 private _destination = [];
                 if (_order isEqualTo []) then {
@@ -169,8 +203,8 @@ HPC_fnc_warfareVehicle = compileFinal {
                 } else {
                     _destination = _order select 0;
                 };
-                if !(_destination isEqualTo []) then {
-                    if (_stationary && _pos distance2D _destination > 150) then {
+                if (!(_destination isEqualTo []) && {_state == "ok"}) then {
+                    if (_stationary && {canMove _vehicle} && {_pos distance2D _destination > 150}) then {
                         private _toward = _pos vectorAdd ((_destination vectorDiff _pos) vectorMultiply 0.2);
                         private _newPos = [_toward, 10, 150] call HPC_fnc_warfarePosition;
                         if !(_newPos isEqualTo []) then { _vehicle setPosATL _newPos };
@@ -183,8 +217,11 @@ HPC_fnc_warfareVehicle = compileFinal {
                     };
                 };
                 _previous = _pos;
-                sleep 60;
+                private _next = time + 60;
+                waitUntil { sleep 2; time > _next || {!alive _vehicle} || {(_vehicle getVariable ["HPC_crewState", "ok"]) == "abandoned"} };
             };
+            _vehicle setVariable ["HPC_crewCareStop", true];
+            HPC_armorGroups deleteAt _key;
             [_group, _vehicle] call HPC_fnc_warfareDelete;
         };
         sleep (if (!_spawned && {!(_pool isEqualTo [])}) then {random [10,20,30]} else {random [120,240,480]});
@@ -227,7 +264,6 @@ waitUntil {sleep 1; !(call HPC_fnc_warfareActive) || {count active_sectors > 0}}
 if !(call HPC_fnc_warfareActive) exitWith {HPC_warfareRunning = false};
 for "_i" from 1 to 2 do {[false, _i] spawn HPC_fnc_warfareInfantry; sleep 6};
 for "_i" from 1 to 2 do {[true, _i] spawn HPC_fnc_warfareInfantry; sleep 6};
-for "_i" from 1 to 3 do {[false, _i] spawn HPC_fnc_warfareVehicle; sleep 6};
-for "_i" from 1 to 2 do {[true, _i] spawn HPC_fnc_warfareVehicle; sleep 6};
+for "_i" from 1 to 5 do {[_i] spawn HPC_fnc_warfareVehicle; sleep 6};
 waitUntil {sleep 5; !(call HPC_fnc_warfareActive)};
 HPC_warfareRunning = false;

@@ -35,6 +35,13 @@ cba_settings_hasSettingsFile = 1;
 
 class CfgFunctions {
 	#include "addons\SDB_DALE\CfgFunctions.hpp"
+	class HPC_Startup {
+		tag = "HPC";
+		class Startup {
+			file = "scripts\client\ui";
+			class startupCover { postInit = 1; };
+		};
+	};
 };
 
 class cfgSounds {

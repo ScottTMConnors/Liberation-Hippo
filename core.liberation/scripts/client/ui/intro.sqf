@@ -42,6 +42,8 @@ if ( howtoplay == 1 ) then {
 	[] call compileFinal preprocessFileLineNumbers "scripts\client\ui\tutorial_manager.sqf";
 };
 
+// the deploy screen's camera lifts this cover; without it the soldier shows between the two cameras
+[true] call HPC_fnc_screenCover;
 cinematic_camera_started = false;
 titleText ["","PLAIN", 100];
 startgame = 1;

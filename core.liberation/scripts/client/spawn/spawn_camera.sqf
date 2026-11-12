@@ -23,8 +23,17 @@ if ( GRLIB_deployment_cinematic && !_mobile_respawn) then {
 	_spawn_camera camSetTarget player;
 	_spawn_camera camSetRelPos [0, 120, 80];
 	_spawn_camera camCommit 0;
+	[false] call HPC_fnc_screenCover;
 	_spawn_camera camSetRelPos [0, 9, 3.5];
 	_spawn_camera camCommit 1.2;
+};
+
+if (isNull _spawn_camera) then {
+	// no camera move: show the new position once the redeploy has moved the player
+	private _from = getPosATL player;
+	private _until = diag_tickTime + 0.6;
+	waitUntil { uiSleep 0.05; player distance2D _from > 30 || diag_tickTime > _until };
+	[false] call HPC_fnc_screenCover;
 };
 
 if (isNil {uiNamespace getVariable "BIS_InfoText"}) then {

@@ -170,6 +170,9 @@ if (isServer) then {
                         stats_opfor_killed_by_players = stats_opfor_killed_by_players + 1;
                         [_rewardPlayer, 1] call F_addScore;
                     };
+                    // AI vehicle crews bank one point per enemy soldier
+                    private _armorKey = (group _killer) getVariable ["HPC_armorSquad", ""];
+                    if (_armorKey != "") then { [_armorKey, 1] call HPC_fnc_armorPoints };
                     private _ai_score = _killer getVariable ["PAR_AI_score", nil];
                     if (!isNil "_ai_score") then {
                         _killer setVariable ["PAR_AI_score", (_ai_score - 1), true];
@@ -251,6 +254,12 @@ if (isServer) then {
 					stats_opfor_vehicles_killed_by_players = stats_opfor_vehicles_killed_by_players + 1;
 				};
 			};
+		};
+
+		// AI vehicle crews bank points for enemy vehicles too (more for heavier ones)
+		if (_hostileVehicle && {!isNull _killer}) then {
+			private _armorKey = (group _killer) getVariable ["HPC_armorSquad", ""];
+			if (_armorKey != "") then { [_armorKey, 3 + (([_unit] call F_getBounty) select 1)] call HPC_fnc_armorPoints };
 		};
 
 		if (_hostileVehicle) then {

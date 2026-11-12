@@ -41,6 +41,7 @@ respawn_object hideObject true;
 respawn_camera camSetTarget respawn_object;
 respawn_camera cameraEffect ["internal","back"];
 respawn_camera camcommit 0;
+[false, 0.5] call HPC_fnc_screenCover;
 
 private _mobile = false;
 private _loadout_controls = [101,203,205];
@@ -227,6 +228,8 @@ while { dialog && alive player && deploy == 0} do {
 
 private _idxchoice = lbCurSel 201;
 private _loadoutchoice = lbCurSel 203;
+// deploying: stay black from this camera until the spawn camera (or the new position) is ready
+if (deploy == 1 && alive player) then { [true] call HPC_fnc_screenCover };
 respawn_camera cameraEffect ["Terminate","back"];
 camDestroy respawn_camera;
 deleteVehicle respawn_object;
@@ -304,6 +307,7 @@ if (player distance2D (markerPos GRLIB_respawn_marker) < GRLIB_capture_size) the
 	player setPosATL ((getPosATL lhd) vectorAdd [floor(random 5), floor(random 5), 0.3]);
 };
 
+[false] call HPC_fnc_screenCover;	// no-op when the spawn camera already lifted it
 sleep (1 + _nb_unit);
 player setVariable ["GRLIB_action_inuse", false, true];
 GRLIB_player_spawned = ([] call F_getValid);
