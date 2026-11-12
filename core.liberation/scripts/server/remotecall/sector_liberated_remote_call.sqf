@@ -63,7 +63,8 @@ private _text = format ["Reward Received: %1 Ammo and %2 Fuel", _rwd_ammo, _rwd_
 	};
 } forEach (AllPlayers - (entities "HeadlessClient_F"));
 
-[markerPos _liberated_sector] call showlandmines;
+// the sector is taken: its remaining minefields are cleared
+[_liberated_sector] call HPC_fnc_minefieldsRegister;
 
 combat_readiness = combat_readiness + _combat_readiness_increase;
 if (combat_readiness > 100 && GRLIB_difficulty_modifier < 2.0) then { combat_readiness = 100 };

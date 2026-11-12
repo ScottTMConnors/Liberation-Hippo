@@ -240,10 +240,9 @@ if ((floor GRLIB_difficulty_modifier) > 1) then {
 	};
 };
 
-// Create land mines
-if (_mines_count > 0) then {
-	[_sector_pos, _mines_count] spawn createlandmines;
-};
+// Minefields on the approaches, laid now, before players arrive: roads in for every sector,
+// open ground too around military bases and radio towers (which used to get random mines)
+[_sector, _sector_pos, _mines_count > 0] spawn HPC_fnc_sectorMinefields;
 
 // Create IEDs
 [_sector_pos, _building_range, round (_ied_count)] spawn ied_manager;
@@ -521,6 +520,7 @@ private _managed_civils = missionNamespace getVariable [format ["LRX_sector_%1_c
 private _managed_vehicles = missionNamespace getVariable [format ["LRX_sector_%1_vehicles", _sector], []];
 { [_x] call F_vehicleClean } forEach _managed_vehicles;
 [_sector_pos] call clearlandmines;
+[_sector] remoteExecCall ["HPC_fnc_minefieldsRegister", 2];	// minefields on the outskirts
 missionNamespace setVariable [format ["LRX_sector_%1_units", _sector], nil];
 missionNamespace setVariable [format ["LRX_sector_%1_civils", _sector], nil];
 missionNamespace setVariable [format ["LRX_sector_%1_vehicles", _sector], nil];
