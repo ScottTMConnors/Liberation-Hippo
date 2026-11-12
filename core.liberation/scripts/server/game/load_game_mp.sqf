@@ -130,13 +130,10 @@ if (!isNil "_lrx_liberation_savegame") then {
 		abort_loading_msg = format [
 		"********************************
 
-		FATAL! - The savegame was made by a newer version of the mission (save v%1, mission v%2)
-
-
-		Loading Aborted to protect data integrity.
-
-		Update the mission...
-
+		FATAL! - The savegame was made by a newer version of the mission (save v%1, mission v%2)\n
+\n
+		Loading Aborted to protect data integrity.\n
+		Update the mission...\n
 		*********************************", _save_version, HPC_save_version];
 		abort_loading = true;
 	};

@@ -1,5 +1,7 @@
 // LRX Virtual Garage
 // by pSiKO v2.0
+// Garage entry: [class, colour, ammo, components, A3 cargo, R3F cargo, LRX cargo, fuel, hit point damages, damage]
+// (entries stored before fuel/damage were recorded have the first 7 only and come out full and repaired)
 
 if (isNil "GRLIB_virtual_garage") exitWith {};
 
@@ -14,16 +16,68 @@ private _cfg = configFile >> "cfgVehicles";
 private _refresh = true;
 private ["_class","_entrytext","_icon"];
 
+// [fuel, ammo, damage] of a garage entry, each 0..1; damage is the worst of the hull and any part
+private _entryState = {
+	params ["_entry"];
+	_entry params ["", "", ["_ammo", 1], "", "", "", "", ["_fuel", 1], ["_hits", []], ["_damage", 0]];
+	private _worst = selectMax _hits;
+	if (isNil "_worst") then { _worst = 0 };
+	[_fuel, _ammo, _damage max _worst]
+};
+
+// [cost, parts] of a full service of a stored vehicle, priced like the field service near this player
+private _serviceCost = {
+	params ["_entry"];
+	([_entry] call _entryState) params ["_fuel", "_ammo", "_damage"];
+	private _cost = 0;
+	private _parts = [];
+	if (_damage > 0.001) then {
+		_cost = _cost + ([80, 50] select ([player, "REP", 30, false] call F_check_near));
+		_parts pushBack "repair";
+	};
+	if (_ammo < 0.999) then {
+		_cost = _cost + 50;
+		_parts pushBack "rearm";
+	};
+	if (_fuel < 0.999) then {
+		_cost = _cost + ([80, 50] select ([player, "FUEL", 30, false] call F_check_near));
+		_parts pushBack "refuel";
+	};
+	[_cost, _parts]
+};
+
+private _pct = { format ["%1%%", round (100 * _this)] };
+
+private _addRow = {
+	params ["_class", "_state", "_status", "_tooltip", "_color"];
+	_state params ["_fuel", "_ammo", "_damage"];
+	private _row = _control lnbAddRow [[_class] call F_getLRXName, _fuel call _pct, _ammo call _pct, _damage call _pct, _status];
+	_control lnbSetTooltip [[_row, 0], _tooltip];
+	private _icon = getText (_cfg >> _class >> "icon");
+	if (isText (configFile >> "CfgVehicleIcons" >> _icon)) then {
+		_icon = getText (configFile >> "CfgVehicleIcons" >> _icon);
+	};
+	lnbSetPicture [110, [_row, 0], _icon];
+	for "_c" from 0 to 4 do { _control lnbSetColor [[_row, _c], _color] };
+	// warn about a part that needs work
+	if (_damage > 0.001) then { _control lnbSetColor [[_row, 3], [1, 0.55, 0.35, 1]] };
+	if (_fuel < 0.25) then { _control lnbSetColor [[_row, 1], [1, 0.55, 0.35, 1]] };
+};
+
 load_veh = 0;
 
 ctrlEnable [ 120, false ];
 ctrlEnable [ 121, false ];
+ctrlEnable [ 122, false ];
+ctrlEnable [ 123, false ];
 
-while { dialog && alive player } do {
+// run while this dialog is open (the cargo manager can open right after it)
+while { !isNull _display && alive player } do {
 	if ( _refresh ) then {
 		_refresh = false;
-        ctrlEnable [120,false];ctrlEnable [121,false];
-        ctrlSetText [1011,format ["%1 / %2 STORED",count GRLIB_virtual_garage,GRLIB_garage_size]];
+		ctrlEnable [120,false];ctrlEnable [121,false];ctrlEnable [122,false];ctrlEnable [123,false];
+		ctrlSetText [122, "Service"];
+		ctrlSetText [1011,format ["%1 / %2 STORED",count GRLIB_virtual_garage,GRLIB_garage_size]];
 
 		// list outside
 		_vehicles_out = (player nearEntities [["LandVehicle","Air","Ship_F",playerbox_typename], 150]) select {
@@ -36,36 +90,21 @@ while { dialog && alive player } do {
 
 		lbClear 110;
 		{
-			_class = typeOf _x;
-			_entrytext = [_class] call F_getLRXName;
-			private _row = _control lnbAddRow [_entrytext, "Nearby"];
-            _control lnbSetTooltip [[_row,0],format ["%1\nFuel: %2%% | Damage: %3%%\nStore this nearby vehicle in your garage.",_entrytext,round (fuel _x * 100),round (damage _x * 100)]];
-
-			_icon = getText ( _cfg >> _class >> "icon");
-			if(isText (configFile >> "CfgVehicleIcons" >> _icon)) then {
-				_icon = (getText (configFile >> "CfgVehicleIcons" >> _icon));
-			};
-			lnbSetPicture [110, [((lnbSize 110) select 0) - 1, 0], _icon];
-
-			_control lnbSetColor [[((lnbSize 110) select 0) - 1, 0], [1,1,1,1]];
-			_control lnbSetColor [[((lnbSize 110) select 0) - 1, 1], [1,1,1,1]];
+			private _st = [_x] call HPC_fnc_vehicleState;
+			private _hits = _st select 3;
+			private _worst = selectMax _hits;
+			if (isNil "_worst") then { _worst = 0 };
+			private _state = [fuel _x, [_x] call F_getVehicleAmmoDef, damage _x max _worst];
+			[typeOf _x, _state, "Nearby", "Store this nearby vehicle in your garage. Its fuel, ammo, damage, parts and cargo are kept.", [1,1,1,1]] call _addRow;
 		} foreach _vehicles_out;
 
 		// list inside Garage
 		{
-			_class = _x select 0;
-			_entrytext = [_class] call F_getLRXName;
-			private _row = _control lnbAddRow [_entrytext, "Stored"];
-            _control lnbSetTooltip [[_row,0],"Retrieve this vehicle and place it near your FOB."];
-
-			_icon = getText ( _cfg >> _class >> "icon");
-			if(isText (configFile >> "CfgVehicleIcons" >> _icon)) then {
-				_icon = (getText (configFile >> "CfgVehicleIcons" >> _icon));
-			};
-			lnbSetPicture [110, [((lnbSize 110) select 0) - 1, 0], _icon];
-
-			_control lnbSetColor [[((lnbSize 110) select 0) - 1, 0], [0.72,0.86,1,1]];
-			_control lnbSetColor [[((lnbSize 110) select 0) - 1, 1], [0.72,0.86,1,1]];
+			private _state = [_x] call _entryState;
+			([_x] call _serviceCost) params ["_cost", "_parts"];
+			private _tip = "Retrieve this vehicle and place it near your FOB.";
+			if (_cost > 0) then { _tip = _tip + format ["\nService (%1): %2 ammo.", _parts joinString ", ", _cost] };
+			[_x select 0, _state, "Stored", _tip, [0.72,0.86,1,1]] call _addRow;
 		} foreach GRLIB_virtual_garage;
 
 		ctrlShow [130, count (_vehicles_out + GRLIB_virtual_garage) == 0];
@@ -74,14 +113,22 @@ while { dialog && alive player } do {
 	};
 
 	if (count (_vehicles_out + GRLIB_virtual_garage) > 0) then {
-		_selected_item = lbCurSel 110;
+		_selected_item = lnbCurSelRow _control;
 		if (_selected_item != -1 && _old_sel != _selected_item) then {
-			if ( (_control lnbText [_selected_item, 1]) == "Nearby") then {
+			if ( (_control lnbText [_selected_item, 4]) == "Nearby") then {
 				ctrlEnable [ 120, true ];
 				ctrlEnable [ 121, false ];
+				ctrlEnable [ 122, false ];
+				ctrlEnable [ 123, false ];
+				ctrlSetText [122, "Service"];
 			} else {
 				ctrlEnable [ 120, false ];
 				ctrlEnable [ 121, true ];
+				private _stored = GRLIB_virtual_garage param [_selected_item - count _vehicles_out, []];
+				private _cost = ([_stored] call _serviceCost) select 0;
+				ctrlEnable [ 122, _cost > 0 ];
+				ctrlEnable [ 123, true ];
+				ctrlSetText [122, if (_cost > 0) then {format ["Service (%1)", _cost]} else {"Service"}];
 			};
 			_old_sel = _selected_item;
 		};
@@ -99,33 +146,18 @@ while { dialog && alive player } do {
 				private _msg = format [ "%1\nRearming Cooldown (%2 sec)\nPlease Wait...", _vehicle_name, round (_timer - time) ];
 				if (_timer >= time) exitWith { hintSilent _msg; sleep 2 };
 				if (count GRLIB_virtual_garage >= GRLIB_garage_size) exitWith { hintSilent (format [localize "STR_FULL_GARAGE", GRLIB_garage_size]); sleep 2 };
-				if ([_vehicle] call F_vehicleNeedRepair) exitWith { hintSilent "Repair this vehicle before storing it."; sleep 2 };
 				if (count (crew _vehicle) > 0 && !(typeOf _vehicle in uavs_vehicles)) exitWith { hintSilent localize "STR_CANT_PARKUAV"; sleep 2 };
 
 				ctrlEnable [ 120, false ];
-				private _color = _vehicle getVariable ["GRLIB_vehicle_color", ""];
-				private _compo = _vehicle getVariable ["GRLIB_vehicle_composant", []];
-				private _ammo = [_vehicle] call F_getVehicleAmmoDef;
-				private _lst_a3 = [];
-				private _lst_r3f = [];
-				private _lst_lrx = [];
-                if (typeOf _vehicle != playerbox_typename) then {_lst_a3 = [_vehicle,true] call F_getCargo};
-				if (typeOf _vehicle == playerbox_typename) then {
-					player setVariable ["GRLIB_player_box_content", ([_vehicle, true] call F_getCargo), true];
-				};
+				// full state with items and R3F/LRX cargo; carried vehicles and crates keep theirs
+				private _entry = [_vehicle] call HPC_fnc_vehicleEntry;
+				// the personal box's content lives in the player variable, not in the entry
 				{
-					_lst_r3f pushback (typeOf _x);
-					if (typeOf _x == playerbox_typename) then {
+					if (!isNull _x && {typeOf _x == playerbox_typename}) then {
 						player setVariable ["GRLIB_player_box_content", ([_x, true] call F_getCargo), true];
 					};
-				} forEach (_vehicle getVariable ["R3F_LOG_objets_charges", []]);
-				{
-					_lst_lrx pushback (typeOf _x);
-					if (typeOf _x == playerbox_typename) then {
-						player setVariable ["GRLIB_player_box_content", ([_x, true] call F_getCargo), true];
-					};
-				} forEach (_vehicle getVariable ["GRLIB_ammo_vehicle_load", []]);
-				GRLIB_virtual_garage append [[typeOf _vehicle,_color,_ammo,_compo,_lst_a3,_lst_r3f,_lst_lrx]];
+				} forEach ([_vehicle] + (_vehicle getVariable ["R3F_LOG_objets_charges", []]) + (_vehicle getVariable ["GRLIB_ammo_vehicle_load", []]));
+				GRLIB_virtual_garage append [_entry];
 				[_vehicle, true, true] call F_vehicleClean;
 				player setVariable ["GRLIB_virtual_garage", GRLIB_virtual_garage, true];
 				hintSilent (format [localize "STR_LOADED", _vehicle_name]);
@@ -148,6 +180,38 @@ while { dialog && alive player } do {
 					GRLIB_virtual_garage deleteAt _selected_item;
 					player setVariable ["GRLIB_virtual_garage", GRLIB_virtual_garage, true];
 				};
+			};
+
+			// Service a stored vehicle: repair, rearm and refuel at the field service price
+			if (load_veh == 3) then {
+				private _index = _selected_item - count _vehicles_out;
+				private _entry = GRLIB_virtual_garage param [_index, []];
+				if (count _entry < 7) exitWith {};
+				([_entry] call _serviceCost) params ["_cost", "_parts"];
+				if (_cost == 0) exitWith { hintSilent format ["%1\nneeds no service.", _vehicle_name] };
+				private _ok = [format ["Service %1 (%2) for %3 Ammo?", _vehicle_name, _parts joinString ", ", _cost], localize "STR_WARNING", true, true] call BIS_fnc_guiMessage;
+				if (!_ok) exitWith {};
+				if ((player getVariable ["GREUH_ammo_count", 0]) < _cost) exitWith { hintSilent format ["Not enough ammo to service %1 (%2 needed).", _vehicle_name, _cost] };
+				if !([_cost] call F_pay) exitWith {};
+				// the list may have changed while the payment ran
+				if !((GRLIB_virtual_garage param [_index, []]) isEqualTo _entry) exitWith {};
+				private _serviced = +_entry;
+				if (count _serviced < 10) then { _serviced resize 10 };
+				_serviced set [2, 1];
+				_serviced set [7, 1];
+				_serviced set [8, (_entry param [8, []]) apply {0}];
+				_serviced set [9, 0];
+				GRLIB_virtual_garage set [_index, _serviced];
+				player setVariable ["GRLIB_virtual_garage", GRLIB_virtual_garage, true];
+				hintSilent format ["%1\nserviced in the garage (%2).", _vehicle_name, _parts joinString ", "];
+			};
+
+			// Cargo of a stored vehicle: the cargo manager, opened on it
+			if (load_veh == 4) then {
+				private _index = _selected_item - count _vehicles_out;
+				if (_index < 0 || {_index >= count GRLIB_virtual_garage}) exitWith {};
+				closeDialog 0;
+				[["garage", _index]] execVM "addons\CARGO\cargo_manager.sqf";
 			};
 
 			sleep 0.5;

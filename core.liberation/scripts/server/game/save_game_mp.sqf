@@ -129,6 +129,8 @@ if (GRLIB_endgame >= 1 || GRLIB_global_stop == 1) then {
 
 	// Garage additions per owner UID; only owners with a full context can receive them
 	private _garage_add = createHashMap;
+	// items of owned crates go to the owner's home stockpile (a crate reloads empty)
+	private _home_add = createHashMap;
 	{ if (count _x >= 5) then { _garage_add set [_x select 0, []] } } forEach _player_context;
 
 	// Save Objects
@@ -170,6 +172,12 @@ if (GRLIB_endgame >= 1 || GRLIB_global_stop == 1) then {
 						};
 						if (_default) then {
 							buildings_to_save pushback [_nextclass, _savedpos, _nextdir, _hascrew, _owner];
+							if (_owner in _garage_add && {_nextclass != playerbox_typename} && {!(_x isKindOf "AllVehicles")}) then {
+								private _crate_items = [_x, true] call F_getCargo;
+								if (count _crate_items > 0) then {
+									[_home_add getOrDefault [_owner, [], true], _crate_items] call HPC_fnc_cargoAddItems;
+								};
+							};
 						};
 					} else {
 						//_color = _x getVariable ["GRLIB_vehicle_color", ""];
@@ -179,16 +187,10 @@ if (GRLIB_endgame >= 1 || GRLIB_global_stop == 1) then {
 						private _lst_a3 = []; //[_x, true] call F_getCargo;
 						private	_lst_r3f = [_x] call save_r3f_object_direct;
 						private	_lst_lrx = [_x] call save_lrx_object_direct;
-						if (_garage_on && {_owner in _garage_add} && {!_hascrew} && {_nextclass != playerbox_typename}) exitWith {
-							(_garage_add get _owner) pushBack [
-								_nextclass,
-								_x getVariable ["GRLIB_vehicle_color", ""],
-								[_x] call F_getVehicleAmmoDef,
-								_compo,
-								[_x, true] call F_getCargo,
-								_lst_r3f,
-								_lst_lrx
-							];
+						// a crew is saved with its owner's squad, so manned vehicles go to the garage too
+						if (_garage_on && {_owner in _garage_add} && {_nextclass != playerbox_typename}) exitWith {
+							// full state, items, and R3F/LRX cargo (carried vehicles and crates keep theirs)
+							(_garage_add get _owner) pushBack ([_x] call HPC_fnc_vehicleEntry);
 						};
 						if ([_x] call F_vehicleSafeZone) then { _owner = "" };
 						buildings_to_save pushback [_nextclass, _savedpos, _nextdir, _hascrew, _owner, _color, _color_name, _lst_a3, _lst_r3f, _lst_lrx, _compo];
@@ -250,9 +252,17 @@ if (GRLIB_endgame >= 1 || GRLIB_global_stop == 1) then {
 	// The live context and the vehicles in the world are left as they are.
 	private _saved_context = _player_context apply {
 		private _added = _garage_add getOrDefault [_x select 0, []];
-		if (count _added == 0) then { _x } else {
+		private _homeItems = _home_add getOrDefault [_x select 0, []];
+		if (count _added + count _homeItems == 0) then { _x } else {
 			private _copy = +_x;
 			_copy set [4, (+(_copy select 4)) + _added];
+			if (count _homeItems > 0) then {
+				private _home = +(_copy param [6, [[], []]]);
+				if !(_home isEqualTypeArray [[], []]) then { _home = [[], []] };
+				_home set [0, [+(_home select 0), _homeItems] call HPC_fnc_cargoAddItems];
+				if (count _copy < 6) then { _copy set [5, []] };
+				_copy set [6, _home];
+			};
 			_copy
 		};
 	};

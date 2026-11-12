@@ -135,6 +135,16 @@ lrx_getParamValue = compileFinal preprocessFileLineNumbers "scripts\shared\funct
 reammo_ai = compileFinal preprocessFileLineNumbers "scripts\shared\functions\F_reammo_ai.sqf";
 
 HPC_fnc_rankInfo = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_rankInfo.sqf"; // rank, insignia, XP to next rank
+HPC_fnc_vehicleState = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_vehicleState.sqf"; // garage: colour, parts, fuel, damage
+// Cargo system: garage entries, carried vehicles/crates, values, home stockpile
+HPC_fnc_vehicleEntry = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_vehicleEntry.sqf";
+HPC_fnc_cargoObjectEntry = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_cargoObjectEntry.sqf";
+HPC_fnc_cargoClass = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_cargoClass.sqf";
+HPC_fnc_cargoApplyState = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_cargoApplyState.sqf";
+HPC_fnc_cargoValue = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_cargoValue.sqf";
+HPC_fnc_cargoAddItems = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_cargoAddItems.sqf";
+HPC_fnc_cargoReceive = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_cargoReceive.sqf";
+HPC_fnc_cargoTakeLive = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_cargoTakeLive.sqf";
 HPC_fnc_addStat = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_addStat.sqf"; // server-side stats increment
 HPC_fnc_actionTitle = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_actionTitle.sqf"; // consistent action menu entries
 HPC_fnc_applyEasyAI = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_applyEasyAI.sqf";

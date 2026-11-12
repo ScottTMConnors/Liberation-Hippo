@@ -352,7 +352,9 @@ if (!isNull findDisplay 312) then {
     waitUntil {sleep 0.2; diag_tickTime > _deadline || {dobuild == 0}};
     sleep 2;
     private _crew = if (isNull build_vehicle) then {[]} else {crew build_vehicle};
-    _crewOk = typeOf build_vehicle == _cclass && {count _crew > 0} && {_crew findIf {group _x != group player} < 0};
+    // the crew are squad members: tagged like recruits so they are saved and redeployed with the squad
+    _crewOk = typeOf build_vehicle == _cclass && {count _crew > 0} && {_crew findIf {group _x != group player} < 0} &&
+        {_crew findIf {(_x getVariable ["PAR_Grp_ID", ""]) != format ["Bros_%1", PAR_Grp_ID]} < 0} && {_crew findIf {!(_x in PAR_AI_bros)} < 0};
     diag_log ["HPC_CREW_BUILD", build_vehicle, count _crew, _crew apply {group _x}, group player, manned];
     { deleteVehicle _x } forEach _crew;
     if (!isNull build_vehicle) then { deleteVehicle build_vehicle };
@@ -519,7 +521,9 @@ private _gGarage = player getVariable ["GRLIB_virtual_garage", []];
 private _gIdx = _gGarage findIf {(_x select 0) == (_gRes select 1)};
 private _gOk = false;
 if ((_gRes select 0) && {_gIdx >= 0}) then {
-    build_unit = _gGarage select _gIdx;
+    // half ammo in the stored entry: retrieval must restore it on the (local) vehicle
+    build_unit = +(_gGarage select _gIdx);
+    build_unit set [2, 0.5];
     buildtype = GRLIB_BuildTypeDirect;
     dobuild = 1;
     _deadline = diag_tickTime + 15;
@@ -540,13 +544,224 @@ if ((_gRes select 0) && {_gIdx >= 0}) then {
         private _gItems = if (isNull _gVeh) then {[[],[]]} else {getItemCargo _gVeh};
         private _gAid = (_gItems select 0) find "FirstAidKit";
         _gOk = !isNull _gVeh && {typeOf _gVeh == (_gRes select 1)} && {_gAid >= 0} && {((_gItems select 1) select _gAid) == 3};
-        diag_log ["HPC_GARAGE_RETRIEVE", _gRes, _gVeh, _gItems];
+        // fuel, the damaged part, ammo and the slat cage come back as stored
+        sleep 3;
+        private _gState = if (isNull _gVeh) then {[-1, -1, -1, -1]} else {[fuel _gVeh, _gVeh getHitIndex 0, _gVeh animationSourcePhase "showSLATHull", [_gVeh] call F_getVehicleAmmoDef]};
+        private _gSlat = _gRes param [3, false];
+        _gOk = _gOk && {abs ((_gState select 0) - 0.4) < 0.05} && {abs ((_gState select 1) - 0.5) < 0.05} &&
+            {!_gSlat || {(_gState select 2) > 0.5}} && {!_gSlat || {(_gState select 3) < 0.9}};
+        diag_log ["HPC_GARAGE_RETRIEVE", _gRes, _gVeh, _gItems, _gState];
         if (!isNull _gVeh) then { deleteVehicle _gVeh };
     };
 };
 diag_log ["HPC_GARAGE_CLIENT", _gRes, _gIdx, count _gGarage];
 ["garage.restartRetrieve", (_gRes select 0) && {(_gRes select 2) >= 1} && {_gOk}] call _assert;
-["RUN_DONE|32"] call _emit;
+
+// Garage service and the cargo manager, through the real dialogs.
+private _scope2 = { isClass (configFile >> "CfgVehicles" >> _this) && {getNumber (configFile >> "CfgVehicles" >> _this >> "scope") == 2} };
+private _boxTruck = ((box_transport_config apply {_x select 0}) select {(_x call _scope2) && {_x isKindOf "LandVehicle"}}) param [0, ""];
+private _box = ((box_transport_loadable - box_transport_big_loadable) select {_x call _scope2}) param [0, ""];
+private _r3fCarrier = (light_vehicles + heavy_vehicles) apply {_x select 0} select {(_x call _scope2) && {_x isKindOf "LandVehicle"} && {(([_x] call R3F_LOG_FNCT_determiner_fonctionnalites_logistique) select R3F_LOG_IDX_can_transport_cargo_cout) >= 25}} param [0, ""];
+private _crate = ((R3F_LOG_CFG_can_be_transported_cargo select {(_x select 1) <= 5 && {(_x select 0) call _scope2} && {(_x select 0) isKindOf "ReammoBox_F"} && {toLowerANSI (_x select 0) != toLowerANSI HPC_cargo_crate_typename}}) param [0, [""]]) select 0;
+diag_log ["HPC_GARAGE_CARGO_CLASSES", _boxTruck, _box, _r3fCarrier, _crate];
+GRLIB_virtual_garage = [
+    [_boxTruck, "", 0.5, [], [], [], [_box], 0.5, [0.4], 0.3],
+    [_boxTruck, "", 1, [], [], [], [], 1, [], 0],
+    [_r3fCarrier, "", 1, [], [], [_crate], [], 1, [], 0]
+];
+player setVariable ["GRLIB_virtual_garage", GRLIB_virtual_garage, true];
+// press OK on the confirmation popup when it shows
+private _confirm = {
+    private _end = diag_tickTime + 10;
+    waitUntil { sleep 0.2; diag_tickTime > _end || {allDisplays findIf {!isNull (_x displayCtrl 235106)} >= 0} };
+    private _d = allDisplays select {!isNull (_x displayCtrl 235106)};
+    if (_d isNotEqualTo []) then { ((_d select 0) displayCtrl 235106) ctrlActivate true };
+};
+// place the current direct build 20 m in front of the player
+private _place = {
+    private _end = diag_tickTime + 15;
+    waitUntil {sleep 0.2; diag_tickTime > _end || {!isNull findDisplay 312}};
+    if (isNull findDisplay 312) exitWith {};
+    sleep 1;
+    curatorCamera setPosASL (AGLToASL (player modelToWorld [4, 6, 25]));
+    curatorCamera setVectorDirAndUp [vectorDir player vectorMultiply 0.5 vectorAdd [0, 0, -0.85], [0, 0, 1]];
+    setMousePosition [0.5, 0.5];
+    _end = diag_tickTime + 10;
+    waitUntil {sleep 0.2; diag_tickTime > _end || {build_valid && build_confirmed == 1}};
+    if (build_valid) then { build_confirmed = 2; repeatbuild = false };
+    _end = diag_tickTime + 15;
+    waitUntil {sleep 0.2; diag_tickTime > _end || {dobuild == 0}};
+};
+// Service the worn first entry from the garage list for the field price
+private _ammoBefore = player getVariable ["GREUH_ammo_count", 0];
+[] execVM "addons\VIRT\virtual_garage.sqf";
+_deadline = diag_tickTime + 10;
+waitUntil {sleep 0.2; diag_tickTime > _deadline || {!isNull findDisplay 2301}};
+sleep 2;
+private _gList = (findDisplay 2301) displayCtrl 110;
+private _gRow = -1;
+for "_r" from 0 to ((lnbSize _gList) select 0) - 1 do {
+    if (_gRow < 0 && {(_gList lnbText [_r, 4]) == "Stored"}) then { _gRow = _r };
+};
+private _serviceOk = false;
+if (_gRow >= 0) then {
+    _gList lnbSetCurSelRow _gRow;
+    sleep 1;
+    private _label = ctrlText ((findDisplay 2301) displayCtrl 122);
+    load_veh = 3;
+    call _confirm;
+    _deadline = diag_tickTime + 10;
+    waitUntil {sleep 0.2; diag_tickTime > _deadline || {((GRLIB_virtual_garage select 0) param [7, 0]) == 1}};
+    sleep 1;
+    private _e = GRLIB_virtual_garage select 0;
+    private _paid = _ammoBefore - (player getVariable ["GREUH_ammo_count", 0]);
+    _serviceOk = (_e select 2) == 1 && {(_e select 7) == 1} && {(_e select 9) == 0} && {(_e select 8) findIf {_x > 0} < 0} && {_paid >= 150} && {_paid <= 210};
+    diag_log ["HPC_GARAGE_SERVICE", _label, _e, _paid];
+};
+closeDialog 0;
+["garage.service", _serviceOk] call _assert;
+
+// Cargo manager, through the real dialog (idd 2306): move cargo between stored vehicles and home,
+// move a carried vehicle out to the garage with its own inventory, take out a crate and items,
+// store a nearby crate, sell, scrap a stored vehicle, and receive cargo from another player.
+private _cgOpen = {
+    params [["_focus", []]];
+    [_focus] execVM "addons\CARGO\cargo_manager.sqf";
+    private _end = diag_tickTime + 10;
+    waitUntil {sleep 0.2; diag_tickTime > _end || {!isNull findDisplay 2306}};
+    sleep 1.5;
+};
+private _cgHolder = {
+    params ["_index"];
+    ((findDisplay 2306) displayCtrl 2410) lbSetCurSel _index;
+    sleep 1;
+};
+private _cgHolderNamed = {
+    params ["_text"];
+    private _l = (findDisplay 2306) displayCtrl 2410;
+    private _found = -1;
+    for "_i" from 0 to (lbSize _l) - 1 do { if (_found < 0 && {((_l lbText _i) find _text) >= 0}) then { _found = _i } };
+    if (_found >= 0) then { [_found] call _cgHolder };
+    _found
+};
+private _cgRow = {
+    params ["_text"];
+    private _l = (findDisplay 2306) displayCtrl 2420;
+    private _found = -1;
+    for "_r" from 0 to ((lnbSize _l) select 0) - 1 do { if (_found < 0 && {((_l lnbText [_r, 0]) find _text) >= 0}) then { _found = _r } };
+    if (_found >= 0) then { _l lnbSetCurSelRow _found; sleep 0.6 };
+    _found
+};
+private _cgTarget = { params ["_index"]; ((findDisplay 2306) displayCtrl 2430) lbSetCurSel _index; sleep 0.4 };
+private _cgAct = { params ["_n"]; HPC_cargoAction = _n; sleep 1.5 };
+private _homeItems = { (player getVariable ["HPC_cargo_home", [[], []]]) select 0 };
+private _homeObjs = { (player getVariable ["HPC_cargo_home", [[], []]]) select 1 };
+private _countOf = { params ["_list", "_class"]; private _n = 0; { if (count _x == 2 && {(_x select 0) == _class}) then { _n = _n + (_x select 1) } } forEach _list; _n };
+private _aidName = getText (configFile >> "CfgWeapons" >> "FirstAidKit" >> "displayName");
+private _quad = ["B_Quadbike_01_F", "", 1, [], [["FirstAidKit", 4]], [], [], 0.7, [], 0];
+private _mx = ["arifle_MX_F", "", "", "", [], [], ""];
+
+GRLIB_virtual_garage = [
+    [_boxTruck, "", 1, [], [["FirstAidKit", 2]], [], [_box], 1, [], 0],
+    [_boxTruck, "", 1, [], [], [], [], 1, [], 0],
+    [_r3fCarrier, "", 1, [], [], [_crate, _quad], [], 1, [], 0]
+];
+player setVariable ["GRLIB_virtual_garage", GRLIB_virtual_garage, true];
+player setVariable ["HPC_cargo_home", [[["FirstAidKit", 5], _mx], []], true];
+private _results = createHashMap;
+
+[["garage", 0]] call _cgOpen;
+// 1. box: stored truck -> the other stored truck (holders: home, garage 0, 1, 2, ...)
+[[_box] call F_getLRXName] call _cgRow;
+[2] call _cgTarget;
+[1] call _cgAct;
+// the box goes to the other truck's R3F space when it fits there, else to its box slots
+_results set ["cargo.moveBox", ((GRLIB_virtual_garage select 0) select 6) isEqualTo [] && {(((GRLIB_virtual_garage select 1) select 5) + ((GRLIB_virtual_garage select 1) select 6)) isEqualTo [_box]}];
+// 2. one first aid kit: stored truck -> home
+[1] call _cgHolder;
+[_aidName] call _cgRow;
+[0] call _cgTarget;
+[2] call _cgAct;
+_results set ["cargo.moveItems", ([call _homeItems, "FirstAidKit"] call _countOf) == 6 && {([(GRLIB_virtual_garage select 0) select 4, "FirstAidKit"] call _countOf) == 1}];
+// 3. carried quad bike (with its own items) -> home, which puts it in the garage
+[3] call _cgHolder;
+[["B_Quadbike_01_F"] call F_getLRXName] call _cgRow;
+[0] call _cgTarget;
+[1] call _cgAct;
+private _last = GRLIB_virtual_garage select (count GRLIB_virtual_garage - 1);
+_results set ["cargo.nestedVehicle", count GRLIB_virtual_garage == 4 && {(_last select 0) == "B_Quadbike_01_F"} && {([_last select 4, "FirstAidKit"] call _countOf) == 4} && {abs ((_last select 7) - 0.7) < 0.01} && {((GRLIB_virtual_garage select 2) select 5) isEqualTo [_crate]}];
+// 4. take the crate out of the stored carrier: placed like a build, the carrier stays stored
+[3] call _cgHolder;
+[[_crate] call F_getLRXName] call _cgRow;
+HPC_cargoAction = 5;
+call _place;
+private _outCrate = build_vehicle;
+private _end = diag_tickTime + 10;
+waitUntil {sleep 0.2; diag_tickTime > _end || {!isNull findDisplay 2306}};
+sleep 1.5;
+_results set ["cargo.takeOutObject", !isNull _outCrate && {typeOf _outCrate == _crate} && {((GRLIB_virtual_garage select 2) select 5) isEqualTo []}];
+if (!isNull _outCrate) then { deleteVehicle _outCrate };
+// 5. take items out of home: they come out in a crate next to the player
+[0] call _cgHolder;
+[_aidName] call _cgRow;
+[5] call _cgAct;
+private _itemCrate = (nearestObjects [player, [HPC_cargo_crate_typename], 25]) param [0, objNull];
+private _crateAid = if (isNull _itemCrate) then { 0 } else { [[_itemCrate, true] call F_getCargo, "FirstAidKit"] call _countOf };
+_results set ["cargo.takeOutItems", _crateAid == 6 && {([call _homeItems, "FirstAidKit"] call _countOf) == 0}];
+// 6. store that nearby crate (with its items) in the home stockpile
+HPC_cargo_changed = true;
+sleep 1;
+[[HPC_cargo_crate_typename] call F_getLRXName] call _cgHolderNamed;
+[7] call _cgAct;
+private _stored = (call _homeObjs) select { _x isEqualType [] && {count _x == 2} && {(_x select 0) == HPC_cargo_crate_typename} };
+_results set ["cargo.storeCrate", isNull _itemCrate && {count _stored == 1} && {([(_stored select 0) select 1, "FirstAidKit"] call _countOf) == 6}];
+// 7. sell the rifle from home for 75% of its arsenal price
+[0] call _cgHolder;
+private _ammo0 = player getVariable ["GREUH_ammo_count", 0];
+[getText (configFile >> "CfgWeapons" >> "arifle_MX_F" >> "displayName")] call _cgRow;
+HPC_cargoAction = 6;
+call _confirm;
+sleep 3;
+private _gain = (player getVariable ["GREUH_ammo_count", 0]) - _ammo0;
+_results set ["cargo.sell", _gain == round (([_mx select 0] call F_loadoutPrice) * GRLIB_recycling_percentage) && {_gain > 0} && {((call _homeItems) findIf { count _x == 7 }) < 0}];
+// 8. scrap the second stored truck: its box goes home first, then 75% of its build price
+[2] call _cgHolder;
+private _ammo1 = player getVariable ["GREUH_ammo_count", 0];
+private _garageBefore = count GRLIB_virtual_garage;
+HPC_cargoAction = 7;
+call _confirm;
+sleep 3;
+_results set ["cargo.scrap", count GRLIB_virtual_garage == _garageBefore - 1 && {_box in (call _homeObjs)} && {(player getVariable ["GREUH_ammo_count", 0]) >= _ammo1}];
+closeDialog 0;
+sleep 1;
+// 9. cargo sent by another player lands in home and garage
+private _g0 = count GRLIB_virtual_garage;
+["Tester", [[["FirstAidKit", 1]], [["B_Quadbike_01_F", "", 1, [], [], [], [], 1, [], 0]]]] call HPC_fnc_cargoReceive;
+_results set ["cargo.receive", ([call _homeItems, "FirstAidKit"] call _countOf) == 1 && {count (player getVariable ["GRLIB_virtual_garage", []]) == _g0 + 1}];
+// 10. loot an unclaimed truck (a captured enemy one): the server takes the items, one request at a time
+private _loot = createVehicle [_boxTruck, player getPos [9, getDir player + 90], [], 0, "NONE"];
+_loot setVariable ["GRLIB_vehicle_owner", "", true];
+clearItemCargoGlobal _loot; clearMagazineCargoGlobal _loot; clearWeaponCargoGlobal _loot; clearBackpackCargoGlobal _loot;
+_loot addItemCargoGlobal ["FirstAidKit", 3];
+sleep 1;
+private _aidBefore = [call _homeItems, "FirstAidKit"] call _countOf;
+[] call _cgOpen;
+private _lootRow = [format ["%1 (unclaimed)", [_loot] call F_getLRXName]] call _cgHolderNamed;
+[_aidName] call _cgRow;
+[0] call _cgTarget;
+[2] call _cgAct;
+sleep 1;
+_results set ["cargo.lootUnclaimed", _lootRow >= 0 && {([call _homeItems, "FirstAidKit"] call _countOf) == _aidBefore + 1} && {([[_loot, true] call F_getCargo, "FirstAidKit"] call _countOf) == 2}];
+closeDialog 0;
+deleteVehicle _loot;
+
+diag_log ["HPC_CARGO_RESULTS", _results, player getVariable ["HPC_cargo_home", []], GRLIB_virtual_garage];
+{ [_x, _results getOrDefault [_x, false]] call _assert } forEach ["cargo.moveBox", "cargo.moveItems", "cargo.nestedVehicle", "cargo.takeOutObject", "cargo.takeOutItems", "cargo.storeCrate", "cargo.sell", "cargo.scrap", "cargo.receive", "cargo.lootUnclaimed"];
+
+GRLIB_virtual_garage = [];
+player setVariable ["GRLIB_virtual_garage", [], true];
+player setVariable ["HPC_cargo_home", [[], []], true];
+["RUN_DONE|43"] call _emit;
 // --hold only: a staged firefight for visual inspection of the map overlay and command window.
 if (missionNamespace getVariable ["HPC_testHold", false]) then {
     player allowDamage false;

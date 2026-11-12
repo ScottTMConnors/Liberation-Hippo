@@ -20,6 +20,9 @@ private _support_vehicles_light = support_vehicles_classname select {!( _x isKin
 GRLIB_vehicles_light = _support_vehicles_light + list_static_weapons + static_vehicles_AI + uavs_vehicles;
 GRLIB_vehicles_light = GRLIB_vehicles_light arrayIntersect GRLIB_vehicles_light;
 
+// cargo system crates are saved like other owned crates (their items go home on save)
+GRLIB_classnames_to_save_blu pushBackUnique HPC_cargo_crate_typename;
+GRLIB_vehicles_light pushBackUnique HPC_cargo_crate_typename;
 GRLIB_classnames_to_save = GRLIB_classnames_to_save + GRLIB_classnames_to_save_blu + GRLIB_vehicles_light - GRLIB_Ammobox_temp;
 GRLIB_classnames_to_save = GRLIB_classnames_to_save arrayIntersect GRLIB_classnames_to_save;
 

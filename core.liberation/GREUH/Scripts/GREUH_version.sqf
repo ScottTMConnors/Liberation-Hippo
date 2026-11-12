@@ -51,6 +51,19 @@ player createDiarySubject ["HPC_Guide", "Field Guide"];
 	localize "STR_RPL_DALE_INTRO_5", "<br/>"
 ]] call _add;
 
+// Cargo and loot
+["HPC_Guide", "Cargo and Loot", [
+	"Cargo and Loot" call _h,
+	"Use the CARGO action at any FOB (also the Cargo button in the garage).", "<br/><br/>",
+	"Home stockpile: your own unlimited storage for weapons, magazines, items, crates and boxes. It is saved with your profile.", "<br/>",
+	"Garage: stored vehicles keep fuel, ammo, damage, camo and parts (slat cages, nets), their inventory and their R3F/LRX cargo, carried vehicles included (one level). Service them from the garage for the usual price.", "<br/>",
+	"Nearby: your vehicles and crates within 30 m, and unclaimed ones. Loot captured enemy trucks and crates straight home.", "<br/><br/>",
+	"Move a stack, one item or everything; Unload all vehicles sends every vehicle's cargo home. Take out puts items in a crate beside you and places crates and vehicles like a build.", "<br/>",
+	"Send cargo to another player's home with the Move to list.", "<br/>",
+	format ["Sell anything for %1%% of its value; scrap a stored vehicle for %1%% of its build cost in ammo and fuel, less its damage. Enemy vehicles and gear pay too.", round (GRLIB_recycling_percentage * 100)], "<br/><br/>",
+	"On every save your vehicles go into your garage and the items in your crates go to your home stockpile, so a restart loses nothing.", "<br/>"
+]] call _add;
+
 // Shortcuts
 private _mgrKey = if (isNil "MGR_Key") then { "N/A" } else { format ["Ctrl + %1", keyName MGR_Key] };
 ["HPC_Guide", "Shortcuts", [

@@ -37,4 +37,9 @@ if (count _context >= 6) then {
     _player setVariable ["GRLIB_player_box_content", (_context select 5), true];
 };
 
+// Load the cargo system home stockpile: [items, cargo objects]
+private _home = [[], []];
+if (count _context >= 7 && {(_context select 6) isEqualTypeArray [[], []]}) then { _home = _context select 6 };
+_player setVariable ["HPC_cargo_home", _home, true];
+
 _player setVariable ["GRLIB_player_context_loaded", true, true];

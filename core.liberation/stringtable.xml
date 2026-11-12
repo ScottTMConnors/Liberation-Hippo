@@ -3706,13 +3706,19 @@
 			<Original>12. Civilians, intel and side missions</Original>
 		</Key>
 		<Key ID="STR_TUTO_TEXT12">
-			<Original>- Every player can heal, repair, place explosives and hack UAVs.&lt;br/&gt;- When wounded, press Call Medic on the wounded screen to send a medic.&lt;br/&gt;- Save your respawn loadout in the arsenal.&lt;br/&gt;- AI squadmates near you come along when you redeploy.&lt;br/&gt;- Recycle wrecks and sell cargo at the traders for extra ammo.&lt;br/&gt;- By default a vehicle can be repaired, refueled or rearmed again after 20 seconds (artillery rearm: 30 seconds).&lt;br/&gt;- By default, thermal vision works day and night.&lt;br/&gt;- Lock your vehicles so other players cannot drive off with them.&lt;br/&gt;- Extended Options in the action menu holds squad, map, name tag, view distance, terrain detail and earplug settings.&lt;br/&gt;- Bind Custom Actions 10 to 15 for weapon on back, auto-run, earplugs, quick eject, HUD toggle and screenshots.</Original>
+			<Original>- Every player can heal, repair, place explosives and hack UAVs.&lt;br/&gt;- When wounded, press Call Medic on the wounded screen to send a medic.&lt;br/&gt;- Save your respawn loadout in the arsenal.&lt;br/&gt;- AI squadmates near you come along when you redeploy.&lt;br/&gt;- Recycle wrecks and sell cargo at the traders for extra ammo, or sell and scrap from the Cargo action at a FOB.&lt;br/&gt;- By default a vehicle can be repaired, refueled or rearmed again after 20 seconds (artillery rearm: 30 seconds).&lt;br/&gt;- By default, thermal vision works day and night.&lt;br/&gt;- Lock your vehicles so other players cannot drive off with them.&lt;br/&gt;- Extended Options in the action menu holds squad, map, name tag, view distance, terrain detail and earplug settings.&lt;br/&gt;- Bind Custom Actions 10 to 15 for weapon on back, auto-run, earplugs, quick eject, HUD toggle and screenshots.</Original>
 		</Key>
 		<Key ID="STR_TUTO_TEXT13">
 			<Original>Towns are alive: civilians walk the streets, cars drive between towns and the odd civilian helicopter or plane flies over. They stay away from military sites and FOBs and are removed when nobody is near.&lt;br/&gt;&lt;br/&gt;By default there are no civilian casualty or friendly-fire penalties, but play nice anyway.&lt;br/&gt;&lt;br/&gt;Capture and interrogate prisoners at a FOB, or search bodies for documents, to earn intel. Spend intel on secondary missions; side missions also start on their own.</Original>
 		</Key>
 		<Key ID="STR_TUTO_TITLE13">
-			<Original>13. Tips</Original>
+			<Original>14. Tips</Original>
+		</Key>
+		<Key ID="STR_TUTO_TITLE14">
+			<Original>13. Cargo, loot and the garage</Original>
+		</Key>
+		<Key ID="STR_TUTO_TEXT14">
+			<Original>Everything you own can be moved, stored, sold or scrapped from the &lt;t color='#9EE6D2'&gt;CARGO&lt;/t&gt; action at any FOB.&lt;br/&gt;&lt;br/&gt;- &lt;t color='#9EE6D2'&gt;Home stockpile&lt;/t&gt;: your own unlimited storage, saved with your profile. Weapons, magazines, items, crates and boxes all fit.&lt;br/&gt;- &lt;t color='#9EE6D2'&gt;Garage&lt;/t&gt;: stored vehicles keep their fuel, ammo, damage, camo, slat cages and other parts, their inventory and their R3F/LRX cargo, even a carried quad bike with its own load. Service a stored vehicle from the garage for the usual price.&lt;br/&gt;- &lt;t color='#9EE6D2'&gt;Nearby&lt;/t&gt;: your vehicles and crates within 30 m, and unclaimed ones: loot captured enemy trucks and ammo boxes straight into your stockpile.&lt;br/&gt;&lt;br/&gt;Move a stack, one item, or everything; unload every vehicle home in one click; take items out into a crate next to you, or place a crate or vehicle like a build. Send cargo to another player's home. Sell anything for 75% of its value, or scrap a stored vehicle for 75% of its build cost (ammo and fuel), less its damage. Captured enemy vehicles and gear pay too, so stealing beats destroying.&lt;br/&gt;&lt;br/&gt;Your vehicles go into your garage on every save, and the items in your crates go to your home stockpile, so nothing is lost on a server restart.</Original>
 		</Key>
 		<Key ID="STR_SECONDARY_MISSION_IN_PROGRESS">
 			<Original>A secondary mission (%1) is already in progress.</Original>
@@ -7654,6 +7660,9 @@
 			<Chinese>-- 存放 --</Chinese>
 			<Portuguese>-- CARREGAR --</Portuguese>
 			<Czech>-- VLOŽIT --</Czech>
+		</Key>
+		<Key ID="STR_CARGO_MANAGER">
+			<Original>-- CARGO</Original>
 		</Key>
 		<Key ID="STR_GARAGE_UNLOAD">
 			<Original>Retrieve vehicle</Original>

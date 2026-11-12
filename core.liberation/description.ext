@@ -102,6 +102,7 @@ class CfgCommands {
 #include "R3F_LOG\desc_include.h"
 #include "addons\MGR\MagRepack_Config.hpp"
 #include "addons\VIRT\virtual_garage.hpp"
+#include "addons\CARGO\cargo_manager.hpp"
 #include "addons\SHOP\traders_shop.hpp"
 #include "addons\FOB\def_fob.hpp"
 #include "addons\FOB\def_sector.hpp"

@@ -159,6 +159,15 @@ diag_log ["HPC_UISHOT_RANKS", _rankChecks];
 diag_log ["HPC_UISHOT_INPUT",userInputDisabled];
 if (userInputDisabled) then {disableUserInput false};
 
+// sample cargo for the garage and cargo manager shots
+HPC_shotSeedCargo = {
+    GRLIB_virtual_garage = [
+        ["B_Truck_01_transport_F", "", 0.6, [], [["FirstAidKit", 4], ["arifle_MX_F", "", "", "optic_Hamr", [], [], ""]], [["B_Quadbike_01_F", "", 1, [], [["FirstAidKit", 2]], [], [], 0.8, [], 0], "Box_NATO_Ammo_F"], [], 0.45, [0.3], 0.2],
+        ["B_MRAP_01_F", "", 1, [], [], [], [], 1, [], 0]
+    ];
+    player setVariable ["GRLIB_virtual_garage", GRLIB_virtual_garage, true];
+    player setVariable ["HPC_cargo_home", [[["FirstAidKit", 12], ["30Rnd_65x39_caseless_mag", 20], ["arifle_MX_F", "", "", "", [], [], ""]], ["Box_NATO_Ammo_F", [HPC_cargo_crate_typename, [["FirstAidKit", 6]]]]], true];
+};
 // Dialogs opened through their real scripts.
 private _dialogs = [
     ["08_build",{[player,player,0,false] execVM "scripts\client\build\open_build_menu.sqf"}],
@@ -172,7 +181,8 @@ private _dialogs = [
     ["21_shop",{[] execVM "addons\SHOP\traders_shop.sqf"},"Traders_Shop"],
     ["22_sell",{[] execVM "addons\SELL\do_sell.sqf"},"Sell_Shop"],
     ["23_warehouse",{[objNull,player] execVM "addons\WHS\warehouse.sqf"},"Warehouse"],
-    ["24_garage",{[] execVM "addons\VIRT\virtual_garage.sqf"},"VIRT_vehicle_garage"],
+    ["24_garage",{call HPC_shotSeedCargo; [] execVM "addons\VIRT\virtual_garage.sqf"},"VIRT_vehicle_garage"],
+    ["24b_cargo_manager",{call HPC_shotSeedCargo; [["garage", 0]] execVM "addons\CARGO\cargo_manager.sqf"},"HPC_cargo_manager"],
     ["25_vehicle_paint",{createDialog "VAM_GUI"}],
     ["26_loadouts",{createDialog "DALE_RscLoadout"}],
     ["27_cargo",{createDialog "R3F_LOG_dlg_contenu_vehicule"}],

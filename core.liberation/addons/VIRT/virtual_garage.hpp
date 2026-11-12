@@ -5,7 +5,9 @@
 #define VGA_Y (safezoneY + 10 * HPC_GY)
 #define VGA_PAD (1.1 * HPC_GX)
 #define VGA_IW (VGA_W - 2 * VGA_PAD)
-#define VGA_BW ((VGA_IW - 1 * HPC_GX) / 2)
+#define VGA_BW ((VGA_IW - 2 * HPC_GX) / 3)
+#define VGA_BW4 ((VGA_IW - 3 * HPC_GX) / 4)
+#define VGA_LY (VGA_Y + 8.5 * HPC_GY)
 
 class VGA_ListN : StdListNBox {
 	font = "RobotoCondensed";
@@ -85,8 +87,25 @@ class VIRT_vehicle_garage {
 		};
 		class VehList : VGA_ListN {
 			idc = 110;
-			columns[] = {0, 0.8};
-			x = VGA_X + VGA_PAD; y = VGA_Y + 7.2 * HPC_GY; w = VGA_IW; h = VGA_H - 12.6 * HPC_GY;
+			columns[] = {0, 0.47, 0.59, 0.71, 0.84};
+			x = VGA_X + VGA_PAD; y = VGA_LY; w = VGA_IW; h = VGA_H - 13.9 * HPC_GY;
+		};
+		// column headings over the list's fuel / ammo / damage / status columns
+		class ColFuel : HPC_Label {
+			x = VGA_X + VGA_PAD + 0.47 * VGA_IW; y = VGA_Y + 7.1 * HPC_GY; w = 0.12 * VGA_IW; h = 1.2 * HPC_GY;
+			text = "FUEL";
+		};
+		class ColAmmo : ColFuel {
+			x = VGA_X + VGA_PAD + 0.59 * VGA_IW;
+			text = "AMMO";
+		};
+		class ColDamage : ColFuel {
+			x = VGA_X + VGA_PAD + 0.71 * VGA_IW;
+			text = "DAMAGE";
+		};
+		class ColStatus : ColFuel {
+			x = VGA_X + VGA_PAD + 0.84 * VGA_IW; w = 0.16 * VGA_IW;
+			text = "WHERE";
 		};
 		class EmptyList : HPC_Label {
 			idc = 130;
@@ -99,16 +118,30 @@ class VIRT_vehicle_garage {
 		class LoadButton : HPC_Button {
 			idc = 120;
 			text = $STR_GARAGE_LOAD;
-			tooltip = "Store the selected nearby vehicle. Repair it first and wait for its rearm cooldown to finish. Cargo is preserved.";
+			tooltip = "Store the selected nearby vehicle. Wait for its rearm cooldown to finish. Fuel, ammo, damage, parts and cargo are kept.";
 			action = "load_veh = 1";
-			x = VGA_X + VGA_PAD; y = VGA_Y + VGA_H - 4.4 * HPC_GY; w = VGA_BW; h = 3.2 * HPC_GY;
+			x = VGA_X + VGA_PAD; y = VGA_Y + VGA_H - 4.4 * HPC_GY; w = VGA_BW4; h = 3.2 * HPC_GY;
 		};
 		class UnloadButton : HPC_ButtonAccent {
 			idc = 121;
 			text = $STR_GARAGE_UNLOAD;
 			tooltip = "Retrieve the selected stored vehicle, then choose where to place it. Canceling placement keeps it in storage.";
 			action = "load_veh = 2";
-			x = VGA_X + VGA_W - VGA_PAD - VGA_BW; y = VGA_Y + VGA_H - 4.4 * HPC_GY; w = VGA_BW; h = 3.2 * HPC_GY;
+			x = VGA_X + VGA_W - VGA_PAD - VGA_BW4; y = VGA_Y + VGA_H - 4.4 * HPC_GY; w = VGA_BW4; h = 3.2 * HPC_GY;
+		};
+		class ServiceButton : HPC_Button {
+			idc = 122;
+			text = "Service";
+			tooltip = "Repair, rearm and refuel the selected stored vehicle for the usual service price.";
+			action = "load_veh = 3";
+			x = VGA_X + VGA_PAD + 2 * (VGA_BW4 + 1 * HPC_GX); y = VGA_Y + VGA_H - 4.4 * HPC_GY; w = VGA_BW4; h = 3.2 * HPC_GY;
+		};
+		class CargoButton : HPC_Button {
+			idc = 123;
+			text = "Cargo";
+			tooltip = "Open the cargo manager on the selected stored vehicle: move, take out or sell its cargo.";
+			action = "load_veh = 4";
+			x = VGA_X + VGA_PAD + VGA_BW4 + 1 * HPC_GX; y = VGA_Y + VGA_H - 4.4 * HPC_GY; w = VGA_BW4; h = 3.2 * HPC_GY;
 		};
 	};
 };

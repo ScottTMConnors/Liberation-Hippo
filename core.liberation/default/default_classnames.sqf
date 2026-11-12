@@ -63,6 +63,7 @@ PAR_grave_box_typename = "Land_PlasticCase_01_small_black_F";
 PAR_Medikit = "Medikit";
 PAR_AidKit = "FirstAidKit";
 basic_weapon_typename = "Box_East_Wps_F";
+HPC_cargo_crate_typename = "Box_NATO_Equip_F";	// cargo system: items taken out of storage
 land_cutter_typename = "Land_ClutterCutter_large_F";
 canister_fuel_typename = "Land_CanisterFuel_Red_F";
 GRLIB_sar_wreck = "Land_Wreck_Heli_Attack_01_F";

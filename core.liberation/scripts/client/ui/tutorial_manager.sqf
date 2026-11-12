@@ -13,6 +13,7 @@ _tutorial_titles = [
 	localize "STR_TUTO_TITLE10",
 	localize "STR_TUTO_TITLE11",
 	localize "STR_TUTO_TITLE12",
+	localize "STR_TUTO_TITLE14",
 	localize "STR_TUTO_TITLE13"
 ];
 
@@ -29,6 +30,7 @@ _tutorial_pages = [
 	"STR_TUTO_TEXT10",
 	"STR_TUTO_TEXT11",
 	"STR_TUTO_TEXT13",
+	"STR_TUTO_TEXT14",
 	"STR_TUTO_TEXT12"
 ];
 

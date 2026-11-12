@@ -81,6 +81,10 @@ GRLIB_checkGarage = compileFinal {
 	(GRLIB_player_is_menuok && GRLIB_garage_size > 0 && !(surfaceIsWater getPos player) && GRLIB_player_fobdistance > 15 && GRLIB_player_near_fob && !GRLIB_player_near_outpost && GRLIB_player_score >= GRLIB_perm_inf)
 };
 
+GRLIB_checkCargo = compileFinal {
+	(GRLIB_player_is_menuok && !(surfaceIsWater getPos player) && GRLIB_player_near_fob && GRLIB_player_score >= GRLIB_perm_inf)
+};
+
 GRLIB_checkBuild = compileFinal {
 	(GRLIB_player_is_menuok && GRLIB_player_near_fob && ([player, 3] call fetch_permission) && side group player == GRLIB_side_friendly)
 };

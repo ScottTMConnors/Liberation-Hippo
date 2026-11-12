@@ -10,6 +10,8 @@ if (_add) then {
         GRLIB_player_fob_actions pushBack (player addAction [([localize "STR_SQUAD_MANAGEMENT_ACTION", _icon_grp, "accent"] call HPC_fnc_actionTitle),"scripts\client\ui\squad_management.sqf","",-760,false,true,"","call GRLIB_checkSquadMgmt"]);
         // Virtual Garage
         GRLIB_player_fob_actions pushBack (player addAction [([localize "STR_VIRTUAL_GARAGE", "\a3\ui_f\data\igui\cfg\simpletasks\types\truck_ca.paa", "info"] call HPC_fnc_actionTitle),"addons\VIRT\virtual_garage.sqf","",-984,false,true,"","call GRLIB_checkGarage"]);
+        // Cargo manager
+        GRLIB_player_fob_actions pushBack (player addAction [([localize "STR_CARGO_MANAGER", "\a3\ui_f\data\igui\cfg\simpletasks\types\container_ca.paa", "info"] call HPC_fnc_actionTitle),"addons\CARGO\cargo_manager.sqf","",-985,false,true,"","call GRLIB_checkCargo"]);
         // Build Menu
         GRLIB_player_fob_actions pushBack (player addAction [([localize "STR_BUILD_ACTION", "res\ui_build.paa", "build"] call HPC_fnc_actionTitle),"scripts\client\build\open_build_menu.sqf",false,-350,false,true,"","call GRLIB_checkBuild"]);
         // Pack FOB

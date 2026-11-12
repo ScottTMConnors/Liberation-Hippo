@@ -70,7 +70,19 @@ if !(player getVariable ["GRLIB_squad_context_loaded", false]) then {
 		private _oldGroups = [];
 		{ _oldGroups pushBackUnique group _x } forEach _crew;
 		_crew joinSilent (group player);
-		{ _x setVariable ["HPC_crewOwner", PAR_Grp_ID, true] } forEach _crew;
+		// they become squad members, saved with the squad from now on
+		{
+			_x setVariable ["HPC_crewOwner", PAR_Grp_ID, true];
+			_x setVariable ["PAR_Grp_ID", format ["Bros_%1", PAR_Grp_ID], true];
+		} forEach _crew;
+		private _deadline = diag_tickTime + 10;
+		waitUntil { sleep 0.2; diag_tickTime > _deadline || {_crew findIf {alive _x && !local _x} < 0} };
+		{
+			if (local _x) then {
+				[_x] call PAR_fn_AI_Damage_EH;
+				PAR_AI_bros pushBackUnique _x;
+			};
+		} forEach _crew;
 		sleep 2;
 		{ if (units _x isEqualTo []) then { [_x] remoteExec ["deleteGroup", 2] } } forEach _oldGroups;
 		gamelogic globalChat format ["%1 vehicle crew member(s) rejoined your squad.", count _crew];

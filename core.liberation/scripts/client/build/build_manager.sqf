@@ -27,6 +27,7 @@ private _ammo = 0;
 private _lst_a3 = [];
 private _lst_r3f = [];
 private _lst_lrx = [];
+private _garage_state = [];	// garage entries: [fuel, hit point damages, damage]
 
 // player build actions
 private _idactview = -1;
@@ -136,6 +137,7 @@ while {true} do {
 			_lst_a3 = build_unit select 4;
 			_lst_r3f = build_unit select 5;
 			_lst_lrx = build_unit select 6;
+			_garage_state = build_unit select [7, 3];
 			build_altitude = 0.4;
 		};
 		default {
@@ -497,8 +499,14 @@ while {true} do {
 				// the crew joins the builder's squad
 				private _crewGrp = group _vehicle;
 				(crew _vehicle) joinSilent (group player);
-				// tag the crew so it rejoins this player after a reconnect
-				{ _x setVariable ["HPC_crewOwner", PAR_Grp_ID, true] } forEach (crew _vehicle);
+				// the crew are squad members: tagged like recruits, so they are saved with the squad
+				// and redeployed around the player after a restart or a reconnect
+				{
+					_x setVariable ["HPC_crewOwner", PAR_Grp_ID, true];
+					_x setVariable ["PAR_Grp_ID", format ["Bros_%1", PAR_Grp_ID], true];
+					[_x] call PAR_fn_AI_Damage_EH;
+					PAR_AI_bros pushBackUnique _x;
+				} forEach (crew _vehicle);
 				if (_crewGrp != group player) then { deleteGroup _crewGrp };
 			};
 
@@ -529,8 +537,14 @@ while {true} do {
 				if (_ammo > 0) then {
 					_vehicle setVehicleAmmo _ammo;
 				};
+				// Fuel and damage as stored in the garage (older entries come out full and repaired)
+				_garage_state params [["_g_fuel", -1], ["_g_hits", []], ["_g_damage", 0]];
+				if (_g_fuel >= 0) then { _vehicle setFuel _g_fuel };
+				if (_g_damage > 0) then { _vehicle setDamage [_g_damage, false] };
+				{ _vehicle setHitIndex [_forEachIndex, _x, false] } forEach _g_hits;
 				// Preset Inventory (not over a restored inventory: that already holds it)
-				if (count _lst_a3 == 0) then { [_vehicle] call F_vehiclePreset };
+				// (a garage vehicle comes back with exactly its stored inventory, even an empty one)
+				if (count _lst_a3 == 0 && {count _garage_state == 0}) then { [_vehicle] call F_vehiclePreset };
 			};
 
 			// A3 / R3F Inventory

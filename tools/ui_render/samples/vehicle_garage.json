@@ -1,0 +1,15 @@
+{
+  "130": {"hide": true},
+  "hide": [130],
+  "1011": {"text": "2 / 5 STORED"},
+  "122": {"text": "Service (130)"},
+  "110": {
+    "rows": [
+      {"cells": ["Hunter", "82%", "100%", "0%", "Nearby"], "icon": "/A3/ui_f/data/map/vehicleicons/iconcar_ca.paa"},
+      {"cells": ["Marshall", "64%", "40%", "12%", "Nearby"], "icon": "/A3/ui_f/data/map/vehicleicons/iconapc_ca.paa", "color": [1,1,1,1]},
+      {"cells": ["Slammer UP", "18%", "55%", "37%", "Stored"], "icon": "/A3/ui_f/data/map/vehicleicons/icontank_ca.paa", "color": [0.72,0.86,1,1]},
+      {"cells": ["Ghost Hawk", "100%", "100%", "0%", "Stored"], "icon": "/A3/ui_f/data/map/vehicleicons/iconhelicopter_ca.paa", "color": [0.72,0.86,1,1]}
+    ],
+    "sel": 2
+  }
+}

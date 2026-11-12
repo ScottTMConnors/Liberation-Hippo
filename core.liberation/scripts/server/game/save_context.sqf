@@ -40,7 +40,9 @@ if (_score >= GRLIB_min_score_player) then {
 	} else {
 		_player_box_content = [_player_box, true] call F_getCargo;
 	};
-	localNamespace setVariable [format ["player_context_%1", _uid], [_uid, _loadout, _ai_group, _personal_arsenal, _virtual_garage, _player_box_content]];
+	// home stockpile of the cargo system: [items, cargo objects]
+	private _home = _player getVariable ["HPC_cargo_home", [[], []]];
+	localNamespace setVariable [format ["player_context_%1", _uid], [_uid, _loadout, _ai_group, _personal_arsenal, _virtual_garage, _player_box_content, _home]];
 	diag_log format ["--- LRX Info: player %1 profile Saved.", name _player, count _ai_group];
 };
 

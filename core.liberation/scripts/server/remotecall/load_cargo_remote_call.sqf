@@ -5,6 +5,9 @@ if (isNil "_vehicle") exitWith {};
 if (isNull _vehicle) exitWith {};
 
 if (count _lst_a3 > 0) then {
+    // a restored inventory replaces whatever the object spawned with (kept-content boxes
+    // spawn filled, so adding would duplicate it)
+    [_vehicle] call F_clearCargo;
     [_vehicle, _lst_a3] call F_setCargo;
 };
 

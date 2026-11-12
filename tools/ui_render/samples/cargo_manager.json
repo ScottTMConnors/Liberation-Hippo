@@ -1,0 +1,25 @@
+{
+  "hide": [2421],
+  "2410": {"rows": [
+    ["Home stockpile", "", "", [0.62,0.92,0.84,1]],
+    ["Garage: HEMTT Transport", "", "", [0.72,0.86,1,1]],
+    ["Garage: Hunter", "", "", [0.72,0.86,1,1]],
+    ["Nearby: Zamak Transport (unclaimed)"],
+    ["Nearby: Ammo Box [CSAT] (unclaimed)"],
+    ["Nearby: Equipment Box [NATO] (yours)"]
+  ], "sel": 1},
+  "2411": {"text": "GARAGE: HEMTT TRANSPORT"},
+  "2412": {"text": "Items 120 / 2000  |  Cargo 15 / 100  |  Boxes 2 / 6"},
+  "2420": {"rows": [
+    {"cells": ["Quad Bike (carrying 2)", "Vehicle", "1", "236 ammo, 4 fuel"]},
+    {"cells": ["Ammo Box [NATO]", "Crate", "1", "225 ammo"]},
+    {"cells": ["Fuel Barrel", "Cargo", "1", "90 ammo, 38 fuel"]},
+    {"cells": ["MX 6.5 mm (+2 attachments)", "Weapon", "4", "45 ammo"]},
+    {"cells": ["6.5 mm 30Rnd STANAG Mag", "Magazine", "24", "54 ammo"]},
+    {"cells": ["First Aid Kit", "Item", "10", "-"]},
+    {"cells": ["Carryall Backpack (with contents)", "Container", "1", "33 ammo"]}
+  ], "sel": 3},
+  "2430": {"rows": [["Home stockpile"]], "sel": 0},
+  "2440": {"text": "Moved 4 x MX 6.5 mm to Home stockpile."},
+  "2456": {"text": "Scrap"}
+}

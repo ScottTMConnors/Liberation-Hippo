@@ -11,12 +11,23 @@ private _assert = {
 HPC_testGarageFn = {
     params ["_player"];
     private _uid = getPlayerUID _player;
-    private _class = ((GRLIB_classnames_to_save_blu - GRLIB_vehicles_light - [playerbox_typename]) select {_x isKindOf "Car"}) param [0, ""];
+    private _cars = (GRLIB_classnames_to_save_blu - GRLIB_vehicles_light - [playerbox_typename]) select {_x isKindOf "Car"};
+    // a Marshall when the faction has one: armed, with an optional slat cage
+    private _class = if ("B_APC_Wheeled_01_cannon_F" in _cars) then {"B_APC_Wheeled_01_cannon_F"} else {_cars param [0, ""]};
     private _pos = [(getPos _player) getPos [2500, 180], 0, 300, 8, 0, 0.3, 0] call BIS_fnc_findSafePos;
     private _veh = createVehicle [_class, _pos, [], 0, "NONE"];
     _veh setVariable ["GRLIB_vehicle_owner", _uid, true];
     clearItemCargoGlobal _veh;
     _veh addItemCargoGlobal ["FirstAidKit", 3];
+    // worn state the garage must keep: fuel, a damaged part, half ammo, the slat cage
+    sleep 1;
+    _veh setFuel 0.4;
+    _veh setHitIndex [0, 0.5, false];
+    _veh setVehicleAmmo 0.5;
+    private _slat = _class == "B_APC_Wheeled_01_cannon_F";
+    if (_slat) then { _veh animateSource ["showSLATHull", 1, true] };
+    sleep 1;
+    diag_log ["HPC_GARAGE_MP_STATE", [_veh] call F_getVehicleAmmoDef, magazinesAllTurrets _veh];
     private _before = count (_player getVariable ["GRLIB_virtual_garage", []]);
     [] call save_game_mp;
     private _blob = profileNamespace getVariable [GRLIB_save_key, []];
@@ -29,8 +40,8 @@ HPC_testGarageFn = {
     _player setVariable ["GRLIB_player_context_loaded", false];
     [_player, _uid] call load_player_context;
     private _garage = _player getVariable ["GRLIB_virtual_garage", []];
-    diag_log ["HPC_GARAGE_MP", _class, _saved, _before, count _garage, _uid, alive _player, (_blob select 14) apply {[_x select 0, count _x, count (_x param [4, []])]}];
-    HPC_testGarageResult = [_saved, _class, count _garage - _before];
+    diag_log ["HPC_GARAGE_MP", _class, _saved, _before, count _garage, _uid, alive _player, (_blob select 14) apply {[_x select 0, count _x, (_x param [4, []]) apply {[_x select 0, _x select 2, _x param [7, -1]]}]}];
+    HPC_testGarageResult = [_saved, _class, count _garage - _before, _slat];
     (owner _player) publicVariableClient "HPC_testGarageResult";
 };
 // Test helper the client calls by name (remoteExec of named functions only).
@@ -234,6 +245,27 @@ blufor_sectors pushBack _gSector;
 sector_attack_in_progress pushBack _gSector;
 GRLIB_player_scores pushBack [_gUid, GRLIB_min_score_player + 1000, 0, 0];
 GRLIB_player_context pushBack [_gUid, [], [], [], [], []];
+_gVeh setFuel 0.6;
+// a crewed vehicle goes to the garage too: its crew is saved with the owner's squad
+private _gCrewVeh = createVehicle [_gClass, _gPos getPos [30, 0], [], 0, "NONE"];
+_gCrewVeh setVariable ["GRLIB_vehicle_owner", _gUid, true];
+_gCrewVeh setVariable ["GRLIB_vehicle_manned", true, true];
+private _gCrewGrp = createVehicleCrew _gCrewVeh;
+// a carrier with a carried quad bike that has its own items, and an owned crate with items at a FOB
+private _gCarrierClass = ((GRLIB_classnames_to_save_blu - GRLIB_vehicles_light) select {_x isKindOf "LandVehicle" && {(([_x] call R3F_LOG_FNCT_determiner_fonctionnalites_logistique) select R3F_LOG_IDX_can_transport_cargo_cout) >= 25}}) param [0, ""];
+private _gCarrier = createVehicle [_gCarrierClass, _gPos getPos [60, 90], [], 0, "NONE"];
+_gCarrier setVariable ["GRLIB_vehicle_owner", _gUid, true];
+[_gCarrier, [["B_Quadbike_01_F", "", 1, [], [["FirstAidKit", 4]], [], [], 0.7, [], 0]]] call load_object_direct;
+private _gOldFobs = +GRLIB_all_fobs;
+private _gFob = _gPos getPos [150, 270];
+GRLIB_all_fobs pushBack _gFob;
+private _gCrate = createVehicle [HPC_cargo_crate_typename, _gFob getPos [6, 0], [], 0, "NONE"];
+clearItemCargoGlobal _gCrate;
+clearMagazineCargoGlobal _gCrate;
+clearWeaponCargoGlobal _gCrate;
+clearBackpackCargoGlobal _gCrate;
+_gCrate addItemCargoGlobal ["FirstAidKit", 7];
+_gCrate setVariable ["GRLIB_vehicle_owner", _gUid, true];
 _gVeh setVelocityModelSpace [0, 12, 0];
 sleep 0.5;
 private _gMoving = speed _gVeh > 5;
@@ -243,12 +275,26 @@ private _gBlob = profileNamespace getVariable [GRLIB_save_key, []];
 private _gCtx = (_gBlob select 14) select {(_x select 0) == _gUid};
 private _gGarage = if (count _gCtx == 1) then {(_gCtx select 0) select 4} else {[]};
 private _gEntry = _gGarage param [0, []];
-private _gCargo = (_gEntry param [4, []]) select {_x isEqualTo ["FirstAidKit", 3]};
+private _gCargo = _gGarage select {(_x param [4, []]) findIf {_x isEqualTo ["FirstAidKit", 3]} >= 0};
 private _gInWorld = (_gBlob select 2) findIf {(_x select 0) == _gClass && {(_x select 1) distance2D _gPos < 300}} >= 0;
 private _gLive = GRLIB_player_context select {(_x select 0) == _gUid};
 private _gLiveEmpty = count _gLive == 1 && {((_gLive select 0) select 4) isEqualTo []};
 diag_log ["HPC_SAVE_GARAGE", _gClass, _gMoving, count _gGarage, _gEntry, _gInWorld, _gLiveEmpty, _gBlob select 6, _gSector in (_gBlob select 0), alive _gVeh];
-["save.garage", _gClass != "" && {_gMoving} && {count _gGarage == 1} && {(_gEntry select 0) == _gClass} && {count _gEntry == 7} && {count _gCargo == 1} && {!_gInWorld} && {_gLiveEmpty} && {alive _gVeh}] call _assert;
+private _gFuels = _gGarage apply {_x param [7, -1]};
+["save.garage", _gClass != "" && {_gMoving} && {count _gGarage == 3} && {count (crew _gCrewVeh) > 0} && {({(_x select 0) == _gClass} count _gGarage) == 2} && {count _gEntry == 10} && {count _gCargo == 1} && {_gFuels findIf {abs (_x - 0.6) < 0.02} >= 0} && {!_gInWorld} && {_gLiveEmpty} && {alive _gVeh}] call _assert;
+// the carried quad bike is saved as its own vehicle entry inside the carrier's entry
+private _gCarrierEntry = (_gGarage select {(_x select 0) == _gCarrierClass}) param [0, []];
+private _gNested = (_gCarrierEntry param [5, []]) select {_x isEqualType [] && {count _x >= 7}};
+diag_log ["HPC_SAVE_NESTED", _gCarrierClass, _gCarrierEntry];
+["save.nestedCargo", _gCarrierClass != "" && {count _gNested == 1} && {((_gNested select 0) select 0) == "B_Quadbike_01_F"} && {((_gNested select 0) select 4) isEqualTo [["FirstAidKit", 4]]} && {abs (((_gNested select 0) select 7) - 0.7) < 0.02}] call _assert;
+// the owned crate's items went to the owner's home stockpile in the save
+private _gHome = if (count _gCtx == 1) then {(_gCtx select 0) param [6, [[], []]]} else {[[], []]};
+diag_log ["HPC_SAVE_HOME", _gHome];
+["save.crateHome", ((_gHome select 0) findIf {_x isEqualTo ["FirstAidKit", 7]}) >= 0] call _assert;
+deleteVehicleCrew _gCrewVeh;
+deleteVehicle _gCrewVeh;
+{ deleteVehicle _x } forEach ((_gCarrier getVariable ["R3F_LOG_objets_charges", []]) + [_gCarrier, _gCrate]);
+GRLIB_all_fobs = _gOldFobs;
 ["save.version", (_gBlob select 6) isEqualTo HPC_save_version] call _assert;
 ["save.sectorUnderAttack", _gSector != "" && {_gSector in (_gBlob select 0)}] call _assert;
 deleteVehicle _gVeh;
@@ -260,4 +306,4 @@ if (HPC_testScenario) then {call compile preprocessFileLineNumbers "hippo_tests\
 call compile preprocessFileLineNumbers "hippo_tests\review.sqf";
 if (HPC_testCommander) then {call compile preprocessFileLineNumbers "hippo_tests\commander.sqf"};
 if (missionNamespace getVariable ["HPC_testHeadless",false]) then {call compile preprocessFileLineNumbers "hippo_tests\headless.sqf"};
-[format ["RUN_DONE|%1", 22 + (if (HPC_testScenario) then {4} else {0}) + (if (HPC_testCommander) then {8} else {0}) + (if (missionNamespace getVariable ["HPC_testHeadless",false]) then {12} else {0})]] call _emit;
+[format ["RUN_DONE|%1", 24 + (if (HPC_testScenario) then {4} else {0}) + (if (HPC_testCommander) then {8} else {0}) + (if (missionNamespace getVariable ["HPC_testHeadless",false]) then {12} else {0})]] call _emit;
