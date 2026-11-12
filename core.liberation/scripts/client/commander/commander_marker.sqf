@@ -4,26 +4,22 @@ waituntil {sleep 1; GRLIB_player_spawned};
 sleep 5;
 
 // Hover feedback on the main map while the next battle is being chosen: ring the
-// selectable sector under the cursor (same 100 m pick radius as the click in
-// commander_manager.sqf) and say what a click does. Nothing is drawn otherwise.
+// selectable sector the engine is hovering (the click in commander_manager.sqf
+// accepts it) and say what a click does. Nothing is drawn otherwise.
 HPC_comRingIcon = getText (configFile >> "CfgMarkers" >> "mil_circle" >> "icon");
 HPC_fnc_comSectorDraw = compileFinal toString {
     params ["_map"];
-    HPC_comHoverSector = "";
     if (count active_sectors > 0 || {GRLIB_AvailAttackSectors isEqualTo []}) exitWith {};
     private _commander = GRLIB_player_commander;
     if (!_commander && {!GRLIB_Commander_VoteEnabled}) exitWith {};
-    private _mouse = _map ctrlMapScreenToWorld getMousePosition;
-    private _best = "";
-    private _bestDistance = 100;
-    {
-        private _distance = (markerPos _x) distance2D _mouse;
-        if (_distance < _bestDistance) then {_best = _x; _bestDistance = _distance};
-    } forEach GRLIB_AvailAttackSectors;
+    // Ring only the marker the engine itself is hovering (the expanding icon),
+    // so the ring and the clickable state always match.
+    private _over = ctrlMapMouseOver _map;
+    if ((_over param [0, ""]) != "marker") exitWith {};
+    private _name = _over param [1, ""];
+    if (_name select [count _name - 2] == "av") then { _name = _name select [0, count _name - 2] };
+    private _best = ["", _name] select (_name in GRLIB_AvailAttackSectors);
     if (_best == "") exitWith {};
-    // The click handler votes for exactly the sector ringed here.
-    HPC_comHoverSector = _best;
-    HPC_comHoverTime = diag_tickTime;
     private _pos = markerPos _best;
     _map drawIcon [HPC_comRingIcon, [0.46, 0.80, 0.72, 0.6 + 0.35 * sin (diag_tickTime * 360)], _pos, 46, 46, 0];
     _map drawIcon ["#(rgb,1,1,1)color(1,1,1,0)", [0.92, 0.94, 0.95, 1], _pos, 28, 28, 0,
@@ -76,23 +72,6 @@ while {true} do {
     private _mainMap = (findDisplay 12) displayCtrl 51;
     if (!isNull _mainMap && {!(_mainMap isEqualTo _drawnMap)}) then {
         _mainMap ctrlAddEventHandler ["Draw", {_this call HPC_fnc_comSectorDraw}];
-        // Vote on the control itself: the engine's MapSingleClick only fires when
-        // the click lands near the marker icon, so it lagged behind the ring.
-        _mainMap ctrlAddEventHandler ["MouseButtonDown", {
-            params ["", "_button", "_x", "_y"];
-            if (_button == 0) then { HPC_comPressPos = [_x, _y] };
-        }];
-        _mainMap ctrlAddEventHandler ["MouseButtonUp", {
-            params ["", "_button", "_x", "_y"];
-            if (_button != 0 || {isNil "HPC_fnc_comSectorPick"}) exitWith {};
-            private _press = missionNamespace getVariable ["HPC_comPressPos", [-9, -9]];
-            HPC_comPressPos = nil;
-            if (([_x, _y] distance2D _press) > 0.01) exitWith {}; // map drag
-            private _hover = missionNamespace getVariable ["HPC_comHoverSector", ""];
-            if (_hover != "" && {diag_tickTime - (missionNamespace getVariable ["HPC_comHoverTime", -1]) < 0.5}) then {
-                [_hover] call HPC_fnc_comSectorPick;
-            };
-        }];
         _drawnMap = _mainMap;
     };
     if (count GRLIB_AvailAttackSectors == 0 && count _availableMarkers > 0) then {
