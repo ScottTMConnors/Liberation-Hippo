@@ -16,6 +16,9 @@ if ([] call is_admin) then { [true] call player_admin_actions };
 // Commander orders for AI Warfare groups
 player addAction [(["Command AI forces", "\a3\Ui_F_Curator\Data\Displays\RscDisplayCurator\modeGroups_ca.paa", "accent"] call HPC_fnc_actionTitle),"scripts\client\commander\HPC_commandAI.sqf","",-990,false,true,"","(missionNamespace getVariable ['GRLIB_player_commander', false]) && {HPC_AIWarfare}"];
 
+// Downed AI squadmates only get a medic when the player sends one
+player addAction [(["Send medic to downed squadmates", "\a3\ui_f\data\igui\cfg\actions\heal_ca.paa", "info"] call HPC_fnc_actionTitle),{ [] call HPC_fnc_sendMedics },"",-760,false,true,"","call GRLIB_checkSendMedic"];
+
 player addAction [([localize "STR_EXTENDED_OPTIONS", "\a3\ui_f\data\igui\cfg\simpletasks\types\Use_ca.paa", "default"] call HPC_fnc_actionTitle),"GREUH\scripts\GREUH_dialog.sqf","",-999,false,true,"","GRLIB_player_is_menuok"];
 
 // Dog - Actions

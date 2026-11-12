@@ -47,5 +47,18 @@ HPC_fnc_toast = compileFinal preprocessFileLineNumbers "scripts\client\ui\HPC_to
 HPC_fnc_toastWorker = compileFinal preprocessFileLineNumbers "scripts\client\ui\HPC_toastWorker.sqf";
 HPC_fnc_promotion = compileFinal preprocessFileLineNumbers "scripts\client\ui\HPC_promotion.sqf"; // rank change card
 HPC_fnc_notify =compileFinal preprocessFileLineNumbers "scripts\client\ui\HPC_notify.sqf"; // CfgNotifications as cards
+HPC_fnc_keepCrews = compileFinal preprocessFileLineNumbers "scripts\client\misc\HPC_keepCrews.sqf"; // squadmates stay mounted under an AI leader
+HPC_fnc_sendMedics = compileFinal toString {
+	// every downed AI squadmate without a medic gets one (nearest, soldiers on foot first)
+	private _sent = 0;
+	{
+		if (!isPlayer _x && {[_x] call PAR_is_wounded} && {isNil {_x getVariable "PAR_myMedic"}}) then {
+			_x setVariable ["HPC_medicRequested", true];
+			[_x] spawn PAR_fn_medic;
+			_sent = _sent + 1;
+		};
+	} forEach ([] call PAR_protected_units);
+	hintSilent format ["Medic requested for %1 downed squadmate%2.", _sent, ["s", ""] select (_sent == 1)];
+};
 HPC_fnc_screenCover = compileFinal preprocessFileLineNumbers "scripts\client\ui\HPC_screenCover.sqf"; // black cover for camera handoffs
 HPC_fnc_escPause =compileFinal preprocessFileLineNumbers "scripts\client\ui\HPC_escPause.sqf"; // ESC -> pause menu over must-stay screens

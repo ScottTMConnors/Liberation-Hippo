@@ -87,6 +87,14 @@ GRLIB_checkGarage = compileFinal {
 	(GRLIB_player_is_menuok && {call GRLIB_checkGarageAccess})
 };
 
+// A downed AI squadmate with no medic on the way and none requested yet
+GRLIB_checkSendMedic = compileFinal {
+	alive player && {!([player] call PAR_is_wounded)} && {PAR_revive != 0} &&
+	{([] call PAR_protected_units) findIf {
+		!isPlayer _x && {[_x] call PAR_is_wounded} && {isNil {_x getVariable "PAR_myMedic"}} && {!(_x getVariable ["HPC_medicRequested", false])}
+	} >= 0}
+};
+
 GRLIB_checkCargo = compileFinal {
 	(GRLIB_player_is_menuok && GRLIB_player_near_fob && GRLIB_player_score >= GRLIB_perm_inf)
 };

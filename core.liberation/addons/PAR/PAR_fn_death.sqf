@@ -4,6 +4,8 @@ params ["_unit"];
 
 removeAllActions _unit;
 if (_unit == player) then {
+	// the AI that takes over the squad must not empty the vehicles
+	[GRLIB_player_group, true] spawn HPC_fnc_keepCrews;
 	disableUserInput true;
 	titleText ["" ,"PLAIN", 100];
 	1 fadeSound 0;

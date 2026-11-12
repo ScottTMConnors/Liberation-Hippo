@@ -11,6 +11,8 @@ _unit setVariable ["PAR_BleedOutTimer", round(time + PAR_bleedout), true];
 _unit setVariable ["PAR_isDragged", 0, true];
 
 if (_unit == player) then {
+	// the AI that takes over the squad must not empty the vehicles
+	[GRLIB_player_group, true] spawn HPC_fnc_keepCrews;
 	if (GRLIB_disable_death_chat) then { for "_channel" from 0 to 4 do { _channel enableChannel false } };
 	PAR_backup_loadout = [_unit] call F_getCargoUnit;
 	GRLIB_death_loadout = getUnitLoadout _unit;
@@ -38,7 +40,8 @@ while { alive _unit && ([_unit] call PAR_is_wounded) && time <= (_unit getVariab
 	_unit setOxygenRemaining 1;
 	private _unit_list = ([_unit] call PAR_protected_units) select { !([_x] call PAR_is_wounded) };
 	if (count _unit_list > 0) then {
-		if (!isPlayer _unit && isNil {_unit getVariable "PAR_myMedic"}) then {
+		// medics only come when a player sends one (Send medic action, or Call Medic for yourself)
+		if (!isPlayer _unit && {isNil {_unit getVariable "PAR_myMedic"}} && {_unit getVariable ["HPC_medicRequested", false]}) then {
 			if (_unit in units player) then {
 				if (_unit getSlotItemName 611 != "") then {
 					_unit sideChat (localize "STR_PAR_UC_01");
@@ -63,6 +66,8 @@ if (!isNull _bld) then { _bld spawn {sleep (30 + floor(random 30)); deleteVehicl
 if (_unit == player) then {
 	if (GRLIB_disable_death_chat) then { for "_channel" from 0 to 4 do { _channel enableChannel true } };
 };
+
+_unit setVariable ["HPC_medicRequested", nil];
 
 // Bad end
 if (!alive _unit || time > _unit getVariable ["PAR_BleedOutTimer", 0]) exitWith {

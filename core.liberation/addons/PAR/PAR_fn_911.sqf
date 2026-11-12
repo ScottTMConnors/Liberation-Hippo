@@ -14,6 +14,13 @@ _grpmedic setBehaviourStrong "AWARE";
 _grpmedic selectLeader _medic;
 
 if (!isnull objectParent _medic) then {
+	// remember the seat: the medic goes back to it once released
+	private _vehicle = objectParent _medic;
+	private _seat = (fullCrew [_vehicle, ""]) select { (_x select 0) == _medic };
+	if (_seat isNotEqualTo []) then {
+		(_seat select 0) params ["", "_role", "_cargoIndex", "_turret"];
+		_medic setVariable ["HPC_medicSeat", [_vehicle, [_role, _cargoIndex, _turret]]];
+	};
 	unassignVehicle _medic;
 	doGetOut _medic;
 	sleep 3;

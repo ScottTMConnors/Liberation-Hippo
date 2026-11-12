@@ -15,6 +15,12 @@ private _release_medic = {
 	};
 	_medic setVariable ["PAR_busy", nil];
     [_medic] allowGetIn true;
+    // back to the vehicle seat it left to treat someone
+    private _seat = _medic getVariable ["HPC_medicSeat", []];
+    _medic setVariable ["HPC_medicSeat", nil];
+    if (count _seat == 2 && {alive (_seat select 0)} && {!([_medic] call PAR_is_wounded)}) then {
+        [_medic, "seat", _seat] call HPC_fnc_crewAct;
+    };
     private _state = _medic getVariable ["HPC_medicAI", []];
     if (count _state == 2) then {
         if (_state select 0) then {_medic enableAI "PATH"} else {_medic disableAI "PATH"};
