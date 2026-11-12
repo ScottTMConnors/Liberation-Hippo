@@ -76,6 +76,23 @@ while {true} do {
     private _mainMap = (findDisplay 12) displayCtrl 51;
     if (!isNull _mainMap && {!(_mainMap isEqualTo _drawnMap)}) then {
         _mainMap ctrlAddEventHandler ["Draw", {_this call HPC_fnc_comSectorDraw}];
+        // Vote on the control itself: the engine's MapSingleClick only fires when
+        // the click lands near the marker icon, so it lagged behind the ring.
+        _mainMap ctrlAddEventHandler ["MouseButtonDown", {
+            params ["", "_button", "_x", "_y"];
+            if (_button == 0) then { HPC_comPressPos = [_x, _y] };
+        }];
+        _mainMap ctrlAddEventHandler ["MouseButtonUp", {
+            params ["", "_button", "_x", "_y"];
+            if (_button != 0 || {isNil "HPC_fnc_comSectorPick"}) exitWith {};
+            private _press = missionNamespace getVariable ["HPC_comPressPos", [-9, -9]];
+            HPC_comPressPos = nil;
+            if (([_x, _y] distance2D _press) > 0.01) exitWith {}; // map drag
+            private _hover = missionNamespace getVariable ["HPC_comHoverSector", ""];
+            if (_hover != "" && {diag_tickTime - (missionNamespace getVariable ["HPC_comHoverTime", -1]) < 0.5}) then {
+                [_hover] call HPC_fnc_comSectorPick;
+            };
+        }];
         _drawnMap = _mainMap;
     };
     if (count GRLIB_AvailAttackSectors == 0 && count _availableMarkers > 0) then {
