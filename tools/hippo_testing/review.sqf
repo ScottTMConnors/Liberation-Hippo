@@ -22,7 +22,8 @@ private _waterSafe = if (surfaceIsWater [0,0,0]) then {([[0,0,0],10,0] call HPC_
 ["warfare.armedPool",_waterSafe && {(["B_MRAP_01_hmg_F"] call HPC_fnc_isArmedVehicle) && {(["B_MBT_01_cannon_F"] call HPC_fnc_isArmedVehicle)} && {!(["B_MRAP_01_F"] call HPC_fnc_isArmedVehicle)} && {!(["B_Truck_01_transport_F"] call HPC_fnc_isArmedVehicle)}}] call _assert;
 // the live civilian loop would prune the test's civilians and cars mid-test
 HPC_ambientPaused = true;
-sleep 0.5;
+private _idleBy = diag_tickTime + 30;
+waitUntil {sleep 0.2; !(missionNamespace getVariable ["HPC_ambientTicking", false]) || {diag_tickTime > _idleBy}};
 private _densityBefore = GRLIB_civilian_activity;
 private _ambientBefore = missionNamespace getVariable ["HPC_ambientCivilians",[]];
 HPC_ambientCivilians = [];

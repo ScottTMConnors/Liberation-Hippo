@@ -11,8 +11,9 @@ private [
 ];
 
 while {true} do {
-	_newscores = +GRLIB_player_scores; // copy: changes are published only when something changed
-	_knownplayers = GRLIB_player_scores apply { _x select 0 };
+	// updates of connected players' entries, merged into the live list at the end of the pass
+	// (other code, such as the save, may replace the list while this pass sleeps)
+	_newscores = [];
 
 	{
 		_nextplayer = _x;
@@ -83,12 +84,7 @@ while {true} do {
 				_kills_air = _nextplayer getVariable ["GREUH_kills_air", 0];
 				_killed = _nextplayer getVariable ["GREUH_killed", 0];
 
-				private _playerindex = _knownplayers find _nextplayer_uid;
-				if (_playerindex >= 0) then {
-					_newscores set [_playerindex, [_nextplayer_uid, _score, _ammo, _fuel, _reput, name _nextplayer, _kills_inf, _kills_soft, _kills_armor, _kills_air, _killed]];
-				} else {
-					_newscores pushback [_nextplayer_uid, _score, _ammo, _fuel, _reput, name _nextplayer, _kills_inf, _kills_soft, _kills_armor, _kills_air, _killed];
-				};
+				_newscores pushback [_nextplayer_uid, _score, _ammo, _fuel, _reput, name _nextplayer, _kills_inf, _kills_soft, _kills_armor, _kills_air, _killed];
 			};
 
 			_score = _nextplayer getVariable ["GREUH_score_count", 0];
@@ -97,9 +93,23 @@ while {true} do {
 		};
 	} foreach (AllPlayers - (entities "HeadlessClient_F"));
 
-	if !(_newscores isEqualTo GRLIB_player_scores) then {
-		GRLIB_player_scores = _newscores;
-		publicVariable "GRLIB_player_scores";
+	// merge in one unscheduled step: no other script can change the list half-way
+	isNil {
+		private _changed = false;
+		{
+			private _uid = _x select 0;
+			private _index = GRLIB_player_scores findIf { (_x select 0) == _uid };
+			if (_index < 0) then {
+				GRLIB_player_scores pushBack _x;
+				_changed = true;
+			} else {
+				if !((GRLIB_player_scores select _index) isEqualTo _x) then {
+					GRLIB_player_scores set [_index, _x];
+					_changed = true;
+				};
+			};
+		} forEach _newscores;
+		if (_changed) then { publicVariable "GRLIB_player_scores" };
 	};
 	// a joining player's loading screen waits for GRLIB_score_set: serve newcomers at once
 	private _next = diag_tickTime + 5;

@@ -20,8 +20,10 @@ while {GRLIB_endgame == 0} do {
     } forEach _anchors;
     // HPC_ambientPaused: tests drive the ticks themselves and must not race this loop
     if !(missionNamespace getVariable ["HPC_ambientPaused", false]) then {
+        HPC_ambientTicking = true;
         [_areas,_players] call HPC_fnc_civilianTick;
         [_areas,_players] call HPC_fnc_ambientTraffic;
+        HPC_ambientTicking = false;
     };
     sleep 10;
 };
