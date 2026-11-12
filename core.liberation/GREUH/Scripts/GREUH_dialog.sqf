@@ -75,6 +75,8 @@ if ( true ) then {
 { ctrlEnable [_x, true] } foreach _allbuttons;
 { ctrlShow [_x, false] } foreach _rename_controls;
 
+private _groupRows = [];
+if (isNil "groups_list") then { groups_list = [] };
 while { dialog && alive player } do {
 	ctrlEnable [513,(leader (group player) == player)];
 	ctrlEnable [514,(leader (group player) == player)];
@@ -84,13 +86,18 @@ while { dialog && alive player } do {
 	if ( GREUH_allow_nametags ) then { ctrlShow [ 962, show_nametags ]; };
 
 	if ( GREUH_allow_customsquads ) then {
-		groups_list = ((groups GRLIB_side_friendly) select { isPlayer leader _x });
-		lbClear 515;
-		{
-			_brakets = "";
-			if ( _x == group player ) then { _brakets = ">> "; };
-			lbAdd [515, format [ "%4%1 - %2 (%3)",groupId _x, name leader _x, count units _x,_brakets ]];
-		} foreach groups_list;
+		private _groups = ((groups GRLIB_side_friendly) select { isPlayer leader _x });
+		private _rows = _groups apply { format [ "%4%1 - %2 (%3)",groupId _x, name leader _x, count units _x, ["", ">> "] select (_x == group player) ] };
+		// Rebuild only when the list changes (rebuilding every pass flickered and reset the selection).
+		if !(_rows isEqualTo _groupRows) then {
+			private _selGroup = groups_list param [lbCurSel 515, grpNull];
+			groups_list = _groups;
+			_groupRows = _rows;
+			lbClear 515;
+			{ lbAdd [515, _x] } forEach _rows;
+			private _keep = groups_list find _selGroup;
+			if (_keep >= 0) then { lbSetCurSel [515, _keep] };
+		};
 
 		if (lbCurSel 515 == -1) then { lbSetCurSel [515, 0] };
 		_grp = groups_list select (lbCurSel 515);

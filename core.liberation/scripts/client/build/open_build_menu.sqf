@@ -96,7 +96,7 @@ private _lastGroup = "";
 private _onlyUnlocked = missionNamespace getVariable ["HPC_catalogOnlyUnlocked",false];
 private _updateUnlockButton = {
     (_display displayCtrl 1704) ctrlSetText (if (_onlyUnlocked) then {"Unlocked only: ON"} else {"Unlocked only: OFF"});
-    (_display displayCtrl 1704) ctrlSetBackgroundColor (if (_onlyUnlocked) then {[0.20,0.42,0.38,0.95]} else {[0.16,0.20,0.21,0.95]});
+    [_display displayCtrl 1704, if (_onlyUnlocked) then {[0.20,0.42,0.38,0.95]} else {[0.16,0.20,0.21,0.95]}, [], _display displayCtrl 110] call HPC_fnc_buttonColor;
 };
 call _updateUnlockButton;
 (_display displayCtrl 1704) ctrlAddEventHandler ["ButtonClick", {
@@ -288,7 +288,7 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
 		_row = 0;
 		ctrlSetText [ 151, _buildpages select (buildtype - 1) ];
         {
-            (_display displayCtrl _x) ctrlSetBackgroundColor (if (_forEachIndex + 1 == buildtype) then {[0.20,0.42,0.38,0.95]} else {[0.12,0.15,0.16,0.9]});
+            [_display displayCtrl _x, if (_forEachIndex + 1 == buildtype) then {[0.20,0.42,0.38,0.95]} else {[0.12,0.15,0.16,0.9]}, [], _display displayCtrl 110] call HPC_fnc_buttonColor;
         } forEach _categoryButtons;
 		if (count _build_list == 0) then {ctrlEnable [120, false]; ctrlEnable [121, false]};
 

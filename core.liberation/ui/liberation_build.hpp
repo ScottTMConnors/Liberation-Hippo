@@ -268,16 +268,17 @@ class liberation_build {
 	// Clickable column headers: sort by name or a cost (click again to reverse).
 	class SortItem : HPC_Button {
 		idc = 1713;
-		x = BLD_IX; y = BLD_COL_Y; w = 0.7 * BLD_LIST_W; h = 1.8 * HPC_GY;
-		colorBackground[] = {0,0,0,0};
-		colorFocused[] = {0,0,0,0};
-		colorBackgroundActive[] = {1,1,1,0.08};
+		x = BLD_IX; y = BLD_COL_Y; w = 0.695 * BLD_LIST_W; h = 1.8 * HPC_GY;
+		// Faint resting tint marks the headers as buttons; teal on hover.
+		colorBackground[] = {1,1,1,0.05};
+		colorFocused[] = {1,1,1,0.05};
+		colorBackgroundActive[] = {0.46,0.80,0.72,0.30};
 		text = "";
-		tooltip = "Sort by name.";
+		tooltip = "Click to sort by name.";
 	};
-	class SortManpower : SortItem { idc = 1714; x = BLD_IX + 0.705 * BLD_LIST_W; w = 0.09 * BLD_LIST_W; tooltip = "Sort by manpower cost (click again to reverse)."; };
-	class SortAmmo : SortManpower { idc = 1715; x = BLD_IX + 0.795 * BLD_LIST_W; tooltip = "Sort by ammo cost (click again to reverse)."; };
-	class SortFuel : SortManpower { idc = 1716; x = BLD_IX + 0.885 * BLD_LIST_W; tooltip = "Sort by fuel cost (click again to reverse)."; };
+	class SortManpower : SortItem { idc = 1714; x = BLD_IX + 0.705 * BLD_LIST_W; w = 0.085 * BLD_LIST_W; tooltip = "Click to sort by manpower cost; click again to reverse."; };
+	class SortAmmo : SortManpower { idc = 1715; x = BLD_IX + 0.795 * BLD_LIST_W; tooltip = "Click to sort by ammo cost; click again to reverse."; };
+	class SortFuel : SortManpower { idc = 1716; x = BLD_IX + 0.885 * BLD_LIST_W; tooltip = "Click to sort by fuel cost; click again to reverse."; };
 	class SortMark1 : HPC_Label {
 		idc = 1717;
 		x = BLD_IX + 0.73 * BLD_LIST_W + 1.6 * HPC_GX; y = BLD_COL_Y - 0.2 * HPC_GY; w = 2 * HPC_GX; h = 2.2 * HPC_GY;

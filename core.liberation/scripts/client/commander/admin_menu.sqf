@@ -179,8 +179,7 @@ private _showPage = {
 	{
 		private _tab = _display displayCtrl (1650 + _forEachIndex);
 		private _active = _forEachIndex == HPC_adminPage;
-		_tab ctrlSetBackgroundColor (if (_active) then {[0.20,0.42,0.38,0.95]} else {[0.12,0.15,0.16,0.9]});
-		_tab ctrlSetTextColor (if (_active) then {[1,1,1,1]} else {[0.62,0.69,0.72,1]});
+		[_tab, if (_active) then {[0.20,0.42,0.38,0.95]} else {[0.12,0.15,0.16,0.9]}, if (_active) then {[1,1,1,1]} else {[0.62,0.69,0.72,1]}] call HPC_fnc_buttonColor;
 	} forEach _pages;
 	private _marker = _display displayCtrl 1659;
 	private _tabPos = ctrlPosition (_display displayCtrl (1650 + HPC_adminPage));
