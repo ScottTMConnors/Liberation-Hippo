@@ -270,12 +270,17 @@ if (!_woundOk) then {
     closeDialog 0;
     player allowDamage true;
     player setCaptive false;
+    // this checks the mod-handler order, not the random "too severe to revive" cutoff
+    // (HPC_fnc_fatalHit), which these 12.7 mm hits can roll: lift it for the fixture
+    private _fatalMin = missionNamespace getVariable ["HPC_fatalMin", 3];
+    HPC_fatalMin = 1e9;
     for "_i" from 1 to 5 do {
         if ([player] call PAR_is_wounded || !alive player) exitWith {};
         private _round = createVehicle ["B_127x99_Ball", (player modelToWorld [0,0,3]), [], 0, "CAN_COLLIDE"];
         _round setVelocity [0,0,-900];
         sleep 1;
     };
+    HPC_fatalMin = _fatalMin;
     _woundOk = alive player && {[player] call PAR_is_wounded} && {HPC_testModHits > 0};
     diag_log ["HPC_MOD_DAMAGE", alive player, [player] call PAR_is_wounded, damage player, HPC_testModHits];
 };
