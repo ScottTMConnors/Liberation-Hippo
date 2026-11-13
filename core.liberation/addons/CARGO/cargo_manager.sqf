@@ -126,7 +126,8 @@ private _nearHolders = {
 	(nearestObjects [player, ["AllVehicles", "ReammoBox_F", "ThingX", "Cargo_base_F"], _range]) select {
 		alive _x && {!(_x isKindOf "CAManBase")} && {!(_x isKindOf "WeaponHolder")} && {!(_x isKindOf "WeaponHolderSimulated")} &&
 		{isNull attachedTo _x} && {isNull (_x getVariable ["R3F_LOG_est_transporte_par", objNull])} &&
-		{(_x getVariable ["GRLIB_vehicle_owner", ""]) in [_owner, ""]} &&
+		{(_x getVariable ["GRLIB_vehicle_owner", ""]) in [_owner, ""] || {_x isKindOf "AllVehicles" && {[_x] call HPC_fnc_vehicleClaimable}}} &&
+		{(_x getVariable ["HPC_lockpick", 0]) <= 0} &&
 		{({alive _x && !unitIsUAV (objectParent _x)} count crew _x) == 0} &&
 		{!(typeOf _x in [FOB_typename, FOB_outpost, FOB_sign, Warehouse_typename])} &&
 		{!(typeOf _x in all_buildings_classnames)} &&
@@ -485,7 +486,7 @@ while { !isNull _display && alive player } do {
 		_holders = [["home", 0, "Home stockpile"]];
 		{ _holders pushBack ["garage", _forEachIndex, format ["Garage: %1", [_x select 0] call F_getLRXName]] } forEach GRLIB_virtual_garage;
 		{
-			private _who = if ((_x getVariable ["GRLIB_vehicle_owner", ""]) == "") then { "unclaimed" } else { "yours" };
+			private _who = if ((_x getVariable ["GRLIB_vehicle_owner", ""]) != PAR_Grp_ID) then { "unclaimed" } else { "yours" };
 			_holders pushBack ["live", _x, format ["Nearby: %1 (%2)", [_x] call F_getLRXName, _who]];
 		} forEach (call _nearHolders);
 

@@ -152,9 +152,15 @@ if (_side == GRLIB_side_enemy) then {
 		[_vehicle, ["bare",1,"Hide_Door",1], true ] spawn BIS_fnc_initVehicle;
 	};
 
-	// Lock vehicles
-	if !(GRLIB_permission_enemy) then {
-		_vehicle setVariable ["GRLIB_vehicle_owner", "server", true];
+	// Enemy vehicles are often locked against players (the more valuable, the more likely);
+	// their own AI can still use them. HPC_lockpick holds the lockpick time in seconds.
+	if (_side == GRLIB_side_enemy) then {
+		private _row = GRLIB_recycleable_info select { (_x select 0) == _classname };
+		private _value = ((_row param [0, []]) param [2, 0]) min 1500;
+		if (random 1 < 0.3 + 0.6 * _value / 1500) then {
+			_vehicle setVariable ["HPC_lockpick", round (15 + 30 * _value / 1500), true];
+			_vehicle setVehicleLock "LOCKEDPLAYER";
+		};
 	};
 
 	// Search Gunner

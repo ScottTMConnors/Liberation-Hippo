@@ -72,7 +72,13 @@ while {true} do {
 			_vehicle addAction [([localize "STR_FOB_ACTION", "res\ui_deployfob.paa", "build"] call HPC_fnc_actionTitle),"scripts\client\actions\do_build_fob.sqf","",-981,false,true,"","[_target, _this] call GRLIB_checkBuildFOB", _dist5];
 		};
 
-		if (!([_vehicle, GRLIB_vehicle_blacklist] call F_itemIsInClass) && !([_vehicle] call is_public)) then {
+		// claiming, storing and unloading: the conditions check ownership as it changes
+		_vehicle addAction [([localize "STR_CLAIM_VEH", "R3F_LOG\icons\r3f_lock.paa", "accent"] call HPC_fnc_actionTitle),"scripts\client\actions\do_claim.sqf","",-503,false,true,"","[_target, _this] call GRLIB_checkAction_Claim", _dist5];
+		_vehicle addAction [([localize "STR_GARAGE_STORE_VEH", "\a3\ui_f\data\igui\cfg\simpletasks\types\truck_ca.paa", "accent"] call HPC_fnc_actionTitle),"scripts\client\actions\do_garage_store.sqf","",-503,false,true,"","[_target, _this] call GRLIB_checkAction_GarageStore", _dist5];
+		_vehicle addAction [([localize "STR_UNLOAD_CARGO_VEH", "res\ui_arsenal.paa", "info"] call HPC_fnc_actionTitle),"scripts\client\actions\do_unload_cargo.sqf","",-504,false,true,"","[_target, _this] call GRLIB_checkAction_UnloadCargo", _dist5];
+		if ((_vehicle getVariable ["HPC_lockpick", 0]) > 0) then { [_vehicle] call GRLIB_addLockpickAction };
+
+		if !([_vehicle, GRLIB_vehicle_blacklist] call F_itemIsInClass) then {
 			_vehicle addAction [([localize "STR_LOCK", "R3F_LOG\icons\r3f_lock.paa", "accent"] call HPC_fnc_actionTitle),"scripts\client\actions\do_lock.sqf","",-504,false,true,"","[_target, _this] call GRLIB_checkAction_Lock", _dist5];
 			_vehicle addAction [([localize "STR_UNLOCK", "R3F_LOG\icons\r3f_unlock.paa", "danger"] call HPC_fnc_actionTitle),"scripts\client\actions\do_unlock.sqf","",-504,true,true,"","[_target, _this] call GRLIB_checkAction_Unlock", _dist5];
 			_vehicle addAction [([localize "STR_ABANDON", "res\ui_veh.paa", "danger"] call HPC_fnc_actionTitle),"scripts\client\actions\do_abandon.sqf","",-505,false,true,"","[_target, _this] call GRLIB_checkAction_Abandon", _dist5];

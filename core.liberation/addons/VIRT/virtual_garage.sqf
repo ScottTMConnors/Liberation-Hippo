@@ -81,9 +81,10 @@ while { !isNull _display && alive player } do {
 
 		// list outside
 		_vehicles_out = (player nearEntities [["LandVehicle","Air","Ship_F",playerbox_typename], 150]) select {
-			alive _x && (count (crew _x) == 0 || (typeOf _x in uavs_vehicles)) &&
-			(_x distance2D lhd > GRLIB_fob_range) && isNull (attachedTo _x) &&
-			(_x getVariable ["GRLIB_vehicle_owner", ""] == PAR_Grp_ID) &&
+			alive _x && (_x distance2D lhd > GRLIB_fob_range) && isNull (attachedTo _x) &&
+			// your own (empty, or a UAV), or one you can claim: storing it claims it and moves everyone out
+			(((_x getVariable ["GRLIB_vehicle_owner", ""]) == PAR_Grp_ID && {count (crew _x) == 0 || {typeOf _x in uavs_vehicles}}) ||
+			 {_x isKindOf "AllVehicles" && {[_x] call HPC_fnc_vehicleClaimable}}) &&
 			(isNull (_x getVariable ["R3F_LOG_est_transporte_par", objNull])) &&
 			!(typeOf _x in list_static_weapons)
 		};
@@ -95,7 +96,11 @@ while { !isNull _display && alive player } do {
 			private _worst = selectMax _hits;
 			if (isNil "_worst") then { _worst = 0 };
 			private _state = [fuel _x, [_x] call F_getVehicleAmmoDef, damage _x max _worst];
-			[typeOf _x, _state, "Nearby", "Store this nearby vehicle in your garage. Its fuel, ammo, damage, parts and cargo are kept.", [1,1,1,1]] call _addRow;
+			if ((_x getVariable ["GRLIB_vehicle_owner", ""]) == PAR_Grp_ID) then {
+				[typeOf _x, _state, "Nearby", "Store this nearby vehicle in your garage. Its fuel, ammo, damage, parts and cargo are kept.", [1,1,1,1]] call _addRow;
+			} else {
+				[typeOf _x, _state, "Unclaimed", "Nobody owns this vehicle. Claim it, or store it (which claims it; anyone inside gets out).", [1,0.85,0.45,1]] call _addRow;
+			};
 		} foreach _vehicles_out;
 
 		// list inside Garage
@@ -115,12 +120,14 @@ while { !isNull _display && alive player } do {
 	if (count (_vehicles_out + GRLIB_virtual_garage) > 0) then {
 		_selected_item = lnbCurSelRow _control;
 		if (_selected_item != -1 && _old_sel != _selected_item) then {
-			if ( (_control lnbText [_selected_item, 4]) == "Nearby") then {
+			if (_selected_item < count _vehicles_out) then {
+				// nearby: store, claim (unclaimed only) and its cargo
+				private _unclaimed = (_control lnbText [_selected_item, 4]) == "Unclaimed";
 				ctrlEnable [ 120, true ];
 				ctrlEnable [ 121, false ];
-				ctrlEnable [ 122, false ];
-				ctrlEnable [ 123, false ];
-				ctrlSetText [122, "Service"];
+				ctrlEnable [ 122, _unclaimed ];
+				ctrlEnable [ 123, typeOf (_vehicles_out select _selected_item) != playerbox_typename ];
+				ctrlSetText [122, ["Service", "Claim"] select _unclaimed];
 			} else {
 				ctrlEnable [ 120, false ];
 				ctrlEnable [ 121, true ];
@@ -141,14 +148,15 @@ while { !isNull _display && alive player } do {
 			if (load_veh == 1) then {
 				private _vehicle = _vehicles_out select _selected_item;
 				if (isNull _vehicle) exitWith {};
-                if (!alive _vehicle || {_vehicle distance2D player > 150} || {_vehicle getVariable ["GRLIB_vehicle_owner",""] != PAR_Grp_ID}) exitWith {hintSilent "This vehicle is no longer available to store.";load_veh=0;_refresh=true};
+                if (!alive _vehicle || {_vehicle distance2D player > 150} || {_vehicle getVariable ["GRLIB_vehicle_owner",""] != PAR_Grp_ID && {!([_vehicle] call HPC_fnc_vehicleClaimable)}}) exitWith {hintSilent "This vehicle is no longer available to store.";load_veh=0;_refresh=true};
 				private _timer = _vehicle getVariable ["GREUH_rearm_timer", 0];
 				private _msg = format [ "%1\nRearming Cooldown (%2 sec)\nPlease Wait...", _vehicle_name, round (_timer - time) ];
 				if (_timer >= time) exitWith { hintSilent _msg; sleep 2 };
 				if (count GRLIB_virtual_garage >= GRLIB_garage_size) exitWith { hintSilent (format [localize "STR_FULL_GARAGE", GRLIB_garage_size]); sleep 2 };
-				if (count (crew _vehicle) > 0 && !(typeOf _vehicle in uavs_vehicles)) exitWith { hintSilent localize "STR_CANT_PARKUAV"; sleep 2 };
 
 				ctrlEnable [ 120, false ];
+				// vehicles: the server takes them whole (everyone inside is moved out, unclaimed ones are claimed)
+				if (typeOf _vehicle != playerbox_typename) exitWith { [_vehicle] call HPC_fnc_garageStore };
 				// full state with items and R3F/LRX cargo; carried vehicles and crates keep theirs
 				private _entry = [_vehicle] call HPC_fnc_vehicleEntry;
 				// the personal box's content lives in the player variable, not in the entry
@@ -183,6 +191,11 @@ while { !isNull _display && alive player } do {
 			};
 
 			// Service a stored vehicle: repair, rearm and refuel at the field service price
+			if (load_veh == 3 && {_selected_item < count _vehicles_out}) then {
+				private _vehicle = _vehicles_out select _selected_item;
+				if ([_vehicle] call HPC_fnc_vehicleClaim) then { hintSilent format ["%1\nis now yours.", _vehicle_name] } else { hintSilent format ["%1\ncannot be claimed.", _vehicle_name] };
+				load_veh = 0;
+			};
 			if (load_veh == 3) then {
 				private _index = _selected_item - count _vehicles_out;
 				private _entry = GRLIB_virtual_garage param [_index, []];
@@ -207,6 +220,13 @@ while { !isNull _display && alive player } do {
 			};
 
 			// Cargo of a stored vehicle: the cargo manager, opened on it
+			if (load_veh == 4 && {_selected_item < count _vehicles_out}) then {
+				private _vehicle = _vehicles_out select _selected_item;
+				load_veh = 0;
+				if (isNull _vehicle || {!alive _vehicle}) exitWith {};
+				closeDialog 0;
+				[["live", _vehicle]] execVM "addons\CARGO\cargo_manager.sqf";
+			};
 			if (load_veh == 4) then {
 				private _index = _selected_item - count _vehicles_out;
 				if (_index < 0 || {_index >= count GRLIB_virtual_garage}) exitWith {};

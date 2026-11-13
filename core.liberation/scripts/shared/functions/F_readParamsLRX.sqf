@@ -27,8 +27,8 @@ GRLIB_mod_west = [GRLIB_PARAM_ModPresetWest] call lrx_getParamValue;
 GRLIB_naval_type = [GRLIB_PARAM_NavalFobType] call lrx_getParamValue;
 GRLIB_opforcap = [GRLIB_PARAM_Opforcap] call lrx_getParamValue;
 GRLIB_patrols_activity = [GRLIB_PARAM_Patrols] call lrx_getParamValue;
-GRLIB_permission_enemy = [GRLIB_PARAM_EnemyLock] call lrx_getParamValue;
-GRLIB_permission_vehicles = [GRLIB_PARAM_EnableLock] call lrx_getParamValue;
+// vehicles always belong to the player who built or claimed them
+GRLIB_permission_vehicles = true;
 GRLIB_resources_multiplier = [GRLIB_PARAM_ResourcesMultiplier] call lrx_getParamValue;
 GRLIB_sector_radius = [GRLIB_PARAM_SectorRadius] call lrx_getParamValue;
 GRLIB_squad_size = [GRLIB_PARAM_SquadSize] call lrx_getParamValue;
@@ -75,8 +75,6 @@ switch (GRLIB_naval_type) do {
 if ( GRLIB_ACE_enabled ) then { GRLIB_fancy_info = 0 };		// Disable Fancy if ACE present
 
 GRLIB_Facilities = (GRLIB_Facilities == 1);
-GRLIB_permission_vehicles = (GRLIB_permission_vehicles == 1);
-GRLIB_permission_enemy = (GRLIB_permission_enemy == 1);
 GRLIB_free_loadout = (GRLIB_free_loadout == 1);
 GRLIB_force_english = (GRLIB_force_english == 1);
 GRLIB_enable_drones = (GRLIB_enable_drones == 1);

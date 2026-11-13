@@ -13,7 +13,7 @@ GRLIB_base_objects = [
 GRLIB_classnames_to_save = [] + all_buildings_classnames;
 GRLIB_classnames_to_save_blu = [
 	huron_typename
-] + GRLIB_base_objects + all_friendly_classnames + all_hostile_classnames;
+] + GRLIB_base_objects + all_friendly_classnames + all_hostile_classnames + civilian_vehicles;
 GRLIB_classnames_to_save_blu = GRLIB_classnames_to_save_blu arrayIntersect GRLIB_classnames_to_save_blu;
 
 private _support_vehicles_light = support_vehicles_classname select {!( _x isKindof "AllVehicles")};

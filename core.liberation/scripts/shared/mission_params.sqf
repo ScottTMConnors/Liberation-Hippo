@@ -86,8 +86,6 @@ GRLIB_PARAM_FobType = "FobType";
 GRLIB_PARAM_HuronType = "HuronType";
 GRLIB_PARAM_NavalFobType = "NavalFobType";
 GRLIB_PARAM_FancyInfo = "FancyInfo";
-GRLIB_PARAM_EnableLock = "EnableLock";
-GRLIB_PARAM_EnemyLock = "EnemyLock";
 GRLIB_PARAM_FuelConso = "FuelConso";
 GRLIB_PARAM_Drones = "EnableDrones";
 GRLIB_PARAM_VehicleDefense = "VehicleDefense";
@@ -1040,30 +1038,6 @@ _Mission_Params = [
             localize "STR_FANCY_OPT0",
             localize "STR_FANCY_OPT1",
             localize "STR_FANCY_OPT2"
-        ]]
-    ]],
-    [GRLIB_PARAM_EnableLock, createHashMapFromArray [
-        [GRLIB_PARAM_ValueKey, 1],
-        [GRLIB_PARAM_NameKey, localize "STR_VEH_LOCK"],
-        [GRLIB_PARAM_OptionLabelKey, [localize "STR_PARAMS_DISABLED", localize "STR_PARAMS_ENABLED"]],
-        [GRLIB_PARAM_OptionValuesKey, [0,1]],
-        [GRLIB_PARAM_CategoryKey, GRLIB_PARAM_MiscCatKey],
-        [GRLIB_PARAM_DescriptionKey, localize "STR_VEH_LOCK_DESC"],
-        [GRLIB_PARAM_OptionDescriptionKey, [
-            localize "STR_VEH_LOCK_OPT0",
-            localize "STR_VEH_LOCK_OPT1"
-        ]]
-    ]],
-    [GRLIB_PARAM_EnemyLock, createHashMapFromArray [
-        [GRLIB_PARAM_ValueKey, 1],
-        [GRLIB_PARAM_NameKey, localize "STR_OPFOR_VEH_LOCK"],
-        [GRLIB_PARAM_OptionLabelKey, [localize "STR_PARAMS_DISABLED", localize "STR_PARAMS_ENABLED"]],
-        [GRLIB_PARAM_OptionValuesKey, [0,1]],
-        [GRLIB_PARAM_CategoryKey, GRLIB_PARAM_MiscCatKey],
-        [GRLIB_PARAM_DescriptionKey, localize "STR_OPFOR_VEH_LOCK_DESC"],
-        [GRLIB_PARAM_OptionDescriptionKey, [
-            localize "STR_OPFOR_VEH_LOCK_OPT0",
-            localize "STR_OPFOR_VEH_LOCK_OPT1"
         ]]
     ]],
     [GRLIB_PARAM_FuelConso, createHashMapFromArray [

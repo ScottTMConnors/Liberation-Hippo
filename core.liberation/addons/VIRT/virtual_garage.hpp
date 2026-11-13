@@ -118,7 +118,7 @@ class VIRT_vehicle_garage {
 		class LoadButton : HPC_Button {
 			idc = 120;
 			text = $STR_GARAGE_LOAD;
-			tooltip = "Store the selected nearby vehicle. Wait for its rearm cooldown to finish. Fuel, ammo, damage, parts and cargo are kept.";
+			tooltip = "Store the selected nearby vehicle. An unclaimed vehicle is claimed and anyone inside gets out. Fuel, ammo, damage, parts and cargo are kept.";
 			action = "load_veh = 1";
 			x = VGA_X + VGA_PAD; y = VGA_Y + VGA_H - 4.4 * HPC_GY; w = VGA_BW4; h = 3.2 * HPC_GY;
 		};
@@ -132,14 +132,14 @@ class VIRT_vehicle_garage {
 		class ServiceButton : HPC_Button {
 			idc = 122;
 			text = "Service";
-			tooltip = "Repair, rearm and refuel the selected stored vehicle for the usual service price.";
+			tooltip = "Stored vehicle: repair, rearm and refuel it for the usual service price. Unclaimed nearby vehicle: claim it.";
 			action = "load_veh = 3";
 			x = VGA_X + VGA_PAD + 2 * (VGA_BW4 + 1 * HPC_GX); y = VGA_Y + VGA_H - 4.4 * HPC_GY; w = VGA_BW4; h = 3.2 * HPC_GY;
 		};
 		class CargoButton : HPC_Button {
 			idc = 123;
 			text = "Cargo";
-			tooltip = "Open the cargo manager on the selected stored vehicle: move, take out or sell its cargo.";
+			tooltip = "Open the cargo manager on the selected vehicle, stored or nearby: move, take out or sell its cargo.";
 			action = "load_veh = 4";
 			x = VGA_X + VGA_PAD + VGA_BW4 + 1 * HPC_GX; y = VGA_Y + VGA_H - 4.4 * HPC_GY; w = VGA_BW4; h = 3.2 * HPC_GY;
 		};

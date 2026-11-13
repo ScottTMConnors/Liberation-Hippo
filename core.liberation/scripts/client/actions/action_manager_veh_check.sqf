@@ -5,7 +5,38 @@ GRLIB_DALE_actionCond = compileFinal {
 
 GRLIB_checkAction_Lock = compileFinal {
 	params ["_target", "_unit"];
-	(GRLIB_player_is_menuok && alive _target && count (crew _target) == 0 && (GRLIB_permission_vehicles && [_unit, _target] call is_owner) && locked _target < 2 && GRLIB_vehicle_lock)
+	// the owner (or their squad) can always lock their own vehicle
+	(GRLIB_player_is_menuok && alive _target && count (crew _target) == 0 && [_unit, _target, true] call is_owner && locked _target < 2 && GRLIB_vehicle_lock)
+};
+
+GRLIB_checkAction_Claim = compileFinal {
+	params ["_target", "_unit"];
+	(GRLIB_player_is_menuok && [_target] call HPC_fnc_vehicleClaimable)
+};
+
+// an enemy vehicle locked against players: picked with a hold action
+GRLIB_checkAction_Lockpick = compileFinal {
+	params ["_target", "_unit"];
+	(alive _unit && isNull objectParent _unit && alive _target && (_target getVariable ["HPC_lockpick", 0]) > 0 &&
+		{({alive _x && {side group _x == GRLIB_side_enemy}} count (crew _target)) == 0})
+};
+
+// your own or a claimable vehicle, inside a FOB; usable from inside it (everyone is moved out)
+GRLIB_checkAction_GarageStore = compileFinal {
+	params ["_target", "_unit"];
+	private _ok = alive _unit && !(_unit getVariable ["GRLIB_action_inuse", false]) &&
+		(GRLIB_player_is_menuok || {objectParent _unit == _target && {speed _target < 3}});
+	(_ok && {call GRLIB_checkGarageAccess} && {alive _target} && {isNull (attachedTo _target)} &&
+		{isNull (_target getVariable ["R3F_LOG_est_transporte_par", objNull])} &&
+		{(_target getVariable ["GRLIB_vehicle_owner", ""]) == PAR_Grp_ID || {[_target] call HPC_fnc_vehicleClaimable}})
+};
+
+// your own or a claimable vehicle with cargo, inside a FOB
+GRLIB_checkAction_UnloadCargo = compileFinal {
+	params ["_target", "_unit"];
+	(GRLIB_player_is_menuok && GRLIB_player_near_fob && alive _target && typeOf _target != playerbox_typename &&
+		{(_target getVariable ["GRLIB_vehicle_owner", ""]) == PAR_Grp_ID || {[_target] call HPC_fnc_vehicleClaimable}} &&
+		{load _target > 0 || {count (_target getVariable ["R3F_LOG_objets_charges", []]) > 0} || {count ((_target getVariable ["GRLIB_ammo_vehicle_load", []]) select {!isNull _x && {typeOf _x != cargo_sling_typename}}) > 0}})
 };
 
 GRLIB_checkAction_Unlock = compileFinal {
@@ -97,4 +128,44 @@ GRLIB_checkPackBeacon = compileFinal {
 GRLIB_checkAction_LockWall = compileFinal {
 	params ["_target", "_unit"];
 	(GRLIB_player_is_menuok && GRLIB_player_near_fob && PAR_Grp_ID == [GRLIB_player_nearest_fob] call F_getFobOwner && !(_target getVariable ["R3F_LOG_disabled", false]) && (typeOf _target) in all_buildings_classnames)
+};
+
+// Lockpick: hold the action while kneeling at the vehicle (defenceless meanwhile). Letting go or
+// moving off cancels it and the next attempt starts from zero.
+GRLIB_addLockpickAction = compileFinal {
+	params ["_vehicle"];
+	private _time = (_vehicle getVariable ["HPC_lockpick", 30]) max 5;
+	[
+		_vehicle,
+		"<t color='#FFD24D'>Pick the lock</t>",
+		"\a3\ui_f\data\IGUI\Cfg\holdactions\holdAction_unbind_ca.paa",
+		"\a3\ui_f\data\IGUI\Cfg\holdactions\holdAction_unbind_ca.paa",
+		"_this distance _target < 6 && {[_target, _this] call GRLIB_checkAction_Lockpick}",
+		"_caller distance _target < 6 && {[_target, _caller] call GRLIB_checkAction_Lockpick}",
+		{ (_this select 1) playMoveNow "AinvPknlMstpSnonWnonDnon_medic_1" },
+		{
+			params ["_target", "_caller", "", "", "_frame", "_frames"];
+			if (animationState _caller != "ainvpknlmstpsnonwnondnon_medic_1") then { _caller playMoveNow "AinvPknlMstpSnonWnonDnon_medic_1" };
+			private _done = round (20 * _frame / (_frames max 1));
+			hintSilent parseText format ["<t size='1.1'>Picking the lock</t><br/><t font='EtelkaMonospacePro' color='#FFD24D'>%1</t><t font='EtelkaMonospacePro' color='#555555'>%2</t><br/>%3%%",
+				"||||||||||||||||||||" select [0, _done], "||||||||||||||||||||" select [0, 20 - _done], round (100 * _frame / (_frames max 1))];
+		},
+		{
+			params ["_target", "_caller"];
+			_caller switchMove "";
+			[_target, _caller] remoteExec ["HPC_fnc_lockpickDone", 2];
+			hintSilent format ["%1\nis unlocked. Claim it to make it yours.", [_target] call F_getLRXName];
+			playSound "taskSucceeded";
+		},
+		{
+			params ["", "_caller"];
+			_caller switchMove "";
+			hintSilent "Lockpicking cancelled.";
+		},
+		[],
+		_time,
+		12,
+		true,
+		false
+	] call BIS_fnc_holdActionAdd;
 };

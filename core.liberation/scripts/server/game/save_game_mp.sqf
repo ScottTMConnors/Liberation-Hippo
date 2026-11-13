@@ -94,6 +94,12 @@ if (GRLIB_endgame >= 1 || GRLIB_global_stop == 1) then {
 		});
 	};
     _all_buildings = _all_buildings arrayIntersect _all_buildings;
+	// abandoned enemy and civilian vehicles nobody claimed are not kept between saves
+	_all_buildings = _all_buildings select {
+		!(_x isKindOf "AllVehicles") ||
+		{!((_x getVariable ["GRLIB_vehicle_owner", ""]) in ["", "public"])} ||
+		{!(typeOf _x in civilian_vehicles || {typeOf _x in all_hostile_classnames && {!(typeOf _x in all_friendly_classnames)}})}
+	};
 
 	// Filter low score Player
 	private _player_scores = [];

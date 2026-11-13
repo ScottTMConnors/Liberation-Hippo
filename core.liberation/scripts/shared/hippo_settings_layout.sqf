@@ -121,8 +121,6 @@ private _layout = [
 ["MaxOutpost", _fobs, "Outpost limit", "Most outposts that can stand at once. 0 stops new outposts from being built."],
 ["MaxGarageSize", _fobs, "Garage capacity", "Most vehicles each player can store in their garage. 0 turns the garage off."],
 ["Facilities", _fobs, "Shops and services", "Add traders, cargo buyers and repair, refuel and rearm services around the map."],
-["EnableLock", _fobs, "Vehicle ownership", "Vehicles belong to the player who built them: only the owner can lock, unlock, store or sell them, and owned vehicles count towards their resources. Disabled lets anyone do this. Seats are never restricted by rank."],
-["EnemyLock", _fobs, "Capture enemy vehicles", "Abandoned enemy vehicles must be captured with the capture action before your side can use them. Disabled leaves them open to anyone."],
 ["FuelConso", _fobs, "Fuel use", "How quickly vehicles burn fuel. Disabled turns fuel use off."],
 ["VehicleDefense", _fobs, "Vehicle countermeasures", "Vehicles that support it fire countermeasures by themselves against incoming missiles."],
 ["HippoRepairSeconds", _fobs, "Repair cooldown", "Seconds between two repairs of the same vehicle at a repair service."],

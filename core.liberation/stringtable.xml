@@ -4512,11 +4512,11 @@
 		</Key>
 		<Key ID="STR_RANK_LVL6">
 			<Original>Full squad size and a much higher manpower cap.&lt;br/&gt;The complete catalog. Airdrop: air superiority.</Original>
-			<English>Full squad size and a much higher manpower cap.&lt;br/&gt;The complete catalog. Airdrop: air superiority.</English>
+			<English>Full squad size and a much higher manpower cap.&lt;br/&gt;The complete catalog. Airdrop: air superiority.</English>
 		</Key>
 		<Key ID="STR_RANK_LVL7">
 			<Original>The highest manpower cap.&lt;br/&gt;Half price at the trader and on all airdrops.</Original>
-			<English>The highest manpower cap.&lt;br/&gt;Half price at the trader and on all airdrops.</English>
+			<English>The highest manpower cap.&lt;br/&gt;Half price at the trader and on all airdrops.</English>
 		</Key>
 
 		<!-- Added in v0.928 -->
@@ -5127,6 +5127,15 @@
 			<Chinese>-- 翻正 --</Chinese>
 			<Portuguese>-- DESVIRAR</Portuguese>
 			<Czech>-- PŘEVRÁTIT</Czech>
+		</Key>
+		<Key ID="STR_CLAIM_VEH">
+			<Original>Claim vehicle</Original>
+		</Key>
+		<Key ID="STR_GARAGE_STORE_VEH">
+			<Original>Store in garage</Original>
+		</Key>
+		<Key ID="STR_UNLOAD_CARGO_VEH">
+			<Original>Unload cargo to home storage</Original>
 		</Key>
 		<Key ID="STR_LOCK">
 			<Original>Lock</Original>
@@ -6254,7 +6263,7 @@
 		</Key>
 
 		<Key ID="STR_INSULT_FUCK_OFF">
-			<Original>Hey, get lost!</Original>
+			<Original>Hey, get lost!</Original>
 		</Key>
 
 		<Key ID="STR_INSULT_YOU_DIE">
@@ -6284,7 +6293,7 @@
 		</Key>
 
 		<Key ID="STR_INSULT_GO_HOME">
-			<Original>Go back home, invaders!</Original>
+			<Original>Go back home, invaders!</Original>
 		</Key>
 
 		<Key ID="STR_INSULT_LEAVE_LAND">
@@ -6340,7 +6349,7 @@
 		</Key>
 
 		<Key ID="STR_DIALOG_REPAIR_HELLO">
-			<Original>Hi! Your vehicle has seen better days.</Original>
+			<Original>Hi! Your vehicle has seen better days.</Original>
 		</Key>
 
 		<Key ID="STR_DIALOG_REPAIR_WAIT">
@@ -6616,7 +6625,7 @@
 		</Key>
 
 		<Key ID="STR_CHANGE_CIV">
-			<Original>&lt;t align='center'&gt;Go undercover as a civilian?&lt;br/&gt;If you decline, you will not be asked again for 10 minutes.&lt;/t&gt;</Original>
+			<Original>&lt;t align='center'&gt;Go undercover as a civilian?&lt;br/&gt;If you decline, you will not be asked again for 10 minutes.&lt;/t&gt;</Original>
 		</Key>
 
 		<!-- support_manager.sqf-->
@@ -6869,11 +6878,11 @@
 
 		<!-- stop_renegade.sqf -->
 		<Key ID="STR_LOG_LRX_WRONG_SIDE">
-			<Original>Info: player %1 is on the wrong side (%2).</Original>
+			<Original>Info: player %1 is on the wrong side (%2).</Original>
 		</Key>
 
 		<Key ID="STR_LOG_LRX_LEADERSHIP_TAKEN">
-			<Original>Info: player %1 has taken squad leadership.</Original>
+			<Original>Info: player %1 has taken squad leadership.</Original>
 		</Key>
 
 		<!-- teleport.sqf -->
@@ -12343,7 +12352,7 @@
 			<Czech>Je mi to jedno, jdi pryč!</Czech>
 		</Key>
 		<Key ID="STR_SPEAKMANAGER5">
-			<Original>I have no idea who your enemies are...</Original>
+			<Original>I have no idea who your enemies are...</Original>
 		</Key>
 		<Key ID="STR_SPEAKMANAGER6">
 			<Original>Hello, where is your leader?</Original>
@@ -12891,7 +12900,7 @@
 			<Czech>Obrana odstraněna...</Czech>
 		</Key>
 		<Key ID="STR_FOB_INITIALIZED">
-			<Original>-------- FOB Defenses Initialized --------</Original>
+			<Original>-------- FOB Defenses Initialized --------</Original>
 		</Key>
 		<Key ID="STR_FOB_DEFENSE_NAME">
 			<Original>DEFENSE NAME</Original>
@@ -13113,7 +13122,7 @@
 			<Czech>Snímek obrazovky: %1.</Czech>
 		</Key>
 		<Key ID="STR_KEY_LRX_DIAG_CALLED">
-			<Original>Diagnostics requested.</Original>
+			<Original>Diagnostics requested.</Original>
 		</Key>
 	</Package>
 

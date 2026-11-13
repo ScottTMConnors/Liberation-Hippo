@@ -31,6 +31,55 @@ if (_veh_class == ammobox_i_typename && [player] call F_getScore <= GRLIB_perm_l
 };
 if (_result) exitWith {};
 
+// Vehicles recycle like scrapping them from the garage: the same price (GRLIB_recycling_percentage
+// of the bare vehicle's value, by its condition) and whatever they carry goes to the home stockpile.
+if (_vehicle isKindOf "AllVehicles" && {alive _vehicle} && {_veh_class != mobile_respawn}) exitWith {
+	private _bare = +([_vehicle] call HPC_fnc_vehicleEntry);
+	_bare set [4, []]; _bare set [5, []]; _bare set [6, []];
+	(["object", _bare] call HPC_fnc_cargoValue) params ["_a", "_f"];
+	_a = round (_a * GRLIB_recycling_percentage);
+	_f = round (_f * GRLIB_recycling_percentage);
+
+	dorecycle = 0;
+	createDialog "liberation_recycle";
+	waitUntil { dialog };
+	ctrlSetText [131, format ["%1", ((GRLIB_recycleable_info select { _x select 0 == _veh_class }) param [0, [_veh_class, 0]]) select 1]];
+	ctrlSetText [132, format ["%1", _a]];
+	ctrlSetText [133, format ["%1", _f]];
+	ctrlSetText [134, format [localize "STR_RECYCLING_YIELD", [_veh_class] call F_getLRXName]];
+	while { dialog && (alive player) && dorecycle == 0 } do { sleep 0.5 };
+	if (dialog) then { closeDialog 0 };
+
+	if (dorecycle == 1 && {!isNull _vehicle} && {alive _vehicle}) then {
+		private _payload = [[], []];
+		if (({alive _x} count crew _vehicle) == 0 || {unitIsUAV _vehicle}) then {
+			// the server takes it whole, so its cargo can't be taken twice
+			private _entry = (([_vehicle, ["whole"], 1] call HPC_fnc_cargoTakeLiveWait) select 1) param [0, []];
+			if (_entry isEqualType [] && {count _entry >= 7}) then {
+				private _lrx = _entry select 6;
+				// a cargo sling is stored as [sling, [its boxes]]
+				if ((_lrx param [0, ""]) isEqualTo cargo_sling_typename) then { _lrx = [cargo_sling_typename] + (_lrx param [1, []]) };
+				_payload = [_entry select 4, (_entry select 5) + _lrx];
+			} else { _a = -1 };
+		} else {
+			// a bought crew: they go with it
+			private _entry = [_vehicle] call HPC_fnc_vehicleEntry;
+			_payload = [_entry select 4, _entry select 5];
+			{ _vehicle deleteVehicleCrew _x } forEach (crew _vehicle);
+			deleteVehicle _vehicle;
+		};
+		if (_a < 0) exitWith { hintSilent format ["%1\ncould not be recycled (in use or no longer there).", [_veh_class] call F_getLRXName] };
+		([_payload] call HPC_fnc_cargoToHome) params ["_items", "_objects", "_vehicles"];
+		if (_a + _f > 0) then { [player, _a, _f] remoteExec ["ammo_add_remote_call", 2] };
+		if (_veh_class in uavs_vehicles) then { [player] call F_correctUAVT };
+		["stats_vehicles_recycled", 1] remoteExecCall ["HPC_fnc_addStat", 2];
+		private _msg = format ["%1 recycled for %2 ammo%3.", [_veh_class] call F_getLRXName, _a, ["", format [" and %1 fuel", _f]] select (_f > 0)];
+		if (_items + _objects + _vehicles > 0) then { _msg = _msg + "\nIts cargo went to your home stockpile." };
+		hintSilent _msg;
+	};
+	if (!isNull _vehicle) then { _vehicle setVariable ["recycle_in_use", false, true] };
+};
+
 // Classic Recycle
 private _objectinfo = (GRLIB_recycleable_info select { _x select 0 == _veh_class }) select 0;
 if (isNil "_objectinfo") then { _objectinfo = [_veh_class, 0, 0, 0] };
