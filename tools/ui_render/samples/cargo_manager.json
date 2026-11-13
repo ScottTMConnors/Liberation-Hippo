@@ -1,25 +1,157 @@
 {
-  "hide": [2421],
-  "2410": {"rows": [
-    ["Home stockpile", "", "", [0.62,0.92,0.84,1]],
-    ["Garage: HEMTT Transport", "", "", [0.72,0.86,1,1]],
-    ["Garage: Hunter", "", "", [0.72,0.86,1,1]],
-    ["Nearby: Zamak Transport (unclaimed)"],
-    ["Nearby: Ammo Box [CSAT] (unclaimed)"],
-    ["Nearby: Equipment Box [NATO] (yours)"]
-  ], "sel": 1},
-  "2411": {"text": "GARAGE: HEMTT TRANSPORT"},
-  "2412": {"text": "Items 120 / 2000  |  Cargo 15 / 100  |  Boxes 2 / 6"},
-  "2420": {"rows": [
-    {"cells": ["Quad Bike (carrying 2)", "Vehicle", "1", "236 ammo, 4 fuel"]},
-    {"cells": ["Ammo Box [NATO]", "Crate", "1", "225 ammo"]},
-    {"cells": ["Fuel Barrel", "Cargo", "1", "90 ammo, 38 fuel"]},
-    {"cells": ["MX 6.5 mm (+2 attachments)", "Weapon", "4", "45 ammo"]},
-    {"cells": ["6.5 mm 30Rnd STANAG Mag", "Magazine", "24", "54 ammo"]},
-    {"cells": ["First Aid Kit", "Item", "10", "-"]},
-    {"cells": ["Carryall Backpack (with contents)", "Container", "1", "33 ammo"]}
-  ], "sel": 3},
-  "2430": {"rows": [["Home stockpile"]], "sel": 0},
-  "2440": {"text": "Moved 4 x MX 6.5 mm to Home stockpile."},
-  "2456": {"text": "Scrap"}
+ "hide": [
+  2421
+ ],
+ "2410": {
+  "rows": [
+   [
+    "Home stockpile",
+    "",
+    "",
+    [
+     0.62,
+     0.92,
+     0.84,
+     1
+    ]
+   ],
+   [
+    "Garage: HEMTT Transport",
+    "",
+    "",
+    [
+     0.72,
+     0.86,
+     1,
+     1
+    ]
+   ],
+   [
+    "Garage: Hunter",
+    "",
+    "",
+    [
+     0.72,
+     0.86,
+     1,
+     1
+    ]
+   ],
+   [
+    "Nearby: Zamak Transport (unclaimed)"
+   ],
+   [
+    "Nearby: Ammo Box [CSAT] (unclaimed)"
+   ],
+   [
+    "Nearby: Equipment Box [NATO] (yours)"
+   ]
+  ],
+  "sel": 1
+ },
+ "2411": {
+  "text": "GARAGE: HEMTT TRANSPORT"
+ },
+ "2412": {
+  "text": "Items 120 / 2000  |  Cargo 15 / 100  |  Boxes 2 / 6"
+ },
+ "2420": {
+  "rows": [
+   [
+    "Quad Bike (carrying 2)",
+    "/A3/soft_f/Quadbike_01/Data/UI/map_quad_CA.paa",
+    "x1",
+    [
+     1,
+     1,
+     1,
+     1
+    ]
+   ],
+   [
+    "Ammo Box [NATO]",
+    "/A3/ui_f/data/igui/cfg/simpletasks/types/box_ca.paa",
+    "x1",
+    [
+     0.62,
+     0.69,
+     0.72,
+     1
+    ]
+   ],
+   [
+    "Fuel Barrel",
+    "/A3/ui_f/data/igui/cfg/simpletasks/types/box_ca.paa",
+    "x1",
+    [
+     0.62,
+     0.69,
+     0.72,
+     1
+    ]
+   ],
+   [
+    "MX 6.5 mm (+2 attachments)",
+    "/A3/weapons_f/Rifles/MX/data/UI/gear_mx_rifle_X_CA.paa",
+    "x4",
+    [
+     1,
+     1,
+     1,
+     1
+    ]
+   ],
+   [
+    "6.5 mm 30Rnd STANAG Mag",
+    "/A3/weapons_f/data/ui/m_30stanag_CA.paa",
+    "x24",
+    [
+     1,
+     1,
+     1,
+     1
+    ]
+   ],
+   [
+    "First Aid Kit",
+    "/A3/Weapons_F/Items/data/UI/gear_FirstAidKit_CA.paa",
+    "x10",
+    [
+     1,
+     1,
+     1,
+     1
+    ]
+   ],
+   [
+    "Carryall Backpack (with contents)",
+    "/A3/ui_f/data/igui/cfg/simpletasks/types/box_ca.paa",
+    "x1",
+    [
+     0.62,
+     0.69,
+     0.72,
+     1
+    ]
+   ]
+  ],
+  "sel": 3
+ },
+ "2430": {
+  "rows": [
+   [
+    "Home stockpile"
+   ]
+  ],
+  "sel": 0
+ },
+ "2440": {
+  "text": "Moved 4 x MX 6.5 mm to Home stockpile."
+ },
+ "2456": {
+  "text": "Scrap"
+ },
+ "2422": {
+  "text": "<t font='RobotoCondensedBold' color='#EBEFF1'>MX 6.5 mm (+2 attachments)</t><t color='#8FA3B4'>   WEAPON   |   QTY </t><t color='#EBEFF1'>4</t><t color='#8FA3B4'>   |   SELLS FOR </t><t color='#7FD3C0'>45 ammo</t>"
+ }
 }

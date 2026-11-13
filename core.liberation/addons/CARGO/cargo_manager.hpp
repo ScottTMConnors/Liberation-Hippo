@@ -74,8 +74,9 @@ class HPC_cargo_manager {
 			text = "STORAGE";
 		};
 		class HolderList : HPC_ListBox {
+			colorBackground[] = {0,0,0,0.22};
 			idc = 2410;
-			x = CGM_X + CGM_PAD; y = CGM_Y + 7.1 * HPC_GY; w = CGM_LW; h = CGM_LH + 1.4 * HPC_GY;
+			x = CGM_X + CGM_PAD; y = CGM_Y + 7.1 * HPC_GY; w = CGM_LW; h = CGM_LH + 2.4 * HPC_GY;
 		};
 
 		// contents of the selected holder
@@ -91,47 +92,39 @@ class HPC_cargo_manager {
 			x = CGM_RX + CGM_RW * 0.4; y = CGM_Y + 5.5 * HPC_GY; w = CGM_RW * 0.6; h = 1.4 * HPC_GY;
 			text = "";
 		};
-		class ColKind : HPC_Label {
-			x = CGM_RX + 0.55 * CGM_RW; y = CGM_Y + 7.1 * HPC_GY; w = 0.15 * CGM_RW; h = 1.2 * HPC_GY;
-			text = "KIND";
+		// one row per stack: icon, name, then "x4 . 45 ammo" on the right; the
+		// selection bar spans the whole row (CT_LISTBOX, not ListNBox)
+		class ContentFrame : HPC_Text {
+			x = CGM_RX; y = CGM_Y + 7.1 * HPC_GY; w = CGM_RW; h = CGM_LH - 0.8 * HPC_GY - 0.4 * HPC_GY;
+			colorBackground[] = {0,0,0,0.22};
 		};
-		class ColQty : ColKind {
-			x = CGM_RX + 0.70 * CGM_RW; w = 0.10 * CGM_RW;
-			text = "QTY";
-		};
-		class ColValue : ColKind {
-			x = CGM_RX + 0.80 * CGM_RW; w = 0.20 * CGM_RW;
-			text = "SELL VALUE";
-		};
-		class ContentList : StdListNBox {
+		class ContentList : HPC_ListBox {
 			idc = 2420;
-			font = "RobotoCondensed";
-			sizeEx = 1.0 * HPC_GY;
-			rowHeight = 1.9 * HPC_GY;
-			shadow = 0;
-			period = 0;
-			colorText[] = HPC_C_TEXT;
-			colorBackground[] = {0,0,0,0.18};
-			colorScrollbar[] = HPC_C_ACCENT;
-			colorSelect[] = {1,1,1,1};
-			colorSelect2[] = {1,1,1,1};
-			colorSelectBackground[] = HPC_C_ACCENT_DIM;
-			colorSelectBackground2[] = HPC_C_ACCENT_DIM;
-			colorActive[] = {1,1,1,1};
-			colorDisabled[] = {1,1,1,0.3};
-			colorPicture[] = {1,1,1,1};
-			colorPictureSelected[] = {1,1,1,1};
-			colorPictureDisabled[] = {1,1,1,0.4};
-			onLBSelChanged = "";
-			columns[] = {0, 0.55, 0.70, 0.80};
-			x = CGM_RX; y = CGM_LY; w = CGM_RW; h = CGM_LH;
+			sizeEx = 1.05 * HPC_GY;
+			rowHeight = 2.2 * HPC_GY;
+			x = CGM_RX; y = CGM_Y + 7.1 * HPC_GY; w = CGM_RW; h = CGM_LH - 0.8 * HPC_GY - 0.4 * HPC_GY;
+		};
+		// details of the selected stack
+		class StackBar : HPC_Text {
+			x = CGM_RX; y = CGM_LY + CGM_LH - 1.6 * HPC_GY; w = CGM_RW; h = 2.6 * HPC_GY;
+			colorBackground[] = {1,1,1,0.04};
+		};
+		class StackAccent : HPC_Text {
+			x = CGM_RX; y = CGM_LY + CGM_LH - 1.6 * HPC_GY; w = 0.2 * HPC_GX; h = 2.6 * HPC_GY;
+			colorBackground[] = HPC_C_ACCENT;
+		};
+		class StackInfo : HPC_StructuredText {
+			idc = 2422;
+			x = CGM_RX + 0.6 * HPC_GX; y = CGM_LY + CGM_LH - 1.1 * HPC_GY; w = CGM_RW - 1.2 * HPC_GX; h = 1.6 * HPC_GY;
+			size = 1.1 * HPC_GY;
+			text = "";
 		};
 		class EmptyContents : HPC_Label {
 			idc = 2421;
 			style = ST_CENTER;
 			font = "RobotoCondensed";
 			sizeEx = HPC_GY;
-			x = CGM_RX; y = CGM_LY + 6 * HPC_GY; w = CGM_RW; h = 2 * HPC_GY;
+			x = CGM_RX; y = CGM_LY + 5 * HPC_GY; w = CGM_RW; h = 2 * HPC_GY;
 			text = "Empty";
 		};
 		// result of the last action
@@ -140,7 +133,7 @@ class HPC_cargo_manager {
 			font = "RobotoCondensed";
 			sizeEx = 0.95 * HPC_GY;
 			colorText[] = HPC_C_MUTED;
-			x = CGM_RX; y = CGM_LY + CGM_LH + 0.4 * HPC_GY; w = CGM_RW; h = 1.4 * HPC_GY;
+			x = CGM_RX; y = CGM_LY + CGM_LH + 1.3 * HPC_GY; w = CGM_RW; h = 1.4 * HPC_GY;
 			text = "";
 		};
 

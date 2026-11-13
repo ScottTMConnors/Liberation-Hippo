@@ -30,6 +30,36 @@ private _add = {
 	player createDiaryRecord [_subject, [_title, _lines joinString ""], taskNull, "", false];
 };
 
+// ---------------------------------------------------------------- Briefing
+// The map's "Briefing" entry lists the "Diary" subject; built bottom-up like the others.
+["Diary", "Your First Steps", [
+	"Your First Steps" call _h,
+	"1. Open the build menu at the start base and pick a vehicle and a few soldiers or a fireteam.", "<br/>",
+	"2. Head for a nearby town or outpost. Red map markers are enemy sectors; the closest ones are the easiest.", "<br/>",
+	"3. Clear the sector and hold it until it turns blue.", "<br/>",
+	"4. Build a FOB near the front so you can redeploy, build and store cargo there.", "<br/><br/>",
+	"Open this map any time with " + (["showMap"] call _getkeyName) + ". The right panel shows your forces and the enemy groups in contact; hover a marker for details.", "<br/>"
+]] call _add;
+["Diary", "Execution", [
+	"Execution" call _h,
+	"Capture" call _sub,
+	"Enter an enemy sector with friendly forces, defeat the defenders and stay inside until it is captured. Captured towns, factories and military bases raise your income of ammo, fuel and manpower.", "<br/>",
+	"Hold" call _sub,
+	"The enemy counter-attacks captured sectors and FOBs. Keep forces nearby and build defences.", "<br/>",
+	"Supply" call _sub,
+	"Ammo, fuel and manpower pay for every soldier, vehicle and building. Kills, captured vehicles and secondary missions add more; scrap or sell what you no longer need.", "<br/>",
+	"Win the hearts" call _sub,
+	"Avoid civilian casualties and damage: civilian reputation decides whether towns help or fight you.", "<br/>"
+]] call _add;
+["Diary", "Situation", [
+	"Situation" call _h,
+	format ["The island of <font color='%1'>%2</font> is held by the enemy (<font color='%3'>%4</font>). Our forces (<font color='#7FA8FF'>%5</font>) hold only the start base.", _cKey, worldName, _cBad, GRLIB_mod_east, GRLIB_mod_west], "<br/><br/>",
+	"Mission" call _sub,
+	"Liberate every sector on the map. Each capture weakens the enemy, but raises its readiness: expect stronger patrols, air support and counter-attacks as the campaign goes on.", "<br/>",
+	"Teamwork" call _sub,
+	"The commander can direct the AI forces from this map (Command AI Forces). Everyone can raise fireteams, build and share supplies.", "<br/>"
+]] call _add;
+
 // ---------------------------------------------------------------- Field Guide
 player createDiarySubject ["HPC_Guide", "Field Guide"];
 

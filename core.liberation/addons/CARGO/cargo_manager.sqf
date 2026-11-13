@@ -21,6 +21,7 @@ private _range = 30;
 
 private _holders = [];   // [type, ref, label]
 private _targets = [];   // [type, ref, label]; type "player" sends to that player's home
+private _selRow = -2;
 private _stacks = [];    // [label, kind, count, ref, unitValue]; ref ["item", sample] / ["obj", slot, index]
 private _selHolder = -1;
 private _refresh = true;
@@ -46,6 +47,18 @@ private _itemKind = {
 	if (count _entry == 3) exitWith { "Container" };
 	if (isClass (configFile >> "CfgMagazines" >> (_entry select 0))) exitWith { "Magazine" };
 	"Item"
+};
+// inventory picture of a stack, or "" when it has none
+private _stackPicture = {
+	params ["_ref"];
+	private _entry = _ref select 1;
+	private _class = if ((_ref select 0) == "item") then { if (_entry isEqualType []) then { _entry param [0, ""] } else { _entry } } else { [_entry] call HPC_fnc_cargoClass };
+	if !(_class isEqualType "") exitWith { "" };
+	private _pic = "";
+	{
+		if (isClass (configFile >> _x >> _class)) exitWith { _pic = getText (configFile >> _x >> _class >> "picture") };
+	} forEach ["CfgWeapons", "CfgMagazines", "CfgVehicles", "CfgGlasses"];
+	if ((_pic find "\") < 0) then { "" } else { _pic }
 };
 private _objectKind = {
 	params ["_entry"];
@@ -525,14 +538,20 @@ while { !isNull _display && alive player } do {
 		_stacks = [_h] call _buildStacks;
 		ctrlSetText [2411, toUpper (_h select 2)];
 		ctrlSetText [2412, [_h] call _holderCapacity];
-		private _keepRow = lnbCurSelRow _contentList;
-		lnbClear _contentList;
+		private _keepRow = lbCurSel _contentList;
+		lbClear _contentList;
 		{
 			_x params ["_label", "_kind", "_n", "_ref", "_value"];
-			private _row = _contentList lnbAddRow [_label, _kind, str _n, ([_x, _n] call _sellValue) call _amountText];
-			if (_ref select 0 == "obj" && {!(_ref select 3)}) then { { _contentList lnbSetColor [[_row, _x], [1, 1, 1, 0.5]] } forEach [0, 1, 2, 3] };
+			private _row = _contentList lbAdd _label;
+			_contentList lbSetTextRight [_row, format ["x%1", _n]];
+			private _pic = [_ref] call _stackPicture;
+			_contentList lbSetPicture [_row, ["\A3\ui_f\data\igui\cfg\simpletasks\types\box_ca.paa", _pic] select (_pic != "")];
+			_contentList lbSetPictureColor [_row, [[0.62, 0.69, 0.72, 1], [1, 1, 1, 1]] select (_pic != "")];
+			_contentList lbSetTooltip [_row, _kind];
+			if (_ref select 0 == "obj" && {!(_ref select 3)}) then { _contentList lbSetColor [_row, [1, 1, 1, 0.5]] };
 		} forEach _stacks;
-		if (_keepRow >= 0 && {_keepRow < count _stacks}) then { _contentList lnbSetCurSelRow _keepRow };
+		if (_keepRow >= 0 && {_keepRow < count _stacks}) then { _contentList lbSetCurSel _keepRow } else { if (_stacks isNotEqualTo []) then { _contentList lbSetCurSel 0 } };
+		_selRow = -2;
 		ctrlShow [2421, _stacks isEqualTo []];
 		// store/scrap is about the storage itself
 		private _type = _h select 0;
@@ -545,8 +564,15 @@ while { !isNull _display && alive player } do {
 		});
 	};
 
-	private _row = lnbCurSelRow _contentList;
+	private _row = lbCurSel _contentList;
 	private _stack = _stacks param [_row, []];
+	if (_row != _selRow) then {
+		_selRow = _row;
+		(_display displayCtrl 2422) ctrlSetStructuredText parseText (if (_stack isEqualTo []) then { "<t color='#8FA3B4'>Select a stack to move, take out or sell it.</t>" } else {
+			format ["<t font='RobotoCondensedBold' color='#EBEFF1'>%1</t><t color='#8FA3B4'>   %2   |   QTY </t><t color='#EBEFF1'>%3</t><t color='#8FA3B4'>   |   SELLS FOR </t><t color='#7FD3C0'>%4</t>",
+				_stack select 0, toUpper (_stack select 1), _stack select 2, ([_stack, _stack select 2] call _sellValue) call _amountText]
+		});
+	};
 	private _movable = _stack isNotEqualTo [] && {((_stack select 3) select 0) == "item" || {(_stack select 3) select 3}};
 	{ ctrlEnable [_x, _movable] } forEach [2450, 2451, 2454, 2455];
 

@@ -2,8 +2,9 @@
 // - friendly AI groups (AI Warfare squads and armor, FOB guards, base staff, mission units, garrisons)
 //   with their objective (yellow line = commander order, faint blue = automatic)
 // - enemy groups only while our side knows about them (knowsAbout, merged from the server,
-//   headless clients and the player's own group); when intel is lost the group becomes a
-//   "?" at its last known position for three minutes
+//   headless clients and the player's own group); when intel is lost the group keeps its
+//   marker and card, faded in a dashed ring, at its last known position for three minutes;
+//   a group that is wiped out turns grey with a cross for a minute
 // - shot markers: every shot our side would know about (friendly fire, enemies near friendly
 //   players or AI, or enemy groups we have intel on), anywhere on the map, sends a small
 //   rectangle flying from the shooter for a second, and the shooter's group icon flashes
@@ -26,7 +27,8 @@ HPC_fnc_mapIcon = compileFinal toString {
 };
 HPC_mapForces = [];   // [group, icon, color, label, size, target, ordered, kind]
 HPC_mapIntel = [];    // [group, icon, color, label, size]
-HPC_mapLastKnown = []; // [group, position, expires]
+HPC_mapLastKnown = []; // [group, position, icon, label, size, lost at, expires, destroyed?, card text]
+HPC_mapHoverGhost = []; // the HPC_mapLastKnown entry under the mouse
 HPC_mapShots = [];    // [start, direction, created, color, angle]
 HPC_mapSelected = []; // groups highlighted by the Command AI window
 HPC_mapHover = grpNull;
@@ -37,6 +39,8 @@ HPC_mapShowTracers = profileNamespace getVariable ["HPC_mapShowTracers", true];
 HPC_mapTracerSpeed = 450;  // metres per second
 HPC_mapTracerLife = 1;     // seconds
 HPC_mapEnemyColor = [0.92, 0.2, 0.16, 1];
+// themed marker textures (tools/map_textures.py)
+HPC_mapTex = createHashMapFromArray (["halo", "ring", "ring_thin", "ring_dash", "ring_soft", "brackets", "cross"] apply {[_x, getMissionPath format ["res\map\%1.paa", _x]]});
 
 // NATO symbol for a group from what it is made of (after Team Map Intel).
 HPC_fnc_mapNatoType = compileFinal toString {
@@ -227,34 +231,54 @@ HPC_fnc_mapVehicleTooltip = compileFinal toString {
     ] joinString ""
 };
 
+// Marker style (tools/map_render.py mirrors it, keep both in step):
+// - every group/vehicle icon sits on a dark soft halo (1.75x) so it reads on any terrain,
+//   labels are RobotoCondensedBold 0.032 with an outline (shadow 2)
+// - yours: thin ring; disabled vehicle: orange dashed ring; in combat: soft red ring that
+//   breathes; commander order: gold line and a gold ring on the objective
+// - last known enemy: the same icon and label, faded, inside a slowly turning dashed ring
+//   with "?" (and how long ago at closer zoom); destroyed: grey with a cross, gone after 60 s
+// - hover: white corner brackets; Command AI selection: gold ring
+HPC_fnc_mapAgo = compileFinal toString {
+    private _s = round (_this max 0);
+    format ["%1:%2", floor (_s / 60), [str (_s mod 60), "0" + str (_s mod 60)] select ((_s mod 60) < 10)]
+};
 HPC_fnc_mapDraw = compileFinal toString {
     params ["_map"];
     private _scale = ctrlMapScale _map;
     private _now = diag_tickTime;
-    private _pulse = 0.45 + 0.45 * sin (_now * 300);
-    private _ring = ["mil_circle"] call HPC_fnc_mapIcon;
+    private _pulse = 0.5 + 0.5 * sin (_now * 240);
+    private _tex = HPC_mapTex;
+    private _halo = _tex get "halo";
     private _close = _scale < 0.12;
+    private _mid = _scale < 0.35;
     private _mainMap = ctrlIDD ctrlParent _map == 12;
     private _mouse = getMousePosition;
     private _hover = grpNull;
+    private _hoverGhost = [];
     private _hoverDistance = 0.025;
     private _flash = {
         params ["_group", "_color"];
         if (_now - (_group getVariable ["HPC_mapFiredAt", -1]) < 0.12) then {[1, 1, 0.88, 1]} else {_color}
     };
+    private _mark = {
+        params ["_icon", "_color", "_pos", "_size", "_text"];
+        _map drawIcon [_halo, [0.02, 0.03, 0.035, 0.6 * (_color select 3)], _pos, _size * 1.75, _size * 1.75, 0];
+        _map drawIcon [_icon, _color, _pos, _size, _size, 0, _text, 2, 0.032, "RobotoCondensedBold", "right"];
+    };
+    private _mouseDistance = {(_map ctrlMapWorldToScreen _this) distance2D _mouse};
     if (HPC_mapShowForces) then {
         {
             _x params ["_vehicle", "_icon", "_color", "_label", "_cat"];
             private _mine = _cat == "mine";
             if (alive _vehicle && {_cat != "enemy" || {HPC_mapShowIntel}}) then {
                 private _pos = getPosASLVisual _vehicle;
-                // a ring marks your own vehicles
-                if (_mine) then {_map drawIcon [_ring, [_color select 0, _color select 1, _color select 2, 0.7], _pos, 30, 30, 0]};
-                if (!canMove _vehicle) then {_map drawIcon [_ring, [1, 0.55, 0.2, 0.8], _pos, 24, 24, 0]};
-                _map drawIcon [_icon, _color, _pos, 21, 21, 0, if (_close || {_mine && {_scale < 0.35}}) then {_label} else {""}, 1, 0.03, "RobotoCondensedBold", "right"];
+                if (_mine) then {_map drawIcon [_tex get "ring_thin", [_color select 0, _color select 1, _color select 2, 0.85], _pos, 34, 34, 0]};
+                if (!canMove _vehicle) then {_map drawIcon [_tex get "ring_dash", [1, 0.6, 0.25, 0.95], _pos, 30, 30, 0]};
+                [_icon, _color, _pos, 21, if (_close || {_mine && {_mid}}) then {_label} else {""}] call _mark;
                 if (_mainMap) then {
-                    private _distance = (_map ctrlMapWorldToScreen _pos) distance2D _mouse;
-                    if (_distance < _hoverDistance) then {_hover = _vehicle; _hoverDistance = _distance};
+                    private _distance = _pos call _mouseDistance;
+                    if (_distance < _hoverDistance) then {_hover = _vehicle; _hoverGhost = []; _hoverDistance = _distance};
                 };
             };
         } forEach HPC_mapVehicles;
@@ -265,55 +289,77 @@ HPC_fnc_mapDraw = compileFinal toString {
                 private _pos = getPosASLVisual _leader;
                 if !(_target isEqualTo []) then {
                     if (_ordered) then {
-                        _map drawLine [_pos, _target, [1, 0.82, 0.25, 0.85]];
+                        _map drawLine [_pos, _target, [1, 0.82, 0.3, 0.9]];
+                        _map drawIcon [_tex get "ring", [1, 0.82, 0.3, 0.9], _target, 22, 22, 0];
                     } else {
                         if (_close || {_kind == "mine"}) then {_map drawLine [_pos, _target, [_color select 0, _color select 1, _color select 2, [0.3, 0.6] select (_kind == "mine")]]};
                     };
                 };
                 if (combatBehaviour _group == "COMBAT") then {
-                    _map drawIcon [_ring, [1, 0.3, 0.2, _pulse], _pos, _size * 1.7, _size * 1.7, 0];
+                    private _ring = _size * (1.6 + 0.5 * _pulse);
+                    _map drawIcon [_tex get "ring_soft", [1, 0.32, 0.24, 0.9 - 0.5 * _pulse], _pos, _ring, _ring, 0];
                 };
-                private _text = if (_close || {_kind in ["warfare", "guard", "mine", "player"] && {_scale < 0.35}}) then {_label} else {""};
-                _map drawIcon [_icon, [_group, _color] call _flash, _pos, _size, _size, 0, _text, 1, 0.032, "RobotoCondensedBold", "right"];
+                if (_kind == "mine") then {_map drawIcon [_tex get "ring_thin", [_color select 0, _color select 1, _color select 2, 0.7], _pos, _size * 1.45, _size * 1.45, 0]};
+                private _text = if (_close || {_kind in ["warfare", "guard", "mine", "player"] && {_mid}}) then {_label} else {""};
+                [_icon, [_group, _color] call _flash, _pos, _size, _text] call _mark;
                 if (_mainMap) then {
-                    private _distance = (_map ctrlMapWorldToScreen _pos) distance2D _mouse;
-                    if (_distance < _hoverDistance) then {_hover = _group; _hoverDistance = _distance};
+                    private _distance = _pos call _mouseDistance;
+                    if (_distance < _hoverDistance) then {_hover = _group; _hoverGhost = []; _hoverDistance = _distance};
                 };
             };
         } forEach HPC_mapForces;
     };
     if (HPC_mapShowIntel) then {
-        private _unknown = ["mil_unknown"] call HPC_fnc_mapIcon;
         {
-            _x params ["_group", "_pos", "_expires"];
-            _map drawIcon [_unknown, [0.92, 0.2, 0.16, 0.35 + 0.5 * ((_expires - _now) / 180 max 0)], _pos, 18, 18, 0, if (_close) then {"Last known"} else {""}, 1, 0.03, "RobotoCondensed", "right"];
+            _x params ["_group", "_pos", "_icon", "_label", "_size", "_lostAt", "_expires", "_dead"];
+            private _left = (_expires - _now) max 0;
+            if (_dead) then {
+                private _alpha = 0.3 + 0.55 * ((_left / 20) min 1);
+                [_icon, [0.58, 0.61, 0.63, _alpha], _pos, _size, if (_close) then {_label + "  DESTROYED"} else {""}] call _mark;
+                _map drawIcon [_tex get "cross", [0.86, 0.88, 0.89, _alpha], _pos, _size * 1.15, _size * 1.15, 0];
+            } else {
+                private _alpha = 0.5 + 0.35 * ((_left / 180) min 1);
+                private _color = [0.95, 0.42, 0.36, _alpha];
+                _map drawIcon [_tex get "ring_dash", _color, _pos, _size * 1.7, _size * 1.7, (_now * 25) mod 360];
+                [_icon, _color, _pos, _size, if (_mid) then {format ["%1  ? %2", _label, (_now - _lostAt) call HPC_fnc_mapAgo]} else {"?"}] call _mark;
+            };
+            if (_mainMap) then {
+                private _distance = _pos call _mouseDistance;
+                if (_distance < _hoverDistance) then {_hover = grpNull; _hoverGhost = _x; _hoverDistance = _distance};
+            };
         } forEach HPC_mapLastKnown;
         {
             _x params ["_group", "_icon", "_color", "_label", "_size"];
             private _leader = leader _group;
             if (!isNull _leader && {alive _leader}) then {
                 private _pos = getPosASLVisual _leader;
-                if (combatBehaviour _group == "COMBAT" && {_close}) then {
-                    _map drawIcon [_ring, [1, 0.55, 0.2, _pulse * 0.8], _pos, _size * 1.6, _size * 1.6, 0];
+                if (combatBehaviour _group == "COMBAT" && {_mid}) then {
+                    private _ring = _size * (1.6 + 0.5 * _pulse);
+                    _map drawIcon [_tex get "ring_soft", [1, 0.55, 0.2, 0.85 - 0.5 * _pulse], _pos, _ring, _ring, 0];
                 };
-                _map drawIcon [_icon, [_group, _color] call _flash, _pos, _size, _size, 0, if (_close) then {_label} else {""}, 1, 0.03, "RobotoCondensedBold", "right"];
+                [_icon, [_group, _color] call _flash, _pos, _size, if (_close) then {_label} else {""}] call _mark;
                 if (_mainMap) then {
-                    private _distance = (_map ctrlMapWorldToScreen _pos) distance2D _mouse;
-                    if (_distance < _hoverDistance) then {_hover = _group; _hoverDistance = _distance};
+                    private _distance = _pos call _mouseDistance;
+                    if (_distance < _hoverDistance) then {_hover = _group; _hoverGhost = []; _hoverDistance = _distance};
                 };
             };
         } forEach HPC_mapIntel;
     };
     if (_mainMap) then {
         HPC_mapHover = _hover;
-        if (!isNull _hover) then {
-            _map drawIcon [_ring, [1, 1, 1, 0.85], getPosASLVisual (if (_hover isEqualType grpNull) then {leader _hover} else {_hover}), 38, 38, 0];
+        HPC_mapHoverGhost = _hoverGhost;
+        private _at = switch (true) do {
+            case (!(_hoverGhost isEqualTo [])): {_hoverGhost select 1};
+            case (isNull _hover): {[]};
+            case (_hover isEqualType grpNull): {getPosASLVisual leader _hover};
+            default {getPosASLVisual _hover};
         };
+        if !(_at isEqualTo []) then {_map drawIcon [_tex get "brackets", [1, 1, 1, 0.9], _at, 44, 44, 0]};
     };
     {
         private _leader = leader _x;
         if (alive _leader) then {
-            _map drawIcon [_ring, [1, 0.85, 0.2, 0.55 + _pulse / 2], getPosASLVisual _leader, 42, 42, 0];
+            _map drawIcon [_tex get "ring", [1, 0.85, 0.3, 0.55 + _pulse / 2.5], getPosASLVisual _leader, 46, 46, 0];
         };
     } forEach HPC_mapSelected;
     if (HPC_mapShowTracers) then {
@@ -388,64 +434,60 @@ HPC_fnc_mapTooltipText = compileFinal toString {
     _lines joinString ""
 };
 
-private _panelIdc = 77901;
+// Panel controls: classes in ui\hippo_map.hpp (rendered offline by tools/map_render.py).
+private _bodyIdc = 77901;
+private _bgIdc = 77930;
 private _tooltipIdc = 77920;
+private _tooltipAccentIdc = 77921;
+private _tooltipBgIdc = 77922;
 private _createPanel = {
     params ["_display"];
-    // HPC grid (ui\hippo_theme.hpp): one unit = 1/54 of the screen height, square.
-    private _gy = safezoneH / 54;
-    private _gx = safezoneH * 0.75 / 54;
-    private _w = 20 * _gx;
-    private _x0 = safezoneX + safezoneW - 0.245 * safezoneW; // clear of the HUD column on the right edge
-    private _y0 = safezoneY + 0.1 * safezoneH;
-    private _panel = _display ctrlCreate ["RscStructuredText", _panelIdc];
-    _panel ctrlSetPosition [_x0, _y0, _w, 12 * _gy];
-    _panel ctrlSetFontHeight (1.0 * _gy);
-    _panel ctrlSetBackgroundColor [0.035, 0.045, 0.05, 0.88];
-    _panel ctrlCommit 0;
-    private _accent = _display ctrlCreate ["RscText", _panelIdc + 5];
-    _accent ctrlSetPosition [_x0, _y0, 0.28 * _gx, 2.2 * _gy];
-    _accent ctrlSetBackgroundColor [0.46, 0.80, 0.72, 1];
-    _accent ctrlCommit 0;
-    private _third = (_w - 0.6 * _gx) / 3;
     {
-        _x params ["_offset", "_column", "_row", "_width", "_label", "_tooltip", "_code"];
-        private _button = _display ctrlCreate ["HPC_Button", _panelIdc + _offset];
-        _button ctrlSetPosition [_x0 + _column * (_third + 0.3 * _gx), _y0 + 12.4 * _gy + 2.5 * _gy * _row, [_third, _w] select (_width > 1), 2.2 * _gy];
-        _button ctrlSetText _label;
+        _x params ["_class", "_idc"];
+        private _ctrl = _display ctrlCreate [_class, _idc];
+        _ctrl ctrlEnable false;
+    } forEach [
+        ["HPC_MapPanelBg", _bgIdc], ["HPC_MapPanelAccent", 77906], ["HPC_MapPanelTitle", 77931],
+        ["HPC_MapPanelSubtitle", 77932], ["HPC_MapPanelDivider", 77933], ["HPC_MapPanelBody", _bodyIdc]
+    ];
+    private _gx = safezoneH * 0.75 / 54;
+    {
+        _x params ["_idc", "_column", "_tooltip", "_code"];
+        private _button = _display ctrlCreate ["HPC_MapToggle", _idc];
+        (ctrlPosition _button) params ["_bx", "_by", "_bw", "_bh"];
+        _button ctrlSetPosition [_bx + _column * (_bw + 0.4 * _gx), _by, _bw, _bh];
         _button ctrlSetTooltip _tooltip;
-        _button ctrlSetFontHeight (0.85 * _gy);
         _button ctrlAddEventHandler ["ButtonClick", _code];
         _button ctrlCommit 0;
     } forEach [
-        [1, 0, 0, 1, "FORCES", "Show or hide friendly AI groups and their objectives.", {
+        [77902, 0, "Show or hide friendly AI groups, your squads and vehicles.", {
             HPC_mapShowForces = !HPC_mapShowForces;
             profileNamespace setVariable ["HPC_mapShowForces", HPC_mapShowForces];
         }],
-        [4, 1, 0, 1, "INTEL", "Show or hide enemy groups our forces have spotted.", {
+        [77905, 1, "Show or hide enemy groups our forces have spotted.", {
             HPC_mapShowIntel = !HPC_mapShowIntel;
             profileNamespace setVariable ["HPC_mapShowIntel", HPC_mapShowIntel];
         }],
-        [2, 2, 0, 1, "SHOTS", "Show or hide shot markers.", {
+        [77903, 2, "Show or hide shot markers.", {
             HPC_mapShowTracers = !HPC_mapShowTracers;
             profileNamespace setVariable ["HPC_mapShowTracers", HPC_mapShowTracers];
             if (!HPC_mapShowTracers) then {HPC_mapShots = []};
-        }],
-        [3, 0, 1, 2, "COMMAND AI FORCES", "Send assault squads and armor to a sector or FOB.", {
-            [] spawn {
-                openMap false;
-                uiSleep 0.1;
-                [] execVM "scripts\client\commander\HPC_commandAI.sqf";
-            };
         }]
     ];
-    private _tooltip = _display ctrlCreate ["RscStructuredText", _tooltipIdc];
-    _tooltip ctrlSetPosition [0, 0, 17 * _gx, 5 * _gy];
-    _tooltip ctrlSetFontHeight (0.95 * _gy);
-    _tooltip ctrlSetBackgroundColor [0.035, 0.045, 0.05, 0.94];
-    _tooltip ctrlEnable false;
-    _tooltip ctrlShow false;
-    _tooltip ctrlCommit 0;
+    private _command = _display ctrlCreate ["HPC_MapCommandButton", 77904];
+    _command ctrlSetTooltip "Send assault squads and armor to a sector or FOB.";
+    _command ctrlAddEventHandler ["ButtonClick", {
+        [] spawn {
+            openMap false;
+            uiSleep 0.1;
+            [] execVM "scripts\client\commander\HPC_commandAI.sqf";
+        };
+    }];
+    {
+        private _ctrl = _display ctrlCreate _x;
+        _ctrl ctrlEnable false;
+        _ctrl ctrlShow false;
+    } forEach [["HPC_MapTooltipBg", _tooltipBgIdc], ["HPC_MapTooltip", _tooltipIdc], ["HPC_MapTooltipAccent", _tooltipAccentIdc]];
 };
 
 private _summary = {
@@ -460,17 +502,21 @@ private _summary = {
     private _assault = (_counts getOrDefault ["warfare", 0]) - _armor;
     private _ordered = {_x select 6} count HPC_mapForces;
     private _commander = allPlayers select {_x getVariable ["GRLIB_is_Commander", false]};
+    private _section = {
+        params ["_title", "_right"];
+        format ["<t font='PuristaMedium' size='0.8' color='#8FA3B4'>%1</t><t align='right' font='PuristaMedium' size='0.8' color='#8FA3B4'>%2</t><br/>", _title, _right]
+    };
+    // zero rows are dimmed so the live numbers stand out
     private _row = {
-        params ["_icon", "_color", "_label", "_value"];
+        params ["_icon", "_color", "_label", "_value", ["_valueColor", "#FFFFFF"]];
+        private _zero = _value isEqualTo 0;
         format [
-            "<img image='%1' color='%2' size='0.8'/> <t color='#C9D4DE'>%3</t><t align='right' color='#FFFFFF'>%4</t><br/>",
-            [_icon] call HPC_fnc_mapIcon, _color, _label, _value
+            "<img image='%1' color='%2' size='0.9'/>  <t color='%3'>%4</t><t align='right' font='RobotoCondensedBold' color='%5'>%6</t><br/>",
+            [_icon] call HPC_fnc_mapIcon, _color, ["#DDE4E7", "#74838A"] select _zero, _label, [_valueColor, "#5D6B72"] select _zero, _value
         ]
     };
-    private _lines = [
-        "<t font='PuristaSemibold' size='1.1' color='#EBEFF1'>  FRIENDLY FORCES</t><t align='right' size='0.8' color='#8FA3B4'>",
-        format ["%1 AI</t><br/>", _men]
-    ];
+    private _gap = "<t size='0.5'> </t><br/>";
+    private _lines = [["FRIENDLY FORCES", format ["%1 AI", _men]] call _section];
     if (HPC_mapShowForces) then {
         _lines append [
             ["b_inf", "#4D9EFF", "Assault squads", _assault] call _row,
@@ -480,19 +526,34 @@ private _summary = {
             ["b_inf", "#F2C75A", "Other friendly AI", (_counts getOrDefault ["mission", 0]) + (_counts getOrDefault ["garrison", 0]) + (_counts getOrDefault ["other", 0])] call _row,
             ["b_inf", "#66E673", "Your fireteams and squads", _counts getOrDefault ["mine", 0]] call _row,
             ["b_motor_inf", "#66E673", "Your vehicles", {(_x select 4) == "mine"} count HPC_mapVehicles] call _row,
-            ["n_motor_inf", "#C7B880", "Empty vehicles", {(_x select 4) == "empty"} count HPC_mapVehicles] call _row,
             ["b_inf", "#CC8CFF", "Other players' squads", _counts getOrDefault ["player", 0]] call _row,
-            format ["<t color='#C9D4DE'>Under commander orders</t><t align='right' color='#FFD04D'>%1</t><br/>", _ordered]
+            ["n_motor_inf", "#C7B880", "Empty vehicles", {(_x select 4) == "empty"} count HPC_mapVehicles] call _row
         ];
     } else {
-        _lines pushBack "<t color='#8FA3B4'>Forces layer hidden</t><br/>";
+        _lines pushBack "<t color='#74838A'>Layer hidden</t><br/>";
+    };
+    _lines append [_gap, ["ENEMY INTEL", if (HPC_mapShowIntel) then {format ["%1 groups", count HPC_mapIntel]} else {"hidden"}] call _section];
+    if (HPC_mapShowIntel) then {
+        _lines append [
+            ["o_inf", "#FF5A47", "Groups in contact", count HPC_mapIntel, "#FF8C82"] call _row,
+            ["o_inf", "#F08A80", "Last known positions", {!(_x select 7)} count HPC_mapLastKnown, "#FF8C82"] call _row,
+            ["o_inf", "#9AA3A8", "Destroyed (last minute)", {_x select 7} count HPC_mapLastKnown, "#C9D4DE"] call _row,
+            ["o_motor_inf", "#FF5A47", "Empty enemy vehicles", {(_x select 4) == "enemy"} count HPC_mapVehicles, "#FF8C82"] call _row
+        ];
+    } else {
+        _lines pushBack "<t color='#74838A'>Layer hidden</t><br/>";
     };
     _lines append [
-        ["o_inf", "#FF5A47", "Enemy groups spotted", if (HPC_mapShowIntel) then {count HPC_mapIntel} else {"hidden"}] call _row,
-        ["o_motor_inf", "#FF5A47", "Empty enemy vehicles known", if (HPC_mapShowIntel) then {{(_x select 4) == "enemy"} count HPC_mapVehicles} else {"hidden"}] call _row,
-        format ["<t color='#C9D4DE'>Active objectives</t><t align='right' color='#FF6B5A'>%1</t><br/>", count active_sectors],
-        format ["<t color='#C9D4DE'>Commander</t><t align='right' color='#FFFFFF'>%1</t><br/>", if (_commander isEqualTo []) then {"none"} else {name (_commander select 0)}],
-        "<t size='0.75' color='#8FA3B4'>Blue = AI forces, green = yours, purple = other players', red = enemy, khaki = empty. Hover a group or vehicle for details. Red ring = in combat, gold = commander orders, ? = last known.</t>"
+        _gap,
+        ["OPERATIONS", ""] call _section,
+        format ["<t color='#DDE4E7'>Active objectives</t><t align='right' font='RobotoCondensedBold' color='#FF8C82'>%1</t><br/>", count active_sectors],
+        format ["<t color='#DDE4E7'>Under commander orders</t><t align='right' font='RobotoCondensedBold' color='#FFD04D'>%1</t><br/>", _ordered],
+        format ["<t color='#DDE4E7'>Commander</t><t align='right' font='RobotoCondensedBold' color='#FFFFFF'>%1</t><br/>", if (_commander isEqualTo []) then {"none"} else {name (_commander select 0)}],
+        _gap,
+        format [
+            "<t size='0.8' color='#8FA3B4'><img image='%1' color='#4D9EFF' size='0.9'/> AI  <img image='%1' color='#66E673' size='0.9'/> Yours  <img image='%1' color='#CC8CFF' size='0.9'/> Players  <img image='%1' color='#FF5A47' size='0.9'/> Enemy  <img image='%1' color='#C7B880' size='0.9'/> Empty<br/>Dashed ring: last known.  Cross: destroyed.<br/>Red ring: in combat.  Gold: commander orders.</t>",
+            ["mil_dot"] call HPC_fnc_mapIcon
+        ]
     ];
     _lines joinString ""
 };
@@ -500,8 +561,8 @@ private _summary = {
 private _drawnMap = controlNull;
 private _subscribed = false;
 private _nextRefresh = 0;
-private _previousIntel = [];
-private _tooltipGroup = grpNull;
+private _previousIntel = []; // [group, position, icon, label, size]
+private _tooltipKey = [];
 private _tooltipAt = 0;
 while {true} do {
     private _commandOpen = !isNull (uiNamespace getVariable ["HPC_AICommandDisplay", displayNull]);
@@ -521,6 +582,7 @@ while {true} do {
     if (!HPC_mapDrawing) then {
         if !(HPC_mapShots isEqualTo []) then {HPC_mapShots = []};
         HPC_mapHover = grpNull;
+        HPC_mapHoverGhost = [];
         uiSleep 0.5;
         continue;
     };
@@ -631,64 +693,125 @@ while {true} do {
             private _alive = units _x select {alive _x};
             count _alive >= 2 || {_alive findIf {!isNull objectParent _x} >= 0}
         };
+        // A group we lose sight of keeps its marker and card at its last known position
+        // for three minutes; one that is wiped out turns grey with a cross for a minute.
         {
-            if (!(_x in _known) && {!isNull _x} && {alive leader _x}) then {
-                HPC_mapLastKnown pushBack [_x, getPosASL leader _x, _now + 180];
+            _x params ["_group", "_pos", "_icon", "_label", "_size"];
+            if !(_group in _known) then {
+                private _alive = !isNull _group && {units _group findIf {alive _x} >= 0};
+                HPC_mapLastKnown = HPC_mapLastKnown select {!((_x select 0) isEqualTo _group)};
+                HPC_mapLastKnown pushBack [_group, _pos, _icon, _label, _size, _now, _now + ([60, 180] select _alive), !_alive,
+                    if (_alive) then {[_group] call HPC_fnc_mapTooltipText} else {""}];
             };
         } forEach _previousIntel;
-        _previousIntel = _known;
-        HPC_mapLastKnown = HPC_mapLastKnown select {(_x select 2) > _now && {!((_x select 0) in _known)}};
+        {
+            if (!(_x select 7) && {isNull (_x select 0) || {units (_x select 0) findIf {alive _x} < 0}}) then {
+                _x set [7, true];
+                _x set [6, _now + 60];
+            };
+        } forEach HPC_mapLastKnown;
+        HPC_mapLastKnown = HPC_mapLastKnown select {(_x select 6) > _now && {(_x select 7) || {!((_x select 0) in _known)}}};
         HPC_mapIntel = _known apply {
             private _alive = {alive _x} count units _x;
             [_x, [[_x] call HPC_fnc_mapNatoType] call HPC_fnc_mapIcon, HPC_mapEnemyColor, format ["Enemy (%1)", _alive], 24]
         };
+        _previousIntel = HPC_mapIntel apply {[_x select 0, getPosASL leader (_x select 0), _x select 1, _x select 3, _x select 4]};
 
         if (visibleMap) then {
-            if (isNull (_display displayCtrl _panelIdc)) then {[_display] call _createPanel};
-            private _panel = _display displayCtrl _panelIdc;
-            _panel ctrlSetStructuredText parseText (call _summary);
-            // Fit the panel to its text and keep the buttons just below it.
+            if (isNull (_display displayCtrl _bodyIdc)) then {[_display] call _createPanel};
             private _gy = safezoneH / 54;
-            private _height = (ctrlTextHeight _panel) + 0.5 * _gy;
-            (ctrlPosition _panel) params ["_px", "_py", "_pw"];
-            _panel ctrlSetPosition [_px, _py, _pw, _height];
-            _panel ctrlCommit 0;
+            private _body = _display displayCtrl _bodyIdc;
+            _body ctrlSetStructuredText parseText (call _summary);
+            // Fit the body to its text, the Command button below it and the backing around both.
+            (ctrlPosition _body) params ["_px", "_py", "_pw"];
+            private _height = (ctrlTextHeight _body) + 0.2 * _gy;
+            _body ctrlSetPosition [_px, _py, _pw, _height];
+            _body ctrlCommit 0;
+            private _bottom = _py + _height;
+            private _command = _display displayCtrl 77904;
+            private _canCommand = _commander && {HPC_AIWarfare};
+            _command ctrlShow _canCommand;
+            if (_canCommand) then {
+                (ctrlPosition _command) params ["_cx", "", "_cw", "_ch"];
+                _command ctrlSetPosition [_cx, _bottom + 0.5 * _gy, _cw, _ch];
+                _command ctrlCommit 0;
+                _bottom = _bottom + 0.5 * _gy + _ch;
+            };
+            private _bg = _display displayCtrl _bgIdc;
+            (ctrlPosition _bg) params ["_gx0", "_gy0", "_gw"];
+            _bg ctrlSetPosition [_gx0, _gy0, _gw, _bottom + 0.8 * _gy - _gy0];
+            _bg ctrlCommit 0;
             {
-                _x params ["_offset", "_row", "_on", "_label"];
-                private _button = _display displayCtrl (_panelIdc + _offset);
-                (ctrlPosition _button) params ["_bx", "", "_bw", "_bh"];
-                _button ctrlSetPosition [_bx, _py + _height + 0.3 * _gy + _row * 2.5 * _gy, _bw, _bh];
-                _button ctrlCommit 0;
-                if (_label != "") then {
-                    // Toggles: lit teal when the layer is shown, dim with muted text when hidden.
-                    _button ctrlSetText (_label + (["  OFF", ""] select _on));
-                    [_button, [[0.16, 0.20, 0.21, 0.95], [0.20, 0.42, 0.38, 0.95]] select _on, [[0.62, 0.69, 0.72, 1], [0.92, 0.94, 0.95, 1]] select _on, _display displayCtrl 51] call HPC_fnc_buttonColor;
-                };
-            } forEach [[1, 0, HPC_mapShowForces, "FORCES"], [4, 0, HPC_mapShowIntel, "INTEL"], [2, 0, HPC_mapShowTracers, "SHOTS"], [3, 1, true, ""]];
-            (_display displayCtrl (_panelIdc + 3)) ctrlShow (_commander && {HPC_AIWarfare});
+                _x params ["_idc", "_on", "_label"];
+                // Toggles: lit teal when the layer is shown, dim with muted text when hidden.
+                private _button = _display displayCtrl _idc;
+                _button ctrlSetText (_label + (["  OFF", ""] select _on));
+                [_button, [[0.16, 0.20, 0.21, 0.95], [0.20, 0.42, 0.38, 0.95]] select _on, [[0.62, 0.69, 0.72, 1], [0.92, 0.94, 0.95, 1]] select _on, _display displayCtrl 51] call HPC_fnc_buttonColor;
+            } forEach [[77902, HPC_mapShowForces, "FORCES"], [77905, HPC_mapShowIntel, "INTEL"], [77903, HPC_mapShowTracers, "SHOTS"]];
         };
     };
 
-    // Hover tooltip follows the mouse on the main map.
+    // Hover card follows the mouse on the main map.
     private _tooltip = _display displayCtrl _tooltipIdc;
+    private _accent = _display displayCtrl _tooltipAccentIdc;
+    private _tipBg = _display displayCtrl _tooltipBgIdc;
     if (!isNull _tooltip) then {
-        private _group = HPC_mapHover;
-        private _isGroup = _group isEqualType grpNull;
-        if (visibleMap && {!isNull _group} && {alive (if (_isGroup) then {leader _group} else {_group})}) then {
-            if (!(_group isEqualTo _tooltipGroup) || {_now - _tooltipAt > 1}) then {
-                _tooltip ctrlSetStructuredText parseText (if (_isGroup) then {[_group] call HPC_fnc_mapTooltipText} else {[_group] call HPC_fnc_mapVehicleTooltip});
-                _tooltipGroup = _group;
+        private _target = HPC_mapHover;
+        private _ghost = HPC_mapHoverGhost;
+        private _isGhost = !(_ghost isEqualTo []);
+        private _isGroup = _target isEqualType grpNull;
+        private _live = !_isGhost && {!isNull _target} && {alive (if (_isGroup) then {leader _target} else {_target})};
+        if (visibleMap && {_isGhost || _live}) then {
+            private _key = [_target, _ghost select [0, 1], _ghost param [7, false]];
+            if (!(_key isEqualTo _tooltipKey) || {_now - _tooltipAt > 1}) then {
+                private _text = switch (true) do {
+                    case (_isGhost && {_ghost select 7}): {
+                        format ["<t font='PuristaBold' size='1' color='#B5BEC3'>ENEMY GROUP</t><t align='right' size='0.85' color='#B5BEC3'>DESTROYED</t><br/><t size='0.85' color='#8FA3B4'>Wiped out %1 ago. The marker clears in %2.</t>",
+                            (_now - (_ghost select 5)) call HPC_fnc_mapAgo, ((_ghost select 6) - _now) call HPC_fnc_mapAgo]
+                    };
+                    case (_isGhost): {
+                        format ["<t font='PuristaBold' size='0.85' color='#F08A80'>LAST KNOWN POSITION</t><t align='right' size='0.85' color='#F08A80'>%1 ago</t><br/>%2<br/><t size='0.8' color='#8FA3B4'>Contact lost; the group may have moved.</t>",
+                            (_now - (_ghost select 5)) call HPC_fnc_mapAgo, (_ghost select 8) regexReplace ["<t size='0.8' color='#8FA3B4'>Spotted by our forces</t>", ""]]
+                    };
+                    case (_isGroup): {[_target] call HPC_fnc_mapTooltipText};
+                    default {[_target] call HPC_fnc_mapVehicleTooltip};
+                };
+                _tooltip ctrlSetStructuredText parseText _text;
+                _tooltipKey = _key;
                 _tooltipAt = _now;
+                // accent bar: grey destroyed, red enemy, green yours, purple other players', blue AI
+                private _side = switch (true) do {
+                    case (_isGhost && {_ghost select 7}): {[0.6, 0.63, 0.65, 1]};
+                    case (_isGhost): {[0.95, 0.42, 0.36, 1]};
+                    case (_isGroup && {side _target != GRLIB_side_friendly}): {[0.92, 0.2, 0.16, 1]};
+                    case (_isGroup): {
+                        private _owner = [_target] call HPC_fnc_mapAssetOwner;
+                        switch (true) do {case (_owner == ""): {[0.3, 0.62, 1, 1]}; case (_owner == PAR_Grp_ID): {HPC_mapColorMine}; default {HPC_mapColorPlayers}}
+                    };
+                    default {
+                        private _entry = HPC_mapVehicles select {(_x select 0) isEqualTo _target};
+                        if (_entry isEqualTo []) then {HPC_mapColorPlayers} else {(_entry select 0) select 2}
+                    };
+                };
+                _accent ctrlSetBackgroundColor _side;
             };
+            // card: backing, accent bar on the left, text inset by the padding
             getMousePosition params ["_mx", "_my"];
-            private _w = 0.17 * safezoneW;
-            private _h = (ctrlTextHeight _tooltip) max (0.05 * safezoneH);
-            _tooltip ctrlSetPosition [(_mx + 0.015) min (safezoneX + safezoneW - _w), (_my + 0.025) min (safezoneY + safezoneH - _h), _w, _h];
-            _tooltip ctrlCommit 0;
-            _tooltip ctrlShow true;
+            private _gx = safezoneH * 0.75 / 54;
+            private _gy = safezoneH / 54;
+            private _tw = (ctrlPosition _tooltip) select 2;
+            private _th = (ctrlTextHeight _tooltip) max (1.5 * _gy);
+            private _w = _tw + 1.4 * _gx;
+            private _h = _th + 1.0 * _gy;
+            private _tx = (_mx + 0.015) min (safezoneX + safezoneW - _w);
+            private _ty = (_my + 0.025) min (safezoneY + safezoneH - _h);
+            _tipBg ctrlSetPosition [_tx, _ty, _w, _h];
+            _tooltip ctrlSetPosition [_tx + 0.9 * _gx, _ty + 0.5 * _gy, _tw, _th];
+            _accent ctrlSetPosition [_tx, _ty, 0.22 * _gx, _h];
+            {_x ctrlCommit 0; _x ctrlShow true} forEach [_tipBg, _tooltip, _accent];
         } else {
-            if (ctrlShown _tooltip) then {_tooltip ctrlShow false};
-            _tooltipGroup = grpNull;
+            if (ctrlShown _tooltip) then {{_x ctrlShow false} forEach [_tipBg, _tooltip, _accent]};
+            _tooltipKey = [];
         };
     };
     uiSleep 0.05;

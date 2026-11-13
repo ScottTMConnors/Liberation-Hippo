@@ -787,17 +787,25 @@ class Renderer:
         if base["valign"] == "middle" and len(lines) == 1:
             y = (layer.height - total) / 2
         for ln in lines:
-            lw = sum(it["w"] for it in ln["items"])
-            x = {"center": (layer.width - lw) / 2, "right": layer.width - lw}.get(ln["align"], 0)
+            # Arma keeps differently aligned runs on one line: <t>left</t><t align='right'>x</t>
+            groups = {}
             for it in ln["items"]:
-                ih = ln["h"]
-                if it["kind"] == "text":
-                    f, cap = it["font"]
-                    draw_text_line(layer, (x, y + ih - it["lh"], x + it["w"] + 2, y + ih), it["text"], f, cap,
-                                   it["color"], "left", clip=False)
-                else:
-                    self.picture(layer, (x, y + ih - it["lh"], x + it["w"], y + ih), it["image"], it["color"], True)
-                x += it["w"]
+                groups.setdefault(it.get("align", ln["align"]), []).append(it)
+            for align, items in groups.items():
+                if align != "left":
+                    while items and items[-1]["kind"] == "text" and items[-1]["text"].isspace():
+                        items = items[:-1]
+                lw = sum(it["w"] for it in items)
+                x = {"center": (layer.width - lw) / 2, "right": layer.width - lw}.get(align, 0)
+                for it in items:
+                    ih = ln["h"]
+                    if it["kind"] == "text":
+                        f, cap = it["font"]
+                        draw_text_line(layer, (x, y + ih - it["lh"], x + it["w"] + 2, y + ih), it["text"], f, cap,
+                                       it["color"], "left", clip=False)
+                    else:
+                        self.picture(layer, (x, y + ih - it["lh"], x + it["w"], y + ih), it["image"], it["color"], True)
+                    x += it["w"]
             y += ln["h"]
         paste(surface, layer, box[0], box[1])
 
@@ -839,7 +847,7 @@ class StructuredLayout:
                     continue
                 if not cur()["items"]:
                     cur()["align"] = st["align"]
-                cur()["items"].append({"kind": "text", "text": p, "w": wpx, "lh": lh, "font": font, "color": col})
+                cur()["items"].append({"kind": "text", "text": p, "w": wpx, "lh": lh, "font": font, "color": col, "align": st["align"]})
                 cur()["h"] = max(cur()["h"], lh)
                 x[0] += wpx
 
@@ -862,7 +870,7 @@ class StructuredLayout:
                 img = a.get("image", "")
                 if x[0] + lh > self.width and x[0] > 0:
                     newline(st)
-                cur()["items"].append({"kind": "img", "image": img, "w": lh, "lh": lh, "color": col})
+                cur()["items"].append({"kind": "img", "image": img, "w": lh, "lh": lh, "color": col, "align": st["align"]})
                 cur()["h"] = max(cur()["h"], lh)
                 x[0] += lh
             elif tag in ("t", "a"):
@@ -879,8 +887,6 @@ class StructuredLayout:
                                 pass
                         elif k in ("color", "font", "align", "valign"):
                             st[k] = v
-                    if "align" in a and x[0] > 0:
-                        newline(st)
                     if not selfclose:
                         stack.append(st)
         if pos < len(text):

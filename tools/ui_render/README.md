@@ -57,6 +57,19 @@ Lists without data show `Item 1..4` placeholders.
   uncached `.paa` shows as "image not found". `#(argb,..)color(..)` ->
   solid colour. Missing images -> labelled grey box + warning.
 
+## Map overlay (map_render.py)
+
+The main map overlay (`scripts/client/markers/HPC_mapOverlay.sqf`) is drawn by script on
+display 12, so it has its own renderer: a stand-in map (or `--background` shot), the markers
+in the style of `HPC_fnc_mapDraw` (halo, outlined label, rings, last known / destroyed,
+hover brackets, order lines) and the controls of `ui/hippo_map.hpp` (`HPC_MapOverlayPreview`).
+
+```
+python tools/ui_render/map_render.py --markers tools/ui_render/samples/map_markers.json     --data tools/ui_render/samples/map_overlay.json -o mybuild/ui_render_out/map.png
+```
+Marker textures come from `python tools/map_textures.py` (`core.liberation/res/map`).
+Keep the style constants in `map_render.py` in step with `HPC_fnc_mapDraw`.
+
 ## Known limits
 
 * Only static config: controls created or filled by scripts (`ctrlCreate`,
@@ -64,7 +77,7 @@ Lists without data show `Item 1..4` placeholders.
   (e.g. "disabled" overlays) show unless listed in `hide`.
 * Map is a flat grid placeholder; 3D objects, tree, HTML, video are not drawn;
   sliders/checkboxes/progress are simplified; no tooltips, hover, scrollbars.
-* Structured text: `<t>` (color/size/font/align), `<br/>`, `<img>`; no valign
+* Structured text: `<t>` (color/size/font/align; differently aligned runs share a line as in game), `<br/>`, `<img>`; no valign
   per run, no underline/shadow; wrap is word-based.
 * Fonts are approximations (Bahnschrift glyph shapes differ from Purista).
 * Compressed PBO entries are not supported (vanilla UI PBOs are uncompressed).
