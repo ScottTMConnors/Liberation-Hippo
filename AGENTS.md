@@ -47,5 +47,5 @@ the uploader lives in the git-ignored `tools/workshop/`.
 Before engine runs, run `python tools/sqf_wiki_check.py` (lexical errors,
 unknown event handlers, bad remoteExec targets and undefined globals checked
 against the arma3-wiki cache) and `python -m unittest test_sqf_wiki_check
-test_mission_compact` from `tools/`. The `hippo-review` project skill lists the
+test_mission_compact test_map_layout` from `tools/`. Map layout rules (Commander group first in every `maps/*/mission.sqm`) are checked by `python tools/map_layout.py` (`--fix` to repair) and by every build. The `hippo-review` project skill lists the
 full workflow and recurring bug patterns.

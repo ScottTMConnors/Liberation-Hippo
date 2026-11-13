@@ -7,6 +7,7 @@ import subprocess
 import re
 import tempfile
 from mission_compact import compact_stage
+from map_layout import check_maps
 import xml.etree.ElementTree as ET
 from datetime import datetime
 from pathlib import Path
@@ -21,7 +22,9 @@ def sha(path): return hashlib.sha256(path.read_bytes()).hexdigest()
 OVERVIEW_TEXT='Hippos Conquest: a Liberation RX fork. Capture the island sector by sector with your squad: build FOBs, command AI forces and manage manpower, ammo and fuel.'
 
 # Map folder suffix -> terrain name shown in Arma.
-MAPS={'Malden':'Malden 2035','Tanoa':'Tanoa','Altis':'Altis','Stratis':'Stratis','Enoch':'Livonia','SefrouRamal':'Sefrou-Ramal'}
+_TERRAIN_NAMES={'Malden':'Malden 2035','Enoch':'Livonia','SefrouRamal':'Sefrou-Ramal','Cam_Lao_Nam':'Cam Lao Nam','Chernarus_Winter':'Chernarus (Winter)','SPE_Mortain':'Mortain','SPEX_carentan':'Carentan','gm_weferlingen_summer':'Weferlingen (Summer)','gm_weferlingen_winter':'Weferlingen (Winter)','UMB_Colombia':'Colombia','OPTRE_iberius':'Iberius'}
+# Every maps/Liberation_RX.<suffix> folder can be built.
+MAPS={p.name.split('.',1)[1]:_TERRAIN_NAMES.get(p.name.split('.',1)[1],p.name.split('.',1)[1]) for p in sorted((ROOT/'maps').glob('Liberation_RX.*')) if (p/'mission.sqm').exists()}
 
 def next_version(base_version, manifest_paths):
     """Advance the patch number after every successful local build (shared by all maps)."""
@@ -102,6 +105,8 @@ def main():
     GAME=args.game_directory
     dirty=subprocess.check_output(['git','status','--porcelain','--','core.liberation',*[f'maps/Liberation_RX.{m}' for m in args.map]],cwd=ROOT).decode().strip()
     if dirty: raise RuntimeError('Commit mission source before producing a release candidate.\n'+dirty)
+    bad=check_maps(list(dict.fromkeys(args.map)),GAME)
+    if bad: raise RuntimeError('Map layout out of date (fix with python tools/map_layout.py --fix):\n'+'\n'.join(f'{m}: {i}' for m,v in bad.items() for i in v))
     version=next(k.findtext('Original') for k in ET.parse(ROOT/'core.liberation/stringtable.xml').getroot().iter('Key') if k.attrib.get('ID')=='STR_MISSION_VERSION')
     stamp=datetime.now().strftime('%Y%m%d-%H%M%S')
     out=ROOT/'mybuild'/'releases'
