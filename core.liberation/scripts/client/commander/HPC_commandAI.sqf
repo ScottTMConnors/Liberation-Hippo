@@ -246,10 +246,10 @@ while {!isNull _display} do {
                 ([_group] call HPC_fnc_mapGroupInfo) params ["_kind", "_name", "_marker", "_alive"];
                 ([_group] call HPC_fnc_mapOrderText) params ["_orderText", "_target", "_ordered"];
                 private _combat = combatBehaviour _group == "COMBAT";
-                private _text = format ["%1%2  (%3)", ["", "! "] select _combat, _name, _alive];
+                private _text = format ["%1  (%2)", _name, _alive];
                 if (_pointsText != "") then {_text = _text + "  -  " + _pointsText};
                 _groupsList lbSetText [_row, _text];
-                _groupsList lbSetTextRight [_row, _orderText];
+                _groupsList lbSetTextRight [_row, _orderText + (["", "  ·  in combat"] select _combat)];
                 _groupsList lbSetPicture [_row, [_marker] call HPC_fnc_mapIcon];
                 _groupsList lbSetPictureColor [_row, [0.3, 0.62, 1, 1]];
                 private _color = switch (true) do {
