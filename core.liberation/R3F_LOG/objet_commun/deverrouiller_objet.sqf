@@ -79,7 +79,7 @@ else
 		// Mise à jour du propriétaire du verrou
 		[_objet, player] call R3F_LOG_FNCT_definir_proprietaire_verrou;
 		
-		systemChat STR_R3F_LOG_deverrouillage_succes_attente;
+		[STR_R3F_LOG_deverrouillage_succes_attente] call HPC_fnc_info;
 	}
 	else
 	{

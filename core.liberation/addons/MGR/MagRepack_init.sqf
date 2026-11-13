@@ -56,6 +56,6 @@ outlw_MR_listIDCs = [(missionConfigFile >> "MR_Dialog" >> "Controls")] call outl
 waitUntil {sleep 0.5;!(isNull (findDisplay 46))};
 (findDisplay 46) displayAddEventHandler ["KeyDown", "_this call outlw_MR_keyDown;"];
 
-systemChat localize "STR_MGR_REPACK_INITIALIZED";
-systemChat format [localize "STR_MGR_KEYBINDING", call outlw_MR_keyListToString];
+diag_log localize "STR_MGR_REPACK_INITIALIZED";
+[format [localize "STR_MGR_KEYBINDING", call outlw_MR_keyListToString]] call HPC_fnc_info;
 

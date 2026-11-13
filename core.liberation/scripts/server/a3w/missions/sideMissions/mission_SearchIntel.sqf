@@ -160,7 +160,7 @@ _successExec = {
 	private _text = format ["Reward Received: %1 XP", _rwd_xp];
 	{
 		[_x, _rwd_xp] call F_addScore;
-		[gamelogic, _text] remoteExec ["globalChat", owner _x];
+		[_text] remoteExec ["HPC_fnc_info", owner _x];
 	} forEach ([_missionPos, GRLIB_sector_size] call F_getNearbyPlayers);
 
 	_successHintMessage = "STR_SEARCH_INTEL_MESSAGE2";

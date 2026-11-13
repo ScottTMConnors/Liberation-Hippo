@@ -7,12 +7,12 @@ if (_mission_index == 3 && {!(call HPC_fnc_rcAdmin)}) exitWith {}; // final miss
 
 if (isNil "LRX_MissionMarkersMil") exitWith {
 	private _msg = "Markers for Secondary Mission not yet initialized, please wait.";
-	[gamelogic, _msg] remoteExec ["globalChat", 0];
+	[_msg] remoteExec ["HPC_fnc_info", 0];
 	diag_log format ["-- LRX Error: %1", _msg];
 };
 if (GRLIB_secondary_starting) exitWith {
 	private _msg = "Multiple calls to start Secondary Mission !!";
-	[gamelogic, _msg] remoteExec ["globalChat", 0];
+	[_msg] remoteExec ["HPC_fnc_info", 0];
 	diag_log format ["-- LRX Error: %1", _msg];
 };
 

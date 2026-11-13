@@ -51,5 +51,5 @@ if (_item in VAM_cargo_class_names) then {
 
 if (_msg != "") then {
 	hintSilent _msg;
-	gamelogic globalChat _msg;
+	[_msg] call HPC_fnc_info;
 };

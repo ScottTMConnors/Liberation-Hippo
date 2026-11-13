@@ -7,7 +7,7 @@ if (!isNil "GRLIB_fob_inuse") exitWith {
 	private _payer = _owner call BIS_fnc_getUnitByUID;
 	if (!isNull _payer) then {
 		[_payer, 1000, 0] call ammo_add_remote_call;
-		[gamelogic, "Another FOB operation is in progress, upgrade refunded. Try again in a few seconds."] remoteExec ["globalChat", owner _payer];
+		["Another FOB operation is in progress, upgrade refunded. Try again in a few seconds."] remoteExec ["HPC_fnc_info", owner _payer];
 	};
 };
 GRLIB_fob_inuse = true;

@@ -7,5 +7,5 @@ if (alive _caller && GRLIB_Commander_VoteEnabled && _sector in GRLIB_AvailAttack
     publicVariable "GRLIB_Sector_Votes";
     GRLIB_IsVoteInProgress = true;
     private _msg = format ["%1 has voted for %2!", name _caller, markerText _sector];
-    [[GRLIB_side_friendly, "HQ"], _msg] remoteExec ["sideChat", 0];
+    [_msg, "info", "HQ"] remoteExec ["HPC_fnc_info", 0];
 };

@@ -8,4 +8,4 @@ call compile preprocessFileLineNumbers "addons\TAXI\taxi_functions.sqf";
 call compile preprocessFileLineNumbers "addons\TAXI\taxi_classname.sqf";
 
 waitUntil {!(isNull (findDisplay 46))};
-systemChat "-------- Air TAXI Initialized --------";
+diag_log "-------- Air TAXI Initialized --------";

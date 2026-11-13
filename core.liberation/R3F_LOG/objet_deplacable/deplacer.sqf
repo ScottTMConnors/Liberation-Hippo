@@ -404,7 +404,7 @@ else
 						// On interdit de monter dans un v�hicule tant que l'objet est port�
 						if (vehicle _joueur != _joueur) then
 						{
-							systemChat STR_R3F_LOG_ne_pas_monter_dans_vehicule;
+							[STR_R3F_LOG_ne_pas_monter_dans_vehicule] call HPC_fnc_info;
 							_joueur action ["GetOut", vehicle _joueur];
 							_joueur action ["Eject", vehicle _joueur];
 							sleep 1;

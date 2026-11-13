@@ -1,17 +1,17 @@
 params [ ["_mission_cost", 0], "_caller" ];
 
 private _all_possible_sectors = ([SpawnMissionMarkers] call checkSpawn) apply { _x select 0 };
-if (count _all_possible_sectors == 0) exitWith { [gamelogic, "Could not find position for fob hunting mission"] remoteExec ["globalChat", 0] };
+if (count _all_possible_sectors == 0) exitWith { ["Could not find position for fob hunting mission"] remoteExec ["HPC_fnc_info", 0] };
 
 private _missionPos = [_all_possible_sectors, 40] call F_findFlatPlace;
-if (count _missionPos == 0) exitWith { [gamelogic, "Could not find position for fob hunting mission"] remoteExec ["globalChat", 0] };
+if (count _missionPos == 0) exitWith { ["Could not find position for fob hunting mission"] remoteExec ["HPC_fnc_info", 0] };
 
 private _spawn_marker = [GRLIB_sector_size, _missionPos, _all_possible_sectors] call F_getNearestSector;
 GRLIB_secondary_used_positions pushbackUnique _spawn_marker;
 
 private _msg = "Secondary Mission: Fob Hunting";
 diag_log format ["--- LRX %1 start at %2", _msg, time];
-[gamelogic, _msg] remoteExec ["globalChat", 0];
+[_msg] remoteExec ["HPC_fnc_info", 0];
 resources_intel = resources_intel - _mission_cost;
 GRLIB_secondary_in_progress = 0;
 publicVariable "GRLIB_secondary_in_progress";
@@ -37,7 +37,7 @@ waitUntil {
 };
 if ({ alive _x } count _base_objectives > 0) then {
 	diag_log "--- LRX Secondary FOB hunting: time limit reached, mission aborted";
-	[gamelogic, "Secondary mission: the enemy FOB has been relocated (time limit reached)."] remoteExec ["globalChat", 0];
+	["Secondary mission: the enemy FOB has been relocated (time limit reached)."] remoteExec ["HPC_fnc_info", 0];
 } else {
 	[3] remoteExec ["remote_call_intel", 0];
 	combat_readiness = 15 max round (combat_readiness * GRLIB_secondary_objective_impact);

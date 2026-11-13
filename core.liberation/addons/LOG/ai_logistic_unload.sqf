@@ -40,7 +40,7 @@ if (count _storage_list > 0) then {
     } forEach _truck_load;
     _transport allowDamage true;
     _transport setVariable ["GRLIB_ammo_vehicle_load", _truck_load, true];
-    gamelogic globalChat format ["AI transport delivered cargo to %1.", [_storage] call F_getLRXName ];
+    [format ["AI transport delivered cargo to %1.", [_storage] call F_getLRXName ]] call HPC_fnc_info;
 } else {
     [_driver, "unload"] call ai_logistic_failed;
 };

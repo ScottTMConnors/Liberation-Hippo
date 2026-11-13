@@ -104,8 +104,8 @@ private _enabled = ((["PAR_Revive"] call lrx_getParamValue) != 0);
 if (_enabled) then {
 	waitUntil {!(isNull (findDisplay 46))};
 	if (GRLIB_ACE_medical_enabled) then {
-		systemChat localize "STR_PAR_AI_REVIVE_ACE_INITIALIZED";
+		diag_log localize "STR_PAR_AI_REVIVE_ACE_INITIALIZED";
 	} else {
-		systemChat localize "STR_PAR_AI_REVIVE_INITIALIZED";
+		diag_log localize "STR_PAR_AI_REVIVE_INITIALIZED";
 	};
 };

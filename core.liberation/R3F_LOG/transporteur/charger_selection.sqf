@@ -52,7 +52,7 @@ else
 							_objet setVariable ["R3F_LOG_est_transporte_par", _transporteur, true];
 							_objet setVariable ["GRLIB_counter_TTL", nil, true];
 
-							systemChat STR_R3F_LOG_action_charger_en_cours;
+							[STR_R3F_LOG_action_charger_en_cours] call HPC_fnc_info;
 
 							sleep 2;
 
@@ -66,9 +66,9 @@ else
 									[_objet] remoteExec ["deleteVehicleCrew", _objet]; // UAV crew: delete where the vehicle is local
 								};
 
-								systemChat format [STR_R3F_LOG_action_charger_fait,
+								[format [STR_R3F_LOG_action_charger_fait,
 									[_objet] call F_getLRXName,
-									[_transporteur] call F_getLRXName];
+									[_transporteur] call F_getLRXName]] call HPC_fnc_info;
 							}
 							else
 							{

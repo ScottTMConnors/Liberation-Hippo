@@ -93,7 +93,7 @@ _failedExec = {
 	{ [_x] call HPC_fnc_deleteUnit } forEach (units _patrol_grp);
     { [_x, -10] call F_addReput } forEach (AllPlayers - (entities "HeadlessClient_F"));
 	private _msg = format [localize "STR_SIDE_FAILED_REPUT", -10];
-	[gamelogic, _msg] remoteExec ["globalChat", 0];
+	[_msg] remoteExec ["HPC_fnc_info", 0];
     _failedHintMessage = ["STR_DEFPATROL_MESSAGE3", sideMissionColor];
 };
 

@@ -1,6 +1,6 @@
 params ["_vehicle", "_driver", "_dest"];
 
-gamelogic globalChat localize "STR_LOGISTIC_TRANSIT";
+[localize "STR_LOGISTIC_TRANSIT"] call HPC_fnc_info;
 
 _vehicle setFuel 1;
 _vehicle engineOn true;

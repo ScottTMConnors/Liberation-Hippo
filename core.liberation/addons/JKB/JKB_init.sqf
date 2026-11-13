@@ -90,4 +90,4 @@ addMusicEventHandler ["MusicStop", {
 }];
 
 waitUntil {!(isNull (findDisplay 46))};
-systemChat localize "STR_JKB_JUKEBOX_INITIALIZED";
+diag_log localize "STR_JKB_JUKEBOX_INITIALIZED";

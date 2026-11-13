@@ -38,7 +38,7 @@ while { alive _unit && !_captured } do {
 			_fleeing = true;
 			if (side group _unit == GRLIB_side_friendly) then {
 				private _text = format ["Alert! %1 prisoner %2 is escaping!", name _player, name _unit];
-				[gamelogic, _text] remoteExec ["globalChat", 0];
+				[_text] remoteExec ["HPC_fnc_info", 0];
 			};
 			[_unit, _friendly] spawn escape_ai;
 			_timeout = time + (15 * 60);

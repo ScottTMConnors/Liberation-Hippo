@@ -19,6 +19,8 @@ if (isServer) then {
     private _rewardPlayer = _attribution select 1;
     private _indirect_kill = _attribution select 2;
     if (isNull _killer && {!isNull _rewardPlayer}) then {_killer = _rewardPlayer};
+    private _feedReward = ""; // what the rewarded player got, shown in their kill feed
+    private _feedType = "";
 
 	private _unit_class = typeOf _unit;
 	private _unit_side = if (_unit getVariable ["HPC_ambientAgent",false]) then {GRLIB_side_civilian} else {side group _unit};
@@ -114,15 +116,16 @@ if (isServer) then {
 				_isKamikaz = _unit getVariable ["GRLIB_is_kamikaze", false];
 				_isZombie = (_unit_class select [0,10] == "RyanZombie");
 				if (_isKamikaz) exitWith {
-					_msg = format ["%1 kill a Kamikaze !! +10 XP", name _killer];
-					[gamelogic, _msg] remoteExec ["globalChat", 0];
+					_feedReward = "+11 XP";
+					_feedType = "kamikaze";
 					[_killer, 11] call F_addScore;
 					[_killer, 3500] remoteExec ["addrating", owner _killer];
 				};
 
-				if (_isZombie) exitWith { [_killer, 5] call F_addScore };
+				if (_isZombie) exitWith { [_killer, 5] call F_addScore; _feedReward = "+5 XP" };
 				if (!_isKamikaz && !_isZombie && _unit_side == GRLIB_side_civilian || _isPrisoner) exitWith {
 					stats_civilians_killed = stats_civilians_killed + 1;
+					_feedType = "civ";
 					if (isPlayer _killer) then {
 						if (GRLIB_civ_penalties > 0) then {
 							private _penalty = GRLIB_civ_penalties;
@@ -135,12 +138,12 @@ if (isServer) then {
 							if (_indirect_kill) then { _penalty = GRLIB_civ_penalties };
 							if (_killer getVariable ["GREUH_reput_count", 0] == -100) then {
 								_penalty = 100;
-								_msg = format ["Player %1, -%2 score penalty! you kill too many civilians!", name _killer, _penalty];
-								[gamelogic, _msg] remoteExec ["globalChat", owner _killer];
+								_msg = format ["-%1 XP: you have killed too many civilians.", _penalty];
+								[_msg, "bad", "Civilian casualties", 10] remoteExec ["HPC_fnc_info", owner _killer];
 							};
 							[_killer, -_penalty] call F_addScore;
 							[_killer, -5] call F_addReput;
-							[name _unit, _penalty, _killer] remoteExec ["remote_call_civ_penalty", 0];
+							_feedReward = format ["-%1 XP  -5 reputation", _penalty];
 							combat_readiness = combat_readiness + (0.5 * GRLIB_difficulty_modifier);
 							stats_readiness_earned = stats_readiness_earned + (0.5 * GRLIB_difficulty_modifier);
 							if (combat_readiness > 100 && GRLIB_difficulty_modifier < 2) then { combat_readiness = 100 };
@@ -157,9 +160,9 @@ if (isServer) then {
 						if (_owner_id != "0" && GRLIB_civ_penalties > 0 && {!isNull _owner_player}) then { // owner may be offline
 							[_owner_player, -GRLIB_civ_penalties] call F_addScore;
 							[_owner_player, -1] call F_addReput;
-							_msg = format ["%1, Your AI killed a civilian !!", name _owner_player];
-							[gamelogic, _msg] remoteExec ["globalChat", 0];
-							[name _unit, GRLIB_civ_penalties, _owner_player] remoteExec ["remote_call_civ_penalty", 0];
+							_msg = format ["Your AI %1 killed a civilian: -%2 XP, -1 reputation.", name _killer, GRLIB_civ_penalties];
+							[_msg, "bad", "Civilian casualties", 8] remoteExec ["HPC_fnc_info", owner _owner_player];
+							_feedReward = format ["-%1 XP  -1 reputation", GRLIB_civ_penalties];
 						};
 					};
 				};
@@ -169,6 +172,7 @@ if (isServer) then {
                     if (!isNull _rewardPlayer) then {
                         stats_opfor_killed_by_players = stats_opfor_killed_by_players + 1;
                         [_rewardPlayer, 1] call F_addScore;
+                        _feedReward = "+1 XP";
                     };
                     // AI vehicle crews bank one point per enemy soldier
                     private _armorKey = (group _killer) getVariable ["HPC_armorSquad", ""];
@@ -187,9 +191,26 @@ if (isServer) then {
 				};
 				if (_unit_side == GRLIB_side_friendly) exitWith {
 					stats_blufor_teamkills = stats_blufor_teamkills + 1;
-					if (GRLIB_civ_penalties > 0) then { [_killer, -50] call F_addScore };
-					_msg = localize "STR_FRIENDLY_FIRE";
-					[gamelogic, _msg] remoteExec ["globalChat", 0];
+					_feedType = "tk";
+					private _penaltyText = "";
+					if (GRLIB_civ_penalties > 0 && {isPlayer _killer}) then {
+						[_killer, -50] call F_addScore;
+						_feedReward = "-50 XP";
+						_penaltyText = " -50 XP.";
+					};
+					// Only the shooter (or the owner of the AI that fired) and the victim see it.
+					private _shooter = [_rewardPlayer, _killer] select (isPlayer _killer);
+					if (!isNull _shooter && {isPlayer _shooter}) then {
+						_msg = if (_shooter == _killer) then {
+							format ["You killed friendly %1.%2", name _unit, _penaltyText]
+						} else {
+							format ["Your AI %1 killed friendly %2.", name _killer, name _unit]
+						};
+						[_msg, "bad", "Friendly fire", 8] remoteExec ["HPC_fnc_info", owner _shooter];
+					};
+					if (isPlayer _unit) then {
+						[format ["You were killed by friendly fire from %1.", name _killer], "warn", "Friendly fire", 8] remoteExec ["HPC_fnc_info", owner _unit];
+					};
 				};
 			};
 			if (_unit_side == GRLIB_side_friendly) then {
@@ -240,15 +261,17 @@ if (isServer) then {
 			_owner_id = getPlayerUID _rewardPlayer;
 			if (GRLIB_tk_mode > 0 && {!(_unit getVariable ["GRLIB_vehicle_owner", ""] in ["", "public", "server", _owner_id])}) then {
 				_penalty = 50;
-				_msg = format ["Penalty of %1 XP to %2 for destroying a friendly vehicle.", _penalty, name _rewardPlayer];
-				[gamelogic, _msg] remoteExec ["globalChat", 0];
+				_msg = format ["You destroyed a friendly %1: -%2 XP.", [_unit] call F_getLRXName, _penalty];
+				[_msg, "bad", "Friendly fire", 8] remoteExec ["HPC_fnc_info", owner _rewardPlayer];
+				_feedReward = format ["-%1 XP", _penalty];
+				_feedType = "tk";
 				[_rewardPlayer, -_penalty] call F_addScore;
 			};
 
 			if (_hostileVehicle) then {
 				_bounty = [_unit] call F_getBounty;
 				if (((_bounty select 0) + (_bounty select 1)) > 0) then {
-					[_unit_class, _bounty, _rewardPlayer] remoteExec ["remote_call_ammo_bounty", 0];
+					_feedReward = format ["+%1 ammo  +%2 fuel  +%3 XP", _bounty select 0, _bounty param [2, 0], _bounty select 1];
 					[_rewardPlayer, (_bounty select 0), (_bounty select 2)] call ammo_add_remote_call;
 					[_rewardPlayer, (_bounty select 1)] call F_addScore;
 					stats_opfor_vehicles_killed_by_players = stats_opfor_vehicles_killed_by_players + 1;
@@ -270,4 +293,5 @@ if (isServer) then {
 
 		[_unit, false, true, true] spawn F_vehicleClean;
 	};
+	[_unit, _killer, _rewardPlayer, _unit_side, _killer_side, _feedReward, _feedType] call HPC_fnc_killFeedSend;
 };

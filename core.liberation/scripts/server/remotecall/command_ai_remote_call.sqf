@@ -9,7 +9,7 @@ if (!(_groups isEqualType []) || {!(_type isEqualType "")}) exitWith {};
 if (isMultiplayer && {owner _caller != remoteExecutedOwner}) exitWith {};
 if !([_caller] call F_getCommander) exitWith {};
 if (isNil "HPC_fnc_warfareOrder") exitWith {
-    ["AI Warfare is not running."] remoteExec ["systemChat", owner _caller];
+    ["AI Warfare is not running."] remoteExec ["HPC_fnc_info", owner _caller];
 };
 
 private _orderable = (_groups select [0, 64]) select {
@@ -35,7 +35,7 @@ private _order = switch (_type) do {
     default {[]};
 };
 if (_type != "auto" && {_order isEqualTo []}) exitWith {
-    ["That destination is no longer available."] remoteExec ["systemChat", owner _caller];
+    ["That destination is no longer available."] remoteExec ["HPC_fnc_info", owner _caller];
 };
 
 private _ordered = [];
@@ -56,5 +56,5 @@ private _where = switch (_type) do {
     default { "pick their own objectives" };
 };
 private _who = if (count _ordered > 3) then {format ["%1 groups", count _ordered]} else {_ordered joinString ", "};
-[format ["Commander %1: %2 ordered to %3.", name _caller, _who, _where]] remoteExec ["systemChat", 0];
+[format ["Commander %1: %2 ordered to %3.", name _caller, _who, _where]] remoteExec ["HPC_fnc_info", 0];
 diag_log format ["--- HPC Command AI: %1 -> %2 (%3)", name _caller, _ordered, _order];

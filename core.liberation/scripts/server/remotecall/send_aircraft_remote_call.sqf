@@ -18,4 +18,4 @@ on Sector: <t color='#008000'>%2</t><br/>
 sleep 7;
 ["lib_reinforcementsblu"] remoteExec ["bis_fnc_shownotification", 0];
 private _msg = format ["--- Air Support: %1 units are incoming...", _plane_count];
-[gamelogic, _msg] remoteExec ["globalChat", 0];
+[_msg] remoteExec ["HPC_fnc_info", 0];

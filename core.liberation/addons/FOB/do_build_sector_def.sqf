@@ -77,15 +77,15 @@ while { dialog && alive player } do {
 
         if (build_type == 0) then {
             [_sector, 0] remoteExec ["sector_defenses_remote_call", 2];
-            gamelogic globalChat format [localize "STR_FOB_REMOVE_GARRISON_CONFIRM", _sector_name];
+            [format [localize "STR_FOB_REMOVE_GARRISON_CONFIRM", _sector_name]] call HPC_fnc_info;
         } else {
             if (count GRLIB_sector_defense < _max_defense) then {
                 [_sector, build_type] remoteExec ["sector_defenses_remote_call", 2];
                 private _msg = format [localize "STR_FOB_PLAYER_SET_GARRISON", name player, (_defense_list select build_type), _sector_name];
-                [gamelogic, _msg] remoteExec ["globalChat", 0];
+                [_msg] remoteExec ["HPC_fnc_info", 0];
                 sleep 1;
             } else {
-                gamelogic globalChat format [localize "STR_FOB_MAX_GARRISON_REACHED", _max_defense];
+                [format [localize "STR_FOB_MAX_GARRISON_REACHED", _max_defense]] call HPC_fnc_info;
             };
         };
         sleep 1;

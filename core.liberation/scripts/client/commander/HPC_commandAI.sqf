@@ -6,9 +6,9 @@
 if (!hasInterface) exitWith {};
 disableSerialization;
 if !(missionNamespace getVariable ["GRLIB_player_commander", false]) exitWith {
-    systemChat "Only the commander can give orders to AI forces.";
+    ["Only the commander can give orders to AI forces."] call HPC_fnc_info;
 };
-if (isNil "HPC_fnc_mapDraw") exitWith {systemChat "The map overlay is still loading; try again in a moment."};
+if (isNil "HPC_fnc_mapDraw") exitWith {["The map overlay is still loading; try again in a moment."] call HPC_fnc_info};
 if (!isNull (uiNamespace getVariable ["HPC_AICommandDisplay", displayNull])) exitWith {};
 if (visibleMap) then {openMap false; uiSleep 0.1};
 private _display = (findDisplay 46) createDisplay "HPC_AICommand";

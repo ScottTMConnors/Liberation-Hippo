@@ -13,7 +13,7 @@ private _repair_cooldown = HPC_RepairSeconds;
 if (_type == 1) then {
     _timer = _vehicle getVariable ["GREUH_repair_timer", 0];
     if (_timer <= time) then {
-    	if (_ammo_collected < _cost) exitWith { gamelogic globalChat format [localize "STR_REPAIR_NOAMMO", _vehicle_name] };
+    	if (_ammo_collected < _cost) exitWith { [format [localize "STR_REPAIR_NOAMMO", _vehicle_name]] call HPC_fnc_info };
     	if !([_cost] call F_pay) exitWith {};
     	_vehicle setDamage 0;
     	_vehicle setVariable ["GREUH_repair_timer", round (time + _repair_cooldown)];  // min cooldown
@@ -30,7 +30,7 @@ if (_type == 1) then {
 if (_type == 2) then {
     _timer = _vehicle getVariable ["GREUH_rearm_timer", 0];
     if (_timer <= time) then {
-        if (_ammo_collected < _cost) exitWith { gamelogic globalChat format [localize "STR_REARM_NOAMMO", _vehicle_name] };
+        if (_ammo_collected < _cost) exitWith { [format [localize "STR_REARM_NOAMMO", _vehicle_name]] call HPC_fnc_info };
         if !([_cost] call F_pay) exitWith {};
         [_vehicle, 1] remoteExec ["setVehicleAmmo", 0]; // each machine refills its local turrets
         _vehicle setVariable ["GREUH_rearm_timer", round (time + _ammo_cooldown)];  // min cooldown
@@ -47,7 +47,7 @@ if (_type == 2) then {
 if (_type == 3) then {
     _timer = _vehicle getVariable ["GREUH_refuel_timer", 0];
     if (_timer <= time) then {
-        if (_ammo_collected < _cost) exitWith { gamelogic globalChat format [localize "STR_REFUEL_NOAMMO", _vehicle_name] };
+        if (_ammo_collected < _cost) exitWith { [format [localize "STR_REFUEL_NOAMMO", _vehicle_name]] call HPC_fnc_info };
         if !([_cost] call F_pay) exitWith {};
         [_vehicle, 1] remoteExec ["setFuel", _vehicle]; // local argument
         _vehicle setVariable ["GREUH_refuel_timer", round (time + _fuel_cooldown)];  // min cooldown

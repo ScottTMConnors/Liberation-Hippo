@@ -17,7 +17,7 @@ if (_result) then {
 	_msg = format [localize "STR_TK_MSG2", name _target, _killer_name];
 };
 
-[gamelogic, _msg] remoteExec ["globalChat", 0];
+[_msg] remoteExec ["HPC_fnc_info", 0];
 player removeAction _actionId;
 LRX_tk_player_action = LRX_tk_player_action - 1;
 hintSilent "";

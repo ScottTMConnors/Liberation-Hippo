@@ -43,7 +43,7 @@ if (!isNil "_my_dog") then {
 			_my_dog setVariable ["do_find", (_target select 1)];
 			_my_dog stop false;
 		};
-		gamelogic globalChat _msg;
+		[_msg] call HPC_fnc_info;
 	};
 
 	if (_cmd == "find_gun") then {
@@ -67,7 +67,7 @@ if (!isNil "_my_dog") then {
 			_my_dog setVariable ["do_find", _man];
 			_my_dog stop false;
 		};
-		gamelogic globalChat _msg;
+		[_msg] call HPC_fnc_info;
 	};
 
 	if (_cmd == "patrol") then {

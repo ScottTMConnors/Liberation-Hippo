@@ -1,12 +1,12 @@
 params [["_mission_cost", 0], "_caller"];
-if ( count (opfor_sectors - sectors_tower) < 4) exitWith { [gamelogic, "Could not find enough free sectors for convoy hijack mission"] remoteExec ["globalChat", 0] };
+if ( count (opfor_sectors - sectors_tower) < 4) exitWith { ["Could not find enough free sectors for convoy hijack mission"] remoteExec ["HPC_fnc_info", 0] };
 
 // Get Path & Check
 private _max_waypoints = 5;
 private _sector_list = (opfor_sectors - sectors_tower);
 private _convoy_destinations_markers = [_sector_list, 6000, _max_waypoints] call F_getSectorPath;
 private _convoy_destinations = [_convoy_destinations_markers] call F_getPathRoadFilter;
-if (count _convoy_destinations < 3) exitWith { [gamelogic, "Could not find enough free sectors for convoy hijack mission"] remoteExec ["globalChat", 0] };
+if (count _convoy_destinations < 3) exitWith { ["Could not find enough free sectors for convoy hijack mission"] remoteExec ["HPC_fnc_info", 0] };
 
 // Check Box
 private _boxes_amount = [opfor_transport_truck] call F_getVehicleMaxLoad;

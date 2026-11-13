@@ -6,4 +6,4 @@ waitUntil {
     !(isNil "GRLIB_virtual_garage")
 };
 
-systemChat "-------- Virtual Garage Initialized --------";
+diag_log "-------- Virtual Garage Initialized --------";

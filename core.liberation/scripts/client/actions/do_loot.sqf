@@ -28,7 +28,7 @@ if (count _nearest_cargo > 0) then {
 } else {
 	private _msg = localize "STR_LOADOUT_NOCARGO";
 	hintSilent _msg;
-	gamelogic globalChat _msg;
+	[_msg] call HPC_fnc_info;
 };
 
 _target setVariable ["loot_in_use", false, true];

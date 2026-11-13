@@ -135,7 +135,7 @@ _successExec = {
 	private _text = format ["Reward Received: %1 Ammo and %2 Fuel", _rwd_ammo, _rwd_fuel];
 	{
 		[_x, _rwd_ammo, _rwd_fuel] call ammo_add_remote_call;
-		[gamelogic, _text] remoteExec ["globalChat", owner _x];
+		[_text] remoteExec ["HPC_fnc_info", owner _x];
 	} forEach ([_missionPos, GRLIB_sector_size] call F_getNearbyPlayers);
 
 	_successHintMessage = "STR_ROADBLOCK_MESSAGE2";

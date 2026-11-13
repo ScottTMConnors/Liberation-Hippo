@@ -72,10 +72,10 @@ _objets_charges = _transporteur getVariable ["R3F_LOG_objets_charges", []];
 
 	// S'assurer que le type d'objet � charger est transportable
 	if !(_fonctionnalites select R3F_LOG_IDX_can_be_transported_cargo) then {
-		gamelogic globalChat format ["[Auto-load ""%1"" in ""%2""] : %3",
+		[format ["[Auto-load ""%1"" in ""%2""] : %3",
 			[_classe] call F_getLRXName,
 			[_transporteur] call F_getLRXName,
-			"The object is not a transporable class."];
+			"The object is not a transporable class."]] call HPC_fnc_info;
 	} else {
 		for [{_i = 0}, {_i < _quantite}, {_i = _i+1}] do {
 			// Si l'objet � charger est donn� en tant que nom de classe, on le cr�e
@@ -112,10 +112,10 @@ _objets_charges = _transporteur getVariable ["R3F_LOG_objets_charges", []];
 								[_transporteur] call F_getLRXName,
 								STR_R3F_LOG_action_charger_pas_assez_de_place];
 
-							systemChat format ["[Auto-load ""%1"" in ""%2""] : %3",
+							[format ["[Auto-load ""%1"" in ""%2""] : %3",
 								[_classe] call F_getLRXName,
 								[_transporteur] call F_getLRXName,
-								STR_R3F_LOG_action_charger_pas_assez_de_place];
+								STR_R3F_LOG_action_charger_pas_assez_de_place]] call HPC_fnc_info;
 
 							if (typeName _objet_ou_classe == "STRING") then {
 								deleteVehicle _objet;
@@ -123,11 +123,11 @@ _objets_charges = _transporteur getVariable ["R3F_LOG_objets_charges", []];
 						};
 					} else {
 						diag_log format [STR_R3F_LOG_objet_remorque_en_cours, [_classe] call F_getLRXName];
-						systemChat format [STR_R3F_LOG_objet_remorque_en_cours, [_classe] call F_getLRXName];
+						[format [STR_R3F_LOG_objet_remorque_en_cours, [_classe] call F_getLRXName]] call HPC_fnc_info;
 					};
 				} else {
 					diag_log format [STR_R3F_LOG_objet_en_cours_transport, [_classe] call F_getLRXName];
-					systemChat format [STR_R3F_LOG_objet_en_cours_transport, [_classe] call F_getLRXName];
+					[format [STR_R3F_LOG_objet_en_cours_transport, [_classe] call F_getLRXName]] call HPC_fnc_info;
 				};
 			};
 		};

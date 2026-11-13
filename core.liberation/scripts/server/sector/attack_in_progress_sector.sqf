@@ -73,7 +73,7 @@ if (_ownership == GRLIB_side_enemy) then {
 			[_sector, 2] remoteExec ["remote_call_sector", 0];
 			{ [_x, -15] call F_addReput } forEach (AllPlayers - (entities "HeadlessClient_F"));
 			private _msg = format ["You have lost control of the %1 sector, your reputation drops by %2 points.", [_sector_pos] call F_getLocationName, -15];
-			[gamelogic, _msg] remoteExec ["globalChat", 0];
+			[_msg] remoteExec ["HPC_fnc_info", 0];
 			[] call manage_sectors_commander;
 		} else {
 			diag_log format ["Sector %1 Defended at %2", _sector, time];
@@ -111,7 +111,7 @@ if (_ownership == GRLIB_side_enemy) then {
 					if (_x distance2D _sector_pos < GRLIB_sector_size ) then {
 						[_x, 5] call F_addReput;
 						[_x, _rwd_xp] call F_addScore;
-						[gamelogic, _text] remoteExec ["globalChat", owner _x];
+						[_text] remoteExec ["HPC_fnc_info", owner _x];
 					};
 				} forEach (AllPlayers - (entities "HeadlessClient_F"));
 			};

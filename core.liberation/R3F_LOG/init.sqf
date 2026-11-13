@@ -315,7 +315,7 @@
 		//[] spawn compileFinal preprocessFileLineNumbers "R3F_LOG\systeme_protection_blessures.sqf";
 
 		waitUntil {!(isNull (findDisplay 46))};
-    	systemChat "-------- R3F Logistics Initialized --------";
+    	diag_log "-------- R3F Logistics Initialized --------";
 	};
 
 	R3F_LOG_active = true;

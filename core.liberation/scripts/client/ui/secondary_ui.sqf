@@ -9,7 +9,7 @@ private _mission_list = [
 ];
 
 if (GRLIB_secondary_in_progress >= 0) exitWith {
-	gamelogic globalChat format [localize "STR_SECONDARY_MISSION_IN_PROGRESS", localize (_mission_list select GRLIB_secondary_in_progress)];
+	[format [localize "STR_SECONDARY_MISSION_IN_PROGRESS", localize (_mission_list select GRLIB_secondary_in_progress)]] call HPC_fnc_info;
 };
 
 createDialog "liberation_secondary";
@@ -84,7 +84,7 @@ while { dialog && alive player && dostartsecondary == 0 } do {
 if (dostartsecondary == 1) then {
 	[lbCurSel 101, false, PAR_Grp_ID] remoteExec ["start_secondary_remote_call", 2];
 	private _msg = format [localize "STR_LOG_SECONDARY_MISSION_STARTED",name player,localize (_mission_list select (lbCurSel 101))];
-	[gamelogic, _msg] remoteExec ["globalChat", 0];
+	[_msg] remoteExec ["HPC_fnc_info", 0];
 };
 
 if (dialog) then {

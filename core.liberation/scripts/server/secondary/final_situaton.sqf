@@ -6,7 +6,7 @@ private _spawnlist = [];
 	_spawnpos = [(markerpos _x), 25, 0] call F_findSafePlace;
 	if (count _spawnpos > 0) then { _spawnlist pushBack _spawnpos };
 } foreach sectors_allSectors;
-if (count _spawnlist == 0) exitWith {[gamelogic, "Could not find enough free space for Armageddon mission"] remoteExec ["globalChat", 0]};
+if (count _spawnlist == 0) exitWith {["Could not find enough free space for Armageddon mission"] remoteExec ["HPC_fnc_info", 0]};
 
 diag_log format ["--- LRX: %1 start static mission: Armageddon at %2", _caller, time];
 resources_intel = resources_intel - _mission_cost;

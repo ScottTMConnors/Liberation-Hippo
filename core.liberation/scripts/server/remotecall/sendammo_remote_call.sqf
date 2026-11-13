@@ -22,7 +22,7 @@ _dst setVariable ["GREUH_ammo_count", (_dst_ammo + _ammo), true];
 _dst setVariable ["GREUH_fuel_count", (_dst_fuel + _fuel), true];
 
 private _text = format ["Sent %1 AMMO and %2 FUEL to %3.", _ammo, _fuel, name _dst];
-[gamelogic, _text] remoteExec ["globalChat", owner _src];
+[_text] remoteExec ["HPC_fnc_info", owner _src];
 
 private _text = format ["Received %1 AMMO and %2 FUEL from %3.", _ammo, _fuel, name _src];
-[gamelogic, _text] remoteExec ["globalChat", owner _dst];
+[_text] remoteExec ["HPC_fnc_info", owner _dst];

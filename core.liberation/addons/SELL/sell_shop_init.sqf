@@ -7,4 +7,4 @@
 } forEach agents;
 
 waitUntil {!(isNull (findDisplay 46))};
-systemChat "-------- Sell Shop Initialized --------";
+diag_log "-------- Sell Shop Initialized --------";

@@ -5,7 +5,7 @@ private _vehicle_class = typeOf _vehicle;
 private _vehicle_name = [_vehicle_class] call F_getLRXName;
 private _msg = format [localize "STR_STICKY_MSG_ASK", _vehicle_name];
 private _result = [_msg, localize "STR_UI_WARNING_TITLE", true, true] call BIS_fnc_guiMessage;
-if !(_result) exitWith {gamelogic globalChat localize "STR_STICKY_MSG_WISE"};
+if !(_result) exitWith {[localize "STR_STICKY_MSG_WISE"] call HPC_fnc_info};
 
 // find memory points
 // cursorobject removeAllEventHandlers "HitPart";
@@ -25,10 +25,10 @@ private _vehicle_mempoints = [
 ];
 
 private _player_explosives = (vestItems player + backpackItems player) select { _x in sticky_bombs_typename };
-if (count _player_explosives == 0) exitWith {gamelogic globalChat localize "STR_STICKY_NO_CHARGE"};
+if (count _player_explosives == 0) exitWith {[localize "STR_STICKY_NO_CHARGE"] call HPC_fnc_info};
 
 disableUserInput true;
-gamelogic globalChat format [localize "STR_STICKY_MSG_WIRE", _vehicle_name];
+[format [localize "STR_STICKY_MSG_WIRE", _vehicle_name]] call HPC_fnc_info;
 player setDir (player getDir _vehicle);
 player playMove 'ainvpknlmstpslaywrfldnon_medic';
 sleep 3;

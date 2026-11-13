@@ -18,7 +18,7 @@ if (_usableMilitia isEqualTo [] && {_usableRegulars isEqualTo []}) exitWith {
     private _name = markerText _sector;
     [_sector,"failed",0,-1,-1,_name] call HPC_fnc_sectorState;
     diag_log format ["--- Hippos Conquest: sector %1 rejected; enemy template %2 has no loaded infantry",_sector,GRLIB_mod_east];
-    [gamelogic,format ["Cannot load %1: enemy faction %2 has no available infantry. Enable its required mods or select an available enemy faction before restarting.",_name,GRLIB_mod_east]] remoteExec ["globalChat",0];
+    [format ["Cannot load %1: enemy faction %2 has no available infantry. Enable its required mods or select an available enemy faction before restarting.",_name,GRLIB_mod_east]] remoteExec ["HPC_fnc_info",0];
     [] remoteExec ["manage_sectors_commander",2];
 };
 if (_usableMilitia isEqualTo []) then {_usableMilitia = +_usableRegulars};

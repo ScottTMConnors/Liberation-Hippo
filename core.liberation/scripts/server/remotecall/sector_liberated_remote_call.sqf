@@ -42,7 +42,7 @@ if (_liberated_sector in sectors_factory) then {
 if (_liberated_sector in sectors_tower) then {
 	_combat_readiness_increase = (6 + (floor random 10)) * GRLIB_difficulty_modifier;
 	private _text = format ["Enemy air support is no longer available near %1.", markerText _liberated_sector];
-	[gamelogic, _text] remoteExec ["globalChat", 0];
+	[_text] remoteExec ["HPC_fnc_info", 0];
 };
 
 private _rwd_ammo = (100 + floor(random 100)) * GRLIB_resources_multiplier;
@@ -59,7 +59,7 @@ private _text = format ["Reward Received: %1 Ammo and %2 Fuel", _rwd_ammo, _rwd_
 		[markerPos _liberated_sector, 15] remoteExec ["remote_call_fireworks", owner _x];
 		[_x, _rwd_ammo, _rwd_fuel] call ammo_add_remote_call;
 		if (_rwd_rep > 0) then { [_x, _rwd_rep] call F_addReput };
-		[gamelogic, _text] remoteExec ["globalChat", owner _x];
+		[_text] remoteExec ["HPC_fnc_info", owner _x];
 	};
 } forEach (AllPlayers - (entities "HeadlessClient_F"));
 

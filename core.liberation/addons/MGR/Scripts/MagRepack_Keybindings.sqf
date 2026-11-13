@@ -51,7 +51,7 @@ outlw_MR_applyKeybinding =
 		closeDialog 0;
 	};
 	
-	systemChat (_systemString + (call outlw_MR_keyListToString));	
+	[(_systemString + (call outlw_MR_keyListToString))] call HPC_fnc_info;	
 };
 
 outlw_KB_keyDown =

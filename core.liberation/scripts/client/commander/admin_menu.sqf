@@ -432,7 +432,7 @@ while { alive player && {!isNull _display} } do {
 	};
 
 	if (_admin_msg != "") then { [_admin_msg] remoteExec ["diag_log", 2] };
-	if (_msg != "") then { hintSilent _msg;	gamelogic globalChat _msg };
+	if (_msg != "") then { hintSilent _msg;	[_msg] call HPC_fnc_info };
 	if (GRLIB_force_cleanup) then { ctrlEnable [1629, false] } else { ctrlEnable [1629, true] };
 	if (!isNull cursorObject) then {
 		private _vehicle = cursorObject;

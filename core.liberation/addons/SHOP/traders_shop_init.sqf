@@ -13,4 +13,4 @@ SHOP_list = [
 } forEach agents;
 
 waitUntil {!(isNull (findDisplay 46))};
-systemChat "-------- Traders Shop Initialized --------";
+diag_log "-------- Traders Shop Initialized --------";

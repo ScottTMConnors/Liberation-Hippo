@@ -48,7 +48,7 @@ if (R3F_LOG_mutex_local_verrou) then {
 		};
 		
 		if (alive player) then {
-			systemChat STR_R3F_LOG_action_detacher_fait;
+			[STR_R3F_LOG_action_detacher_fait] call HPC_fnc_info;
 		};
 	}
 	else

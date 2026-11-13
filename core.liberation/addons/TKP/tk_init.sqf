@@ -57,5 +57,5 @@ LRX_tk_check = compileFinal {
 // Runs inline in init_client now, so the banner must not hold up startup.
 [] spawn {
 	waitUntil {uiSleep 1; !(isNull (findDisplay 46))};
-	systemChat "-------- TK Protect Initialized --------";
+	diag_log "-------- TK Protect Initialized --------";
 };

@@ -86,7 +86,7 @@ _successExec = {
 		private _rwd_xp = 30;
 		private _text = format ["Reward Received: %1 XP", _rwd_xp];
 		[_killer, _rwd_xp] call F_addScore;
-		[gamelogic, _text] remoteExec ["globalChat", owner _killer];
+		[_text] remoteExec ["HPC_fnc_info", owner _killer];
 	};
 	_successHintMessage = "STR_BARON_ROUGE_MESSAGE2";
 };

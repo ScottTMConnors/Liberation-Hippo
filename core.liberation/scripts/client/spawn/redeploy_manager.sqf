@@ -262,7 +262,7 @@ if (deploy == 1) then {
 		} else {
 			private _msg = format ["Can't load Redeploy loadout: %1", localize "STR_GRLIB_NOAMMO"];
 			hintSilent _msg;
-			gamelogic globalChat _msg;
+			[_msg] call HPC_fnc_info;
 		};
 	};
 

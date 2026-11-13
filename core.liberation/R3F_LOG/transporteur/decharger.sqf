@@ -74,7 +74,7 @@ if (R3F_LOG_mutex_local_verrou) then {
 			} else {
 				private ["_bbox_dim", "_pos_degagee", "_rayon"];
 
-				systemChat STR_R3F_LOG_action_decharger_en_cours;
+				[STR_R3F_LOG_action_decharger_en_cours] call HPC_fnc_info;
 
 				_bbox_dim = (vectorMagnitude (boundingBoxReal _objet_a_decharger select 0)) max (vectorMagnitude (boundingBoxReal _objet_a_decharger select 1));
 
@@ -113,17 +113,17 @@ if (R3F_LOG_mutex_local_verrou) then {
 
 					// Si l'objet a �t� cr�� assez loin, on indique sa position relative
 					if (_objet_a_decharger distance _transporteur > 40) then {
-						systemChat format [STR_R3F_LOG_action_decharger_fait + " (%2)",
+						[format [STR_R3F_LOG_action_decharger_fait + " (%2)",
 							[_objet_a_decharger] call F_getLRXName,
 							format ["%1m %2deg", round (_objet_a_decharger distance _transporteur), round ([_transporteur, _objet_a_decharger] call BIS_fnc_dirTo)]
-						];
+						]] call HPC_fnc_info;
 					} else {
-						systemChat format [STR_R3F_LOG_action_decharger_fait, [_objet_a_decharger] call F_getLRXName];
+						[format [STR_R3F_LOG_action_decharger_fait, [_objet_a_decharger] call F_getLRXName]] call HPC_fnc_info;
 					};
 					R3F_LOG_mutex_local_verrou = false;
 				} else {
 					// Si �chec recherche position d�gag�e, on d�charge l'objet comme un d�pla�able					
-					systemChat "WARNING : no free position found.";
+					["WARNING : no free position found."] call HPC_fnc_info;
 
 					R3F_LOG_mutex_local_verrou = false;
 					[_objet_a_decharger, player, 0, true] spawn R3F_LOG_FNCT_objet_deplacer;

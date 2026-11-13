@@ -19,7 +19,7 @@ if (R3F_LOG_mutex_local_verrou) then {
 	private _objet = R3F_LOG_objet_heliporter;
 
 	if (!isNull _objet) then {
-		systemChat format ["%1 (%2)", STR_R3F_LOG_action_heliporter, [_objet] call F_getLRXName];
+		[format ["%1 (%2)", STR_R3F_LOG_action_heliporter, [_objet] call F_getLRXName]] call HPC_fnc_info;
 		hintSilent "";
 		if !(_objet getVariable "R3F_LOG_disabled") then {
 			if (isNull (_objet getVariable "R3F_LOG_est_transporte_par") && (isNull (_objet getVariable "R3F_LOG_est_deplace_par") || (!alive (_objet getVariable "R3F_LOG_est_deplace_par")) || (!isPlayer (_objet getVariable "R3F_LOG_est_deplace_par")))) then {
@@ -111,7 +111,7 @@ if (R3F_LOG_mutex_local_verrou) then {
 							[_objet, 90] remoteExec ["setDir", _objet]; // local-only command
 						};
 
-						systemChat format [STR_R3F_LOG_action_heliporter_fait, [_objet] call F_getLRXName];
+						[format [STR_R3F_LOG_action_heliporter_fait, [_objet] call F_getLRXName]] call HPC_fnc_info;
 
 						// Boucle de contr�le pendant l'h�liportage
 						[_heliporteur, _objet] spawn
@@ -141,7 +141,7 @@ if (R3F_LOG_mutex_local_verrou) then {
 									detach _objet;
 									[_objet, velocity _heliporteur] remoteExec ["setVelocity", _objet];
 
-									systemChat format [STR_R3F_LOG_action_heliport_larguer_fait, [_objet] call F_getLRXName];
+									[format [STR_R3F_LOG_action_heliport_larguer_fait, [_objet] call F_getLRXName]] call HPC_fnc_info;
 								};
 
 								sleep 0.1;
@@ -150,7 +150,7 @@ if (R3F_LOG_mutex_local_verrou) then {
 					}
 					else
 					{
-						systemChat STR_R3F_LOG_action_heliport_echec_attente;
+						[STR_R3F_LOG_action_heliport_echec_attente] call HPC_fnc_info;
 
 						// La jauge s'arr�te
 						_ctrl_jauge ctrlSetPosition ctrlPosition _ctrl_jauge;
@@ -176,10 +176,10 @@ if (R3F_LOG_mutex_local_verrou) then {
 						ctrlDelete _ctrl_jauge;
 					};
 				} else {
-					systemChat format [STR_R3F_LOG_objet_remorque_en_cours, [_objet] call F_getLRXName];
+					[format [STR_R3F_LOG_objet_remorque_en_cours, [_objet] call F_getLRXName]] call HPC_fnc_info;
 				};
 			} else {
-				systemChat format [STR_R3F_LOG_objet_en_cours_transport, [_objet] call F_getLRXName];
+				[format [STR_R3F_LOG_objet_en_cours_transport, [_objet] call F_getLRXName]] call HPC_fnc_info;
 			};
 		};
 	};

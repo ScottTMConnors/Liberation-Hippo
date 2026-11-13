@@ -79,7 +79,7 @@ while {true} do {
 					_my_dog setVariable ["do_find_wp", nil];
 					_my_dog stop false;
 					_msg = format [localize "STR_DOG_FOUND", round (_target select 0)];
-					gamelogic globalChat _msg;
+					[_msg] call HPC_fnc_info;
 				};
 				_reset = 1;
 			} else {
@@ -139,7 +139,7 @@ while {true} do {
 							_my_dog moveTo (getpos player);
 							_my_dog setVariable ["do_find", player];
 							_msg = localize "STR_DOG_FOUND_GUN";
-							gamelogic globalChat _msg;
+							[_msg] call HPC_fnc_info;
 						} else {
 							_my_dog moveTo (getPos _man);
 							_dog_move = "Dog_Walk";
@@ -185,7 +185,7 @@ while {true} do {
 		_mines = allMines select {(getPosATL _x) distance2D (getPosATL _my_dog) <= 10 && mineActive _x && !(_x mineDetectedBy GRLIB_side_friendly)};
 		if (count _mines > 0) then {
 			_msg = localize "STR_DOG_FOUND_MINE";
-			gamelogic globalChat _msg;
+			[_msg] call HPC_fnc_info;
 			{ GRLIB_side_friendly revealMine _x } forEach _mines;
 		};
 	};

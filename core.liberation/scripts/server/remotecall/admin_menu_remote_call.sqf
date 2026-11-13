@@ -41,7 +41,7 @@ if (_cmd == "kick") exitWith {
         private _name = name _kicked;
         [_kicked] call HPC_fnc_kickPlayer;
         private _msg = format [localize "STR_ADMIN_KICK_PLAYER", _name];
-        [gamelogic, _msg] remoteExec ["globalChat", -2];
+        [_msg] remoteExec ["HPC_fnc_info", -2];
     };
 };
 
@@ -51,7 +51,7 @@ if (_cmd == "ban") exitWith {
         BTC_logic setVariable [_data, 99, true];
         [_player] remoteExec ["LRX_tk_actions", owner _player];
         private _msg = format [localize "STR_ADMIN_BAN_PLAYER", name _player];
-        [gamelogic, _msg] remoteExec ["globalChat", -2];
+        [_msg] remoteExec ["HPC_fnc_info", -2];
     };
 };
 

@@ -75,7 +75,7 @@ if (_ownership == GRLIB_side_enemy) then {
 				{
 					if (_x distance2D _fob_pos < GRLIB_sector_size ) then {
 						[_x, _rwd_xp] call F_addScore;
-						[gamelogic, _text] remoteExec ["globalChat", owner _x];
+						[_text] remoteExec ["HPC_fnc_info", owner _x];
 					};
 				} forEach (AllPlayers - (entities "HeadlessClient_F"));
 			};

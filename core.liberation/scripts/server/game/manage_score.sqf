@@ -102,7 +102,7 @@ while {true} do {
 					if (_promoted && {_new_rank in ["Colonel", "General"]}) then {
 						["FD_Finish_F"] remoteExec ["playSound", 0];
 						_text = format ["Congratulations to %1 on reaching %2!", name _x, _new_rank];
-						[gamelogic, _text] remoteExec ["globalChat", 0];
+						[_text] remoteExec ["HPC_fnc_info", 0];
 					};
 
 					// set player rank

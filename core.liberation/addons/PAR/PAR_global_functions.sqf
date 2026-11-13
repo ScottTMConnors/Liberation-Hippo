@@ -166,19 +166,25 @@ PAR_public_EH = compileFinal {
 
 	// PAR_deathMessage
 	if (_EH == "PAR_deathMessage") then {
-		if (isPlayer _killed) then {
-			if (isNull _killer) then {
-				gamelogic globalChat format ["%1 was injured for an unknown reason", name _killed];
+		// only the downed player is told (was chat for everyone)
+		if (_killed isEqualTo player) then {
+			if (isNull _killer || {_killer isEqualTo _killed}) then {
+				["You are down.", "warn", "Injured", 6] call HPC_fnc_info;
 			} else {
-				gamelogic globalChat format ["%1 was injured by %2", name _killed, name _killer];
+				[format ["You were downed by %1.", name _killer], "warn", "Injured", 6] call HPC_fnc_info;
 			};
 		};
 	};
 
 	// PAR_tkMessage
 	if (_EH == "PAR_tkMessage") then {
-		if (isPlayer _killer && isPlayer _killed ) then {
-			gamelogic globalChat format ["%1 has committed TK on %2",name _killer, name _killed];
+		if (isPlayer _killer && isPlayer _killed) then {
+			if (_killer isEqualTo player) then {
+				[format ["You downed friendly %1.", name _killed], "bad", "Friendly fire", 8] call HPC_fnc_info;
+			};
+			if (_killed isEqualTo player) then {
+				[format ["You were downed by friendly fire from %1.", name _killer], "warn", "Friendly fire", 8] call HPC_fnc_info;
+			};
 		};
 	};
 };

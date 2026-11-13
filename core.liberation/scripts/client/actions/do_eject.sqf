@@ -3,7 +3,7 @@ params ["_vehicle"];
 if (isPlayer _vehicle) then { _vehicle = objectParent _vehicle };
 if (isNull _vehicle) exitWith {};
 
-gamelogic globalChat format [localize "STR_EJECT_ALL_CREW", [_vehicle] call F_getLRXName];
+[format [localize "STR_EJECT_ALL_CREW", [_vehicle] call F_getLRXName]] call HPC_fnc_info;
 
 // local-argument commands: run them where the vehicle is local (another player may drive)
 [_vehicle, "UNLOCKED"] remoteExec ["setVehicleLock", _vehicle];

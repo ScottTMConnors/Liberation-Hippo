@@ -1,0 +1,79 @@
+{
+ "9400": {
+  "text": "<t color='#7CC6EE' font='RobotoCondensedBold'>Hippo</t> <img size='1.15' color='#E6EBED' image='/A3/weapons_f/Rifles/MX/data/UI/gear_mx_rifle_X_CA.paa'/> <t color='#EE6A60'>Rifleman</t>",
+  "pos": [
+   "safezoneX+0.8*(safezoneH*0.75/54)",
+   "safezoneY+0.8*(safezoneH/54)+0*1.85*(safezoneH/54)",
+   "10.5*(safezoneH*0.75/54)",
+   "1.6*(safezoneH/54)"
+  ]
+ },
+ "9401": {
+  "text": "<t color='#7CC6EE'>Alpha 2-1</t> <img size='1.15' color='#E6EBED' image='/A3/armor_f_beta/APC_Tracked_01/Data/UI/APC_Tracked_01_base_ca.paa'/> <t color='#EE6A60'>Ifrit HMG</t>",
+  "pos": [
+   "safezoneX+0.8*(safezoneH*0.75/54)",
+   "safezoneY+0.8*(safezoneH/54)+1*1.85*(safezoneH/54)",
+   "11.5*(safezoneH*0.75/54)",
+   "1.6*(safezoneH/54)"
+  ]
+ },
+ "9402": {
+  "text": "<t color='#EE6A60'>Autorifleman</t> <img size='1.15' color='#E6EBED' image='/A3/weapons_f/Rifles/MX/data/UI/gear_mx_rifle_X_CA.paa'/> <t color='#7CC6EE' font='RobotoCondensedBold'>Scott</t>",
+  "pos": [
+   "safezoneX+0.8*(safezoneH*0.75/54)",
+   "safezoneY+0.8*(safezoneH/54)+2*1.85*(safezoneH/54)",
+   "12*(safezoneH*0.75/54)",
+   "1.6*(safezoneH/54)"
+  ]
+ },
+ "9403": {
+  "text": "<t color='#F7D27A' font='RobotoCondensedBold'>TEAMKILL </t><t color='#7CC6EE' font='RobotoCondensedBold'>Scott</t> <img size='1.15' color='#E6EBED' image='/A3/weapons_f/Rifles/MX/data/UI/gear_mx_rifle_X_CA.paa'/> <t color='#7CC6EE'>Medic</t>",
+  "pos": [
+   "safezoneX+0.8*(safezoneH*0.75/54)",
+   "safezoneY+0.8*(safezoneH/54)+3*1.85*(safezoneH/54)",
+   "15.5*(safezoneH*0.75/54)",
+   "1.6*(safezoneH/54)"
+  ]
+ },
+ "9410": {
+  "text": "<t color='#EE6A60'>Rifleman</t> <img size='1.15' color='#E6EBED' image='/A3/weapons_f/Rifles/MX/data/UI/gear_mx_rifle_X_CA.paa'/> <t color='#9EAFB5'>143 m</t>   <t font='RobotoCondensedBold' color='#A6EBA6'>+1 XP</t>",
+  "pos": [
+   "safezoneX+0.5*safezoneW-6.25*(safezoneH*0.75/54)",
+   "safezoneY+0.62*safezoneH+0*2.05*(safezoneH/54)",
+   "12.5*(safezoneH*0.75/54)",
+   "1.8*(safezoneH/54)"
+  ]
+ },
+ "9411": {
+  "text": "<t color='#9EAFB5'>Grenadier (Hippo) </t><t color='#EE6A60'>Marksman</t> <img size='1.15' color='#E6EBED' image='/A3/weapons_f/Rifles/MX/data/UI/gear_mx_rifle_X_CA.paa'/> <t color='#9EAFB5'>88 m</t>",
+  "pos": [
+   "safezoneX+0.5*safezoneW-8.5*(safezoneH*0.75/54)",
+   "safezoneY+0.62*safezoneH+1*2.05*(safezoneH/54)",
+   "17*(safezoneH*0.75/54)",
+   "1.8*(safezoneH/54)"
+  ]
+ },
+ "9412": {
+  "text": "<t color='#EE6A60'>Ifrit HMG</t> <img size='1.15' color='#E6EBED' image='/A3/armor_f_beta/APC_Tracked_01/Data/UI/APC_Tracked_01_base_ca.paa'/> <t color='#9EAFB5'>412 m</t>   <t font='RobotoCondensedBold' color='#A6EBA6'>+30 ammo  +10 fuel  +5 XP</t>",
+  "pos": [
+   "safezoneX+0.5*safezoneW-10.5*(safezoneH*0.75/54)",
+   "safezoneY+0.62*safezoneH+2*2.05*(safezoneH/54)",
+   "21*(safezoneH*0.75/54)",
+   "1.8*(safezoneH/54)"
+  ]
+ },
+ "9413": {
+  "text": "<t color='#C49BEA' font='RobotoCondensedBold'>CIVILIAN </t><t color='#C49BEA'>Civilian</t> <img size='1.15' color='#E6EBED' image='/A3/weapons_f/Rifles/MX/data/UI/gear_mx_rifle_X_CA.paa'/> <t color='#9EAFB5'>20 m</t>   <t font='RobotoCondensedBold' color='#F5A29C'>-10 XP  -5 reputation</t>",
+  "pos": [
+   "safezoneX+0.5*safezoneW-11.5*(safezoneH*0.75/54)",
+   "safezoneY+0.62*safezoneH+3*2.05*(safezoneH/54)",
+   "23*(safezoneH*0.75/54)",
+   "1.8*(safezoneH/54)"
+  ]
+ },
+ "hide": [
+  9404,
+  9405,
+  9414
+ ]
+}

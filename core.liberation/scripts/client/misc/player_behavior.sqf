@@ -35,14 +35,14 @@ while {true} do {
 			if (_kill == GRLIB_tk_count) then { [player] call LRX_tk_actions };
 		};
 		GRLIB_player_group selectLeader player;
-		gamelogic globalChat format [localize "STR_LOG_LRX_WRONG_SIDE", name player, _side];
+		[format [localize "STR_LOG_LRX_WRONG_SIDE", name player, _side]] call HPC_fnc_info;
 	};
 
 	// Leadership
 	if (count units GRLIB_player_group > 1 && leader GRLIB_player_group != player && local GRLIB_player_group) then {
 		player addrating ((abs rating player) + 500);
 		GRLIB_player_group selectLeader player;
-		gamelogic globalChat format [localize "STR_LOG_LRX_LEADERSHIP_TAKEN", name player];
+		[format [localize "STR_LOG_LRX_LEADERSHIP_TAKEN", name player]] call HPC_fnc_info;
 	};
 
 	if (GRLIB_Undercover_mode == 1) then {
@@ -74,7 +74,7 @@ while {true} do {
 					_msg = format ["<t color='#0000FF'>%1</t> you are a <t color='#660080'>Civilian</t> now...", name player];
 					["Undercover", _msg, "info", 8, true] call HPC_fnc_toast;
 					_msg = format ["%1 and his squad goes to the Civilian side...", name player];
-					[gamelogic, _msg] remoteExec ["globalChat", 0];
+					[_msg] remoteExec ["HPC_fnc_info", 0];
 					_timer = time + 600;
 					_timer_bonus = 120;
 				};
@@ -109,7 +109,7 @@ while {true} do {
 					_x setVariable ["PAR_Grp_AI", GRLIB_player_group];
 				} forEach _player_units;
 				_msg = format ["%1 and his squad go back to the Blufor side...", name player];
-				[gamelogic, _msg] remoteExec ["globalChat", 0];
+				[_msg] remoteExec ["HPC_fnc_info", 0];
 				_timer = time + 600;
 			};
 		};

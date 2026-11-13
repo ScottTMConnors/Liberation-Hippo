@@ -13,7 +13,7 @@ else
 	R3F_LOG_mutex_local_verrou = true;
 	
 	R3F_LOG_objet_selectionne = _this select 0;
-	systemChat format [STR_R3F_LOG_action_selectionner_objet_fait, [R3F_LOG_objet_selectionne] call F_getLRXName];
+	[format [STR_R3F_LOG_action_selectionner_objet_fait, [R3F_LOG_objet_selectionne] call F_getLRXName]] call HPC_fnc_info;
 	
 	[R3F_LOG_objet_selectionne, player] call R3F_LOG_FNCT_definir_proprietaire_verrou;
 	

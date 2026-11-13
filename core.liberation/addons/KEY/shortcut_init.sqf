@@ -40,7 +40,7 @@ if (isNil "AR_active") then { AR_active = false };
 		} else {
 			showHUD [true,true,true,true,true,true,true,true,true,true];
 		};
-		gamelogic globalChat format [localize "STR_KEY_HUD_TOGGLE", _state];
+		[format [localize "STR_KEY_HUD_TOGGLE", _state]] call HPC_fnc_info;
 	};
 }];
 
@@ -49,7 +49,7 @@ if (isNil "AR_active") then { AR_active = false };
 	if (_this select 1 == (actionKeys 'User15') select 0) then {
 		_name = format ["%1_%2_%3-%4_%5.png", name player, worldname, date select 3, date select 4, round(time)];
 		screenshot _name;
-		gamelogic globalChat format [localize "STR_KEY_TAKE_SCREENSHOT", _name];
+		[format [localize "STR_KEY_TAKE_SCREENSHOT", _name]] call HPC_fnc_info;
 	};
 }];
 
@@ -60,7 +60,7 @@ if ([] call is_admin) then {
 			_save = 0;  // Dump savegame: 0 = no, 1 = yes
 			[_save] execVM "scripts\shared\diag_debug.sqf";
 			[_save, "scripts\shared\diag_debug.sqf"] remoteExec ["execVM", 2];
-			gamelogic globalChat localize "STR_KEY_LRX_DIAG_CALLED";
+			[localize "STR_KEY_LRX_DIAG_CALLED"] call HPC_fnc_info;
 		};
 	}];
 };

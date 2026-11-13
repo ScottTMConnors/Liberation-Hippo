@@ -456,4 +456,47 @@ class RscTitles
 		class Bar2 : ToastBar { idc = 9121; };
 		class Text2 : ToastText { idc = 9122; };
    };
+   // Kill feeds: everyone else's kills top left, yours and your squad's below the crosshair.
+   #define KF_X (safezoneX + 0.8 * HPC_GX)
+   #define KF_Y (safezoneY + 0.8 * HPC_GY)
+   #define KF_W (30 * HPC_GX)
+   #define KF_ROW (1.85 * HPC_GY)
+   #define KM_W (40 * HPC_GX)
+   #define KM_X (safezoneX + 0.5 * safezoneW - 0.5 * KM_W)
+   #define KM_Y (safezoneY + 0.62 * safezoneH)
+   #define KM_ROW (2.05 * HPC_GY)
+   // HPC_killFeedWorker shrinks each row to its text (ctrlTextWidth) and centres the personal rows.
+   class HPC_KillFeed
+   {
+		name = "HPC_KillFeed";
+		duration = 1e10;
+		idd = -1;
+		fadeIn = 0;
+		fadeOut = 0;
+		movingEnable = false;
+		onLoad = "uiNamespace setVariable ['HPC_KillFeedDisplay', _this select 0];";
+		onUnload = "uiNamespace setVariable ['HPC_KillFeedDisplay', displayNull];";
+		controls[] = {G0, G1, G2, G3, G4, G5, M0, M1, M2, M3, M4};
+		class FeedRow : HPC_StructuredText {
+			x = KF_X; w = KF_W; h = KF_ROW - 0.25 * HPC_GY;
+			size = 1.15 * HPC_GY;
+			colorBackground[] = {0.035,0.045,0.05,0.5};
+			class Attributes { font = "RobotoCondensed"; color = "#DDE4E7"; align = "left"; valign = "middle"; shadow = 1; };
+		};
+		class MineRow : FeedRow {
+			x = KM_X; w = KM_W; h = KM_ROW - 0.25 * HPC_GY;
+			size = 1.25 * HPC_GY;
+		};
+		class G0 : FeedRow { idc = 9400; y = KF_Y + 0 * KF_ROW; };
+		class G1 : FeedRow { idc = 9401; y = KF_Y + 1 * KF_ROW; };
+		class G2 : FeedRow { idc = 9402; y = KF_Y + 2 * KF_ROW; };
+		class G3 : FeedRow { idc = 9403; y = KF_Y + 3 * KF_ROW; };
+		class G4 : FeedRow { idc = 9404; y = KF_Y + 4 * KF_ROW; };
+		class G5 : FeedRow { idc = 9405; y = KF_Y + 5 * KF_ROW; };
+		class M0 : MineRow { idc = 9410; y = KM_Y + 0 * KM_ROW; size = 1.4 * HPC_GY; };
+		class M1 : MineRow { idc = 9411; y = KM_Y + 1 * KM_ROW; };
+		class M2 : MineRow { idc = 9412; y = KM_Y + 2 * KM_ROW; };
+		class M3 : MineRow { idc = 9413; y = KM_Y + 3 * KM_ROW; };
+		class M4 : MineRow { idc = 9414; y = KM_Y + 4 * KM_ROW; };
+   };
 };

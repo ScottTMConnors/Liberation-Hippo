@@ -26,7 +26,7 @@ if (typeOf _vehicle in uavs_vehicles) then {
 hintSilent format [localize "STR_DO_LOCK", [typeOf _vehicle] call F_getLRXName];
 
 if (_new_owner) then {
-	gamelogic globalChat localize "STR_DO_LOCK_MSG";
+	[localize "STR_DO_LOCK_MSG"] call HPC_fnc_info;
 };
 
 if (!local _vehicle) then {

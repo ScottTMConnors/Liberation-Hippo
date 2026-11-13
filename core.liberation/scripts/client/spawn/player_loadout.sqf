@@ -17,7 +17,7 @@ if (isNil {player getVariable "GREUH_stuff_price"}) then {
 		} else {
 			private _msg = format ["Can't load Respawn loadout: %1", localize "STR_GRLIB_NOAMMO"];
 			hintSilent _msg;
-			gamelogic globalChat _msg;
+			[_msg] call HPC_fnc_info;
 		};
 	};
 };
@@ -36,7 +36,7 @@ if (isNil {player getVariable "GREUH_stuff_price"} && {!isNil "GRLIB_death_loado
 	} else {
 		private _msg = format ["Can't restore your loadout (%1 ammo): %2", _price, localize "STR_GRLIB_NOAMMO"];
 		hintSilent _msg;
-		gamelogic globalChat _msg;
+		[_msg] call HPC_fnc_info;
 		// drop it again: the default loadout below starts from an empty unit
 		removeAllWeapons player; removeAllItems player; removeAllAssignedItems player;
 		removeUniform player; removeVest player; removeBackpack player; removeHeadgear player; removeGoggles player;

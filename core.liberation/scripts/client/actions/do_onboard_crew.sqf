@@ -3,7 +3,7 @@ params ["_target", "_caller", "_actionId", "_arguments"];
 private _vehicle = objectParent _target;
 if (isNull _vehicle) exitWith {};
 
-gamelogic globalChat format [localize "STR_ONBOARD_ALL_CREW", [_vehicle] call F_getLRXName];
+[format [localize "STR_ONBOARD_ALL_CREW", [_vehicle] call F_getLRXName]] call HPC_fnc_info;
 
 private _list_board = (units _target) select { (isNull objectParent _x) && (_x distance2D _target <= 30) && !([_x] call PAR_is_wounded) };
 [_vehicle, _list_board, false] call F_manualCrew;

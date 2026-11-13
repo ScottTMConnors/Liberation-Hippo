@@ -18,4 +18,4 @@ TXU_INFO_mapEH = compileFinal preprocessfilelinenumbers ("addons\TXU\txu_mapEH.s
 waitUntil {!(isNull (findDisplay 46))};
 addMissionEventHandler ["Map", {_this spawn TXU_INFO_mapEH}];
 
-systemChat "-------- TXU INFO Initialized --------";
+diag_log "-------- TXU INFO Initialized --------";

@@ -40,13 +40,13 @@ _unit addEventHandler ["FiredMan", {
 
 	// Civilian limit (["Put","Throw"])
 	if (side _unit == GRLIB_side_civilian && !(isNil {_unit getVariable "GRLIB_unit_detected"}) && _weapon in ["Put","Throw"]) exitWith {
-		gamelogic globalChat "No grenades/mines allowed when Civilian.";
+		["No grenades/mines allowed when Civilian."] call HPC_fnc_info;
 		deleteVehicle _projectile;
 	};
 
 	// No mines in the base zone (Chimera + FOB)
 	if (([_unit, "LHD", GRLIB_fob_range] call F_check_near) && _weapon == "Put") exitWith {
-		gamelogic globalChat "No mines allowed around the FOB.";
+		["No mines allowed around the FOB."] call HPC_fnc_info;
 		deleteVehicle _projectile;
 	};
 
@@ -123,7 +123,7 @@ if (_unit == player) then {
 					if (time >= (_unit getVariable ["GRLIB_isProtected", 0])) then {
 						_unit setVariable ["GRLIB_isProtected", round(time + 10)];
 						private _msg = format ["%1 (%2)", localize "STR_FRIENDLY_FIRE", name _killer];
-						[gamelogic, _msg] remoteExec ["globalChat", 0];
+						[_msg] remoteExec ["HPC_fnc_info", 0];
 						// TK Protect
 						if (GRLIB_tk_mode > 0) then {
 							[_killer, -15] remoteExec ["F_addScore", 2];

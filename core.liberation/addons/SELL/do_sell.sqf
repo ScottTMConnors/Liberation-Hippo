@@ -2,7 +2,7 @@
 // by pSiKO
 
 if (([GRLIB_sector_size] call F_getNearestSector) in active_sectors) exitWith {
-	gamelogic globalChat "You cannot access the Sell shop during combat.";
+	["You cannot access the Sell shop during combat."] call HPC_fnc_info;
 };
 
 createDialog "Sell_Shop";
@@ -14,9 +14,9 @@ private _cfg = configFile >> "cfgVehicles";
 
 private _nearfob = (GRLIB_player_fobdistance < 100);
 if (_nearfob) then {
-	gamelogic globalChat localize "STR_SELL_WELCOME_FOB";
+	[localize "STR_SELL_WELCOME_FOB"] call HPC_fnc_info;
 } else {
-	gamelogic globalChat localize "STR_SELL_WELCOME";
+	[localize "STR_SELL_WELCOME"] call HPC_fnc_info;
 };
 sell_action = 0;
 private _refresh = true;
@@ -81,7 +81,7 @@ while { dialog && alive player } do {
 			_price = parseNumber ((_display displayCtrl (110)) lnbText [_selected_item, 1]);
 			_price = _price min 999;
 			if (_price == 0) then {
-				gamelogic globalChat localize "STR_NOTHING_TO_SELL";
+				[localize "STR_NOTHING_TO_SELL"] call HPC_fnc_info;
 			} else {
 				private _vehicle = _sell_list select _selected_item;
 				private _msg = format [localize "STR_SELL_CONFIRM", _vehicle_name, _price];
@@ -90,7 +90,7 @@ while { dialog && alive player } do {
 				// another player, or sold by someone else): price it again before paying
 				if (_result && {isNull _vehicle || {!alive _vehicle} || {_vehicle distance2D player > 50} || {(([_vehicle] call _fnc_sellPrice) min 999) != _price}}) then {
 					_result = false;
-					gamelogic globalChat localize "STR_NOTHING_TO_SELL";
+					[localize "STR_NOTHING_TO_SELL"] call HPC_fnc_info;
 				};
 				if (_result) then {
 					[_vehicle] call F_clearCargo;
@@ -106,4 +106,4 @@ while { dialog && alive player } do {
 	};
 	sleep 0.3;
 };
-gamelogic globalChat "Have a nice day...";
+["Have a nice day..."] call HPC_fnc_info;

@@ -24,7 +24,7 @@ while {!(isNull _vehicle) && (_unit == driver _vehicle)} do {
                     _fuel_veh = 0.20;
                 };
                 player setVariable ["GREUH_fuel_count", (_fuel_collected - _refuel_cost), true];
-                gamelogic globalChat format [localize "STR_LOG_RESOURCE_FUEL_USED", _refuel_cost];
+                [format [localize "STR_LOG_RESOURCE_FUEL_USED", _refuel_cost]] call HPC_fnc_info;
             };
         };
         _vehicle setFuel (_fuel_veh - _conso) max 0;

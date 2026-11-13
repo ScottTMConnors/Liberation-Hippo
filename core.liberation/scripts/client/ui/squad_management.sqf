@@ -100,9 +100,9 @@ while { dialog && alive player && _membercount > 0 } do {
 			[player, _refund, 0] remoteExec ["ammo_add_remote_call", 2];
 			playSound "taskSucceeded";
 			if (_ai_rank > 1 ) then {
-				gamelogic globalChat format [localize "STR_LOG_SOLDIER_REFUND_RANKED",_refund,_ai_rank];
+				[format [localize "STR_LOG_SOLDIER_REFUND_RANKED",_refund,_ai_rank]] call HPC_fnc_info;
 			} else {
-				gamelogic globalChat format [localize "STR_LOG_SOLDIER_REFUND_SIMPLE",_refund];
+				[format [localize "STR_LOG_SOLDIER_REFUND_SIMPLE",_refund]] call HPC_fnc_info;
 			};
 			PAR_AI_bros = PAR_AI_bros - [_selectedmember];
 			[_selectedmember] call HPC_fnc_deleteUnit;
@@ -171,7 +171,7 @@ while { dialog && alive player && _membercount > 0 } do {
 			_p1 = (unitname splitString " ") select 1;
 			if (isNil "_p1") then {_p1 = ""};
 			_selectedmember setName [unitname, _p1, _p2];
-			gamelogic globalChat format [localize "STR_LOG_UNIT_RENAMED",_name,unitname];
+			[format [localize "STR_LOG_UNIT_RENAMED",_name,unitname]] call HPC_fnc_info;
 		};
 		{ ctrlShow [_x, false] } foreach _rename_controls;
 		sleep 0.5;

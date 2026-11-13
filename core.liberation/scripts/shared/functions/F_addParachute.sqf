@@ -12,7 +12,7 @@ private _two = floor (random (count _shell_smoke_code));
 
 if (_info) then {
 	private _text = format ["Air Drop %1 - Code %2 on %3", ([typeOf _vehicle] call F_getLRXName), (_shell_smoke_code select _one), (_shell_smoke_code select _two)];
-	[gamelogic, _text] remoteExec ["globalChat", 0];
+	[_text] remoteExec ["HPC_fnc_info", 0];
 };
 
 private	_lst_lrx = _vehicle getVariable ["GRLIB_ammo_vehicle_load", []];

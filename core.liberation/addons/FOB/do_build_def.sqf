@@ -52,7 +52,7 @@ while { dialog && alive player } do {
             waitUntil {uiSleep 0.3; ((input_save != "") || !(dialog) || !(alive player))};
             if ( input_save select [0,1] == "[" && input_save select [(count input_save)-1,(count input_save)] == "]") then {
                 _objects_to_build = (parseSimpleArray input_save);
-            } else { systemChat localize "STR_FOB_ERROR_INVALID_DATA" };
+            } else { [localize "STR_FOB_ERROR_INVALID_DATA"] call HPC_fnc_info };
             { ctrlShow [_x, false] } foreach _input_controls;
         };
         closeDialog 0;
@@ -68,7 +68,7 @@ if (!([parseNumber _defense_price, 0, true] call F_pay)) exitWith {};
 
 build_confirmed = 1;
 private _msg = format [localize "STR_FOB_BUILD_STATUS", name player, _defense_name, _count_objects, ([_fob_pos] call F_getFobName)];
-[gamelogic, _msg] remoteExec ["globalChat", 0];
+[_msg] remoteExec ["HPC_fnc_info", 0];
 [player, "Land_Carrier_01_blast_deflector_up_sound"] remoteExec ["sound_range_remote_call", 2];
 diag_log format ["--- LRX FOB Defense Template '%1' - %2 objects to build at FOB %3", _defense_name, _count_objects, ([_fob_pos] call F_getFobName)];
 
@@ -102,7 +102,7 @@ _fob_pos set [2, 0];
     };
 } foreach _objects_to_build;
 
-[gamelogic, format [localize "STR_FOB_CONSTRUCTION_COMPLETED", _building_count, _count_objects]] remoteExec ["globalChat", 0];
+[format [localize "STR_FOB_CONSTRUCTION_COMPLETED", _building_count, _count_objects]] remoteExec ["HPC_fnc_info", 0];
 diag_log format ["--- LRX FOB Defense Construction Completed (%1/%2)", _building_count, _count_objects];
 sleep 1;
 build_confirmed = 0;

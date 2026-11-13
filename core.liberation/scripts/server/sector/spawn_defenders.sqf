@@ -13,7 +13,7 @@ private _cost = round ((GRLIB_defense_costs select _defense_type) / (count _play
 } forEach _players;
 
 private _msg = format ["Spawn level %1 Defenders on %2, Each players pays %3 Ammo.", _defense_type, ([_sector_pos] call F_getLocationName), _cost];
-[gamelogic, _msg] remoteExec ["globalChat", 0];
+[_msg] remoteExec ["HPC_fnc_info", 0];
 diag_log _msg;
 
 private _squad_type = blufor_squad_inf_light;

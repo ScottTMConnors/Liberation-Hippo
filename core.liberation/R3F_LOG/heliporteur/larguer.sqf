@@ -40,7 +40,7 @@ else
 		[_objet, velocity _heliporteur] remoteExec ["setVelocity", _objet];
 	};
 
-	systemChat format [STR_R3F_LOG_action_heliport_larguer_fait, [_objet] call F_getLRXName];
+	[format [STR_R3F_LOG_action_heliport_larguer_fait, [_objet] call F_getLRXName]] call HPC_fnc_info;
 
 	R3F_LOG_mutex_local_verrou = false;
 };

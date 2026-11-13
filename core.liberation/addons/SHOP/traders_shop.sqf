@@ -2,7 +2,7 @@
 // by pSiKO
 
 if (([GRLIB_sector_size] call F_getNearestSector) in active_sectors) exitWith {
-	gamelogic globalChat "You cannot access the Trader shop during combat.";
+	["You cannot access the Trader shop during combat."] call HPC_fnc_info;
 };
 
 private _trader = (player nearEntities [SHOP_Man,10]) param [0,objNull];
@@ -82,7 +82,7 @@ _ctrl_buy ctrlAddEventHandler ["LBSelChanged", {
 }];
 lbSetCurSel [111, 0];
 
-gamelogic globalChat "Welcome to my shop, stranger";
+["Welcome to my shop, stranger"] call HPC_fnc_info;
 shop_action = 0;
 private _refresh = true;
 
@@ -170,7 +170,7 @@ while { dialog && alive player } do {
 				[player, _price, 0] remoteExec ["ammo_add_remote_call", 2];
 				_msg = format ["%1 sold for %2 ammo.", _vehicle_name, _price];
 				hintSilent _msg;
-				gamelogic globalChat _msg;
+				[_msg] call HPC_fnc_info;
 				ctrlEnable [120, false];
 				playSound "taskSucceeded";
 				_refresh = true;
@@ -206,4 +206,4 @@ while { dialog && alive player } do {
 
 	sleep 0.3;
 };
-gamelogic globalChat "Have a nice day...";
+["Have a nice day..."] call HPC_fnc_info;

@@ -11,17 +11,17 @@ if ((_box getVariable ["box_in_use", false])) exitWith {};
 if (_box_type in [FOB_box_typename, FOB_truck_typename, FOB_boat_typename] && count (GRLIB_all_fobs - GRLIB_all_outposts) >= GRLIB_max_fobs) exitWith {
 	private _msg = format [localize "STR_HINT_FOBS_EXCEEDED", GRLIB_max_fobs];
 	hint _msg;
-	gamelogic globalChat _msg;
+	[_msg] call HPC_fnc_info;
 };
 if (_box_type == FOB_box_outpost && count (GRLIB_all_outposts) >= GRLIB_max_outpost) exitWith {
 	private _msg = format [localize "STR_HINT_OUTPOST_EXCEEDED", GRLIB_max_outpost];
 	hint _msg;
-	gamelogic globalChat _msg;
+	[_msg] call HPC_fnc_info;
 };
 if (count (GRLIB_all_fobs select { surfaceIsWater _x }) > 0 && _box_type == FOB_boat_typename) exitWith {
 	private _msg = format ["Only one naval FOB is allowed."];
 	hint _msg;
-	gamelogic globalChat _msg
+	[_msg] call HPC_fnc_info
 };
 private _sea_deep = round ((getPosATL player select 2) - (getPosASL player select 2));
 private _min_deep = 50;
@@ -31,19 +31,19 @@ if (WorldName == "panthera3") then { _min_deep = 30 };
 if (_box_type == FOB_boat_typename && _sea_deep < _min_deep) exitWith {
 	private _msg = format [localize "STR_BUILD_ERROR_WATER_DEEP", _sea_deep, _min_deep];
 	hint _msg;
-	gamelogic globalChat _msg;
+	[_msg] call HPC_fnc_info;
 };
 if (_box_type == FOB_truck_typename && count (crew _box) > 0) exitWith {
 	private _msg = format ["Remove all crew from the %1 before deploying it.", ([_box_type] call F_getLRXName)];
 	hint _msg;
-	gamelogic globalChat _msg;
+	[_msg] call HPC_fnc_info;
 };
 
 private _min_fob_dist = 1000;
 if (GRLIB_player_fobdistance < _min_fob_dist) exitWith {
 	private _msg = format [localize "STR_FOB_BUILDING_IMPOSSIBLE", floor _min_fob_dist, round GRLIB_player_fobdistance];
 	hint _msg;
-	gamelogic globalChat _msg;
+	[_msg] call HPC_fnc_info;
 };
 
 private _min_sector_dist = round ((GRLIB_capture_size + GRLIB_fob_range) * 1.5);
@@ -52,7 +52,7 @@ private _next_sector = [_min_sector_dist] call F_getNearestSector;
 if (_next_sector != "") exitWith {
 	private _msg = format [localize "STR_FOB_BUILDING_IMPOSSIBLE_SECTOR", _min_sector_dist, round (player distance2D (markerPos _next_sector))];
 	hint _msg;
-	gamelogic globalChat _msg;
+	[_msg] call HPC_fnc_info;
 };
 
 _box setVariable ["box_in_use", true, true];

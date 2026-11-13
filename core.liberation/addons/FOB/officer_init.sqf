@@ -15,4 +15,4 @@
 	};
 };
 waitUntil {!(isNull (findDisplay 46))};
-systemChat localize "STR_FOB_INITIALIZED";
+diag_log localize "STR_FOB_INITIALIZED";

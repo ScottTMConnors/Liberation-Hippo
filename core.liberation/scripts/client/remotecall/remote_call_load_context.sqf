@@ -34,7 +34,7 @@ private _alt = _pos select 2;
     _x playMoveNow "AmovPercMwlkSrasWrflDf";
     [_x] spawn {
         params ["_unit"];
-        gamelogic globalChat format [localize "STR_LOG_SQUAD_ADD_UNIT",name _unit,rank _unit];
+        [format [localize "STR_LOG_SQUAD_ADD_UNIT",name _unit,rank _unit]] call HPC_fnc_info;
         sleep 5;
         [_unit, true] remoteExec ["allowDamage", 0];
     };

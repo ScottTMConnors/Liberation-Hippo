@@ -10,7 +10,7 @@ if (isNil {_vehicle getVariable "GREUH_vehicle_defense"}) then {
 
 		if (count (crew _target) == 0) exitWith {};
 		if (objectParent player == _target) then {
-			gamelogic globalChat format ["Warning! Incoming Missile (%1)!!", _ammo];
+			[format ["Warning! Incoming Missile (%1)!!", _ammo]] call HPC_fnc_info;
 		};
 
 		if (_target isKindOf "Air") then {

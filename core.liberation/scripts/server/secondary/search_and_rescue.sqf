@@ -1,7 +1,7 @@
 params [ ["_mission_cost", 0], "_caller" ];
 
 private _spawn_marker = [GRLIB_spawn_min, 99999, [], false] call F_findOpforSpawnPoint;
-if (_spawn_marker == "") exitWith { [gamelogic, "Could not find position for search and rescue mission"] remoteExec ["globalChat", 0] };
+if (_spawn_marker == "") exitWith { ["Could not find position for search and rescue mission"] remoteExec ["HPC_fnc_info", 0] };
 GRLIB_secondary_used_positions pushbackUnique _spawn_marker;
 
 diag_log format ["--- LRX: %1 start static mission: SAR at %2", _caller, time];

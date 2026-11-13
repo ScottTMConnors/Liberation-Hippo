@@ -37,7 +37,7 @@ _failedExec = {
 	// Mission failed
 	{ [_x, -2] call F_addReput } forEach (AllPlayers - (entities "HeadlessClient_F"));
 	private _msg = format [localize "STR_SIDE_FAILED_REPUT", -2];
-	[gamelogic, _msg] remoteExec ["globalChat", 0];	
+	[_msg] remoteExec ["HPC_fnc_info", 0];	
 	deleteMarker _marker_mission;
 	_failedHintMessage = ["STR_FOODDELI_MESSAGE2", sideMissionColor, _townName];
 	A3W_delivery_failed = A3W_delivery_failed + 1;

@@ -110,7 +110,7 @@ while { alive player && dialog } do {
 			(lbCurSel _delay_list),
 			(lbCurSel _timeout_list)
 		];
-		systemChat localize "STR_LRX_MISSION_CONFIG_SET";
+		[localize "STR_LRX_MISSION_CONFIG_SET"] call HPC_fnc_info;
 		sleep 1;
 		(_display displayCtrl 1610) ctrlEnable true;
 	};

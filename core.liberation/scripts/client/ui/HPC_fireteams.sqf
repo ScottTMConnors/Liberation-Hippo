@@ -2,7 +2,7 @@
 // and make a fireteam of them, give fireteams orders on the map, or disband them.
 if (!hasInterface) exitWith {};
 disableSerialization;
-if (isNil "HPC_fnc_mapDraw") exitWith { systemChat "The map overlay is still loading; try again in a moment." };
+if (isNil "HPC_fnc_mapDraw") exitWith { ["The map overlay is still loading; try again in a moment."] call HPC_fnc_info };
 if (!isNull (uiNamespace getVariable ["HPC_FireteamsDisplay", displayNull])) exitWith {};
 if (visibleMap) then { openMap false; uiSleep 0.1 };
 private _display = (findDisplay 46) createDisplay "HPC_Fireteams";

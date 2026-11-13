@@ -40,7 +40,7 @@ if (_cmd == 2) then {
 
 // Update
 if (_msg != "") then {
-    [gamelogic, _msg] remoteExec ["globalChat", 0];
+    [_msg] remoteExec ["HPC_fnc_info", 0];
     // update all warehouse
     {
         if (_x getVariable ["GRLIB_WHS_Group", false]) then {

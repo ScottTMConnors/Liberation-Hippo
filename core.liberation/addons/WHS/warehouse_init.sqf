@@ -14,4 +14,4 @@ GRLIB_WHS_Selected = 0;
 	};
 };
 waitUntil {!(isNull (findDisplay 46))};
-systemChat "-------- Warehouse Initialized --------";
+diag_log "-------- Warehouse Initialized --------";

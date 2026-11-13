@@ -16,7 +16,7 @@ if (isNil "_forced_pos") then {
 	_pos = _forced_pos;
 };
 
-[gamelogic, _text] remoteExec ["globalChat", 0];
+[_text] remoteExec ["HPC_fnc_info", 0];
 
 _pos set [2, 500];	// launch altitude
 if (surfaceIsWater _pos) then { _pos = ATLtoASL _pos };

@@ -53,4 +53,4 @@ if (count _my_units > 0) then {
 };
 
 private _text = format ["Bye bye %1, see you soon...", _name];
-[gamelogic, _text] remoteExec ["globalChat", -2];
+[_text] remoteExec ["HPC_fnc_info", -2];

@@ -169,7 +169,7 @@ while {true} do {
 					_vehicle setVariable ["GRLIB_vehicle_need_support", _task];
 					GRLIB_vehicle_need_support pushBackUnique _vehicle;
 					if (_uiticks % 4 == 0) then {
-						gamelogic globalChat format [localize "STR_VEH_NEED_SUPPORT", ([_vehicle] call F_getLRXName)];
+						[format [localize "STR_VEH_NEED_SUPPORT", ([_vehicle] call F_getLRXName)]] call HPC_fnc_info;
 					};
 				};
 

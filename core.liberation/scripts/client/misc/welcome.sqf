@@ -85,7 +85,7 @@ if !(player getVariable ["GRLIB_squad_context_loaded", false]) then {
 		} forEach _crew;
 		sleep 2;
 		{ if (units _x isEqualTo []) then { [_x] remoteExec ["deleteGroup", 2] } } forEach _oldGroups;
-		gamelogic globalChat format ["%1 vehicle crew member(s) rejoined your squad.", count _crew];
+		[format ["%1 vehicle crew member(s) rejoined your squad.", count _crew]] call HPC_fnc_info;
 	};
 };
 

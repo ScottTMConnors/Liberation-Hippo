@@ -144,7 +144,7 @@ _failedExec = {
 	// Mission failed
 	{ [_x, -3] call F_addReput } forEach (AllPlayers - (entities "HeadlessClient_F"));
 	private _msg = format [localize "STR_SIDE_FAILED_REPUT", -3];
-	[gamelogic, _msg] remoteExec ["globalChat", 0];	
+	[_msg] remoteExec ["HPC_fnc_info", 0];	
 	deleteMarker "GRLIB_A3W_Mission_SD_Item";
 	deleteMarker "GRLIB_A3W_Mission_SD_Marker";
 	deleteVehicle _quest_item;

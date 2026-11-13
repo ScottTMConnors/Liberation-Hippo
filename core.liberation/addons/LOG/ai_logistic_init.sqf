@@ -24,4 +24,4 @@ GRLIB_AI_logistic_ressources = [
 ];
 
 waitUntil {!(isNull (findDisplay 46))};
-systemChat "-------- AI Logistics System Initialized --------";
+diag_log "-------- AI Logistics System Initialized --------";

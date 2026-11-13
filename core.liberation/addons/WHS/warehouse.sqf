@@ -27,7 +27,7 @@ private _display = findDisplay 2302;
 ctrlEnable [ 120, false ];
 ctrlEnable [ 121, false ];
 
-gamelogic globalChat "Welcome to the warehouse!";
+["Welcome to the warehouse!"] call HPC_fnc_info;
 
 private [
 	"_control", "_entrytext", "_icon", "_typename",

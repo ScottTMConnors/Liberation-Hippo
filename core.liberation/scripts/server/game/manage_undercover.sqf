@@ -40,7 +40,7 @@ while {true} do {
             _unit setVariable ["GRLIB_unit_detected", _current, true];
         };
         if (_msg != "") then {
-            [gamelogic, _msg] remoteExec ["globalChat", owner _unit];
+            [_msg] remoteExec ["HPC_fnc_info", owner _unit];
         };
 
         sleep 0.1;

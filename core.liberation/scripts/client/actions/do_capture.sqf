@@ -16,7 +16,7 @@ private _timeout = time + 30;
 waitUntil {
     if !(_unit in (units player)) then {
         [_unit] joinSilent (group player);
-        gamelogic globalChat format [localize "STR_PRISONER_CAPTURING", name _unit];
+        [format [localize "STR_PRISONER_CAPTURING", name _unit]] call HPC_fnc_info;
     };
     sleep 2;
     ((!alive _unit) || (_unit in (units player)) || time > _timeout);

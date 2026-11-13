@@ -34,7 +34,7 @@ player setVariable ["trx_complete", 0, true];
 
 if (!_ret || {!_quietSuccess}) then {
     hintSilent _msg;
-    gamelogic globalChat _msg;
+    [_msg] call HPC_fnc_info;
 };
 
 _ret;

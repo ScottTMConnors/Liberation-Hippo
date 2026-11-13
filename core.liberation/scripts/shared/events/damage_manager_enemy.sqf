@@ -59,7 +59,7 @@ if (isPlayer _killer && _unit != _killer) then {
 		if (time < (_unit getVariable ["HPC_cheatWarnAt", 0])) exitWith {}; // warn and retaliate at most every 5 s
 		_unit setVariable ["HPC_cheatWarnAt", time + 5];
 		private _msg = format ["%1 Stop Cheating !!", name _killer];
-		[gamelogic, _msg] remoteExec ["globalChat", _killer]; // owner returns 0 on an HC
+		[_msg] remoteExec ["HPC_fnc_info", _killer]; // owner returns 0 on an HC
 		[_unit, _killer] spawn {
 			params ["_unit", "_killer"];
 			_unit reveal [_killer, 4];
