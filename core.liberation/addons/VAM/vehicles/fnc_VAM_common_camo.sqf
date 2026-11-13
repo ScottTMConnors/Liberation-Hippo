@@ -12,7 +12,7 @@ private _selected_camo_class_name = camo_class_names select _list_selection;
 private _selected_camo_display_names = camo_display_names select _list_selection;
 private _vehicle = VAM_targetvehicle;
 
-if ([_selected_camo_class_name, [".#", "./", "LRX_Texture"]] call F_startsWithMultiple) then {
+if ([_selected_camo_class_name, [".#", "./"]] call F_startsWithMultiple) then {
     private _camo_class_name = "";
     if (_selected_camo_class_name select [0,2] == ".#") then {
         // RGB color

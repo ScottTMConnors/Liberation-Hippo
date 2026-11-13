@@ -1,6 +1,6 @@
 """Audit (and optionally repair) the faction templates' build lists.
 
-Every mod_template/<NAME>/classnames_west.sqf lists buildable entries as
+Every template's classnames_west.sqf (an entry of core.liberation/mod_template.sqf) lists buildable entries as
 [CLASSNAME, MANPOWER, AMMO, FUEL, RANK(, DESC)]. This checks them offline:
 
   duplicate   the same class listed twice in one template
@@ -9,9 +9,9 @@ Every mod_template/<NAME>/classnames_west.sqf lists buildable entries as
   conflict    a base-game class priced differently from the A3_* templates
   fuel-van    an extra fuel vehicle not priced like the fuel van (60 fuel)
   legacy rank a vehicle on an old coarse unlock tier (GRLIB_perm_inf..max)
-  index       mod_template/template_index.sqf not matching the templates
+  index       the HPC_templateIndex section of mod_template.sqf out of date
 
---fix rewrites the files: static fuel to 0, later duplicates removed, extra fuel
+--fix rewrites mod_template.sqf: static fuel to 0, later duplicates removed, extra fuel
 vehicles to the van price, and conflicts to the canonical price (the base-game
 A3_* templates' price; mod-only classes keep each author's own price scale).
 Exit status 1 while problems remain (without --fix).
@@ -21,6 +21,9 @@ import collections
 import pathlib
 import re
 import sys
+
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+import template_pack  # noqa: E402
 
 ROOT = pathlib.Path(__file__).resolve().parents[1] / 'core.liberation'
 LISTS = ('infantry_units_west', 'light_vehicles', 'heavy_vehicles', 'air_vehicles',
@@ -43,8 +46,7 @@ def list_bodies(text):
             yield m.group(1), m.start(2), m.group(2)
 
 
-def parse(path):
-    text = path.read_text(encoding='utf-8', errors='replace')
+def parse(text):
     rows = []
     for name, base, body in list_bodies(text):
         offset = 0
@@ -62,9 +64,10 @@ def parse(path):
     return text, rows
 
 
-def templates(root=ROOT):
-    for path in sorted((root / 'mod_template').glob('*/classnames_west.sqf')):
-        yield path.parent.name, path
+def templates(files):
+    for name, parts in sorted(template_pack.templates(files).items(), key=lambda x: x[0].lower()):
+        if 'classnames_west.sqf' in parts:
+            yield name, parts['classnames_west.sqf']
 
 
 def canonical(prices):
@@ -123,9 +126,12 @@ def fuel_vehicle(row, core_fuel_truck):
 def audit(root=ROOT, fix=False):
     ranks = defined_ranks()
     problems = []
+    head, index, files = template_pack.read_pack(root)
+    changed = False
     data = {}
-    for name, path in templates(root):
-        text, rows = parse(path)
+    for name, path in templates(files):
+        text = files[path]
+        _, rows = parse(text)
         m = re.search(r'^fuel_truck_typename\s*=\s*"([^"]+)"', text, re.M)
         data[name] = (path, text, rows, (m.group(1).lower() if m else ''))
     prices = collections.defaultdict(dict)
@@ -184,25 +190,25 @@ def audit(root=ROOT, fix=False):
                 out = out[:start] + ('' if rep is None else rep) + out[end:]
             # a removed last entry can leave a trailing comma before the closing bracket
             out = re.sub(r',(\s*\r?\n\];)', r'\1', out)
-            path.write_text(out, encoding='utf-8', newline='')
-    index = root / INDEX
-    want = index_text(root)
-    if not index.exists() or index.read_text(encoding='utf-8') != want:
-        problems.append(f'{INDEX} out of date')
-        if fix:
-            index.write_text(want, encoding='utf-8', newline='\n')
+            files[path] = out
+            changed = True
+    want = index_text(files).strip('\n')
+    if index != want:
+        problems.append('HPC_templateIndex section of mod_template.sqf out of date')
+        index = want
+        changed = True
+    if fix and changed:
+        template_pack.write_pack(root, head, index, files)
     return problems
 
 
-INDEX = 'mod_template/template_index.sqf'
 PETS = {'Alsatian_Random_F', 'Fin_random_F'}
 
 
-def template_refs(path, role):
+def template_refs(text, role):
     """Up to three infantry classes that must exist for the template's mod to be loaded."""
-    if not path.exists():
+    if text is None:
         return []
-    text = path.read_text(encoding='utf-8', errors='replace')
     refs = []
     if role == 'west':
         m = re.search(r'^infantry_units_west\s*=\s*\[(.*?)^\];', text, re.M | re.S)
@@ -218,14 +224,13 @@ def template_refs(path, role):
     return refs[:3]
 
 
-def index_text(root=ROOT):
+def index_text(files):
     rows = []
-    for d in sorted((root / 'mod_template').iterdir(), key=lambda p: p.name.lower()):
-        if d.is_dir():
-            west = template_refs(d / 'classnames_west.sqf', 'west')
-            east = template_refs(d / 'classnames_east.sqf', 'east')
-            q = lambda refs: '[' + ','.join(f'"{r}"' for r in refs) + ']'
-            rows.append(f'\t["{d.name.lower()}", [{q(west)}, {q(east)}]]')
+    for name, parts in sorted(template_pack.templates(files).items(), key=lambda x: x[0].lower()):
+        west = template_refs(files.get(parts.get('classnames_west.sqf')), 'west')
+        east = template_refs(files.get(parts.get('classnames_east.sqf')), 'east')
+        q = lambda refs: '[' + ','.join(f'"{r}"' for r in refs) + ']'
+        rows.append(f'\t["{name.lower()}", [{q(west)}, {q(east)}]]')
     return ('// Generated by tools/template_audit.py --fix; do not edit.\n'
             '// Template name (lower case) -> [west classes, east classes]: infantry that exists\n'
             "// only when the template's mod is loaded. An empty list means no such role.\n"

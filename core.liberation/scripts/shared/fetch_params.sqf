@@ -62,7 +62,6 @@ GRLIB_IFA_enabled = isClass(configFile >> "CfgPatches" >> "LIB_core"); // Return
 GRLIB_LOP_enabled = isClass(configFile >> "CfgPatches" >> "lop_main"); // Returns true if LOP is enabled
 GRLIB_LRX_Music_enabled = isClass(configFile >> "cfgPatches" >> "LRX_Music"); // Returns true if LRX Music Pack is enabled
 GRLIB_LRX_Template_enabled = isClass(configFile >> "cfgPatches" >> "LRX_Template"); // Returns true if LRX Template Pack is enabled
-GRLIB_LRX_Texture_enabled = isClass(configFile >> "cfgPatches" >> "LRX_Texture"); // Returns true if LRX Textture Pack is enabled
 GRLIB_MFR_enabled = isClass(configfile >> "CfgPatches" >> "MFR_Dogs"); // Returns true if MFR Dogs is enabled
 GRLIB_OPTRE_enabled = isClass(configFile >> "cfgPatches" >> "OPTRE_Core"); // Returns true if OPTRE is enabled
 GRLIB_R3F_enabled = isClass(configFile >> "CfgPatches" >> "r3f_armes"); // Returns true if R3F is enabled
@@ -148,7 +147,7 @@ GRLIB_use_whitelist = (GRLIB_use_whitelist == 1);
 GRLIB_use_exclusive = (GRLIB_use_exclusive == 1);
 
 // Classename MOD source
-[] call compileFinal preprocessFileLineNumbers "mod_template\mod_init.sqf";
+[] call compileFinal preprocessFileLineNumbers "mod_template.sqf";
 LRX_mod_list_west = [];
 LRX_mod_list_east = [];
 LRX_mod_list_name = [];

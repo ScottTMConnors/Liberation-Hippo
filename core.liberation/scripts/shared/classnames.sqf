@@ -13,6 +13,13 @@ zeropos = [0,0,10000];
 // *** DEFAULT ***
 [] call compileFinal preprocessFileLineNumbers "default\default_classnames.sqf";
 
+// Only the two chosen factions' templates are used from here on: drop the rest from memory.
+if (!isNil "HPC_templateFiles") then {
+	private _keep = [toLower GRLIB_mod_west + "\", toLower GRLIB_mod_east + "\"];
+	private _drop = (keys HPC_templateFiles) select { private _k = _x; _keep findIf { _k find _x == 0 } < 0 };
+	{ HPC_templateFiles deleteAt _x } forEach _drop;
+};
+
 // *** FRIENDLIES ***
 _path = format ["mod_template\%1\classnames_west.sqf", GRLIB_mod_west];
 _ret = [_path] call F_getTemplateFile;
