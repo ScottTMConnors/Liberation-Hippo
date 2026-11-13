@@ -174,7 +174,28 @@ HPC_clientLoadingStage = [0.85,"Preparing your player and squad..."];
 // Create Player Group
 GRLIB_player_group = createGroup [GRLIB_side_friendly, true];
 [GRLIB_player_group, "add"] remoteExec ["addel_group_remote_call", 2];
-waitUntil { uiSleep 0.1; player getVariable ["GRLIB_score_set", 0] == 1 && player in (units GRLIB_player_group) };
+// Self-heal: a JIP rejoin can miss the server's score flag or leave the player outside the group,
+// which used to hang the loading screen until its 300 s deadline.
+private _nextFix = diag_tickTime + 10;
+waitUntil {
+	uiSleep 0.1;
+	private _scoreOk = player getVariable ["GRLIB_score_set", 0] == 1;
+	private _groupOk = !isNull GRLIB_player_group && {player in (units GRLIB_player_group)};
+	if (!(_scoreOk && _groupOk) && {diag_tickTime > _nextFix}) then {
+		_nextFix = diag_tickTime + 10;
+		diag_log format ["--- LRX Client: waiting for player setup (score %1, group %2 %3)", _scoreOk, GRLIB_player_group, _groupOk];
+		if (!_groupOk) then {
+			if (isNull GRLIB_player_group) then {
+				GRLIB_player_group = createGroup [GRLIB_side_friendly, true];
+			};
+			[player] joinSilent GRLIB_player_group;
+			[GRLIB_player_group, "add"] remoteExec ["addel_group_remote_call", 2];
+		};
+		// re-broadcast 0 so the server's score pass sees a newcomer and applies the saved score again
+		if (!_scoreOk) then { player setVariable ["GRLIB_score_set", 0, true] };
+	};
+	_scoreOk && _groupOk
+};
 ["client.score"] call HPC_fnc_loadMark;
 
 [] call compileFinal preprocessFileLineNumbers "addons\VAM\RPT_init_client.sqf";
