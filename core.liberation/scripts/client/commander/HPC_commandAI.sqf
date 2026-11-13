@@ -236,7 +236,7 @@ while {!isNull _display} do {
                 } else {"Waiting for battle"};
                 _groupsList lbSetText [_row, _key + (["", "  -  " + _pointsText] select (_pointsText != ""))];
                 _groupsList lbSetTextRight [_row, _right];
-                _groupsList lbSetPicture [_row, ["respawn_inf"] call HPC_fnc_mapIcon];
+                _groupsList lbSetPicture [_row, [["b_inf", "b_armor"] select (_key find "Armor" == 0)] call HPC_fnc_mapIcon];
                 _groupsList lbSetPictureColor [_row, [0.5, 0.55, 0.6, 1]];
                 _groupsList lbSetColor [_row, [0.55, 0.6, 0.64, 1]];
                 _groupsList lbSetColorRight [_row, [0.55, 0.6, 0.64, 1]];
