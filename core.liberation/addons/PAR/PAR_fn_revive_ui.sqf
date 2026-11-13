@@ -4,7 +4,8 @@ if (GRLIB_respawn_cooldown > 0) then {
 	if (_cooldown > time) then {
 		count_death = count_death + 1;
 		_respawn_delay = round (count_death * _respawn_delay);
-		BTC_logic setVariable [format ["%1_last_respawn", PAR_Grp_ID], _cooldown, true];
+		// shared as serverTime: a rejoining client's own time restarts at 0
+		BTC_logic setVariable [format ["%1_last_respawn", PAR_Grp_ID], serverTime + (_cooldown - time), true];
 	} else {
 		count_death = 1;
 	};

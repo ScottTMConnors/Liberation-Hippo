@@ -102,13 +102,15 @@ if (GRLIB_kick_idle > 0) then {
 waitUntil {uiSleep 0.1; !isNil "BTC_logic"};
 ["client.checks"] call HPC_fnc_loadMark;
 if (GRLIB_respawn_cooldown > 0) then {
+	// stored as serverTime (time restarts at 0 on rejoin); never wait longer than one cooldown
 	private _cooldown = BTC_logic getVariable [format ["%1_last_respawn", PAR_Grp_ID], 0];
-	if (_cooldown > time) then {
+	_cooldown = _cooldown min (serverTime + GRLIB_respawn_cooldown);
+	if (_cooldown > serverTime) then {
 		// Cooldown can exceed the loading screen's 300 s deadline and hides the message.
 		[] call HPC_fnc_loadingEnd;
 		disableUserInput true;
-		while { time < _cooldown } do {
-			private _msg = format [localize "STR_MSG_RESPAWN_COOLDOWN", round (_cooldown - time)];
+		while { serverTime < _cooldown } do {
+			private _msg = format [localize "STR_MSG_RESPAWN_COOLDOWN", round (_cooldown - serverTime)];
 			titleText [_msg, "PLAIN", 100];
 			uiSleep 2;
 		};
