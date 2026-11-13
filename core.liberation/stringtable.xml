@@ -4063,6 +4063,24 @@
 			<Portuguese>Busca e resgate</Portuguese>
 			<Czech>Hledat a zachránit</Czech>
 		</Key>
+		<Key ID="STR_SECONDARY_MISSION4">
+			<Original>Fuel Truck Theft</Original>
+		</Key>
+		<Key ID="STR_SECONDARY_BRIEFING4">
+			<Original>
+				&lt;t size='1.3' color='#ffa000'&gt;FUEL TRUCK THEFT&lt;/t&gt;
+				&lt;br/&gt;&lt;br/&gt;
+				&lt;t size='1'&gt;
+				The enemy has parked a full fuel truck at one of its positions, with a guard detail and possibly armour nearby.&lt;/t&gt;
+				&lt;br/&gt;&lt;br/&gt;
+				&lt;t size='1'&gt;
+				Get in, steal the truck and drive it to one of your FOBs. If it is destroyed, the mission fails.&lt;/t&gt;
+				&lt;br/&gt;&lt;br/&gt;
+				&lt;t size='1.15' color='#00a0ff'&gt;Cost: %1&lt;img image='\A3\Ui_f\data\GUI\Cfg\Ranks\general_gs.paa'/&gt;&lt;/t&gt;
+				&lt;br/&gt;
+				&lt;t size='1.15' color='#ffa000'&gt;Reward: the truck (scrap it for 100+ fuel), 40 intel, lower enemy readiness.&lt;/t&gt;
+			</Original>
+		</Key>
 		<Key ID="STR_SECONDARY_BRIEFING2">
 			<Original>
 				&lt;t size='1.3' color='#ffa000'&gt;SEARCH AND RESCUE&lt;/t&gt;

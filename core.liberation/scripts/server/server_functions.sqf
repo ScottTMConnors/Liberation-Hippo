@@ -58,6 +58,7 @@ fob_destroy = compileFinal preprocessFileLineNumbers "scripts\server\base\fob_de
 fob_hunting = compileFinal preprocessFileLineNumbers "scripts\server\secondary\fob_hunting.sqf";
 convoy_hijack = compileFinal preprocessFileLineNumbers "scripts\server\secondary\convoy_hijack.sqf";
 search_and_rescue = compileFinal preprocessFileLineNumbers "scripts\server\secondary\search_and_rescue.sqf";
+fuel_theft = compileFinal preprocessFileLineNumbers "scripts\server\secondary\fuel_theft.sqf";
 final_situaton = compileFinal preprocessFileLineNumbers "scripts\server\secondary\final_situaton.sqf";
 
 // Sector

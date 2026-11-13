@@ -2,7 +2,7 @@ if (!isServer && hasInterface) exitWith {};
 params [ "_mission_index", ["_mission_free", false], "_caller_id"];
 // only server-side callers (autostart) may start a mission for free
 if (isMultiplayer && {isRemoteExecuted}) then { _mission_free = false };
-if !(_mission_index isEqualType 0 && {_mission_index in [0,1,2,3]}) exitWith {};
+if !(_mission_index isEqualType 0 && {_mission_index in [0,1,2,3,4]}) exitWith {};
 if (_mission_index == 3 && {!(call HPC_fnc_rcAdmin)}) exitWith {}; // final mission: admins only
 
 if (isNil "LRX_MissionMarkersMil") exitWith {
@@ -34,5 +34,6 @@ if ( _mission_index == 0 ) then { [_mission_cost, _caller] call fob_hunting };
 if ( _mission_index == 1 ) then { [_mission_cost, _caller] call convoy_hijack };
 if ( _mission_index == 2 ) then { [_mission_cost, _caller] call search_and_rescue };
 if ( _mission_index == 3 ) then { [_mission_cost, _caller] call final_situaton };
+if ( _mission_index == 4 ) then { [_mission_cost, _caller] call fuel_theft };
 
 GRLIB_secondary_starting = false; publicVariable "GRLIB_secondary_starting";

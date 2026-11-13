@@ -284,7 +284,7 @@ private _gLive = GRLIB_player_context select {(_x select 0) == _gUid};
 private _gLiveEmpty = count _gLive == 1 && {((_gLive select 0) select 4) isEqualTo []};
 diag_log ["HPC_SAVE_GARAGE", _gClass, _gMoving, count _gGarage, _gEntry, _gInWorld, _gLiveEmpty, _gBlob select 6, _gSector in (_gBlob select 0), alive _gVeh];
 private _gFuels = _gGarage apply {_x param [7, -1]};
-["save.garage", _gClass != "" && {_gMoving} && {count _gGarage == 3} && {count (crew _gCrewVeh) > 0} && {({(_x select 0) == _gClass} count _gGarage) == 2} && {count _gEntry == 10} && {count _gCargo == 1} && {_gFuels findIf {abs (_x - 0.6) < 0.02} >= 0} && {!_gInWorld} && {_gLiveEmpty} && {alive _gVeh}] call _assert;
+["save.garage", _gClass != "" && {_gMoving} && {count _gGarage == 3} && {count (crew _gCrewVeh) > 0} && {({(_x select 0) == _gClass} count _gGarage) == 2} && {count _gEntry == 11} && {count _gCargo == 1} && {_gFuels findIf {abs (_x - 0.6) < 0.02} >= 0} && {!_gInWorld} && {_gLiveEmpty} && {alive _gVeh}] call _assert;
 // the carried quad bike is saved as its own vehicle entry inside the carrier's entry
 private _gCarrierEntry = (_gGarage select {(_x select 0) == _gCarrierClass}) param [0, []];
 private _gNested = (_gCarrierEntry param [5, []]) select {_x isEqualType [] && {count _x >= 7}};

@@ -34,16 +34,12 @@ if (_result) exitWith {};
 // Vehicles recycle like scrapping them from the garage: the same price (GRLIB_recycling_percentage
 // of the bare vehicle's value, by its condition) and whatever they carry goes to the home stockpile.
 if (_vehicle isKindOf "AllVehicles" && {alive _vehicle} && {_veh_class != mobile_respawn}) exitWith {
-	private _bare = +([_vehicle] call HPC_fnc_vehicleEntry);
-	_bare set [4, []]; _bare set [5, []]; _bare set [6, []];
-	(["object", _bare] call HPC_fnc_cargoValue) params ["_a", "_f"];
-	_a = round (_a * GRLIB_recycling_percentage);
-	_f = round (_f * GRLIB_recycling_percentage);
+	([[_vehicle] call HPC_fnc_vehicleEntry] call HPC_fnc_scrapValue) params ["_a", "_f"];
 
 	dorecycle = 0;
 	createDialog "liberation_recycle";
 	waitUntil { dialog };
-	ctrlSetText [131, format ["%1", ((GRLIB_recycleable_info select { _x select 0 == _veh_class }) param [0, [_veh_class, 0]]) select 1]];
+	ctrlSetText [131, "0"]; // vehicles give no manpower back
 	ctrlSetText [132, format ["%1", _a]];
 	ctrlSetText [133, format ["%1", _f]];
 	ctrlSetText [134, format [localize "STR_RECYCLING_YIELD", [_veh_class] call F_getLRXName]];

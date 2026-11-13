@@ -245,7 +245,7 @@ support_vehicles append [
 	[cargo_sling_typename,0,50,0,GRLIB_perm_sgt],
 	[ammo_truck_typename,5,400,10,GRLIB_perm_sgm],
 	[repair_truck_typename,5,200,30,GRLIB_perm_sfc],
-	[fuel_truck_typename,5,150,70,GRLIB_perm_sfc],
+	[fuel_truck_typename,5,150,80,GRLIB_perm_sfc],
 	[FOB_box_outpost,0,500,0,GRLIB_perm_sgt],
 	[FOB_box_typename,0,1500,0,GRLIB_perm_1lt],
 	[FOB_truck_typename,5,1500,10,GRLIB_perm_1lt],

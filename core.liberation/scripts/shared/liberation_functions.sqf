@@ -178,6 +178,7 @@ HPC_fnc_rewardPlayer = compileFinal preprocessFileLineNumbers "scripts\shared\fu
 HPC_fnc_damageActor = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_damageActor.sqf";
 HPC_fnc_vehicleHit = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_vehicleHit.sqf";
 HPC_fnc_killAttribution = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_killAttribution.sqf";
+HPC_fnc_scrapValue = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_scrapValue.sqf"; // vehicle scrap price
 HPC_fnc_info = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_info.sqf"; // plain-text card for this player (was globalChat)
 HPC_fnc_killFeedSend = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_killFeedSend.sqf"; // server: broadcast a kill
 HPC_fnc_killFeed = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_killFeed.sqf"; // client: add a kill to a feed

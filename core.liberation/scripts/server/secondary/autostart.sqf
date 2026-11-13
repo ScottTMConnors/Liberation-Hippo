@@ -7,6 +7,6 @@ private _delay = (60 * 60) * 1.5;
 while {true} do {
 	sleep _delay;
 	if (!GRLIB_secondary_starting) then {
-		[(selectRandom [1,2]), true] call start_secondary_remote_call;
+		[(selectRandom [1,2,4]), true] call start_secondary_remote_call;
 	};
 };

@@ -60,7 +60,7 @@ player createDiarySubject ["HPC_Guide", "Field Guide"];
 	"Nearby: your vehicles and crates within 30 m, and unclaimed ones. Loot captured enemy trucks and crates straight home.", "<br/><br/>",
 	"Move a stack, one item or everything; Unload all vehicles sends every vehicle's cargo home. Take out puts items in a crate beside you and places crates and vehicles like a build.", "<br/>",
 	"Send cargo to another player's home with the Move to list.", "<br/>",
-	format ["Sell anything for %1%% of its value; scrap a stored vehicle for %1%% of its build cost in ammo and fuel, less its damage. Enemy vehicles and gear pay too.", round (GRLIB_recycling_percentage * 100)], "<br/><br/>",
+	format ["Sell anything for %1%% of its value; scrap a vehicle for 90%% of its build cost in ammo and fuel (less damage, down to 75%% as its ammo and fuel run low; no manpower). Enemy and civilian fuel trucks scrap for a lot of fuel. Enemy vehicles and gear pay too.", round (GRLIB_recycling_percentage * 100)], "<br/><br/>",
 	"On every save your vehicles go into your garage and the items in your crates go to your home stockpile, so a restart loses nothing.", "<br/>"
 ]] call _add;
 

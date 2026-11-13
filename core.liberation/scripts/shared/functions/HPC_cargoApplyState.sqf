@@ -18,6 +18,7 @@ if (_ammo isEqualType 0 && {_ammo > 0} && {_ammo < 1}) then { _object setVehicle
 if (count _items > 0) then { [_object, _items] call F_setCargo };
 if (_fuel isEqualType 0 && {_fuel >= 0}) then { _object setFuel _fuel };
 if (_damage isEqualType 0 && {_damage > 0}) then { _object setDamage [_damage, false] };
+if ((_entry param [10, ""]) in ["enemy", "civ"]) then { _object setVariable ["HPC_fuelBonus", _entry select 10, true] };
 { if (_x isEqualType 0) then { _object setHitIndex [_forEachIndex, _x, false] } } forEach _hits;
 if (count _r3f + count _lrx > 0) then {
 	if (isServer) then {

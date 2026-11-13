@@ -99,3 +99,31 @@ if (_notif_type == 9) exitWith {
 	};
 	hint _msg;
 };
+
+// Fuel truck theft (secondary mission 4): mission started / ended
+if (_notif_type == 20) exitWith {
+	waitUntil {sleep 0.5; !isNil "secondary_objective_position_marker" && {count secondary_objective_position_marker > 0}};
+	waitUntil {sleep 0.5; secondary_objective_position_marker distance2D zeropos > 300 };
+	private _location_name = [secondary_objective_position_marker] call F_getLocationName;
+	["Fuel truck theft", format ["An enemy fuel truck is parked near %1 under guard. Steal it and bring it to a FOB.", _location_name], "warn", 10] call HPC_fnc_toast;
+	private _pos = secondary_objective_position_marker getPos [400, floor random 360];
+	private _marker = createMarkerLocal ["secondarymarker", _pos];
+	_marker setMarkerColorLocal GRLIB_color_enemy_bright;
+	_marker setMarkerTypeLocal "hd_unknown";
+	private _zone = createMarkerLocal ["secondarymarkerzone", _pos];
+	_zone setMarkerColorLocal GRLIB_color_enemy_bright;
+	_zone setMarkerShapeLocal "ELLIPSE";
+	_zone setMarkerBrushLocal "FDiagonal";
+	_zone setMarkerSizeLocal [700, 700];
+};
+
+if (_notif_type == 21) exitWith {
+	if (_notif_data isEqualTo true) then {
+		["Fuel truck stolen", "The enemy fuel truck is at a FOB. Claim it, or scrap it for a lot of fuel.", "good", 10] call HPC_fnc_toast;
+	} else {
+		["Fuel truck theft failed", "The enemy fuel truck was lost.", "bad", 8] call HPC_fnc_toast;
+	};
+	deleteMarkerLocal "secondarymarker";
+	deleteMarkerLocal "secondarymarkerzone";
+	secondary_objective_position_marker = zeropos;
+};

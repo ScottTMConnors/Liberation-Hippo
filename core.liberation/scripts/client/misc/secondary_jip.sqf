@@ -10,6 +10,10 @@ if (GRLIB_secondary_in_progress == 1) then {
 	[4] spawn remote_call_intel;
 };
 
+if (GRLIB_secondary_in_progress == 4) then {
+	[20] spawn remote_call_intel;
+};
+
 if (GRLIB_secondary_in_progress == 2) then {
 	[6] spawn remote_call_intel;
 };

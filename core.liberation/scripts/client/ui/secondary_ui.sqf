@@ -5,7 +5,8 @@ private _mission_list = [
 	"STR_SECONDARY_MISSION0",
 	"STR_SECONDARY_MISSION1",
 	"STR_SECONDARY_MISSION2",
-	"STR_SECONDARY_MISSION3"
+	"STR_SECONDARY_MISSION3",
+	"STR_SECONDARY_MISSION4"
 ];
 
 if (GRLIB_secondary_in_progress >= 0) exitWith {
@@ -26,14 +27,16 @@ private _images = [
 	"res\secondary\fob_hunting.jpg",
 	"res\secondary\convoy_hijack.jpg",
 	"res\secondary\sar.jpg",
-	"res\secondary\final_situation.jpg"
+	"res\secondary\final_situation.jpg",
+	"res\secondary\convoy_hijack.jpg"
 ];
 
 private _briefings = [
 	"STR_SECONDARY_BRIEFING0",
 	"STR_SECONDARY_BRIEFING1",
 	"STR_SECONDARY_BRIEFING2",
-	"STR_SECONDARY_BRIEFING3"
+	"STR_SECONDARY_BRIEFING3",
+	"STR_SECONDARY_BRIEFING4"
 ];
 
 private _display = findDisplay 6842;

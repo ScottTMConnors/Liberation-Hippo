@@ -160,6 +160,7 @@ publicVariable "HPC_serverLoadingStage";
 [] execVM "scripts\server\game\manage_undercover.sqf";
 [] execVM "scripts\server\base\fob_markers.sqf";
 [] execVM "scripts\server\secondary\autostart.sqf";
+[] execVM "scripts\server\game\HPC_fuelStationTrucks.sqf";
 [] execVM "scripts\server\game\zeus_limited.sqf";
 [] execVM "scripts\server\game\zeus_synchro.sqf";
 [] execVM "scripts\server\game\clean.sqf";

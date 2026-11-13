@@ -289,6 +289,19 @@ if (count _vehtospawn > 0) then {
 	} foreach _vehtospawn;
 };
 
+// Sometimes a parked enemy fuel truck (no crew): worth a lot of fuel when scrapped.
+if (!isNil "opfor_fuel_truck" && {opfor_fuel_truck != ""} && {random 100 < 30}) then {
+	private _pos = ([_sector_pos, 40 + floor random 80] call F_getRandomPos) findEmptyPosition [0, 40, opfor_fuel_truck];
+	if !(_pos isEqualTo []) then {
+		private _truck = [_pos, opfor_fuel_truck, 0, GRLIB_side_enemy, "infantry", false] call F_libSpawnVehicle;
+		if (!isNull _truck) then {
+			_truck setDir random 360;
+			_truck setFuel (0.3 + random 0.6);
+			(missionNamespace getVariable format ["LRX_sector_%1_vehicles", _sector]) pushBack _truck;
+		};
+	};
+};
+
 // Create garrison
 if (_building_ai_max > 0) then {
 	_building_ai_max = (_building_ai_max * GRLIB_building_ai_ratio);

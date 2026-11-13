@@ -145,6 +145,46 @@ private _mineText = (missionNamespace getVariable ["HPC_killFeedMine", []]) appl
 ["uishots.killFeedXP", (_mineText findIf {"+3 XP" in _x}) >= 0 && {(_mineText findIf {"SQUAD" in _x && {"+2 XP" in _x}}) >= 0}] call _assert;
 ["07_kill_feed",0.8] call HPC_uiShot;
 
+// Scrap prices, gas stations and the fuel truck theft mission (server side).
+HPC_testFuel = nil;
+[player, {
+    params ["_player"];
+    private _p = _player getPos [120, 0];
+    private _enemy = [_p, opfor_fuel_truck, 0, GRLIB_side_enemy, "infantry", false] call F_libSpawnVehicle;
+    _enemy setFuel 1;
+    private _built = createVehicle [fuel_truck_typename, _p getPos [30, 90], [], 0, "NONE"];
+    _built setFuel 1;
+    private _mrap = createVehicle [(light_vehicles select ((count light_vehicles) - 1)) select 0, _p getPos [30, 180], [], 0, "NONE"];
+    _mrap setFuel 0;
+    private _row = (light_vehicles select ((count light_vehicles) - 1));
+    private _res = [
+        [[_enemy] call HPC_fnc_vehicleEntry] call HPC_fnc_scrapValue,
+        [[_built] call HPC_fnc_vehicleEntry] call HPC_fnc_scrapValue,
+        [[_mrap] call HPC_fnc_vehicleEntry] call HPC_fnc_scrapValue,
+        [_row select 2, _row select 3],
+        count (nearestTerrainObjects [[worldSize / 2, worldSize / 2], ["FUELSTATION"], worldSize * 0.75, false, true]),
+        _enemy getVariable ["HPC_fuelBonus", ""]
+    ];
+    { deleteVehicle _x } forEach [_enemy, _built, _mrap];
+    resources_intel = resources_intel max 100;
+    [4, true] spawn start_secondary_remote_call;
+    sleep 20;
+    sleep 3;
+    _res pushBack GRLIB_secondary_in_progress;
+    _res pushBack (count (entities opfor_fuel_truck));
+    missionNamespace setVariable ["HPC_testFuel", _res, true];
+}] remoteExec ["spawn", 2];
+private _fuelEnd = diag_tickTime + 90;
+waitUntil {uiSleep 0.5; !isNil "HPC_testFuel" || diag_tickTime > _fuelEnd};
+diag_log ["HPC_TESTFUEL", missionNamespace getVariable ["HPC_testFuel", []]];
+private _tf = missionNamespace getVariable ["HPC_testFuel", []];
+["uishots.fuelEconomy", count _tf == 8 && {
+    _tf params ["_enemy", "_built", "_mrap", "_price", "_stations", "_tag", "_mission", "_trucks"];
+    (_enemy select 1) >= 150 && {(_built select 1) <= 80} && {_tag == "enemy"} && {_stations > 0} &&
+    {(_mrap select 1) == round ((_price select 1) * 0.75)} && {_mission == 4} && {_trucks >= 1}
+}] call _assert;
+["07b_fuel_mission",1.5] call HPC_uiShot;
+
 // Action menu: run.py sends a mouse-wheel tick to the window.
 diag_log format ["HPC_UIWHEEL|%1",HPC_testRun];
 ["07_actions",1.5] call HPC_uiShot;
@@ -416,4 +456,4 @@ PAR_AI_bros = PAR_AI_bros - [_shotUnit];
 deleteVehicle _shotUnit;
 deleteVehicle _shotVeh;
 diag_log format ["HPC_UISHOT_DONE|%1",HPC_testRun];
-["RUN_DONE|10"] call _emit;
+["RUN_DONE|11"] call _emit;

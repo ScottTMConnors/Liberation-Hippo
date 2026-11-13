@@ -172,9 +172,13 @@ if (isServer) then {
                     if (!isNull _rewardPlayer) then {
                         stats_opfor_killed_by_players = stats_opfor_killed_by_players + 1;
                         // 3 XP for your own kill, 2 XP for one by your squad, fireteams or AI
-                        private _xp = [2, 3] select (_rewardPlayer isEqualTo _killer);
+                        // and a little ammo: 2 for your own kill, 1 for your squad's
+                        private _own = _rewardPlayer isEqualTo _killer;
+                        private _xp = [2, 3] select _own;
+                        private _ammo = [1, 2] select _own;
                         [_rewardPlayer, _xp] call F_addScore;
-                        _feedReward = format ["+%1 XP", _xp];
+                        [_rewardPlayer, _ammo, 0] spawn ammo_add_remote_call;
+                        _feedReward = format ["+%1 XP  +%2 ammo", _xp, _ammo];
                     };
                     // AI vehicle crews bank one point per enemy soldier
                     private _armorKey = (group _killer) getVariable ["HPC_armorSquad", ""];

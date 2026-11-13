@@ -1,5 +1,5 @@
 // Garage entry of a live vehicle:
-// [class, colour, ammo, parts, items, R3F cargo, LRX boxes, fuel, hit point damages, damage]
+// [class, colour, ammo, parts, items, R3F cargo, LRX boxes, fuel, hit point damages, damage, fuel-truck tag]
 // R3F cargo holds cargo object entries (see HPC_fnc_cargoObjectEntry): carried vehicles keep
 // their own state when _nested, crates keep their items. LRX boxes are classes, or for a cargo
 // sling [sling, [its own boxes]].
@@ -39,5 +39,6 @@ private _items = if (typeOf _vehicle == playerbox_typename) then { [] } else { [
 	_lrx,
 	_fuel,
 	_hits,
-	_damage
+	_damage,
+	_vehicle getVariable ["HPC_fuelBonus", ""] // "enemy"/"civ": a fuel truck found, not built
 ]

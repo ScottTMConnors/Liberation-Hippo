@@ -539,7 +539,7 @@ while { !isNull _display && alive player } do {
 		ctrlSetText [2456, ["Store", "Scrap"] select (_type == "garage")];
 		ctrlEnable [2456, _type != "home" && {_type == "garage" || {typeOf (_h select 1) != playerbox_typename}}];
 		((_display displayCtrl 2456)) ctrlSetTooltip (switch (_type) do {
-			case "garage": { format ["Scrap this stored vehicle for %1 (75%% of its build cost). Its cargo goes to your home first.", [["object", [GRLIB_virtual_garage select (_h select 1)] call _bareEntry] call HPC_fnc_cargoValue] call _valueText] };
+			case "garage": { format ["Scrap this stored vehicle for %1 (90%% of its build cost, less damage, down to 75%% as its ammo and fuel run low). Its cargo goes to your home first.", [([GRLIB_virtual_garage select (_h select 1)] call HPC_fnc_scrapValue) apply {_x / _rate}] call _valueText] };
 			case "live": { "Put this vehicle in your garage, or this crate (with its items) in your home stockpile." };
 			default { "" };
 		});
@@ -651,8 +651,7 @@ while { !isNull _display && alive player } do {
 				if (_type == "garage") exitWith {
 					private _index = _h select 1;
 					private _bare = [GRLIB_virtual_garage select _index] call _bareEntry;
-					(["object", _bare] call HPC_fnc_cargoValue) params ["_a", "_f"];
-					_a = round (_a * _rate); _f = round (_f * _rate);
+					([_bare] call HPC_fnc_scrapValue) params ["_a", "_f"];
 					if !([format ["Scrap the stored %1 for %2 ammo%3? Its cargo goes to your home first.", [_bare select 0] call F_getLRXName, _a, ["", format [" and %1 fuel", _f]] select (_f > 0)]] call _confirm) exitWith {};
 					([_h, ["home", 0, "Home stockpile"]] call _moveAll) params ["_m", "_failed"];
 					if (_failed > 0) exitWith { ["Some cargo could not be moved home; nothing was scrapped."] call _setStatus };

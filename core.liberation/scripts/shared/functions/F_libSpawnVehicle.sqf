@@ -133,6 +133,8 @@ if (_side == GRLIB_side_enemy) then {
 	// _vehicle addEventHandler ["HandleDamage", { private [ "_damage" ]; if ( side (_this select 3) != GRLIB_side_friendly ) then { _damage = 0 } else { _damage = _this select 2 }; _damage } ];
 	_vehicle addEventHandler ["HandleDamage", { _this call damage_manager_enemy }];
 	_vehicle setVariable ["GRLIB_vehicle_reward", true, true];
+	// a fuel truck the enemy brought scraps for a lot of fuel (HPC_fnc_scrapValue)
+	if (getNumber (configOf _vehicle >> "transportFuel") > 0) then { _vehicle setVariable ["HPC_fuelBonus", "enemy", true] };
 
 	[_vehicle] call F_vehicleDefense;
 
