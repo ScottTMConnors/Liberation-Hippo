@@ -381,7 +381,7 @@ if ([5501,10] call _waitDisplay) then {
     private _list = (findDisplay 5501) displayCtrl 110;
     diag_log ["HPC_UISHOT_CREW_LIST",lnbSize _list,buildtype];
     for "_r" from 0 to ((lnbSize _list select 0) - 1) do {
-        if (!_crewEnabled && {(_list lnbText [_r,1]) != ""}) then {
+        if (!_crewEnabled && {(_list lnbText [_r,2]) != ""}) then {
             _list lnbSetCurSelRow _r; uiSleep 0.6;
             _crewEnabled = ctrlEnabled ((findDisplay 5501) displayCtrl 121);
             diag_log ["HPC_UISHOT_CREW_ROW",_r,_list lnbText [_r,1],_list lnbData [_r,0],ctrlShown ((findDisplay 5501) displayCtrl 121),_crewEnabled,dobuild,lnbCurSelRow _list,ctrlText 122,ctrlText 1731,ctrlText 1732];

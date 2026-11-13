@@ -6,7 +6,7 @@
 #define BLD_Y (safezoneY + 2 * HPC_GY)
 #define BLD_PAD (1.1 * HPC_GX)
 #define BLD_IX (BLD_X + BLD_PAD)
-#define BLD_LIST_W (42 * HPC_GX)
+#define BLD_LIST_W (20 * HPC_GX)
 #define BLD_TAB_W (7.95 * HPC_GX)
 #define BLD_TAB_STEP (8.55 * HPC_GX)
 #define BLD_TAB_Y (BLD_Y + 5.3 * HPC_GY)
@@ -19,13 +19,14 @@
 #define BLD_PB (BLD_LIST_Y + BLD_LIST_H)
 #define BLD_ROW_H (1.8 * HPC_GY)
 // Sortable column headers sit on the list's cost columns (columns[] of BuildList).
-#define BLD_COL_MP (BLD_IX + 0.73 * BLD_LIST_W)
-#define BLD_COL_AM (BLD_IX + 0.82 * BLD_LIST_W)
-#define BLD_COL_FU (BLD_IX + 0.91 * BLD_LIST_W)
+// Manpower is not listed (a soldier always costs 1; the details pane shows it), so
+// column 1 has no width; it still carries row data for the script.
+#define BLD_COL_AM (BLD_IX + 0.75 * BLD_LIST_W)
+#define BLD_COL_FU (BLD_IX + 0.875 * BLD_LIST_W)
 #define BLD_HGAP (0.12 * HPC_GX)
-#define BLD_CELL_W (0.09 * BLD_LIST_W - BLD_HGAP)
-#define BLD_ICON_DX (0.25 * HPC_GX)
-#define BLD_MARK_DX (BLD_ICON_DX + 1.75 * HPC_GX)
+#define BLD_CELL_W (0.125 * BLD_LIST_W - BLD_HGAP)
+#define BLD_ICON_DX (0.2 * HPC_GX)
+#define BLD_MARK_DX (BLD_ICON_DX + 1.25 * HPC_GX)
 #define BLD_DX (BLD_IX + BLD_LIST_W + 1.2 * HPC_GX)
 #define BLD_DW (BLD_W - 2 * BLD_PAD - BLD_LIST_W - 1.2 * HPC_GX)
 #define BLD_DIX (BLD_DX + 0.8 * HPC_GX)
@@ -43,10 +44,10 @@ class liberation_build {
 	"BuildTransportVehicleImage","BuildCombatVehicleImage","BuildAerialImage",
 	"BuildDefenceImage","BuildSupportImage","BuildSquadImage","BuildBuildingImage",
 	"LabelSearch", "LabelFaction", "LabelType", "LabelOptions",
-	"ColumnItem", "ManpowerImage","AmmoImage","FuelImage",
+	"ColumnItem", "AmmoImage","FuelImage",
 	"BuildList","LabelPreview","BuildPreview","ItemDetails","LinkedSector","CostBG", "CostHeadLeft", "CostHeadRight", "CostIcon1", "CostIcon2", "CostIcon3", "CostIcon4", "CostLabel1", "CostLabel2", "CostLabel3", "CostLabel4", "CostValue1", "CostValue2", "CostValue3", "CostValue4",
 	"CrewCheck","CrewLabel","BuildButton","PageLabel",
-	"CatalogSearchLabel", "CatalogSearch", "CatalogFaction", "CatalogType", "CatalogUnlocked", "CatalogClear", "CatalogExpand", "CatalogCollapse", "CatalogReset", "CatalogCount", "CatalogFactionReset", "CatalogTypeReset", "SortMark1", "SortMark2", "SortMark3", "SortItem", "SortManpower", "SortAmmo", "SortFuel"
+	"CatalogSearchLabel", "CatalogSearch", "CatalogFaction", "CatalogType", "CatalogUnlocked", "CatalogClear", "CatalogExpand", "CatalogCollapse", "CatalogReset", "CatalogCount", "CatalogFactionReset", "CatalogTypeReset", "SortMark2", "SortMark3", "SortItem", "SortAmmo", "SortFuel"
 	};
 
 	objects[] = {};
@@ -246,26 +247,27 @@ class liberation_build {
 	class Stripe8 : Stripe1 { y = BLD_LIST_Y + 15 * BLD_ROW_H; };
 	class PageLabel : HPC_Heading {
 		idc = 151;
-		x = BLD_IX; y = BLD_HDR_Y; w = 15 * HPC_GX; h = 2 * HPC_GY;
-		sizeEx = 1.2 * HPC_GY;
+		x = BLD_IX; y = BLD_HDR_Y; w = 11 * HPC_GX; h = 2 * HPC_GY;
+		sizeEx = 1.1 * HPC_GY;
 	};
 	class CatalogCount : HPC_Label {
 		idc = 1709;
-		x = BLD_IX + 15 * HPC_GX; y = BLD_HDR_Y + 0.2 * HPC_GY; w = 13 * HPC_GX; h = 1.6 * HPC_GY;
+		x = BLD_IX + 3.6 * HPC_GX; y = BLD_COL_Y + 0.2 * HPC_GY; w = 10.5 * HPC_GX; h = 1.4 * HPC_GY;
+		sizeEx = 0.8 * HPC_GY;
 		font = "RobotoCondensed";
 		text = "";
 	};
 	class CatalogExpand : HPC_Button {
 		idc = 1706;
-		x = BLD_IX + BLD_LIST_W - 13.4 * HPC_GX; y = BLD_HDR_Y + 0.1 * HPC_GY; w = 6.6 * HPC_GX; h = 1.8 * HPC_GY;
+		x = BLD_IX + BLD_LIST_W - 8.4 * HPC_GX; y = BLD_HDR_Y + 0.1 * HPC_GY; w = 4.1 * HPC_GX; h = 1.8 * HPC_GY;
 		sizeEx = 0.85 * HPC_GY;
-		text = "Expand all";
+		text = "Expand";
 		tooltip = "Expand all matching type groups.";
 	};
 	class CatalogCollapse : CatalogExpand {
 		idc = 1707;
-		x = BLD_IX + BLD_LIST_W - 6.6 * HPC_GX;
-		text = "Collapse all";
+		x = BLD_IX + BLD_LIST_W - 4.1 * HPC_GX;
+		text = "Collapse";
 		tooltip = "Collapse all matching type groups.";
 	};
 	class ColumnItem : HPC_Label {
@@ -276,7 +278,7 @@ class liberation_build {
 	// Clickable column headers: sort by name or a cost (click again to reverse).
 	class SortItem : HPC_Button {
 		idc = 1713;
-		x = BLD_IX; y = BLD_COL_Y; w = 0.73 * BLD_LIST_W; h = 1.8 * HPC_GY;
+		x = BLD_IX; y = BLD_COL_Y; w = 0.75 * BLD_LIST_W; h = 1.8 * HPC_GY;
 		// Faint resting tint marks the headers as buttons; teal on hover.
 		colorBackground[] = {1,1,1,0.05};
 		colorFocused[] = {1,1,1,0.05};
@@ -284,26 +286,22 @@ class liberation_build {
 		text = "";
 		tooltip = "Click to sort by name.";
 	};
-	class SortManpower : SortItem { idc = 1714; x = BLD_COL_MP + BLD_HGAP; w = BLD_CELL_W; tooltip = "Click to sort by manpower cost; click again to reverse."; };
-	class SortAmmo : SortManpower { idc = 1715; x = BLD_COL_AM + BLD_HGAP; tooltip = "Click to sort by ammo cost; click again to reverse."; };
-	class SortFuel : SortManpower { idc = 1716; x = BLD_COL_FU + BLD_HGAP; tooltip = "Click to sort by fuel cost; click again to reverse."; };
+	class SortAmmo : SortItem { idc = 1715; x = BLD_COL_AM + BLD_HGAP; w = BLD_CELL_W; tooltip = "Click to sort by ammo cost; click again to reverse."; };
+	class SortFuel : SortAmmo { idc = 1716; x = BLD_COL_FU + BLD_HGAP; tooltip = "Click to sort by fuel cost; click again to reverse."; };
 	class SortMark1 : HPC_Label {
 		idc = 1717;
-		x = BLD_COL_MP + BLD_MARK_DX; y = BLD_COL_Y + 0.35 * HPC_GY; w = 1.3 * HPC_GX; h = 2.2 * HPC_GY;
-		sizeEx = 2.2 * HPC_GY;
+		x = BLD_COL_AM + BLD_MARK_DX; y = BLD_COL_Y + 0.45 * HPC_GY; w = 0.9 * HPC_GX; h = 1.7 * HPC_GY;
+		sizeEx = 1.7 * HPC_GY;
 		font = "PuristaBold";
 		colorText[] = HPC_C_ACCENT;
 		text = "";
 	};
-	class SortMark2 : SortMark1 { idc = 1718; x = BLD_COL_AM + BLD_MARK_DX; };
+	class SortMark2 : SortMark1 { idc = 1718; };
 	class SortMark3 : SortMark1 { idc = 1719; x = BLD_COL_FU + BLD_MARK_DX; };
 	// Cost column icons, aligned with BuildList columns 1-3.
 	class IconImage : HPC_Picture {
 		style = ST_PICTURE + ST_KEEP_ASPECT_RATIO;
-		y = BLD_COL_Y + 0.15 * HPC_GY; w = 1.5 * HPC_GX; h = 1.5 * HPC_GY;
-	};
-	class ManpowerImage : IconImage {
-		x = BLD_COL_MP + BLD_ICON_DX; text = "res\ui_manpo.paa"; tooltip = "Manpower cost";
+		y = BLD_COL_Y + 0.25 * HPC_GY; w = 1.3 * HPC_GX; h = 1.3 * HPC_GY;
 	};
 	class AmmoImage : IconImage {
 		x = BLD_COL_AM + BLD_ICON_DX; text = "res\ui_ammo.paa"; tooltip = "Ammo cost";
@@ -314,7 +312,7 @@ class liberation_build {
 	class BuildList : HPC_ListNBox {
 		idc = 110;
 		x = BLD_IX; y = BLD_LIST_Y; w = BLD_LIST_W; h = BLD_LIST_H;
-		columns[] = {0, 0.73, 0.82, 0.91};
+		columns[] = {0, 0.75, 0.75, 0.875};
 		rowHeight = BLD_ROW_H;
 		sizeEx = 0.98 * HPC_GY;
 		onLBSelChanged = "";
@@ -331,14 +329,14 @@ class liberation_build {
 	};
 	class BuildPreview : HPC_Picture {
 		idc = 162;
-		x = BLD_DIX; y = BLD_HDR_Y + 1.9 * HPC_GY; w = BLD_DIW; h = 10 * HPC_GY;
+		x = BLD_DIX; y = BLD_HDR_Y + 1.9 * HPC_GY; w = BLD_DIW; h = 10.5 * HPC_GY;
 		colorBackground[] = {0,0,0,0.35};
 	};
 	// Name, vehicle stats and blockers for the selected row.
 	class ItemDetails : HPC_StructuredText {
 		idc = 163;
-		x = BLD_DIX; y = BLD_HDR_Y + 12.2 * HPC_GY; w = BLD_DIW; h = BLD_PB - 15.6 * HPC_GY - (BLD_HDR_Y + 12.2 * HPC_GY);
-		size = 0.95 * HPC_GY;
+		x = BLD_DIX; y = BLD_HDR_Y + 12.6 * HPC_GY; w = BLD_DIW; h = BLD_PB - 15.6 * HPC_GY - (BLD_HDR_Y + 12.6 * HPC_GY);
+		size = 1.2 * HPC_GY;
 		class Attributes {
 			font = "RobotoCondensed";
 			color = "#EBEFF1";

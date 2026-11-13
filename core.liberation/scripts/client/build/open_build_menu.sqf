@@ -151,7 +151,7 @@ _display setVariable ["HPC_collapsed", []];
         private _cur = missionNamespace getVariable ["HPC_catalogSort", 0];
         HPC_catalogSort = if (_c == 0) then {0} else {if (_cur == 2 * _c - 1) then {2 * _c} else {2 * _c - 1}};
     }];
-} forEach [1713,1714,1715,1716];
+} forEach [1713,1714,1715,1716]; // 1714 (manpower) is no longer on the menu
 (_display displayCtrl 110) ctrlAddEventHandler ["LBSelChanged", {
     params ["_control", "_row"];
     if (_row < 0) exitWith {};
@@ -273,10 +273,10 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
         private _grouped = count _groups > 1;
         _display setVariable ["HPC_groupKeys",_groups apply {str buildtype + ":" + _x}];
         {(_display displayCtrl _x) ctrlEnable _grouped} forEach [1706,1707];
-        (_display displayCtrl 1709) ctrlSetText format ["%1 items  |  %2 unlocked  |  %3 locked",count _ordered,_unlockedCount,(count _ordered) - _unlockedCount];
+        (_display displayCtrl 1709) ctrlSetText format ["%1 items  |  %2 locked",count _ordered,(count _ordered) - _unlockedCount];
         private _collapsed = _display getVariable ["HPC_collapsed", []];
         if (_msg != "") then {
-			_row = (_display displayCtrl (110)) lnbAddRow [_msg,"-","-","-"];
+			_row = (_display displayCtrl (110)) lnbAddRow [_msg,"","-","-"];
             _rowItems pushBack -1;
 			(_display displayCtrl (110)) lnbSetData  [[_row, 0], "false"];
 			(_display displayCtrl (162)) ctrlSetText getMissionPath "res\preview\unavailable.jpg";
@@ -312,7 +312,7 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
 				_veh_ammo = format [ "%1", _x select 2];
 				_veh_fuel =  format [ "%1", _x select 3];
 				if (_near_outpost) then { _veh_ammo = format [ "%1", round ((_x select 2) * 1.5)] };
-				_row = (_display displayCtrl (110)) lnbAddRow [ _entrytext, _veh_man, _veh_ammo, _veh_fuel];
+				_row = (_display displayCtrl (110)) lnbAddRow [ _entrytext, "", _veh_ammo, _veh_fuel]; // manpower: details pane only
 
 				_icon = getText ( _cfg >> _build_class >> "icon");
 				if(isText  (configFile >> "CfgVehicleIcons" >> _icon)) then {
@@ -332,7 +332,7 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
 			} else {
                 private _squadIndex = squads find _x;
                 _squadname = _x param [5, squads_names param [_squadIndex, "Squad"]];
-				_row = (_display displayCtrl (110)) lnbAddRow  [_squadname, format [ "%1" ,_x select 1], format [ "%1" ,_x select 2], format [ "%1" ,_x select 3]];
+				_row = (_display displayCtrl (110)) lnbAddRow  [_squadname, "", format [ "%1" ,_x select 2], format [ "%1" ,_x select 3]];
 				_icon = "\a3\Ui_F_Curator\Data\Displays\RscDisplayCurator\modeGroups_ca.paa";
 				lnbSetPicture  [110, [((lnbSize 110) select 0) - 1, 0],_icon];
 			};
