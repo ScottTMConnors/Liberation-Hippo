@@ -66,13 +66,18 @@ if (_classname isKindOf "Air") then {
 		} else {
 			// Land vehicles always get a checked spot: flat, dry, nothing in their footprint
 			// (HPC_fnc_vehicleSpotClear). The asked position is kept when it is clear.
-			_spawn_pos = [_sectorpos, _classname, (_size max 0) + 80] call HPC_fnc_vehicleSpawnPos;
+			_spawn_pos = [_sectorpos, _classname, (_size max 0) + 200] call HPC_fnc_vehicleSpawnPos;
 			if (_spawn_pos isEqualTo []) then {
-				// nothing fully clear nearby (dense town, forest): the looser search, then the asked spot
-				diag_log format ["--- LRX Warning: no clear spot for %1 near %2, using a looser check", _classname, _sectorpos];
-				private _footprint = ((getNumber (configFile >> "CfgVehicles" >> _classname >> "mapSize")) max 6) / 2;
+				// nothing clear nearby (dense town, forest): search much wider before anything looser
+				diag_log format ["--- LRX Warning: no clear spot for %1 within %2 m of %3, searching wider", _classname, (_size max 0) + 200, _sectorpos];
+				_spawn_pos = [_sectorpos, _classname, 600] call HPC_fnc_vehicleSpawnPos;
+			};
+			if (_spawn_pos isEqualTo []) then {
+				// last try: the engine's looser safe-place search. Never the asked spot itself:
+				// no vehicle is better than one dropped onto a building or another vehicle.
+				diag_log format ["--- LRX Warning: no clear spot for %1 within 600 m of %2, using a looser check", _classname, _sectorpos];
+				private _footprint = HPC_vehicleSizes getOrDefault [_classname, 3];
 				_spawn_pos = [_sectorpos, _footprint, 0] call F_findSafePlace;
-				if (_spawn_pos isEqualTo []) then { _spawn_pos = +_sectorpos };
 			};
 		};
 

@@ -13,9 +13,9 @@ private _claim = {
 	private _ok = false;
 	isNil {
 		if ([_pos, _class] call HPC_fnc_vehicleSpotClear) then {
-			private _radius = ((getNumber (configFile >> "CfgVehicles" >> _class >> "mapSize")) max 6) / 2 + 2;
+			private _radius = HPC_vehicleSizes getOrDefault [_class, 3];	// measured by HPC_fnc_vehicleSpotClear
 			private _claims = (missionNamespace getVariable ["HPC_vehicleSpotClaims", []]) select {time < (_x select 2)};
-			_claims pushBack [_pos, _radius, time + 15];
+			_claims pushBack [_pos, _radius + 1, time + 15];
 			HPC_vehicleSpotClaims = _claims;
 			_ok = true;
 		};
@@ -34,13 +34,14 @@ _roads sort true;
 	private _pos = getPosATL (_x select 1);
 	_pos set [2, 0];
 	if ([_pos] call _claim) exitWith {_found = _pos};
-} forEach (_roads select [0, 20]);
+} forEach (_roads select [0, 40]);
 
 // Open ground, from close to far.
 if (_found isEqualTo []) then {
 	private _ring = 10;
 	while {_found isEqualTo [] && {_ring <= _maxDist}} do {
-		for "_i" from 1 to 8 do {
+		// more tries on wider rings, which are longer
+		for "_i" from 1 to (8 + floor (_ring / 10)) do {
 			private _pos = (_start getPos [_ring - 5 + random 10, random 360]) findEmptyPosition [0, 10, _class];
 			if !(_pos isEqualTo []) then {
 				_pos = [_pos select 0, _pos select 1, 0];
