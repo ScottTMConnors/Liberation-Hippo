@@ -12,10 +12,13 @@
 if (!hasInterface) exitWith {};
 waitUntil {sleep 1; !isNil "sectors_allSectors" && {!isNil "blufor_sectors"} && {!isNil "GRLIB_all_fobs"}};
 
-HPC_mapWorldTex = createHashMapFromArray (["halo", "ring", "ring_thin", "ring_dash", "ring_soft", "brackets", "cross"] apply {[_x, getMissionPath format ["res\map\%1.paa", _x]]});
+HPC_mapWorldTex = createHashMapFromArray (["halo", "ring", "ring_thin", "ring_dash", "ring_soft", "brackets", "cross", "pip", "pip_diamond"] apply {[_x, getMissionPath format ["res\map\%1.paa", _x]]});
 HPC_mapWorldIcons = createHashMap;
 HPC_mapFriendly = [0.3, 0.62, 1, 1];
 HPC_mapEnemy = [0.92, 0.2, 0.16, 1];
+// sector colours: softer than the unit colours so 70 sectors do not flood the map
+HPC_mapSectorEnemy = [0.84, 0.36, 0.32, 1];
+HPC_mapSectorFriendly = [0.38, 0.64, 0.96, 1];
 HPC_mapGold = [1, 0.82, 0.3, 1];
 HPC_mapTeal = [0.46, 0.8, 0.72, 1];
 if (isNil "HPC_mapSelect") then { HPC_mapSelect = [] };   // [position, text] while picking a spot
@@ -134,7 +137,8 @@ HPC_fnc_mapWorldDraw = compileFinal toString {
 	{
 		_x params ["_sector", "_pos", "_icon", "_size", "_big"];
 		private _ours = _sector in _owned;
-		private _color = [HPC_mapEnemy, HPC_mapFriendly] select _ours;
+		private _color = [HPC_mapSectorEnemy, HPC_mapSectorFriendly] select _ours;
+		private _special = false;
 		private _state = missionNamespace getVariable ["HPC_sectorState_" + _sector, []];
 		private _phase = _state param [0, ""];
 		private _name = [_sector] call HPC_fnc_sectorName;
@@ -145,6 +149,7 @@ HPC_fnc_mapWorldDraw = compileFinal toString {
 			[_pos, _radius, [1, 0.45, 0.25, 1]] call _zone;
 			private _ring = _size * (1.7 + 0.5 * _pulse);
 			[_tex get "ring_soft", [1, 0.5, 0.25, 0.9 - 0.5 * _pulse], _pos, _ring, _ring, 0] call _dI;
+			_special = true;
 			_text = switch (_phase) do {
 				case "loading": { format ["%1  loading %2%3", _name, round (_state param [1, 0]), "%"] };
 				case "active": { format ["%1  %2%3", _name, round (_state param [1, 0]), "%"] };
@@ -156,9 +161,18 @@ HPC_fnc_mapWorldDraw = compileFinal toString {
 			private _mine = _sector == _myVote;
 			[_tex get "ring_dash", [[1, 0.82, 0.3, 0.95], [0.4, 0.9, 0.45, 1]] select _mine, _pos, _size * 1.9, _size * 1.9, (_now * 30) mod 360] call _dI;
 			_text = _name + (if (_count > 0) then {format ["  (%1 vote%2)", _count, ["s", ""] select (_count == 1)]} else {""});
+			_special = true;
 		};
-		if (_mid) then { [_tex get "ring_thin", [_color select 0, _color select 1, _color select 2, 0.6], _pos, _size * 1.45, _size * 1.45, 0] call _dI };
-		[_icon, _color, _pos, _size, _text] call _mark;
+		if (_mid || {_special}) then {
+			// the full sector symbol with its owner ring
+			[_tex get "ring_thin", [_color select 0, _color select 1, _color select 2, 0.6], _pos, _size * 1.45, _size * 1.45, 0] call _dI;
+			[_icon, _color, _pos, _size, _text] call _mark;
+		} else {
+			// far out: a small dot (towns, factories, towers) or diamond (cities, bases)
+			private _pip = [10, 13] select _big;
+			[_halo, [0.02, 0.03, 0.035, 0.45], _pos, _pip * 1.9, _pip * 1.9, 0] call _dI;
+			[_tex get (["pip", "pip_diamond"] select _big), _color, _pos, _pip, _pip, 0, _text, 2, 0.032, "RobotoCondensedBold", "right"] call _dI;
+		};
 	} forEach HPC_mapSectors;
 	if (HPC_mapSectorHover != "") then {
 		private _pos = markerPos HPC_mapSectorHover;

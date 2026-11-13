@@ -92,6 +92,20 @@ def cross():
     return m
 
 
+def pip(shape):
+    # small filled sector symbol for far zoom: dot or diamond with a soft inner edge
+    m = canvas()
+    d = ImageDraw.Draw(m)
+    s = N * SS
+    c = s / 2
+    r = 0.36 * s
+    if shape == "diamond":
+        d.polygon([(c, c - r * 1.15), (c + r * 1.15, c), (c, c + r * 1.15), (c - r * 1.15, c)], fill=255)
+    else:
+        d.ellipse([c - r, c - r, c + r, c + r], fill=255)
+    return m
+
+
 TEXTURES = {
     "halo": lambda: halo(),
     "ring": lambda: finish(ring()),
@@ -100,6 +114,8 @@ TEXTURES = {
     "ring_soft": lambda: finish(ring(width=0.1), blur=2.5),
     "brackets": lambda: finish(brackets()),
     "cross": lambda: finish(cross()),
+    "pip": lambda: finish(pip("dot")),
+    "pip_diamond": lambda: finish(pip("diamond")),
 }
 
 
