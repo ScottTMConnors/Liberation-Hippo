@@ -31,7 +31,7 @@ if (surfaceIsWater _dest || _degree > 8) exitWith {deleteVehicle GRLIB_taxi_heli
 if (!([GRLIB_AirDrop_Taxi_cost] call F_pay)) exitWith {deleteVehicle GRLIB_taxi_helipad};
 
 // Marker
-deleteMarkerLocal "taxi_lz";
+["taxi_lz", [], false] call HPC_fnc_mapPoint;
 
 // Create Taxi
 private _spawn_pos = [_dest, GRLIB_side_friendly] call F_getAirSpawn;
@@ -78,15 +78,12 @@ private _idact_cancel = _vehicle addAction [format [(["%1", "", "info"] call HPC
 player setVariable ["GRLIB_taxi_called", _vehicle, true];
 
 // Pickup Marker
-GRLIB_taxi_marker = createMarkerLocal ["taxi_lz", _dest];
-GRLIB_taxi_marker setMarkerShapeLocal "ICON";
-GRLIB_taxi_marker setMarkerTypeLocal "mil_pickup";
-GRLIB_taxi_marker setMarkerTextlocal "Taxi PickUp";
+["taxi_lz", [_dest, "mil_pickup", [0.46, 0.8, 0.72, 1], "Taxi pickup", 22, 0, "taxi"], false] call HPC_fnc_mapPoint;
 
 // Goto Pickup Point
 private _timeout = [_vehicle, _dest, "STR_TAXI_MOVE"] call taxi_dest;
 if (_timeout) exitWith {
-	deleteMarkerLocal "taxi_lz";
+	["taxi_lz", [], false] call HPC_fnc_mapPoint;
 	deleteVehicleCrew _vehicle;
 	deleteVehicle _vehicle;
 	deleteGroup _air_grp;
@@ -147,7 +144,7 @@ if (time < _stop) then {
 sleep 2;
 
 // Go back
-deleteMarkerLocal "taxi_lz";
+["taxi_lz", [], false] call HPC_fnc_mapPoint;
 if (GRLIB_taxi_helipad_created) then { deleteVehicle GRLIB_taxi_helipad };
 
 GRLIB_taxi_helipad = nil;

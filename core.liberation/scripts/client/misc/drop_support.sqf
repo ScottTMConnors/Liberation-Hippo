@@ -94,7 +94,7 @@ if (do_action == 1) then {
 		dojump = 0;
 		halo_position = getPosATL player;
 
-		"spawn_marker" setMarkerTextLocal (localize "STR_HALO_PARAM_ARTY");
+		HPC_mapSelectText = (localize "STR_HALO_PARAM_ARTY");
 		ctrlSetText [201, toUpper (localize "STR_HALO_PARAM_ARTY")];
 		ctrlSetText [202, (localize "STR_HALO_PARAM_ARTY")];
 		((findDisplay 5203) displayCtrl 203) ctrlSetStructuredText parseText format ["<t color='#76CCB8' size='1.3'>%1 ammo</t><br/>Cannot fire near friendly units or a FOB.", _cost];
@@ -105,15 +105,14 @@ if (do_action == 1) then {
 		};
 
 		while { dialog && alive player && dojump == 0 } do {
-			"spawn_marker" setMarkerPosLocal halo_position;
+			HPC_mapSelect = [halo_position, HPC_mapSelectText];
 			sleep 0.2;
 		};
 
 		onMapSingleClick "";
 		closeDialog 0;
 
-		"spawn_marker" setMarkerPosLocal markers_reset;
-		"spawn_marker" setMarkerTextLocal "";
+		HPC_mapSelect = [];
 
 		if (dojump > 0) then {
 			private _count_blu = { _x distance2D halo_position < GRLIB_capture_size } count (units GRLIB_side_friendly);

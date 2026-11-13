@@ -7,7 +7,7 @@ private _cfgVehicles = configFile >> "cfgVehicles";
 private _cfgWeapons = configFile >> "cfgWeapons";
 private _selectedmember = _squad_list select _lbCurSel;
 
-"spawn_marker" setMarkerPosLocal (getpos _selectedmember);
+HPC_mapSelect = [(getpos _selectedmember), ""];
 ctrlMapAnimClear ((findDisplay 5155) displayCtrl 100);
 ((findDisplay 5155) displayCtrl 100) ctrlMapAnimAdd [0, 0.3, getpos _selectedmember];
 ctrlMapAnimCommit ((findDisplay 5155) displayCtrl 100);

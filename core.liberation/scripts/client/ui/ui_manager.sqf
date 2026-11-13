@@ -20,8 +20,6 @@ waitUntil {sleep 1; !isNil "sector_timer"};
 if (isNil "cinematic_camera_started") then { cinematic_camera_started = false };
 if (isNil "halojumping") then { halojumping = false };
 
-[] execVM "scripts\client\ui\ui_manager_commander.sqf";
-
 private _color_F = getArray (configFile >> "CfgMarkerColors" >> GRLIB_color_friendly >> "color") call BIS_fnc_colorConfigToRGBA;
 private _color_E = getArray (configFile >> "CfgMarkerColors" >> GRLIB_color_enemy >> "color") call BIS_fnc_colorConfigToRGBA;
 
@@ -49,23 +47,22 @@ while {true} do {
 	};
 
 	if (sector_timer == 0) then {
-		"opfor_capture_marker" setMarkerPosLocal markers_reset;
+		HPC_attackAlert = [];
 	};
 
-	// Sector under attack: red strip under the resources.
-	_alert_shown = (markerPos "opfor_capture_marker") distance2D markers_reset > 100;
+	// Sector under attack: red strip under the resources, alert drawn on the map (HPC_mapWorld.sqf).
+	_alert_shown = (missionNamespace getVariable ["HPC_attackAlert", []]) isNotEqualTo [];
 	if (_alert_shown) then {
-		_attacked_string = [markerpos "opfor_capture_marker"] call F_getLocationName;
+		private _alertPos = HPC_attackAlert select 0;
+		_attacked_string = [_alertPos] call F_getLocationName;
 		_sector_timer = round (sector_timer - serverTime);
 		private _attacked_timer = "VULNERABLE";
 		if (_sector_timer > 0) then { _attacked_timer = [_sector_timer] call F_secondsToTimer };
-		"opfor_capture_marker" setMarkerTextLocal format [" %1 - %2", _attacked_string, _attacked_timer];
+		HPC_attackAlert = [_alertPos, format ["%1 - %2", _attacked_string, _attacked_timer]];
 		if (_overlayshown) then {
 			(_overlay displayCtrl 402) ctrlSetText format ["UNDER ATTACK  %1", toUpper _attacked_string];
 			(_overlay displayCtrl 403) ctrlSetText _attacked_timer;
 		};
-	} else {
-		"opfor_capture_marker" setMarkerTextLocal "";
 	};
 
 	if (_overlayshown) then {
@@ -136,36 +133,6 @@ while {true} do {
 		};
 
 		if (_uiticks % 4 == 0) then {
-			// Capture zone marker around the active objective (or the nearest sector).
-			_fob_sector = false;
-			_nearest_active_sector = "";
-			if (GRLIB_player_near_lhd) then {
-				_nearest_active_sector = "base_chimera";
-				_fob_sector = true;
-			} else {
-				if (GRLIB_player_near_fob) then {
-					_nearest_active_sector = [GRLIB_player_nearest_fob] call F_getFobMarker;
-					_fob_sector = true;
-				} else {
-					_nearest_active_sector = [GRLIB_sector_size] call F_getNearestSector;
-				};
-			};
-			if (count active_sectors > 0) then {
-				_nearest_active_sector = active_sectors select 0;
-				_fob_sector = false;
-			};
-			if (_nearest_active_sector == "") then {
-				"zone_capture" setmarkerposlocal markers_reset;
-			} else {
-				"zone_capture" setmarkerposlocal (markerpos _nearest_active_sector);
-				_zone_size = GRLIB_capture_size;
-				if (_nearest_active_sector in sectors_bigtown) then { _zone_size = GRLIB_capture_size * 1.4 };
-				"zone_capture" setMarkerSizeLocal [_zone_size,_zone_size];
-				_colorzone = GRLIB_color_enemy;
-				if (_nearest_active_sector in blufor_sectors || _fob_sector) then { _colorzone = GRLIB_color_friendly };
-				"zone_capture" setmarkercolorlocal _colorzone;
-			};
-
 			_server_overloaded = (opforcap_max || count active_sectors >= GRLIB_max_active_sectors);
 			if (_server_overloaded && !_active_sectors_hint) then {
 				hint localize "STR_OVERLOAD_HINT";
@@ -188,7 +155,7 @@ while {true} do {
 		} else {
 			{
 				private _state = missionNamespace getVariable ["HPC_sectorState_" + _x,[]];
-				private _name = _state param [4, markerText _x];
+				private _name = [_x] call HPC_fnc_sectorName;
 				private _phase = _state param [0, "loading"];
 				private _progress = round ((_state param [1, 0]) max 0 min 100);
 				private _status = if (_phase == "loading") then {format ["Preparing  %1%2", _progress, "%"]} else {

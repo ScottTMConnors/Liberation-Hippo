@@ -47,10 +47,7 @@ private _orbit = [_cam] spawn {
 };
 
 //--- Countdown
-private _mk1 = createMarkerLocal [format ["PAR_marker_%1", PAR_Grp_ID], getPosATL player];
-_mk1 setMarkerTypeLocal "loc_Hospital";
-_mk1 setMarkerTextLocal format ["%1 Injured", name player];
-_mk1 setMarkerColor "ColorRed";
+[format ["PAR_marker_%1", PAR_Grp_ID], [getPosATL player, "loc_Hospital", "ColorRed", format ["%1 injured", name player], 22, 0, "injured"]] call HPC_fnc_mapPoint;
 
 createDialog "par_respawn";
 waitUntil { sleep 0.1; dialog };

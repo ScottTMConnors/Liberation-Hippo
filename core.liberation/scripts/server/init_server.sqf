@@ -31,9 +31,9 @@ addMissionEventHandler ['HandleDisconnect', {
         diag_log format ["HPC_HC|DISCONNECTED|%1|%2",_name,_id];
         false
     };
-	if (_name select [0,3] == "HC1") exitWith { deleteMarker "fpsmarkerHC1" };
-	if (_name select [0,3] == "HC2") exitWith { deleteMarker "fpsmarkerHC2" };
-	if (_name select [0,3] == "HC3") exitWith { deleteMarker "fpsmarkerHC3" };
+	if (_name select [0,3] == "HC1") exitWith { ["fpsmarkerHC1", []] call HPC_fnc_mapPoint };
+	if (_name select [0,3] == "HC2") exitWith { ["fpsmarkerHC2", []] call HPC_fnc_mapPoint };
+	if (_name select [0,3] == "HC3") exitWith { ["fpsmarkerHC3", []] call HPC_fnc_mapPoint };
 	diag_log format ["--- LRX Info: player %1 (%2) disconnected...", _name, _uid];
 	if (_uid in GRLIB_players_known_uid) then {
 		[_unit, _uid, true] call save_context;
@@ -141,6 +141,10 @@ HPC_serverLoadingStage = [0.65,"Preparing the world and map markers..."];
 publicVariable "HPC_serverLoadingStage";
 
 // Execute server Managers
+// Map points (HPC_fnc_mapPoint) go to every client at most once a second.
+HPC_mapPoints = createHashMap;
+HPC_mapPointsDirty = true;
+[] spawn { while {true} do { if (HPC_mapPointsDirty) then { HPC_mapPointsDirty = false; publicVariable "HPC_mapPoints" }; sleep 1 } };
 [] execVM "scripts\server\game\init_markers.sqf";
 [] execVM "scripts\server\game\synchronise_vars.sqf";
 [] execVM "scripts\server\game\apply_saved_scores.sqf";
@@ -193,7 +197,6 @@ publicVariable "GRLIB_sector_spawning";
 // Sector selection: commander picks and player votes
 manage_sectors_commander = compileFinal preprocessFileLineNumbers "scripts\server\sector\manage_sectors_commander.sqf";
 commander_voteHandler = compileFinal preprocessFileLineNumbers "scripts\server\sector\commander_sector_vote.sqf";
-GRLIB_connectMarkers = createHashMap;
 GRLIB_Sector_Votes = createHashMap;
 publicVariable "GRLIB_Sector_Votes";
 [] spawn manage_sectors_commander;

@@ -56,7 +56,7 @@ while {true} do {
 					[_next_sector] spawn {
 						params ["_sector"];
 						private _marker_pos = markerPos _sector;
-						private _marker_text = markerText _sector;
+						private _marker_text = [_sector] call HPC_fnc_sectorName;
 						private _player_dist = player distance2D _marker_pos;
 						if (_player_dist > GRLIB_sector_size) then {
 							private _msg = localize "STR_NOTIFICATION_ENTER_TERRITORY";

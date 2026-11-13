@@ -6,6 +6,6 @@ if (alive _caller && GRLIB_Commander_VoteEnabled && _sector in GRLIB_AvailAttack
     // Clients draw vote totals and their own pick on the map.
     publicVariable "GRLIB_Sector_Votes";
     GRLIB_IsVoteInProgress = true;
-    private _msg = format ["%1 has voted for %2!", name _caller, markerText _sector];
+    private _msg = format ["%1 has voted for %2!", name _caller, ([_sector] call HPC_fnc_sectorName)];
     [_msg, "info", "HQ"] remoteExec ["HPC_fnc_info", 0];
 };

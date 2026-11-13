@@ -85,7 +85,7 @@ while {sector_timer > 0 && _progress < 1} do {
 	sleep 2;
 };
 
-"opfor_capture_marker" setMarkerPosLocal markers_reset;
+HPC_attackAlert = [];
 ctrlDelete _final_progressBar;
 ctrlDelete _final_text;
 

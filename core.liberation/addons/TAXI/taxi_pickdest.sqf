@@ -7,7 +7,7 @@ waitUntil { dialog };
 dojump = 0;
 halo_position = getPosATL player;
 
-"spawn_marker" setMarkerTextLocal (localize "STR_TAXI_SELECT");
+HPC_mapSelectText = (localize "STR_TAXI_SELECT");
 ctrlSetText [201, toUpper (localize "STR_TAXI_SELECT")];
 ctrlSetText [202, (localize "STR_TAXI_SELECT")];
 ((findDisplay 5203) displayCtrl 203) ctrlSetStructuredText parseText "Pick a landing zone for the taxi.<br/>Water, cramped spots and targets closer than 300 m are refused.";
@@ -22,15 +22,14 @@ while { dialog && alive player && dojump == 0 } do {
  	if (surfaceIsWater halo_position || count _freepos == 0) then {
 		hintSilent localize "STR_TAXI_WRONG_PLACE";
 	} else {
-		"spawn_marker" setMarkerPosLocal halo_position;
+		HPC_mapSelect = [halo_position, HPC_mapSelectText];
 	};
 	sleep 0.2;
 };
 
 onMapSingleClick "";
 closeDialog 0;
-"spawn_marker" setMarkerPosLocal markers_reset;
-"spawn_marker" setMarkerTextLocal "";
+HPC_mapSelect = [];
 
 if (dojump > 0) then {
 	if (player distance2D halo_position < 300) exitWith { hintSilent "Choose a destination farther from your current position." };

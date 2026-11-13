@@ -1,0 +1,502 @@
+{
+ "markers": [
+  {
+   "state": "sector",
+   "icon": "n_service",
+   "size": 26,
+   "color": [
+    0.3,
+    0.62,
+    1,
+    1
+   ],
+   "at": [
+    0.255,
+    0.4
+   ],
+   "text": "Moray"
+  },
+  {
+   "state": "sector",
+   "icon": "n_art",
+   "size": 22,
+   "color": [
+    0.3,
+    0.62,
+    1,
+    1
+   ],
+   "at": [
+    0.187,
+    0.55
+   ],
+   "text": "Lamberts"
+  },
+  {
+   "state": "sector",
+   "icon": "n_service",
+   "size": 26,
+   "color": [
+    0.92,
+    0.2,
+    0.16,
+    1
+   ],
+   "at": [
+    0.399,
+    0.42
+   ],
+   "text": "Cancon  62%",
+   "active": true,
+   "zone_px": 80
+  },
+  {
+   "state": "sector",
+   "icon": "n_art",
+   "size": 22,
+   "color": [
+    0.92,
+    0.2,
+    0.16,
+    1
+   ],
+   "at": [
+    0.34,
+    0.62
+   ],
+   "text": "Arudy  (2 votes)",
+   "choice": true,
+   "hover": true
+  },
+  {
+   "state": "sector",
+   "icon": "n_art",
+   "size": 22,
+   "color": [
+    0.92,
+    0.2,
+    0.16,
+    1
+   ],
+   "at": [
+    0.476,
+    0.66
+   ],
+   "text": "Le Port  (1 vote)",
+   "choice": true,
+   "my_vote": true
+  },
+  {
+   "state": "sector",
+   "icon": "o_support",
+   "size": 26,
+   "color": [
+    0.92,
+    0.2,
+    0.16,
+    1
+   ],
+   "at": [
+    0.51,
+    0.3
+   ],
+   "text": "Military Base"
+  },
+  {
+   "state": "sector",
+   "icon": "loc_Fuelstation",
+   "size": 22,
+   "color": [
+    0.92,
+    0.2,
+    0.16,
+    1
+   ],
+   "at": [
+    0.561,
+    0.52
+   ],
+   "text": "Fuel Depot"
+  },
+  {
+   "state": "sector",
+   "icon": "loc_Transmitter",
+   "size": 22,
+   "color": [
+    0.92,
+    0.2,
+    0.16,
+    1
+   ],
+   "at": [
+    0.442,
+    0.22
+   ],
+   "text": "Radio Tower 045 112"
+  },
+  {
+   "icon": "b_hq",
+   "color": [
+    0.3,
+    0.62,
+    1,
+    1
+   ],
+   "at": [
+    0.136,
+    0.48
+   ],
+   "size": 26,
+   "text": "Chimera Base"
+  },
+  {
+   "icon": "b_hq",
+   "color": [
+    1,
+    0.82,
+    0.3,
+    1
+   ],
+   "at": [
+    0.289,
+    0.52
+   ],
+   "size": 26,
+   "text": "FOB Alpha"
+  },
+  {
+   "icon": "b_support",
+   "color": [
+    1,
+    0.82,
+    0.3,
+    1
+   ],
+   "at": [
+    0.383,
+    0.72
+   ],
+   "size": 22,
+   "text": "Outpost Bravo"
+  },
+  {
+   "icon": "b_air",
+   "color": [
+    0.3,
+    0.62,
+    1,
+    1
+   ],
+   "at": [
+    0.162,
+    0.42
+   ],
+   "size": 22,
+   "text": "Huron"
+  },
+  {
+   "icon": "mil_dot",
+   "color": [
+    0.2,
+    0.75,
+    0.3,
+    1
+   ],
+   "at": [
+    0.238,
+    0.44
+   ],
+   "size": 14,
+   "text": "ATM"
+  },
+  {
+   "icon": "mil_dot",
+   "color": [
+    0.9,
+    0.55,
+    0.15,
+    1
+   ],
+   "at": [
+    0.264,
+    0.46
+   ],
+   "size": 14,
+   "text": "Repair"
+  },
+  {
+   "icon": "mil_objective",
+   "color": [
+    0.85,
+    0.15,
+    0.1,
+    1
+   ],
+   "at": [
+    0.493,
+    0.48
+   ],
+   "size": 22,
+   "text": "Sector commander - eliminate"
+  },
+  {
+   "icon": "mil_objective",
+   "color": [
+    0.92,
+    0.2,
+    0.16,
+    1
+   ],
+   "at": [
+    0.595,
+    0.36
+   ],
+   "size": 22,
+   "text": "Mission: Town Invasion - 14 min left",
+   "zone_px": 55
+  },
+  {
+   "icon": "mil_pickup",
+   "color": [
+    0.92,
+    0.2,
+    0.16,
+    1
+   ],
+   "at": [
+    0.51,
+    0.25
+   ],
+   "size": 18,
+   "text": "AH-99 Blackfoot"
+  },
+  {
+   "icon": "loc_defend",
+   "color": [
+    0.75,
+    0.75,
+    0.75,
+    1
+   ],
+   "at": [
+    0.255,
+    0.36
+   ],
+   "size": 20,
+   "text": ""
+  },
+  {
+   "state": "player",
+   "icon": "mil_arrow2",
+   "color": [
+    0.55,
+    0.95,
+    0.85,
+    1
+   ],
+   "at": [
+    0.306,
+    0.5
+   ],
+   "size": 22,
+   "text": "Hippo",
+   "dir": 40
+  },
+  {
+   "state": "player",
+   "icon": "mil_arrow2",
+   "color": [
+    0.3,
+    0.62,
+    1,
+    1
+   ],
+   "at": [
+    0.323,
+    0.55
+   ],
+   "size": 20,
+   "text": "Wood",
+   "dir": 120
+  },
+  {
+   "state": "player",
+   "icon": "mil_triangle",
+   "color": [
+    0.55,
+    0.95,
+    0.85,
+    1
+   ],
+   "at": [
+    0.302,
+    0.53
+   ],
+   "size": 14,
+   "text": "2. Miller",
+   "dir": 40
+  },
+  {
+   "state": "alert",
+   "at": [
+    0.204,
+    0.58
+   ],
+   "text": "Lamberts - 4:12"
+  },
+  {
+   "state": "select",
+   "at": [
+    0.425,
+    0.55
+   ],
+   "text": "Select a drop point"
+  }
+ ],
+ "lines": [
+  {
+   "from": [
+    0.255,
+    0.4
+   ],
+   "to": [
+    0.187,
+    0.55
+   ],
+   "color": [
+    0.08,
+    0.1,
+    0.11,
+    0.55
+   ]
+  },
+  {
+   "from": [
+    0.255,
+    0.4
+   ],
+   "to": [
+    0.399,
+    0.42
+   ],
+   "color": [
+    1,
+    0.72,
+    0.3,
+    0.85
+   ]
+  },
+  {
+   "from": [
+    0.289,
+    0.52
+   ],
+   "to": [
+    0.34,
+    0.62
+   ],
+   "color": [
+    1,
+    0.72,
+    0.3,
+    0.85
+   ]
+  },
+  {
+   "from": [
+    0.187,
+    0.55
+   ],
+   "to": [
+    0.34,
+    0.62
+   ],
+   "color": [
+    1,
+    0.72,
+    0.3,
+    0.85
+   ]
+  },
+  {
+   "from": [
+    0.34,
+    0.62
+   ],
+   "to": [
+    0.476,
+    0.66
+   ],
+   "color": [
+    0.08,
+    0.1,
+    0.11,
+    0.55
+   ]
+  },
+  {
+   "from": [
+    0.399,
+    0.42
+   ],
+   "to": [
+    0.51,
+    0.3
+   ],
+   "color": [
+    0.08,
+    0.1,
+    0.11,
+    0.55
+   ]
+  },
+  {
+   "from": [
+    0.399,
+    0.42
+   ],
+   "to": [
+    0.561,
+    0.52
+   ],
+   "color": [
+    0.08,
+    0.1,
+    0.11,
+    0.55
+   ]
+  },
+  {
+   "from": [
+    0.51,
+    0.3
+   ],
+   "to": [
+    0.442,
+    0.22
+   ],
+   "color": [
+    0.08,
+    0.1,
+    0.11,
+    0.55
+   ]
+  },
+  {
+   "from": [
+    0.289,
+    0.52
+   ],
+   "to": [
+    0.255,
+    0.4
+   ],
+   "color": [
+    0.08,
+    0.1,
+    0.11,
+    0.55
+   ]
+  }
+ ]
+}

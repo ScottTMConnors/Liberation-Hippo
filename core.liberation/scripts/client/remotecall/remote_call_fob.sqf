@@ -13,7 +13,7 @@ if (_status == 0) then {
 
 if (_status == 1) then {
 	["lib_fob_attacked", [_fob_type, _fob_name]] call HPC_fnc_notify;
-	"opfor_capture_marker" setMarkerPosLocal _fobpos;
+	HPC_attackAlert = [_fobpos, ""];
 };
 
 if (_status == 2) then {

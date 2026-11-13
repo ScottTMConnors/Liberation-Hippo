@@ -6,7 +6,7 @@ private _name = "Unknown";
 diag_log format ["--- LRX Cleanup player %1 (%2)", _name, _uid];
 
 // Remove PAR Marker
-deletemarker format ["PAR_marker_%1", _uid];
+[format ["PAR_marker_%1", _uid], []] call HPC_fnc_mapPoint;
 
 // Remove tents too far
 if (!isNil "GRLIB_mobile_respawn") then {

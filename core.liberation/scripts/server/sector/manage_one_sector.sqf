@@ -15,7 +15,7 @@ private _sector_pos = markerPos _sector;
 private _usableMilitia = (missionNamespace getVariable ["militia_squad",[]]) select {isClass (configFile >> "CfgVehicles" >> _x)};
 private _usableRegulars = (missionNamespace getVariable ["opfor_infantry",[]]) select {isClass (configFile >> "CfgVehicles" >> _x)};
 if (_usableMilitia isEqualTo [] && {_usableRegulars isEqualTo []}) exitWith {
-    private _name = markerText _sector;
+    private _name = [_sector] call HPC_fnc_sectorName;
     [_sector,"failed",0,-1,-1,_name] call HPC_fnc_sectorState;
     diag_log format ["--- Hippos Conquest: sector %1 rejected; enemy template %2 has no loaded infantry",_sector,GRLIB_mod_east];
     [format ["Cannot load %1: enemy faction %2 has no available infantry. Enable its required mods or select an available enemy faction before restarting.",_name,GRLIB_mod_east]] remoteExec ["HPC_fnc_info",0];
@@ -33,14 +33,12 @@ missionNamespace setVariable [format ["LRX_sector_%1_units", _sector], []];
 missionNamespace setVariable [format ["LRX_sector_%1_civils", _sector], []];
 missionNamespace setVariable [format ["LRX_sector_%1_vehicles", _sector], []];
 
-private _sectorName = markerText _sector;
-_sector setMarkerText format ["%1 - Loading", _sectorName];
+private _sectorName = [_sector] call HPC_fnc_sectorName;
 
 private _spawncivs = false;
 private _building_ai_max = 0;
 private _building_range = 200;
 private _local_capture_size = GRLIB_capture_size;
-private _marker = "";
 private _ied_count = 0;
 private _uavs_count = 0;
 private _static_count = 0;
@@ -62,8 +60,6 @@ private _nearRadioTower = ([_sector_pos, GRLIB_side_enemy] call F_getNearestTowe
 
 private _active_players = (AllPlayers - (entities "HeadlessClient_F"));
 _local_capture_size = 500;
-_sector setMarkerTypeLocal "mil_objective";
-_sector setMarkerColor "ColorYellow";
 
 private _count_players = count _active_players;
 diag_log format ["Spawn Attack Sector %1 - player in combat %2 / readiness %3 at %4", _sector, _count_players, combat_readiness, time];
@@ -231,7 +227,6 @@ switch true do {
     };
 };
 
-_sector setMarkerText format ["%2 - Loading %1%%", 10, _sectorName];
 [_sector,"loading",10,-1,-1,_sectorName,_local_capture_size] call HPC_fnc_sectorState;
 // Extra veh based on difficulty
 if ((floor GRLIB_difficulty_modifier) > 1) then {
@@ -253,7 +248,6 @@ if (_uavs_count > 0) then {
 	[_sector_pos, _uavs_count] spawn send_drones;
 };
 
-_sector setMarkerText format ["%2 - Loading %1%%", 15, _sectorName];
 [_sector,"loading",15,-1,-1,_sectorName,_local_capture_size] call HPC_fnc_sectorState;
 // Create units
 {
@@ -265,7 +259,6 @@ _sector setMarkerText format ["%2 - Loading %1%%", 15, _sectorName];
 		(missionNamespace getVariable format ["LRX_sector_%1_units", _sector]) append (units _grp);
 	};
 	_ratio = round linearConversion [0, 4, _foreachIndex, 20, 40];
-	_sector setMarkerText format ["%2 - Loading %1%%", _ratio, _sectorName];
 [_sector,"loading",_ratio,-1,-1,_sectorName,_local_capture_size] call HPC_fnc_sectorState;
 	sleep 0.5;
 } forEach [[_squad1, _infsquad1, 50], [_squad2, _infsquad2, 100], [_squad3, _infsquad3, 100], [_squad4, _infsquad4, 200], [_squad5, _infsquad5, 300]];
@@ -283,7 +276,6 @@ if (count _vehtospawn > 0) then {
 			};
 		};
 		_ratio = round linearConversion [0, count _vehtospawn, _foreachIndex + 1, 50, 70];
-		_sector setMarkerText format ["%2 - Loading %1%%", _ratio, _sectorName];
 [_sector,"loading",_ratio,-1,-1,_sectorName,_local_capture_size] call HPC_fnc_sectorState;
 		sleep 0.5;
 	} foreach _vehtospawn;
@@ -306,7 +298,6 @@ if (!isNil "opfor_fuel_truck" && {opfor_fuel_truck != ""} && {random 100 < 30}) 
 if (_building_ai_max > 0) then {
 	_building_ai_max = (_building_ai_max * GRLIB_building_ai_ratio);
 	if (_sector in sectors_bigtown) then { _building_ai_max = _building_ai_max + 12 };
-	_sector setMarkerText format ["%2 - Loading %1%%", 75, _sectorName];
 [_sector,"loading",75,-1,-1,_sectorName,_local_capture_size] call HPC_fnc_sectorState;
 	[_infsquad1, _building_ai_max, _building_range, _sector_pos, _sector] call {
 		params ["_infsquad1", "_building_ai_max", "_building_range", "_sector_pos", "_sector"];
@@ -314,7 +305,6 @@ if (_building_ai_max > 0) then {
 	};
 	sleep 0.5;
 };
-_sector setMarkerText format ["%2 - Loading %1%%", 80, _sectorName];
 [_sector,"loading",80,-1,-1,_sectorName,_local_capture_size] call HPC_fnc_sectorState;
 
 // Ambient agents are maintained independently for active sectors, nearby towns and FOBs.
@@ -322,7 +312,6 @@ _sector setMarkerText format ["%2 - Loading %1%%", 80, _sectorName];
 if (isNull (missionNamespace getVariable ["HPC_sectorCommander_"+_sector,objNull])) exitWith {
     diag_log format ["--- Hippos Conquest: sector %1 loader aborted; commander creation failed",_sector];
 };
-_sector setMarkerText format ["%2 - Loading %1%%", 85, _sectorName];
 [_sector,"loading",85,-1,-1,_sectorName,_local_capture_size] call HPC_fnc_sectorState;
 [_sector] call HPC_fnc_sectorWalls;
 _static_count = _static_count max (if (_sector in sectors_military) then {4} else {2});
@@ -388,12 +377,7 @@ private _stageAttack = {
 	};
 };
 
-_marker = createMarkerLocal [("zone_capture" + _sector), _sector_pos];
-_marker setMarkerBrushLocal "DiagGrid";
-_marker setMarkerShapeLocal "ELLIPSE";
-_marker setMarkerAlphaLocal 0.7;
-_marker setMarkerSizeLocal [_local_capture_size, _local_capture_size];
-_marker setMarkerColor GRLIB_color_enemy_bright;
+// the capture zone is drawn from HPC_sectorState (radius) by HPC_mapWorld.sqf
 
 // Main loop
 private _building_alive = (nearestObjects [_sector_pos, ["House"], _local_capture_size]) select {
@@ -411,9 +395,7 @@ diag_log format ["Sector %1 wait attack to finish", _sector];
 private _task = "attack" + _sectorName + str round time;
 [true, _task, [format ["Clear %1 and eliminate its marked sector commander. Both are required to capture the sector.", _sectorName], format ["Attack %1", _sectorName], _sector], _sector_pos, "ASSIGNED", 2, true] call BIS_fnc_taskCreate;
 [_task, true] call BIS_fnc_taskSetCurrent;
-_sector setMarkerText format ["%1 - Loaded", _sectorName];
 sleep 5;
-_sector setMarkerText format ["%1", _sectorName];
 [_sector,"active",0,-1,-1,_sectorName,_local_capture_size] call HPC_fnc_sectorState;
 GRLIB_sector_spawning = false;
 publicVariable "GRLIB_sector_spawning";
@@ -427,7 +409,6 @@ private _startingCount = call _countEnemies;
 while {true} do {
 	if (!(_sector in active_sectors)) exitWith { // Aborted
 		diag_log format ["Sector %1 mission aborted.", _sector];
-		_sector setMarkerText _sectorName;
 		[_task,"CANCELED"] call BIS_fnc_taskSetState;
 		[_task] spawn {
 			params ["_task"];
@@ -443,14 +424,11 @@ while {true} do {
     // The commander exists at sector start (see the check above), so null later means deleted: treat as eliminated.
     private _commanderDead = (missionNamespace getVariable ["HPC_sectorCommanderDead_"+_sector,false]) || {!alive _commander};
     if (_commanderDead) then { missionNamespace setVariable ["HPC_sectorCommanderDead_"+_sector,true,true] };
-    if (_commanderAlive) then {("HPC_command_"+_sector) setMarkerPos (getPosATL _commander)} else {deleteMarker ("HPC_command_"+_sector)};
-    _sector setMarkerText format ["%1 - %2%% %3", _sectorName, round _ratio,if (_commanderAlive) then {"| commander alive"} else {"| commander eliminated"}];
+    if (!_commanderAlive) then {["HPC_command_"+_sector, []] call HPC_fnc_mapPoint}; // the point follows the commander while alive
     [_sector,"active",100 - _ratio,_remaining,_startingCount,_sectorName,_local_capture_size] call HPC_fnc_sectorState;
     if (_ratio <= 10 && {_commanderDead}) exitWith { // Victory
 		diag_log format ["Sector %1 mission succeeded.", _sector];
-		_sector setMarkerText _sectorName;
 		[_task,"SUCCEEDED"] call BIS_fnc_taskSetState;
-		deleteMarker _marker;
 		if (isServer) then {
 			[_sector] spawn sector_liberated_remote_call;
 		} else {
@@ -512,7 +490,6 @@ while {true} do {
 	sleep 5;
 };
 
-_sector setMarkerText _sectorName;
 sleep 10;
 
 // Attack finished
@@ -540,6 +517,6 @@ missionNamespace setVariable [format ["LRX_sector_%1_vehicles", _sector], nil];
 
 {deleteVehicle _x} forEach (missionNamespace getVariable ["HPC_sectorProps_"+_sector,[]]);
 missionNamespace setVariable ["HPC_sectorProps_"+_sector,nil];
-deleteMarker ("HPC_command_"+_sector);
+["HPC_command_"+_sector, []] call HPC_fnc_mapPoint;
 missionNamespace setVariable ["HPC_sectorCommander_"+_sector,nil,true];
 missionNamespace setVariable ["HPC_sectorCommanderDead_"+_sector,nil,true];

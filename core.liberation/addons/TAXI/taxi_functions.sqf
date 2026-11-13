@@ -101,6 +101,6 @@ taxi_check_dest = compileFinal {
 		_vehicle setVariable ["GRLIB_taxi_helipad", GRLIB_taxi_helipad, true];
 	};
 	GRLIB_taxi_cooldown = round (time + 15);
-	GRLIB_taxi_marker setMarkerPosLocal (getPosATL GRLIB_taxi_helipad);
-	GRLIB_taxi_marker setMarkerTextlocal "Taxi DZ";
+	["taxi_lz", getPosATL GRLIB_taxi_helipad, false] call HPC_fnc_mapPoint;
+	["taxi_lz", "Taxi drop zone", false] call HPC_fnc_mapPoint;
 };

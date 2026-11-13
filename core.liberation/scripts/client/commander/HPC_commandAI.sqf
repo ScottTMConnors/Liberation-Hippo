@@ -85,6 +85,7 @@ private _destList = _display displayCtrl 111;
 private _map = _display ctrlCreate ["RscMapControl", 140];
 // The dialog reserves the map area with its MapFrame placeholder (idc 141).
 _map ctrlMapSetPosition (ctrlPosition (_display displayCtrl 141));
+if (!isNil "HPC_fnc_mapWorldAttach") then {[_map] call HPC_fnc_mapWorldAttach};
 _map ctrlAddEventHandler ["Draw", {_this call HPC_fnc_mapDraw; _this call HPC_fnc_cmdDrawDests}];
 _map ctrlAddEventHandler ["MouseButtonDown", {
     params ["_ctrl", "_button", "_mx", "_my"];

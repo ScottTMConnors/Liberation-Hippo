@@ -70,18 +70,14 @@ private _cargo_indx = 3;
 
 //-----------------------------------------
 // Markers
-private _convoy_marker = createMarkerLocal [format ["convoymarker%1", round time], getpos _transport_vehicle];
-_convoy_marker setMarkerText (localize "STR_SECONDARY_CSAT_CONVOY");
-_convoy_marker setMarkerType "o_armor";
-_convoy_marker setMarkerColor GRLIB_color_enemy_bright;
+// map points (HPC_fnc_mapPoint): the convoy follows its transport, plus its waypoints
+private _convoy_marker = format ["convoymarker%1", round time];
+[_convoy_marker, [_transport_vehicle, "o_armor", GRLIB_color_enemy_bright, localize "STR_SECONDARY_CSAT_CONVOY", 24, 0, "convoy"]] call HPC_fnc_mapPoint;
 
 private _convoy_marker_list = [_convoy_marker];
 for "_i" from 0 to ((count _convoy_destinations) -1) do {
-	_convoy_marker_wp = createMarkerLocal [format ["convoymarkerwp%1", _i], _convoy_destinations select _i];
-	_convoy_marker_wp setMarkerText (localize "STR_SECONDARY_CSAT_CONVOY_WP");
-	_convoy_marker_wp setMarkerType "o_armor";
-	_convoy_marker_wp setMarkerColor GRLIB_color_enemy_bright;
-	_convoy_marker_wp setMarkerSize [0.6, 0.6];
+	private _convoy_marker_wp = format ["convoymarkerwp%1", _i];
+	[_convoy_marker_wp, [_convoy_destinations select _i, "o_armor", GRLIB_color_enemy_bright, localize "STR_SECONDARY_CSAT_CONVOY_WP", 15, 0, "waypoint"]] call HPC_fnc_mapPoint;
 	_convoy_marker_list pushback _convoy_marker_wp;
 };
 
@@ -99,7 +95,7 @@ while { _mission_in_progress } do {
 	if (!alive _transport_vehicle || (side group _transport_vehicle == GRLIB_side_friendly) || time > _mission_timeout) then {
 		_mission_in_progress = false;
 	};
-	_convoy_marker setMarkerPos (getpos _transport_vehicle);
+	// the convoy point follows _transport_vehicle by itself
 	sleep 5;
 };
 
@@ -107,7 +103,7 @@ diag_log format ["--- LRX: %1 end static mission: Convoy Hijack at %2", _caller,
 
 //-----------------------------------------
 // Mission cleanup
-{ deleteMarker _x } foreach _convoy_marker_list;
+{ [_x, []] call HPC_fnc_mapPoint } foreach _convoy_marker_list;
 
 if (time > _mission_timeout || !alive _transport_vehicle) then {
 	// failed

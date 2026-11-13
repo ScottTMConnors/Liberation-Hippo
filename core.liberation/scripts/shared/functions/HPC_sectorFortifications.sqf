@@ -110,10 +110,8 @@ if (_garrison) then {
             };
         }];
         missionNamespace setVariable ["HPC_sectorCommander_"+_sector,_commander,true];
-        private _objective = createMarker ["HPC_command_"+_sector,getPosATL _commander];
-        _objective setMarkerType "mil_objective";
-        _objective setMarkerColor "ColorOPFOR";
-        _objective setMarkerText "Sector commander - eliminate";
+        // map point that follows the commander (HPC_mapWorld.sqf hides it once he is dead)
+        ["HPC_command_"+_sector, [_commander, "mil_objective", "ColorOPFOR", "Sector commander - eliminate", 22, 0, "objective"]] call HPC_fnc_mapPoint;
     };
     [_commandGroup] call HPC_fnc_garrisonHandoff;
     // Occupy tower positions and put faction-appropriate static guns on the perimeter.

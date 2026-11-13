@@ -110,14 +110,13 @@ _waitUntilCondition = {
 	private _ret = false;
 
 	if ({ alive _x } count _managed_units == 0) then {
-		{ deleteMarker _x } forEach _mission_markers;
+		{ [_x, []] call HPC_fnc_mapPoint } forEach _mission_markers;
 		_mission_markers = [];
 		{
 			if (alive _x) then {
-				private _marker = createMarkerLocal [format ["missionintel_%1", (_x call BIS_fnc_netId)], getPos _x];
-				_marker setMarkerColorLocal "ColorOrange";
-				_marker setMarkerType "loc_search";
-				_mission_markers pushBack _marker;
+				private _id = format ["missionintel_%1", (_x call BIS_fnc_netId)];
+				[_id, [getPos _x, "loc_search", "ColorOrange", "", 20, 0, "intel"]] call HPC_fnc_mapPoint;
+				_mission_markers pushBack _id;
 			};
 		} forEach _intels;
 	};
@@ -150,7 +149,7 @@ _failedExec = {
 	{ deleteVehicle _x } forEach _intels;
 	{ [_x] call HPC_fnc_deleteUnit } forEach (units _grp_civ1) + (units _grp_civ2);
 	{ [_x] call HPC_fnc_deleteUnit } forEach _managed_units;
-	{ deleteMarker _x } forEach _mission_markers;
+	{ [_x, []] call HPC_fnc_mapPoint } forEach _mission_markers;
 	[_missionPos] call clearlandmines;
 };
 
@@ -166,7 +165,7 @@ _successExec = {
 	_successHintMessage = "STR_SEARCH_INTEL_MESSAGE2";
 	{ [_x] call HPC_fnc_deleteUnit } forEach (units _grp_civ1) + (units _grp_civ2);
 	{ [_x] call HPC_fnc_deleteUnit } forEach _managed_units;
-	{ deleteMarker _x } forEach _mission_markers;
+	{ [_x, []] call HPC_fnc_mapPoint } forEach _mission_markers;
 	[_missionPos] spawn {
 		params ["_pos"];
 		[_pos] call showlandmines;

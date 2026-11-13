@@ -149,6 +149,7 @@ GRLIB_TrenchBuildType = 9;
 GRLIB_BuildTypeDirect = 90;
 
 if (typeOf player == "VirtualSpectator_F") exitWith {
+	[] execVM "scripts\client\markers\HPC_mapWorld.sqf";
 	[] execVM "scripts\client\markers\vehicles_marker.sqf";
 	[] execVM "scripts\client\markers\hostile_groups.sqf";
 	[] execVM "scripts\client\markers\HPC_mapOverlay.sqf";
@@ -226,6 +227,7 @@ waitUntil { uiSleep 0.1; LRX_arsenal_init_done };
 [] execVM "addons\TXU\txu_init.sqf";
 
 [] call compile preprocessFileLineNumbers "scripts\client\markers\init_markers.sqf";
+[] execVM "scripts\client\markers\HPC_mapWorld.sqf";
 LRX_init_done = true;
 
 HPC_clientLoadingStage = [1,"Ready"];
@@ -256,13 +258,11 @@ waitUntil {uiSleep 0.1; (GRLIB_player_configured && GRLIB_action_player_ready &&
 [] execVM "scripts\client\ui\ui_manager.sqf";
 [] execVM "scripts\client\build\build_overlay.sqf";
 
-// Markers
-[] execVM "scripts\client\markers\players_marker.sqf";
+// Markers (the map layer HPC_mapWorld.sqf starts before the intro)
 [] execVM "scripts\client\markers\vehicles_marker.sqf";
 [] execVM "scripts\client\markers\hostile_groups.sqf";
 [] execVM "scripts\client\markers\HPC_mapOverlay.sqf";
 [] execVM "scripts\shared\HPC_shotRelay.sqf";
-[] execVM "scripts\client\commander\commander_marker.sqf";
 //[] execVM "scripts\client\markers\logs_markers.sqf";
 
 // Local Manager

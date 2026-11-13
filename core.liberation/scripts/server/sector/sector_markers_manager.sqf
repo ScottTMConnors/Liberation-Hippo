@@ -1,69 +1,26 @@
-private ["_marker", "_nextbase", "_nextvehicle", "_nextmarker", "_sector_pos", "_close_sectors", "_opfor_sectors"];
-
+// Vehicle unlock points next to military bases (map points, drawn by HPC_mapWorld.sqf).
+// Sectors themselves are drawn from blufor_sectors; nothing here paints markers.
 waitUntil {sleep 1; !isNil "GRLIB_init_server"};
+if (GRLIB_hide_opfor) exitWith {};
 
-private _getMarkerType = {
-	params ["_marker"];
-	if (_marker in sectors_capture) exitWith { "n_art" };
-	if (_marker in sectors_tower) exitWith { "loc_Transmitter" };
-	if (_marker in sectors_factory) exitWith { "loc_Fuelstation" };
-	if (_marker in sectors_military) exitWith { "o_support" };
-	if (_marker in sectors_bigtown) exitWith { "n_service" };
-	"n_art";
-};
-
-private _vehicle_unlock_markers = [];
 private _cfg = configFile >> "cfgVehicles";
-if (!GRLIB_hide_opfor) then {
-	{
-		_nextvehicle = _x select 0;
-		_nextbase = _x select 1;
-		_marker = createMarkerLocal [format ["vehicleunlockmarker%1",_nextbase], [ markerpos _nextbase select 0, (markerpos _nextbase select 1) + 125]];
-		_marker setMarkerTextLocal ( getText (_cfg >> _nextvehicle >> "displayName") );
-		_marker setMarkerTypeLocal "mil_pickup";
-		_marker setMarkerColor GRLIB_color_enemy;
-		_vehicle_unlock_markers pushback [ _marker, _nextbase ];
-	} foreach GRLIB_vehicle_to_military_base_links;
+private _owned = createHashMap; // sector -> last colour sent
+private _paint = {
+	params ["_vehicle", "_sector", "_ours"];
+	[format ["unlock_%1", _sector], [
+		(markerPos _sector) vectorAdd [0, 125, 0], "mil_pickup",
+		[GRLIB_color_enemy, GRLIB_color_friendly] select _ours,
+		getText (_cfg >> _vehicle >> "displayName"), 18, 0, "unlock"
+	]] call HPC_fnc_mapPoint;
+	_owned set [_sector, _ours];
 };
-
-private _sector_count = -1;
-private _dist = 0;
-private _ticks = 0;
-sleep 5;
-
-// global marker commands broadcast the whole marker: only send real changes
-private _fnc_paint = {
-	params ["_marker", "_type", "_color"];
-	if (markerType _marker != _type || {markerColor _marker != _color}) then {
-		_marker setMarkerTypeLocal _type;
-		_marker setMarkerColor _color;
-	};
-};
+{ [_x select 0, _x select 1, (_x select 1) in blufor_sectors] call _paint } forEach GRLIB_vehicle_to_military_base_links;
 
 while { GRLIB_endgame == 0 } do {
-	if ((count blufor_sectors + count GRLIB_all_fobs) != _sector_count || _ticks % 60 == 0) then {
-		opfor_sectors = (sectors_allSectors - blufor_sectors);
-
-		{
-			[_x, [_x] call _getMarkerType, GRLIB_color_enemy] call _fnc_paint;
-		} foreach opfor_sectors;
-		{
-			[_x, [_x] call _getMarkerType, GRLIB_color_friendly] call _fnc_paint;
-		} foreach blufor_sectors;
-
-		if (count _vehicle_unlock_markers > 0) then {
-			{
-				if ((_x select 1) in blufor_sectors) then {
-					if (markerColor (_x select 0) != GRLIB_color_friendly) then { (_x select 0) setMarkerColor GRLIB_color_friendly };
-				} else {
-					if (markerColor (_x select 0) != GRLIB_color_enemy) then { (_x select 0) setMarkerColor GRLIB_color_enemy };
-				};
-			} foreach _vehicle_unlock_markers;
-		};
-		_sector_count = (count blufor_sectors + count GRLIB_all_fobs);
-	};
-
-	_ticks = _ticks + 1;
-	if (_ticks >= 65535) then { _ticks = 0 };
-	sleep 1;
+	{
+		_x params ["_vehicle", "_sector"];
+		private _ours = _sector in blufor_sectors;
+		if !((_owned getOrDefault [_sector, !_ours]) isEqualTo _ours) then { [_vehicle, _sector, _ours] call _paint };
+	} forEach GRLIB_vehicle_to_military_base_links;
+	sleep 5;
 };

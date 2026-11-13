@@ -41,7 +41,7 @@ if (_liberated_sector in sectors_factory) then {
 
 if (_liberated_sector in sectors_tower) then {
 	_combat_readiness_increase = (6 + (floor random 10)) * GRLIB_difficulty_modifier;
-	private _text = format ["Enemy air support is no longer available near %1.", markerText _liberated_sector];
+	private _text = format ["Enemy air support is no longer available near %1.", ([_liberated_sector] call HPC_fnc_sectorName)];
 	[_text] remoteExec ["HPC_fnc_info", 0];
 };
 

@@ -13,15 +13,11 @@ if (GRLIB_Facilities) then {
 	// Load fixed positions
 	[] call compileFinal preprocessFileLineNumbers "fixed_position.sqf";
 
-	private ["_vehicle", "_spawn_pos", "_marker"];
+	private ["_vehicle", "_spawn_pos"];
 ["markers.fixedPositions"] call HPC_fnc_loadMark;
 	// ATM Markers
 	{
-		_marker = createMarkerLocal [format ["marked_atm%1", _forEachIndex], _x];
-		_marker setMarkerColorLocal "ColorGreen";
-		_marker setMarkerTypeLocal "mil_dot";
-		_marker setMarkerTextLocal localize "STR_MARKER_ATM";
-		_marker setMarkerSize [0.75, 0.75];
+		[format ["fac_atm_%1", _forEachIndex], [_x, "mil_dot", "ColorGreen", localize "STR_MARKER_ATM", 14, 0, "facility"]] call HPC_fnc_mapPoint;
 	} forEach GRLIB_Marker_ATM;
 
 	// REPAIR
@@ -34,11 +30,7 @@ if (GRLIB_Facilities) then {
 			[_vehicle] call F_clearCargo;
 			[_vehicle, "lock", "server"] call F_vehicleLock;
 			_vehicle enableSimulationGlobal true; // enable to keep facility
-			_marker = createMarkerLocal [format ["marked_rep%1", _forEachIndex], getPosATL _vehicle];
-			_marker setMarkerColorLocal "ColorOrange";
-			_marker setMarkerTypeLocal "mil_dot";
-			_marker setMarkerTextLocal localize "STR_MARKER_REP";
-			_marker setMarkerSize [0.75, 0.75];
+			[format ["fac_rep_%1", _forEachIndex], [getPosATL _vehicle, "mil_dot", "ColorOrange", localize "STR_MARKER_REP", 14, 0, "facility"]] call HPC_fnc_mapPoint;
 			GRLIB_Marker_REP pushBack (getPosATL _vehicle);
 		} else {
 			diag_log format ["--- LRX Repair Marker Error: No place to build %1 at sector %2", repair_offroad, _x];
@@ -48,11 +40,7 @@ if (GRLIB_Facilities) then {
 ["markers.repair"] call HPC_fnc_loadMark;
 	// FUEL
 	{
-		_marker = createMarkerLocal [format ["marked_fuel%1", _forEachIndex], _x];
-		_marker setMarkerColorLocal "ColorYellow";
-		_marker setMarkerTypeLocal "mil_dot";
-		_marker setMarkerTextLocal localize "STR_MARKER_FUEL";
-		_marker setMarkerSize [0.75, 0.75];
+		[format ["fac_fuel_%1", _forEachIndex], [_x, "mil_dot", "ColorYellow", localize "STR_MARKER_FUEL", 14, 0, "facility"]] call HPC_fnc_mapPoint;
 	} forEach GRLIB_Marker_FUEL;
 
 	// SELL
@@ -66,11 +54,7 @@ if (GRLIB_Facilities) then {
 			_man setVariable ["GRLIB_SELL_group", true, true];
 			doStop _man;
 			[_man, "LHD_krajPaluby"] spawn F_startAnimMP;
-			_marker = createMarkerLocal [format ["marked_sell%1", _forEachIndex], getPosATL _man];
-			_marker setMarkerColorLocal "ColorBlue";
-			_marker setMarkerTypeLocal "mil_dot";
-			_marker setMarkerTextLocal localize "STR_MARKER_SELL";
-			_marker setMarkerSize [0.75, 0.75];
+			[format ["fac_sell_%1", _forEachIndex], [getPosATL _man, "mil_dot", "ColorBlue", localize "STR_MARKER_SELL", 14, 0, "facility"]] call HPC_fnc_mapPoint;
 			GRLIB_Marker_SELL pushBack (getPosATL _man);
 		} else {
 			diag_log format ["--- LRX Sell Marker Error: No place to build %1 at pos %2", SELL_Man, _x];
@@ -129,11 +113,7 @@ if (GRLIB_Facilities) then {
 			doStop _man;
 			[_man, "AidlPercMstpSnonWnonDnon_AI"] spawn F_startAnimMP;
 			//_man enableSimulationGlobal false; // disabled to keep animation
-			_marker = createMarkerLocal [format ["marked_shop%1", _forEachIndex], getPosATL _man];
-			_marker setMarkerColorLocal "ColorPink";
-			_marker setMarkerTypeLocal "mil_dot";
-			_marker setMarkerTextLocal localize "STR_MARKER_SHOP";
-			_marker setMarkerSize [0.75, 0.75];
+			[format ["fac_shop_%1", _forEachIndex], [getPosATL _man, "mil_dot", "ColorPink", localize "STR_MARKER_SHOP", 14, 0, "facility"]] call HPC_fnc_mapPoint;
 			_marker_SHOP pushBack (getPosATL _man);
 		};
 	} forEach GRLIB_Marker_SHOP;
@@ -141,12 +121,18 @@ if (GRLIB_Facilities) then {
 };
 
 ["markers.shop"] call HPC_fnc_loadMark;
-// LRX Auto Name Sector
+// Facility positions for every machine (F_check_near); clients, HC and JIP get them here.
+{ publicVariable _x } forEach ["GRLIB_Marker_ATM", "GRLIB_Marker_REP", "GRLIB_Marker_FUEL", "GRLIB_Marker_SELL", "GRLIB_Marker_SHOP"];
+
+// Sector names (HPC_fnc_sectorName): the editor text, else the nearest location (LRX auto
+// name); radio towers get their grid reference.
+private _names = createHashMap;
 {
 	private _marker = _x;
 	private _marker_dist = 999;
-	private _marker_text = "";
-	if (markerText _marker == "") then {
+	private _marker_text = markerText _marker;
+	if (_marker in sectors_tower) then { _marker_text = format ["%1 %2", _marker_text, mapGridPosition (markerPos _marker)] };
+	if (_marker_text == "") then {
 		{
 			_loc = nearestLocations [markerPos _marker, [_x], GRLIB_sector_size] select 0;
 			if (!isNil "_loc") then {
@@ -164,19 +150,15 @@ if (GRLIB_Facilities) then {
 			if (_marker in sectors_factory) then {_marker_text = format ["Fuel Depot #%1", _forEachIndex]};
 			diag_log format ["--- LRX World: %1 - Auto-Name failed for marker: %2", worldname, _marker]
 		};
-		_marker setMarkerText _marker_text;
- };
-} forEach (sectors_capture + sectors_bigtown + sectors_factory + sectors_military);
+	};
+	_names set [_marker, _marker_text];
+} forEach sectors_allSectors;
+HPC_sectorNames = _names;
+publicVariable "HPC_sectorNames";
 
 ["markers.names"] call HPC_fnc_loadMark;
-// Base markers color
-if (GRLIB_fob_type == 0) then {
-	"huronmarker" setMarkerTextLocal "Huron";
-	"huronmarker" setMarkerColor GRLIB_color_friendly;
-} else {
-	deleteMarkerLocal "huronmarker";
-};
-"base_chimera" setMarkerColor GRLIB_color_friendly;
+// The base and the Huron are drawn by HPC_mapWorld.sqf; the editor Huron marker is not used.
+deleteMarker "huronmarker";
 };
 
 GRLIB_marker_init = true;

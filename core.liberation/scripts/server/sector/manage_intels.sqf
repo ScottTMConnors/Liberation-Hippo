@@ -53,9 +53,7 @@ if (count _nearbuildings > 0) then {
 			_intelobject enableSimulationGlobal false;
 			_intel_created pushBack _intelobject;
 			if (_debug) then {
-				private _marker = createMarkerLocal [ format ["markedintel_%1", (getpos _intelobject) select 0], getpos _intelobject ];
-				_marker setMarkerColorLocal GRLIB_color_enemy_bright;
-				_marker setMarkerTypeLocal "mil_dot";
+				[format ["markedintel_%1", (getpos _intelobject) select 0], [getpos _intelobject, "mil_dot", GRLIB_color_enemy_bright, "", 14, 0, "intel"]] call HPC_fnc_mapPoint;
 			};
 		};
 	};

@@ -42,7 +42,7 @@ PAR_isDragging = false;
 [_unit] spawn player_actions;
 
 PAR_backup_loadout = [];
-deletemarker format ["PAR_marker_%1", PAR_Grp_ID];
+[format ["PAR_marker_%1", PAR_Grp_ID], []] call HPC_fnc_mapPoint;
 
 [] execVM "scripts\client\spawn\redeploy_manager.sqf";
 [] execVM "scripts\client\misc\welcome.sqf";

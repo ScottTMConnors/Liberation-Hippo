@@ -1,7 +1,15 @@
 // Enter SoG tunnel
 
-private _marker_list = (allMapMarkers select {_x select [0,20] == "side_mission_sog_tun" && markerPos _x distance2D player <= GRLIB_capture_size});
-private _tunnel_marker = [_marker_list, player] call F_nearestPosition;
+// tunnel entrances are side mission map points (HPC_fnc_mapPoint) named side_mission_sog_tun*
+private _points = missionNamespace getVariable ["HPC_mapPoints", createHashMap];
+private _tunnel_marker = "";
+private _best = GRLIB_capture_size;
+{
+	if (_x select [0,20] == "side_mission_sog_tun") then {
+		private _d = ((_y select 0) distance2D player);
+		if (_d <= _best) then { _best = _d; _tunnel_marker = _x };
+	};
+} forEach _points;
 private _tunnel_name = format ["LRX%1", (_tunnel_marker select [12, 11])];
 private _tunnel = missionNameSpace getVariable [_tunnel_name, objNull];
 

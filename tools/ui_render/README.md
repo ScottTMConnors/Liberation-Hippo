@@ -70,6 +70,23 @@ python tools/ui_render/map_render.py --markers tools/ui_render/samples/map_marke
 Marker textures come from `python tools/map_textures.py` (`core.liberation/res/map`).
 Keep the style constants in `map_render.py` in step with `HPC_fnc_mapDraw`.
 
+### Checking it against the game (map_frame.py)
+
+`--ui-shots` runs record, for each map view (`47_map_world`, `48_map_front`, `49_map_sector`),
+every draw call of both map layers in screen space (`HPC_MAPFRAME` lines in the client RPT)
+and take the same view with the layers hidden (`<shot>_clean.png`). `map_frame.py` redraws the
+recorded frame on the clean shot and puts it next to the real one:
+
+```
+python tools/ui_render/map_frame.py mybuild/hippo_tests/<run> 47_map_world     -o mybuild/ui_render_out/frame.png --compare
+```
+Calibration found this way (used by both map renderers): drawIcon size 20 draws about 24 px
+at 1080p (x1.2 of size x height/1080), drawIcon textSize is about 0.55 x sizeEx of the screen
+height, and a soft halo texture shows about half as strong as its alpha. drawEllipse /
+drawRectangle fills need a white line colour (the colour multiplies the fill texture).
+Use a `_clean.png` from a recent run as `--background` for map_render.py samples instead of
+the generated terrain, which is only a stand-in.
+
 ## Known limits
 
 * Only static config: controls created or filled by scripts (`ctrlCreate`,

@@ -10,7 +10,7 @@ _setupVars = {
 };
 
 _setupObjects = {
-	_townName = markerText _missionLocation;	
+	_townName = [_missionLocation] call HPC_fnc_sectorName;	
 	_missionPos = [(markerpos _missionLocation), 5, 0] call F_findSafePlace;
 	if (count _missionPos == 0) exitWith {
     	diag_log format ["--- LRX Error: side mission %1, cannot find spawn point!", localize _missionType];
@@ -38,7 +38,7 @@ _failedExec = {
 	{ [_x, -2] call F_addReput } forEach (AllPlayers - (entities "HeadlessClient_F"));
 	private _msg = format [localize "STR_SIDE_FAILED_REPUT", -2];
 	[_msg] remoteExec ["HPC_fnc_info", 0];		
-	deleteMarker _marker_mission;
+	[_marker_mission, []] call HPC_fnc_mapPoint;
 	_failedHintMessage = ["STR_WATERDELI_MESSAGE2", sideMissionColor, _townName];
 	A3W_delivery_failed = A3W_delivery_failed + 1;
 };
@@ -53,7 +53,7 @@ _successExec = {
 		[_winner, 5] call F_addReput;
 	};
 	_successHintMessage = ["STR_WATERDELI_MESSAGE3", sideMissionColor];
-	deleteMarker _marker_mission;
+	[_marker_mission, []] call HPC_fnc_mapPoint;
 	A3W_delivery_failed = 0;
 };
 

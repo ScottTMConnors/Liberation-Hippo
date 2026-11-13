@@ -23,7 +23,7 @@ _no_marker_classnames = _no_marker_classnames arrayIntersect _no_marker_classnam
 _no_marker_classnames = _no_marker_classnames - ai_resupply_sources;
 
 private ["_veh_list","_nextvehicle","_nextmarker","_nextvehicle_owner","_nextvehicle_disabled"];
-private ["_marker","_marker_color","_marker_type","_marker_show"];
+private ["_marker_color","_marker_type","_marker_show"];
 private ["_taxi_ower", "_taxi_helipad"];
 private _vehmarkers = [];
 
@@ -72,20 +72,11 @@ while {true} do {
 	private _vehmarkers_bak = [];
 	{
 		_nextvehicle = _x;
-		_nextmarker = format ["markedveh_%1", (_nextvehicle call BIS_fnc_netId)];
-		// in cache ?
-		if (_vehmarkers find _nextmarker < 0) then {
-			if (!isNull _nextvehicle) then {
-				_marker = createMarkerLocal [format ["markedveh_%1", (_nextvehicle call BIS_fnc_netId)], markers_reset];
-				_marker setMarkerSizeLocal [ 0.75, 0.75 ];
-				_marker setMarkerPosLocal (getPosATL _nextvehicle);
-				_marker setMarkerTextLocal ([(typeOf _nextvehicle)] call F_getLRXName);
-				_vehmarkers_bak pushback _marker;
-			};
-		} else {
-			_nextmarker setMarkerPosLocal (getPosATL _nextvehicle);
-			_vehmarkers_bak pushback _nextmarker;
-		};
+		// local map point tracking the vehicle (HPC_mapWorld.sqf draws it)
+		_nextmarker = format ["veh_%1", (_nextvehicle call BIS_fnc_netId)];
+		private _text = [(typeOf _nextvehicle)] call F_getLRXName;
+		private _size = 0.75;
+		private _kind = "vehicle";
 
 		// marker decoration
 		_marker_color = "ColorKhaki";
@@ -107,9 +98,9 @@ while {true} do {
 				_marker_color = "ColorGUER";
 				_taxi_ower = _taxi_id call BIS_fnc_getUnitByUID;
 				_heli_dest = _nextvehicle getVariable ["GRLIB_taxi_destination", objNull];
-				_nextmarker setMarkerDirLocal (_nextvehicle getDir _heli_dest);
-				_nextmarker setMarkerTextLocal format ["Taxi - %1", [_taxi_ower] call get_player_name];
-				_nextmarker setMarkerSizeLocal [ 0.85, 0.85 ];
+				_text = format ["Taxi - %1", [_taxi_ower] call get_player_name];
+				_kind = "taxi";
+				_size = 0.85;
 			};
 
 			_marker_show = 0;
@@ -130,7 +121,6 @@ while {true} do {
 				private _vehicle_name = ([(typeOf _nextvehicle)] call F_getLRXName);
 				if (_blufor_crew) then {
 					_marker_type ="mil_arrow2";
-					_nextmarker setMarkerDirLocal (getDir _nextvehicle);
 					_vehicle_name = "";
 					{
 						if (isPlayer _x) then {
@@ -147,7 +137,7 @@ while {true} do {
 					_vehicle_name = _vehicle_name + (format ["(%1)", [_nextvehicle] call F_getLRXName]);
 					_marker_show = 1;
 				};
-				_nextmarker setMarkerTextLocal _vehicle_name;
+				_text = _vehicle_name;
 			};
 		} else {
 			if (typeOf _nextvehicle in [ammobox_b_typename,ammobox_o_typename,ammobox_i_typename]) then {
@@ -163,25 +153,25 @@ while {true} do {
 			if (typeOf _nextvehicle == money_typename) then {
 				_marker_color = "ColorGreen";
 				_marker_type = "EmptyIcon";
-				_nextmarker setMarkerTextLocal "$";
+				_text = "$";
 			};
 
 			if (typeOf _nextvehicle == repairbox_typename) then {
 				_marker_color = "ColorWEST";
 				_marker_type = "loc_repair";
-				_nextmarker setMarkerSizeLocal [1.4, 1.4];
+				_size = 1.4;
 			};
 
 			if (typeOf _nextvehicle == canister_fuel_typename) then {
 				_marker_color = "Color1_FD_F";
 				_marker_type = "loc_refuel";
-				_nextmarker setMarkerSizeLocal [1.4, 1.4];
+				_size = 1.4;
 			};
 
 			if (_nextvehicle isKindOf "PlasticCase_01_base_F") then {
 				_marker_color = "ColorKhaki";
 				_marker_type = "loc_rearm";
-				_nextmarker setMarkerSizeLocal [1.4, 1.4];
+				_size = 1.4;
 				if (typeOf _nextvehicle == playerbox_typename) then {
 					_marker_color = "ColorCIV";
 				};
@@ -193,23 +183,24 @@ while {true} do {
 			_marker_color = "ColorOrange";
 			_marker_type = "loc_Rifle";
 			_marker_show = 1;
-			_nextmarker setMarkerSizeLocal [1.4, 1.4];
+			_size = 1.4;
 		};
 
 		if (_nextvehicle in GRLIB_mobile_respawn) then {
 			_marker_color = "ColorYellow";
 			_marker_type = "mil_end";
 			_marker_show = 1;
-			_nextmarker setMarkerTextLocal format ["%1 - %2", [_nextvehicle] call F_getLRXName, mapGridPosition _nextvehicle];
+			_text = format ["%1 - %2", [_nextvehicle] call F_getLRXName, mapGridPosition _nextvehicle];
 		};
 
 		// diag_log format ["DBG-2: %1 (%2-%3-%4) - %5", typeOf _nextvehicle, _marker_color, _marker_type, _marker_show, _nextvehicle_owner];
-		_nextmarker setMarkerColorLocal _marker_color;
-		_nextmarker setMarkerTypeLocal _marker_type;
-		_nextmarker setMarkerAlphaLocal _marker_show;
+		if (_marker_show == 1 && {!isNull _nextvehicle}) then {
+			[_nextmarker, [_nextvehicle, ["", _marker_type] select (_marker_type != "EmptyIcon"), _marker_color, _text, round (24 * _size), 0, _kind], false] call HPC_fnc_mapPoint;
+			_vehmarkers_bak pushBack _nextmarker;
+		};
 	} foreach _veh_list;
 
-	{ deleteMarkerLocal _x } foreach (_vehmarkers - _vehmarkers_bak);
+	{ [_x, [], false] call HPC_fnc_mapPoint } foreach (_vehmarkers - _vehmarkers_bak);
 	_vehmarkers = _vehmarkers_bak;
 
 	sleep 1;

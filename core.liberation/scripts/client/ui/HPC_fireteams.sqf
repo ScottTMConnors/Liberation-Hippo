@@ -96,6 +96,7 @@ private _squadList = _display displayCtrl 2601;
 private _teamList = _display displayCtrl 2620;
 private _map = _display ctrlCreate ["RscMapControl", 2640];
 _map ctrlMapSetPosition (ctrlPosition (_display displayCtrl 2641));
+if (!isNil "HPC_fnc_mapWorldAttach") then {[_map] call HPC_fnc_mapWorldAttach};
 _map ctrlAddEventHandler ["Draw", { _this call HPC_fnc_mapDraw; _this call HPC_fnc_ftDraw }];
 _map ctrlAddEventHandler ["MouseButtonDown", {
 	params ["_ctrl", "_button", "_mx", "_my"];

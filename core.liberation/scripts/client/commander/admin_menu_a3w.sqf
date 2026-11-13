@@ -91,7 +91,7 @@ while { alive player && dialog } do {
 		if (_a3w_debug_marker == "Enabled") then {
 			A3W_debug_marker = true;
 		} else {
-			{ deleteMarker _x } forEach (allMapMarkers select {_x select [0,8] == "a3w_dbg_"});
+			{ [_x, []] call HPC_fnc_mapPoint } forEach ((keys (missionNamespace getVariable ["HPC_mapPoints", createHashMap])) select {_x select [0,8] == "a3w_dbg_"});
 		};
 		A3W_mission = format ["mission_%1", _a3w_mission];
 		A3W_Mission_delay = (parseNumber _a3w_delay * 60);

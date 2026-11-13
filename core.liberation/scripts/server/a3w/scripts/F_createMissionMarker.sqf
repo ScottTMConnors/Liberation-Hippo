@@ -1,23 +1,14 @@
+// Side mission map point (HPC_fnc_mapPoint, drawn by HPC_mapWorld.sqf): a precise
+// objective icon, or a 500 m search zone with the mission name. Returns [id, ""]:
+// the second slot was the separate zone marker and stays for the callers' params.
 params ["_text", "_pos", "_precise"];
 
-private _marker_zone = "";
-private _marker = createMarkerLocal [format ["side_mission_%1", _text], _pos];
+private _id = format ["side_mission_%1", _text];
 if (_precise) then {
-	_marker setMarkerTypeLocal "mil_destroy";
-	_marker setMarkerSizeLocal [1.25, 1.25];
+	[_id, [_pos, "mil_destroy", "ColorRed", localize _text, 30, 0, "mission"]] call HPC_fnc_mapPoint;
 } else {
 	_pos = ([_pos, 250] call F_getRandomPos);
-	_marker setMarkerPosLocal (_pos getPos [200, 270]);
-	_marker setMarkerTypeLocal "EmptyIcon";
-	_marker_zone = createMarkerLocal [format ["side_mission_%1_zone", _text], _pos];
-	_marker_zone setMarkerShapeLocal "ELLIPSE";
-	_marker_zone setMarkerBrushLocal "FDiagonal";
-	_marker_zone setMarkerSizeLocal [500,500];
-	_marker_zone setMarkerColor "colorOPFOR";
+	[_id, [_pos, "", "ColorRed", localize _text, 24, 500, "mission"]] call HPC_fnc_mapPoint;
 };
 
-_marker setMarkerShadowLocal true;
-_marker setMarkerTextLocal (localize _text);
-_marker setMarkerColor "ColorRed";
-
-[_marker, _marker_zone];
+[_id, ""];

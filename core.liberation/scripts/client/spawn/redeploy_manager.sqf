@@ -182,7 +182,7 @@ while { dialog && alive player && deploy == 0} do {
 		_cam_center = _target;
 		[[1.1, 0] select _far] call _cam_orbit;
 
-		"spawn_marker" setMarkerPosLocal _target;
+		HPC_mapSelect = [_target, ""];
 		ctrlMapAnimClear _map;
 		_map ctrlMapAnimAdd [0.35, [0.12, 0.2] select (fullmap % 2 == 1), _target];
 		ctrlMapAnimCommit _map;
@@ -190,7 +190,7 @@ while { dialog && alive player && deploy == 0} do {
 		private _near = "";
 		if (count active_sectors > 0) then {
 			private _objective = ([active_sectors, [], {(markerPos _x) distance2D _target}, "ASCEND"] call BIS_fnc_sortBy) select 0;
-			_near = format ["<br/>%1 km to %2", (((markerPos _objective) distance2D _target) / 1000) toFixed 1, markerText _objective];
+			_near = format ["<br/>%1 km to %2", (((markerPos _objective) distance2D _target) / 1000) toFixed 1, ([_objective] call HPC_fnc_sectorName)];
 		};
 		_info ctrlSetStructuredText parseText format [
 			"<t font='PuristaSemibold' size='1.1'>%1</t><br/><t color='#9EAFB5'>%2  ·  Grid %3%4</t>",
@@ -234,7 +234,7 @@ respawn_camera cameraEffect ["Terminate","back"];
 camDestroy respawn_camera;
 deleteVehicle respawn_object;
 camUseNVG false;
-"spawn_marker" setMarkerPosLocal markers_reset;
+HPC_mapSelect = [];
 closeDialog 0;
 if (!alive player) exitWith {};
 

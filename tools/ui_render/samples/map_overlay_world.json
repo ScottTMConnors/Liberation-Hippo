@@ -1,0 +1,74 @@
+{
+ "77901": {
+  "text": "<t font='PuristaMedium' size='0.8' color='#8FA3B4'>FRIENDLY FORCES</t><t align='right' font='PuristaMedium' size='0.8' color='#8FA3B4'>38 AI</t><br/><img image='\\A3\\ui_f\\data\\map\\markers\\nato\\b_inf.paa' color='#4D9EFF' size='0.9'/>  <t color='#DDE4E7'>Assault squads</t><t align='right' font='RobotoCondensedBold' color='#FFFFFF'>3</t><br/><img image='\\A3\\ui_f\\data\\map\\markers\\nato\\b_armor.paa' color='#4D9EFF' size='0.9'/>  <t color='#DDE4E7'>Armor</t><t align='right' font='RobotoCondensedBold' color='#FFFFFF'>1</t><br/><img image='\\A3\\ui_f\\data\\map\\markers\\nato\\b_inf.paa' color='#66D1FF' size='0.9'/>  <t color='#DDE4E7'>FOB guards</t><t align='right' font='RobotoCondensedBold' color='#FFFFFF'>2</t><br/><img image='\\A3\\ui_f\\data\\map\\markers\\nato\\b_inf.paa' color='#94B8DB' size='0.9'/>  <t color='#DDE4E7'>Base staff groups</t><t align='right' font='RobotoCondensedBold' color='#FFFFFF'>4</t><br/><img image='\\A3\\ui_f\\data\\map\\markers\\nato\\b_inf.paa' color='#F2C75A' size='0.9'/>  <t color='#74838A'>Other friendly AI</t><t align='right' font='RobotoCondensedBold' color='#5D6B72'>0</t><br/><img image='\\A3\\ui_f\\data\\map\\markers\\nato\\b_inf.paa' color='#66E673' size='0.9'/>  <t color='#DDE4E7'>Your fireteams and squads</t><t align='right' font='RobotoCondensedBold' color='#FFFFFF'>2</t><br/><img image='\\A3\\ui_f\\data\\map\\markers\\nato\\b_motor_inf.paa' color='#66E673' size='0.9'/>  <t color='#DDE4E7'>Your vehicles</t><t align='right' font='RobotoCondensedBold' color='#FFFFFF'>1</t><br/><img image='\\A3\\ui_f\\data\\map\\markers\\nato\\b_inf.paa' color='#CC8CFF' size='0.9'/>  <t color='#DDE4E7'>Other players' squads</t><t align='right' font='RobotoCondensedBold' color='#FFFFFF'>1</t><br/><img image='\\A3\\ui_f\\data\\map\\markers\\nato\\n_motor_inf.paa' color='#C7B880' size='0.9'/>  <t color='#DDE4E7'>Empty vehicles</t><t align='right' font='RobotoCondensedBold' color='#FFFFFF'>3</t><br/><t size='0.5'> </t><br/><t font='PuristaMedium' size='0.8' color='#8FA3B4'>ENEMY INTEL</t><t align='right' font='PuristaMedium' size='0.8' color='#8FA3B4'>2 groups</t><br/><img image='\\A3\\ui_f\\data\\map\\markers\\nato\\o_inf.paa' color='#FF5A47' size='0.9'/>  <t color='#DDE4E7'>Groups in contact</t><t align='right' font='RobotoCondensedBold' color='#FF8C82'>2</t><br/><img image='\\A3\\ui_f\\data\\map\\markers\\nato\\o_inf.paa' color='#F08A80' size='0.9'/>  <t color='#DDE4E7'>Last known positions</t><t align='right' font='RobotoCondensedBold' color='#FF8C82'>1</t><br/><img image='\\A3\\ui_f\\data\\map\\markers\\nato\\o_inf.paa' color='#9AA3A8' size='0.9'/>  <t color='#DDE4E7'>Destroyed (last minute)</t><t align='right' font='RobotoCondensedBold' color='#C9D4DE'>1</t><br/><img image='\\A3\\ui_f\\data\\map\\markers\\nato\\o_motor_inf.paa' color='#FF5A47' size='0.9'/>  <t color='#74838A'>Empty enemy vehicles</t><t align='right' font='RobotoCondensedBold' color='#5D6B72'>0</t><br/><t size='0.5'> </t><br/><t font='PuristaMedium' size='0.8' color='#8FA3B4'>OPERATIONS</t><t align='right' font='PuristaMedium' size='0.8' color='#8FA3B4'></t><br/><t color='#DDE4E7'>Active objectives</t><t align='right' font='RobotoCondensedBold' color='#FF8C82'>2</t><br/><t color='#DDE4E7'>Under commander orders</t><t align='right' font='RobotoCondensedBold' color='#FFD04D'>1</t><br/><t color='#DDE4E7'>Commander</t><t align='right' font='RobotoCondensedBold' color='#FFFFFF'>Hippo</t><br/><t size='0.5'> </t><br/><t size='0.8' color='#8FA3B4'><img image='\\A3\\ui_f\\data\\map\\markers\\military\\dot_CA.paa' color='#4D9EFF' size='0.9'/> AI  <img image='\\A3\\ui_f\\data\\map\\markers\\military\\dot_CA.paa' color='#66E673' size='0.9'/> Yours  <img image='\\A3\\ui_f\\data\\map\\markers\\military\\dot_CA.paa' color='#CC8CFF' size='0.9'/> Players  <img image='\\A3\\ui_f\\data\\map\\markers\\military\\dot_CA.paa' color='#FF5A47' size='0.9'/> Enemy  <img image='\\A3\\ui_f\\data\\map\\markers\\military\\dot_CA.paa' color='#C7B880' size='0.9'/> Empty<br/>Dashed ring: last known.  Cross: destroyed.<br/>Red ring: in combat.  Gold: commander orders.</t>",
+  "pos": [
+   "(safezoneX+safezoneW-16.6*(safezoneH*0.75/54)-21*(safezoneH*0.75/54))+0.9*(safezoneH*0.75/54)",
+   "(safezoneY+4.6*(safezoneH/54))+7.9*(safezoneH/54)",
+   "19.2*(safezoneH*0.75/54)",
+   "22.6*(safezoneH/54)"
+  ]
+ },
+ "77930": {
+  "pos": [
+   "(safezoneX+safezoneW-16.6*(safezoneH*0.75/54)-21*(safezoneH*0.75/54))",
+   "(safezoneY+4.6*(safezoneH/54))",
+   "21*(safezoneH*0.75/54)",
+   "34.4*(safezoneH/54)"
+  ]
+ },
+ "77904": {
+  "pos": [
+   "(safezoneX+safezoneW-16.6*(safezoneH*0.75/54)-21*(safezoneH*0.75/54))+0.9*(safezoneH*0.75/54)",
+   "(safezoneY+4.6*(safezoneH/54))+31.0*(safezoneH/54)",
+   "19.2*(safezoneH*0.75/54)",
+   "2.6*(safezoneH/54)"
+  ]
+ },
+ "77905": {
+  "text": "INTEL"
+ },
+ "77903": {
+  "text": "SHOTS  OFF"
+ },
+ "77940": {
+  "text": "<t color='#7CC6EE' font='RobotoCondensedBold'>Hippo</t> <img size='1.15' color='#E6EBED' image='\\A3\\weapons_f\\Rifles\\MX\\data\\UI\\gear_mx_rifle_X_CA.paa'/> <t color='#FF8C82'>Rifleman</t>",
+  "pos": [
+   "safezoneX+1.2*(safezoneH*0.75/54)",
+   "safezoneY+0.44*safezoneH",
+   "10.5*(safezoneH*0.75/54)",
+   "1.6*(safezoneH/54)"
+  ]
+ },
+ "77941": {
+  "text": "<t color='#FF8C82'>Autorifleman</t> <img size='1.15' color='#E6EBED' image='\\A3\\weapons_f\\Rifles\\MX\\data\\UI\\gear_mx_rifle_X_CA.paa'/> <t color='#7CC6EE'>Medic</t>",
+  "pos": [
+   "safezoneX+1.2*(safezoneH*0.75/54)",
+   "safezoneY+0.44*safezoneH+1.85*(safezoneH/54)",
+   "11.5*(safezoneH*0.75/54)",
+   "1.6*(safezoneH/54)"
+  ]
+ },
+ "77950": {
+  "text": "<t font='RobotoCondensedBold' color='#9EE3D3'>YOU</t>  <t color='#9EAFB5'>killed </t><t color='#FF8C82'>Grenadier</t> <img size='1.15' color='#E6EBED' image='\\A3\\weapons_f\\Rifles\\MX\\data\\UI\\gear_mx_rifle_X_CA.paa'/> <t color='#9EAFB5'>143 m</t>    <t font='RobotoCondensedBold' color='#A6EBA6'>+1 XP</t>",
+  "pos": [
+   "safezoneX+1.2*(safezoneH*0.75/54)",
+   "safezoneY+0.44*safezoneH+2.4*1.85*(safezoneH/54)",
+   "18*(safezoneH*0.75/54)",
+   "1.6*(safezoneH/54)"
+  ]
+ },
+ "77951": {
+  "text": "<t font='RobotoCondensedBold' color='#7CC6EE'>SQUAD</t>  <t color='#DDE4E7'>Alpha 1-2</t><t color='#9EAFB5'> killed </t><t color='#FF8C82'>Marksman</t> <img size='1.15' color='#E6EBED' image='\\A3\\weapons_f\\Rifles\\MX\\data\\UI\\gear_mx_rifle_X_CA.paa'/> <t color='#9EAFB5'>88 m</t>",
+  "pos": [
+   "safezoneX+1.2*(safezoneH*0.75/54)",
+   "safezoneY+0.44*safezoneH+3.4*1.85*(safezoneH/54)",
+   "18*(safezoneH*0.75/54)",
+   "1.6*(safezoneH/54)"
+  ]
+ },
+ "hide": [
+  77920,
+  77921,
+  77922
+ ]
+}

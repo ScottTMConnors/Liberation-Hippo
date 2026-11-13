@@ -67,6 +67,8 @@ diag_log format ["A3W Side Mission %1 - started %2 timeout %3", _controllerSuffi
 
 sleep 5;
 ([_missionType, _missionPos, _precise_marker] call createMissionMarker) params ["_marker", "_marker_zone"];
+// position of the mission map point (was markerPos _marker)
+private _fnc_markerPos = { ((missionNamespace getVariable ["HPC_mapPoints", createHashMap]) getOrDefault [_marker, [[0,0,0]]]) select 0 };
 
 if (isNil "_missionPicture") then { _missionPicture = "" };
 
@@ -80,9 +82,9 @@ if (isNil "_missionPicture") then { _missionPicture = "" };
 
 private _task = _missionType + str (round time);
 if (isNil "_waitUntilMarkerPos") then {
-	[true, _task, [localize _missionType, localize _missionType, _marker], markerPos _marker, "CREATED", 2, true] call BIS_fnc_taskCreate;
+	[true, _task, [localize _missionType, localize _missionType, ""], call _fnc_markerPos, "CREATED", 2, true] call BIS_fnc_taskCreate;
 } else {
-	[true, _task, [localize _missionType, localize _missionType, _marker], objNull, "CREATED", 2, true] call BIS_fnc_taskCreate;
+	[true, _task, [localize _missionType, localize _missionType, ""], objNull, "CREATED", 2, true] call BIS_fnc_taskCreate;
 };
 
 diag_log format ["A3W Side Mission %1 - waiting to finish %2", _controllerSuffix, localize _missionType];
@@ -113,7 +115,7 @@ waitUntil {
 	};
 
 	if (!isNil "_waitUntilMarkerPos") then {
-		_marker setMarkerPos (call _waitUntilMarkerPos);
+		[_marker, call _waitUntilMarkerPos] call HPC_fnc_mapPoint;
 		// [_task, _marker] call BIS_fnc_taskSetDestination;
 	};
 	if (!isNil "_waitUntilExec") then { call _waitUntilExec };
@@ -121,9 +123,9 @@ waitUntil {
 
 	private _time_left = round ((_missionTimeout - (time - _startTime)) /60);
 	if (_time_left > 0) then {
-		_marker setMarkerText format ["%1 - %2 min left", localize _missionType, _time_left];
+		[_marker, format ["%1 - %2 min left", localize _missionType, _time_left]] call HPC_fnc_mapPoint;
 	} else {
-		_marker setMarkerText format ["%1 - time over", localize _missionType];
+		[_marker, format ["%1 - time over", localize _missionType]] call HPC_fnc_mapPoint;
 	};
 
 	_count_blu = [_lastPos, (GRLIB_sector_size * 2), GRLIB_side_friendly, 1] call F_getUnitsCount;
@@ -176,9 +178,8 @@ if (_failed) then {
 	A3W_mission_success = A3W_mission_success + 1;
 };
 
-// delete markers after the exec blocks (some use markerPos _marker)
-deleteMarker _marker;
-deleteMarker _marker_zone;
+// delete the map point after the exec blocks (some use its position)
+[_marker, []] call HPC_fnc_mapPoint;
 
 [_task] spawn {
 	params ["_task"];

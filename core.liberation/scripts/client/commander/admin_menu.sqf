@@ -377,8 +377,8 @@ while { alive player && {!isNull _display} } do {
 	if (do_capture == 1) then {
 		do_capture = 0;
 		["capture", _sector] remoteExec ["admin_menu_remote_call", 2];
-		_msg = format [localize "STR_SECTOR_FORCEFULLY_CAPTURED", markerText _sector];
-		_admin_msg = format [localize "STR_ADMIN_FORCE_CAPTURE_SECTOR", name player, markerText _sector];
+		_msg = format [localize "STR_SECTOR_FORCEFULLY_CAPTURED", ([_sector] call HPC_fnc_sectorName)];
+		_admin_msg = format [localize "STR_ADMIN_FORCE_CAPTURE_SECTOR", name player, ([_sector] call HPC_fnc_sectorName)];
 		closeDialog 0;
 	};
 

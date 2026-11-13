@@ -9,7 +9,7 @@ _targetsector = [300, _position ] call F_getNearestSector;
 _msg = format ["Commander <t color='#00008f'>%1</t>, ask for<br/><br/>
 <t color='#0000F0'>Artillery</t> <t color='#F00000'>Destruction</t><br/><br/>
 on Sector: <t color='#008000'>%2</t><br/>
-<t size='0.7'>Lucky Bastards !!</t>",name _unit, markerText _targetsector];
+<t size='0.7'>Lucky Bastards !!</t>",name _unit, ([_targetsector] call HPC_fnc_sectorName)];
 ["Artillery strike", _msg, "warn", 10, true] remoteExec ["HPC_fnc_toast", [0, -2] select isDedicated];
 sleep 2;
 private _ammo_name = [

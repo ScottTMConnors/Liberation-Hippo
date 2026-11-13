@@ -1,21 +1,13 @@
 // Cleanup
-{ deleteMarker _x } forEach (allMapMarkers select {_x select [0,8] == "a3w_dbg_"});
+{ [_x, []] call HPC_fnc_mapPoint } forEach ((keys HPC_mapPoints) select {_x select [0,8] == "a3w_dbg_"});
 
-// All Available mission markers
+// All Available mission positions
 {
-    _marker = createMarkerLocal [format ["a3w_dbg_a_%1", _forEachIndex], markerPos (_x select 0)];
-    _marker setMarkerColorLocal "ColorBlack";
-    _marker setMarkerTypeLocal "mil_dot";
-    _marker setMarkerSizeLocal [ 0.75, 0.75 ];
-    _marker setMarkerTextLocal "O";
+    [format ["a3w_dbg_a_%1", _forEachIndex], [markerPos (_x select 0), "mil_dot", "ColorBlack", "O", 15, 0, "debug"]] call HPC_fnc_mapPoint;
 } forEach SpawnMissionMarkers;
 
-// Check spawn markers
+// Check spawn positions
 private _r1 = [SpawnMissionMarkers] call checkSpawn;
 {
-    _marker = createMarkerLocal [format ["a3w_dbg_c_%1", _forEachIndex], markerPos _x];
-    _marker setMarkerColorLocal "ColorRed";
-    _marker setMarkerTypeLocal "mil_dot";
-    _marker setMarkerSizeLocal [ 0.75, 0.75 ];
-    _marker setMarkerTextLocal "+";
+    [format ["a3w_dbg_c_%1", _forEachIndex], [markerPos (_x select 0), "mil_dot", "ColorRed", "+", 15, 0, "debug"]] call HPC_fnc_mapPoint;
 } forEach _r1;

@@ -194,7 +194,7 @@ while { dialog && alive player && _membercount > 0 } do {
 };
 
 closeDialog 0;
-"spawn_marker" setMarkerPosLocal markers_reset;
+HPC_mapSelect = [];
 GRLIB_Squad_camera cameraEffect ["terminate","back"];
 camDestroy GRLIB_Squad_camera;
 deleteVehicle GRLIB_Squad_target;

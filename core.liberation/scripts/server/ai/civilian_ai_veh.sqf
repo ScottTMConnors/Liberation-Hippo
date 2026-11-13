@@ -67,10 +67,9 @@ while { alive _vehicle && alive _driver } do {
 		sleep 3;
 
 		_vehicle engineOn false;
-		_marker = createMarkerLocal [format ["civ_ai_veh_%1", (_vehicle call BIS_fnc_netId)], getPosATL _vehicle];
-		_marker setMarkerTypeLocal "loc_car";
-		_marker setMarkerTextLocal "Civilian need help.";
-		_marker setMarkerColor GRLIB_color_civilian;
+		// map point following the vehicle (HPC_fnc_mapPoint)
+		_marker = format ["civ_ai_veh_%1", (_vehicle call BIS_fnc_netId)];
+		[_marker, [_vehicle, "loc_car", GRLIB_color_civilian, "Civilian need help.", 20, 0, "civ"]] call HPC_fnc_mapPoint;
 
 		switch (_incd) do {
 			// breakdown
@@ -126,14 +125,14 @@ while { alive _vehicle && alive _driver } do {
 		_vehicle engineOn true;
 		{_x doFollow (leader _grp)} foreach units _grp;
 		_event_stared = false;
-		deleteMarker _marker;
+		if (_marker != "") then { [_marker, []] call HPC_fnc_mapPoint };
 		_trigger = (time + _delay);
 	};
 
 	sleep 5;
 };
 
-deleteMarker _marker;
+if (_marker != "") then { [_marker, []] call HPC_fnc_mapPoint };
 
 if (alive _vehicle && !alive _driver) then {
 	_vehicle setVariable ["GRLIB_vehicle_owner", "public", true];

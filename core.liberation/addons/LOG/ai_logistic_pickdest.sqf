@@ -5,7 +5,7 @@ waitUntil { dialog };
 dojump = 0;
 halo_position = getPosATL player;
 
-"spawn_marker" setMarkerTextLocal localize "STR_LOGISTIC_SELECT";
+HPC_mapSelectText = localize "STR_LOGISTIC_SELECT";
 ctrlSetText [201, toUpper localize "STR_LOGISTIC_SELECT"];
 ctrlSetText [202, localize "STR_LOGISTIC_SELECT"];
 ((findDisplay 5203) displayCtrl 203) ctrlSetStructuredText parseText "Pick the delivery point for the supply run.<br/>Points on water are refused.";
@@ -19,12 +19,11 @@ while { dialog && alive player && dojump == 0 } do {
  	if (surfaceIsWater halo_position) then {
 		hintSilent localize "STR_LOGISTIC_WRONG_PLACE";
 	} else {
-		"spawn_marker" setMarkerPosLocal halo_position;
+		HPC_mapSelect = [halo_position, HPC_mapSelectText];
 	};
 	sleep 0.2;
 };
 
 onMapSingleClick "";
 closeDialog 0;
-"spawn_marker" setMarkerPosLocal markers_reset;
-"spawn_marker" setMarkerTextLocal "";
+HPC_mapSelect = [];

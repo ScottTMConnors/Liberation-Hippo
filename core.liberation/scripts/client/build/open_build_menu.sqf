@@ -353,8 +353,8 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
                 lnbSetPictureColor [110, [_row, 0], [0.78,0.45,0.42,0.9]];
                 if (!_rankLocked) then {
                     private _link = [_build_class] call _is_linked;
-                    lnbSetTooltip [110, [_row, 0], format ["Capture %1 to unlock this item.", markerText (_link select 2)]];
-                    _reasons pushBack format ["Capture %1 to unlock this item.",markerText (_link select 2)];
+                    lnbSetTooltip [110, [_row, 0], format ["Capture %1 to unlock this item.", ([_link select 2] call HPC_fnc_sectorName)]];
+                    _reasons pushBack format ["Capture %1 to unlock this item.",([_link select 2] call HPC_fnc_sectorName)];
                 };
             };
 			_ammo_collected = player getVariable ["GREUH_ammo_count",0];
@@ -588,7 +588,7 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
 	_link_str = localize "STR_VEHICLE_UNLOCKED";
 	if (!_linked_unlocked) then { _link_color = "#E6665C"; _link_str = localize "STR_VEHICLE_LOCKED"; };
 	if ( _linked ) then {
-		(_display displayCtrl (161)) ctrlSetStructuredText parseText ( "<t color='" + _link_color + "' align='center'>" + _link_str +  " - " + ( markerText _base_link ) + "</t>" );
+		(_display displayCtrl (161)) ctrlSetStructuredText parseText ( "<t color='" + _link_color + "' align='center'>" + _link_str +  " - " + ([_base_link] call HPC_fnc_sectorName) + "</t>" );
 	} else {
 		(_display displayCtrl (161)) ctrlSetStructuredText parseText "";
 	};

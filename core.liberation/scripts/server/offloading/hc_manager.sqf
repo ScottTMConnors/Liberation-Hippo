@@ -62,24 +62,8 @@ createCustomGroup = compileFinal preprocessFileLineNumbers "scripts\server\a3w\s
 [] execVM "scripts\shared\HPC_undercoverScan.sqf";
 [] execVM "scripts\shared\HPC_shotRelay.sqf";
 
-// Facilities
-GRLIB_Marker_ATM = [];
-GRLIB_Marker_REP = [];
-GRLIB_Marker_FUEL = [];
-GRLIB_Marker_SELL = [];
-GRLIB_Marker_SHOP = [];
-
-{
-    private _name = _x;
-    private _pos = markerPos _x;
-
-    switch (true) do {
-        case (_name select [0,10] == "marked_atm"):  { GRLIB_Marker_ATM  pushBack _pos };
-        case (_name select [0,10] == "marked_rep"):  { GRLIB_Marker_REP  pushBack _pos };
-        case (_name select [0,11] == "marked_fuel"): { GRLIB_Marker_FUEL pushBack _pos };
-        case (_name select [0,11] == "marked_sell"): { GRLIB_Marker_SELL pushBack _pos };
-        case (_name select [0,11] == "marked_shop"): { GRLIB_Marker_SHOP pushBack _pos };
-    };
-} forEach (allMapMarkers select { _x select [0,7] == "marked_" });
+// Facility positions come from the server (publicVariable in scripts\server\game\init_markers.sqf,
+// JIP included); only default them while that has not arrived yet.
+{ if (isNil _x) then { missionNamespace setVariable [_x, []] } } forEach ["GRLIB_Marker_ATM", "GRLIB_Marker_REP", "GRLIB_Marker_FUEL", "GRLIB_Marker_SELL", "GRLIB_Marker_SHOP"];
 
 diag_log "--- HC Server Init stop ---";

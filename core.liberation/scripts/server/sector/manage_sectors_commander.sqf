@@ -44,10 +44,9 @@ private _tolerance = 0.01;
                 } == -1)
             }
         ) then {
-            _mdist = _dist/2;
-            _dir = _pos getDir _pos1;
-            _mpos = (_pos getPos [_mdist, _dir]) call _roundPos;
-            _newConnections set [_mpos, [_dir, _mdist]];
+            // one link per pair: keyed by its rounded midpoint
+            _mpos = (_pos getPos [_dist / 2, _pos getDir _pos1]) call _roundPos;
+            if !(_mpos in _newConnections) then {_newConnections set [_mpos, [_pos, _pos1, _name, _name1]]};
             if (_name in _blufor_sectors && _name1 in _opfor_sectors) then {
                 GRLIB_AvailAttackSectors pushBackUnique _name1;
             };
@@ -58,38 +57,10 @@ private _tolerance = 0.01;
 // Only broadcast a smaller list (Will always be smaller than opfor_sectors list for example)
 publicVariable "GRLIB_AvailAttackSectors";
 
-_connectMarkers = +GRLIB_connectMarkers;
-{
-    _pos = _x;
-    _duplicatingConnection = false;
-    {
-        _pos1 = _x;
-        _dist = _pos distance2D _pos1;
-        if (_dist < 1) then {
-            _duplicatingConnection = true;
-            _newConnections deleteAt _pos1;
-        };
-    } forEach _newConnections;
-    if (!_duplicatingConnection) then {
-        // Delete old connections
-        deleteMarker _y;
-        _connectMarkers deleteAt _pos;
-    };
-} forEach _connectMarkers;
-
-{
-    _mpos = _x;
-    _marker = createMarkerLocal [format ["line_%1_%2", _mpos#0, _mpos#1], _mpos];
-    _connectMarkers set [_mpos, _marker];
-    _marker setMarkerPosLocal _mpos;
-    _marker setMarkerBrushLocal "Solid";
-    _marker setMarkerShapeLocal "RECTANGLE";
-    _direction = _y#0;
-    _marker setMarkerDirLocal _direction;
-    _distance = _y#1;
-    _marker setMarkerSizeLocal [8, _distance];
-    _marker setMarkerAlphaLocal 0.5;
-    _marker setMarkerColor "ColorBlack";
-} forEach _newConnections;
-
-GRLIB_connectMarkers = _connectMarkers;
+// Links between sectors and FOBs, drawn by HPC_mapWorld.sqf (no markers).
+private _links = values _newConnections;
+_links sort true;
+if !(_links isEqualTo (missionNamespace getVariable ["HPC_sectorLinks", []])) then {
+    HPC_sectorLinks = _links;
+    publicVariable "HPC_sectorLinks";
+};

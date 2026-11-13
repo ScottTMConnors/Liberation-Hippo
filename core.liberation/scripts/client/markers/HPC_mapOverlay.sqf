@@ -245,6 +245,7 @@ HPC_fnc_mapAgo = compileFinal toString {
 };
 HPC_fnc_mapDraw = compileFinal toString {
     params ["_map"];
+    if (missionNamespace getVariable ["HPC_mapHideLayers", false]) exitWith {};
     private _scale = ctrlMapScale _map;
     private _now = diag_tickTime;
     private _pulse = 0.5 + 0.5 * sin (_now * 240);
@@ -253,6 +254,19 @@ HPC_fnc_mapDraw = compileFinal toString {
     private _close = _scale < 0.12;
     private _mid = _scale < 0.35;
     private _mainMap = ctrlIDD ctrlParent _map == 12;
+	// frame recorder for tools/ui_render/map_frame.py (one chosen frame on the main map)
+	private _rec = _mainMap && {diag_frameNo == (missionNamespace getVariable ["HPC_mapRecordFrame", -1])};
+	private _dI = { _map drawIcon _this; if (_rec) then { HPC_mapRecord pushBack ["icon", _map ctrlMapWorldToScreen (_this select 2), _this] } };
+	private _dL = { _map drawLine _this; if (_rec) then { HPC_mapRecord pushBack ["line", _map ctrlMapWorldToScreen (_this select 0), _map ctrlMapWorldToScreen (_this select 1), _this select 2] } };
+	private _dE = { _map drawEllipse _this; if (_rec) then {
+		_this params ["_c", "_a"];
+		HPC_mapRecord pushBack ["ellipse", _map ctrlMapWorldToScreen _c, (_map ctrlMapWorldToScreen _c) distance2D (_map ctrlMapWorldToScreen (_c vectorAdd [_a, 0, 0])), _this select 4, _this select 5] } };
+	private _dR = { _map drawRectangle _this; if (_rec) then {
+		_this params ["_c", "_hw", "_hh", "_dir"];
+		private _corners = [[-_hw, -_hh], [_hw, -_hh], [_hw, _hh], [-_hw, _hh]] apply {
+			_map ctrlMapWorldToScreen (_c vectorAdd [(_x select 0) * cos _dir + (_x select 1) * sin _dir, (_x select 1) * cos _dir - (_x select 0) * sin _dir, 0])
+		};
+		HPC_mapRecord pushBack ["poly", _corners, _this select 5] } };
     private _mouse = getMousePosition;
     private _hover = grpNull;
     private _hoverGhost = [];
@@ -263,8 +277,8 @@ HPC_fnc_mapDraw = compileFinal toString {
     };
     private _mark = {
         params ["_icon", "_color", "_pos", "_size", "_text"];
-        _map drawIcon [_halo, [0.02, 0.03, 0.035, 0.6 * (_color select 3)], _pos, _size * 1.75, _size * 1.75, 0];
-        _map drawIcon [_icon, _color, _pos, _size, _size, 0, _text, 2, 0.032, "RobotoCondensedBold", "right"];
+        [_halo, [0.02, 0.03, 0.035, 0.3 * (_color select 3)], _pos, _size * 1.45, _size * 1.45, 0] call _dI;
+        [_icon, _color, _pos, _size, _size, 0, _text, 2, 0.032, "RobotoCondensedBold", "right"] call _dI;
     };
     private _mouseDistance = {(_map ctrlMapWorldToScreen _this) distance2D _mouse};
     if (HPC_mapShowForces) then {
@@ -273,8 +287,8 @@ HPC_fnc_mapDraw = compileFinal toString {
             private _mine = _cat == "mine";
             if (alive _vehicle && {_cat != "enemy" || {HPC_mapShowIntel}}) then {
                 private _pos = getPosASLVisual _vehicle;
-                if (_mine) then {_map drawIcon [_tex get "ring_thin", [_color select 0, _color select 1, _color select 2, 0.85], _pos, 34, 34, 0]};
-                if (!canMove _vehicle) then {_map drawIcon [_tex get "ring_dash", [1, 0.6, 0.25, 0.95], _pos, 30, 30, 0]};
+                if (_mine) then {[_tex get "ring_thin", [_color select 0, _color select 1, _color select 2, 0.85], _pos, 34, 34, 0] call _dI};
+                if (!canMove _vehicle) then {[_tex get "ring_dash", [1, 0.6, 0.25, 0.95], _pos, 30, 30, 0] call _dI};
                 [_icon, _color, _pos, 21, if (_close || {_mine && {_mid}}) then {_label} else {""}] call _mark;
                 if (_mainMap) then {
                     private _distance = _pos call _mouseDistance;
@@ -289,17 +303,17 @@ HPC_fnc_mapDraw = compileFinal toString {
                 private _pos = getPosASLVisual _leader;
                 if !(_target isEqualTo []) then {
                     if (_ordered) then {
-                        _map drawLine [_pos, _target, [1, 0.82, 0.3, 0.9]];
-                        _map drawIcon [_tex get "ring", [1, 0.82, 0.3, 0.9], _target, 22, 22, 0];
+                        [_pos, _target, [1, 0.82, 0.3, 0.9]] call _dL;
+                        [_tex get "ring", [1, 0.82, 0.3, 0.9], _target, 22, 22, 0] call _dI;
                     } else {
-                        if (_close || {_kind == "mine"}) then {_map drawLine [_pos, _target, [_color select 0, _color select 1, _color select 2, [0.3, 0.6] select (_kind == "mine")]]};
+                        if (_close || {_kind == "mine"}) then {[_pos, _target, [_color select 0, _color select 1, _color select 2, [0.3, 0.6] select (_kind == "mine")]] call _dL};
                     };
                 };
                 if (combatBehaviour _group == "COMBAT") then {
                     private _ring = _size * (1.6 + 0.5 * _pulse);
-                    _map drawIcon [_tex get "ring_soft", [1, 0.32, 0.24, 0.9 - 0.5 * _pulse], _pos, _ring, _ring, 0];
+                    [_tex get "ring_soft", [1, 0.32, 0.24, 0.9 - 0.5 * _pulse], _pos, _ring, _ring, 0] call _dI;
                 };
-                if (_kind == "mine") then {_map drawIcon [_tex get "ring_thin", [_color select 0, _color select 1, _color select 2, 0.7], _pos, _size * 1.45, _size * 1.45, 0]};
+                if (_kind == "mine") then {[_tex get "ring_thin", [_color select 0, _color select 1, _color select 2, 0.7], _pos, _size * 1.45, _size * 1.45, 0] call _dI};
                 private _text = if (_close || {_kind in ["warfare", "guard", "mine", "player"] && {_mid}}) then {_label} else {""};
                 [_icon, [_group, _color] call _flash, _pos, _size, _text] call _mark;
                 if (_mainMap) then {
@@ -316,11 +330,11 @@ HPC_fnc_mapDraw = compileFinal toString {
             if (_dead) then {
                 private _alpha = 0.3 + 0.55 * ((_left / 20) min 1);
                 [_icon, [0.58, 0.61, 0.63, _alpha], _pos, _size, if (_close) then {_label + "  DESTROYED"} else {""}] call _mark;
-                _map drawIcon [_tex get "cross", [0.86, 0.88, 0.89, _alpha], _pos, _size * 1.15, _size * 1.15, 0];
+                [_tex get "cross", [0.86, 0.88, 0.89, _alpha], _pos, _size * 1.15, _size * 1.15, 0] call _dI;
             } else {
                 private _alpha = 0.5 + 0.35 * ((_left / 180) min 1);
                 private _color = [0.95, 0.42, 0.36, _alpha];
-                _map drawIcon [_tex get "ring_dash", _color, _pos, _size * 1.7, _size * 1.7, (_now * 25) mod 360];
+                [_tex get "ring_dash", _color, _pos, _size * 1.7, _size * 1.7, (_now * 25) mod 360] call _dI;
                 [_icon, _color, _pos, _size, if (_mid) then {format ["%1  ? %2", _label, (_now - _lostAt) call HPC_fnc_mapAgo]} else {"?"}] call _mark;
             };
             if (_mainMap) then {
@@ -335,7 +349,7 @@ HPC_fnc_mapDraw = compileFinal toString {
                 private _pos = getPosASLVisual _leader;
                 if (combatBehaviour _group == "COMBAT" && {_mid}) then {
                     private _ring = _size * (1.6 + 0.5 * _pulse);
-                    _map drawIcon [_tex get "ring_soft", [1, 0.55, 0.2, 0.85 - 0.5 * _pulse], _pos, _ring, _ring, 0];
+                    [_tex get "ring_soft", [1, 0.55, 0.2, 0.85 - 0.5 * _pulse], _pos, _ring, _ring, 0] call _dI;
                 };
                 [_icon, [_group, _color] call _flash, _pos, _size, if (_close) then {_label} else {""}] call _mark;
                 if (_mainMap) then {
@@ -354,12 +368,12 @@ HPC_fnc_mapDraw = compileFinal toString {
             case (_hover isEqualType grpNull): {getPosASLVisual leader _hover};
             default {getPosASLVisual _hover};
         };
-        if !(_at isEqualTo []) then {_map drawIcon [_tex get "brackets", [1, 1, 1, 0.9], _at, 44, 44, 0]};
+        if !(_at isEqualTo []) then {[_tex get "brackets", [1, 1, 1, 0.9], _at, 44, 44, 0] call _dI};
     };
     {
         private _leader = leader _x;
         if (alive _leader) then {
-            _map drawIcon [_tex get "ring", [1, 0.85, 0.3, 0.55 + _pulse / 2.5], getPosASLVisual _leader, 46, 46, 0];
+            [_tex get "ring", [1, 0.85, 0.3, 0.55 + _pulse / 2.5], getPosASLVisual _leader, 46, 46, 0] call _dI;
         };
     } forEach HPC_mapSelected;
     if (HPC_mapShowTracers) then {
@@ -368,7 +382,7 @@ HPC_fnc_mapDraw = compileFinal toString {
             _x params ["_start", "_direction", "_created", "_color", "_angle"];
             private _age = _now - _created;
             if (_age <= HPC_mapTracerLife) then {
-                _map drawIcon [_texture, _color, _start vectorAdd (_direction vectorMultiply (_age * HPC_mapTracerSpeed)), 2.5, 9, _angle];
+                [_texture, _color, _start vectorAdd (_direction vectorMultiply (_age * HPC_mapTracerSpeed)), 2.5, 9, _angle] call _dI;
             };
         } forEach HPC_mapShots;
     };
@@ -440,6 +454,35 @@ private _bgIdc = 77930;
 private _tooltipIdc = 77920;
 private _tooltipAccentIdc = 77921;
 private _tooltipBgIdc = 77922;
+// The panel can be dragged by its header; the offset is kept in the profile.
+HPC_mapPanelIdcs = [77930, 77906, 77931, 77932, 77933, 77934, 77901, 77902, 77905, 77903, 77904];
+HPC_mapPanelDrag = [];   // mouse position of the last drag step while dragging
+HPC_fnc_mapPanelShift = compileFinal toString {
+    params ["_display", "_dx", "_dy"];
+    {
+        private _ctrl = _display displayCtrl _x;
+        if (!isNull _ctrl) then {
+            (ctrlPosition _ctrl) params ["_px", "_py", "_pw", "_ph"];
+            _ctrl ctrlSetPosition [_px + _dx, _py + _dy, _pw, _ph];
+            _ctrl ctrlCommit 0;
+        };
+    } forEach HPC_mapPanelIdcs;
+};
+HPC_fnc_mapPanelDragStep = compileFinal toString {
+    if (HPC_mapPanelDrag isEqualTo []) exitWith {};
+    private _display = findDisplay 12;
+    getMousePosition params ["_mx", "_my"];
+    HPC_mapPanelDrag params ["_lx", "_ly"];
+    // keep the header on screen
+    (ctrlPosition (_display displayCtrl 77930)) params ["_bx", "_by", "_bw"];
+    private _dx = ((_mx - _lx) max (safezoneX - _bx)) min (safezoneX + safezoneW - _bx - _bw);
+    private _dy = ((_my - _ly) max (safezoneY - _by)) min (safezoneY + safezoneH - _by - 4 * safezoneH / 54);
+    if (_dx == 0 && {_dy == 0}) exitWith {};
+    [_display, _dx, _dy] call HPC_fnc_mapPanelShift;
+    HPC_mapPanelDrag = [_lx + _dx, _ly + _dy];
+    (profileNamespace getVariable ["HPC_mapPanelOffset", [0, 0]]) params ["_ox", "_oy"];
+    profileNamespace setVariable ["HPC_mapPanelOffset", [_ox + _dx, _oy + _dy]];
+};
 private _createPanel = {
     params ["_display"];
     {
@@ -488,6 +531,28 @@ private _createPanel = {
         _ctrl ctrlEnable false;
         _ctrl ctrlShow false;
     } forEach [["HPC_MapTooltipBg", _tooltipBgIdc], ["HPC_MapTooltip", _tooltipIdc], ["HPC_MapTooltipAccent", _tooltipAccentIdc]];
+    // drag handle over the header
+    private _handle = _display ctrlCreate ["HPC_MapPanelHandle", 77934];
+    _handle ctrlAddEventHandler ["MouseButtonDown", {
+        params ["", "_button"];
+        if (_button == 0) then { HPC_mapPanelDrag = getMousePosition };
+    }];
+    _handle ctrlAddEventHandler ["MouseButtonDblClick", {
+        // double-click puts the panel back in its place
+        private _display = ctrlParent (_this select 0);
+        (profileNamespace getVariable ["HPC_mapPanelOffset", [0, 0]]) params ["_ox", "_oy"];
+        [_display, -_ox, -_oy] call HPC_fnc_mapPanelShift;
+        profileNamespace setVariable ["HPC_mapPanelOffset", [0, 0]];
+        HPC_mapPanelDrag = [];
+    }];
+    if !(_display getVariable ["HPC_mapPanelDragEH", false]) then {
+        _display setVariable ["HPC_mapPanelDragEH", true];
+        _display displayAddEventHandler ["MouseMoving", { call HPC_fnc_mapPanelDragStep }];
+        _display displayAddEventHandler ["MouseButtonUp", { if ((_this select 1) == 0) then { HPC_mapPanelDrag = [] } }];
+        _handle ctrlAddEventHandler ["MouseButtonUp", { HPC_mapPanelDrag = [] }];
+    };
+    (profileNamespace getVariable ["HPC_mapPanelOffset", [0, 0]]) params ["_ox", "_oy"];
+    if (_ox != 0 || {_oy != 0}) then { [_display, _ox, _oy] call HPC_fnc_mapPanelShift };
 };
 
 private _summary = {
@@ -575,7 +640,8 @@ while {true} do {
     };
     private _display = findDisplay 12;
     private _map = _display displayCtrl 51;
-    if (!isNull _map && {!(_map isEqualTo _drawnMap)}) then {
+    if (!isNull _map && {!(_map isEqualTo _drawnMap)} && {!isNil "HPC_fnc_mapWorldAttach"}) then {
+        if (!isNil "HPC_fnc_mapWorldAttach") then {[_map] call HPC_fnc_mapWorldAttach};
         _map ctrlAddEventHandler ["Draw", {_this call HPC_fnc_mapDraw}];
         _drawnMap = _map;
     };
@@ -751,6 +817,8 @@ while {true} do {
         };
     };
 
+    if (HPC_mapPanelDrag isNotEqualTo []) then { if (visibleMap) then { call HPC_fnc_mapPanelDragStep } else { HPC_mapPanelDrag = [] } };
+
     // Hover card follows the mouse on the main map.
     private _tooltip = _display displayCtrl _tooltipIdc;
     private _accent = _display displayCtrl _tooltipAccentIdc;
@@ -805,6 +873,11 @@ while {true} do {
             private _h = _th + 1.0 * _gy;
             private _tx = (_mx + 0.015) min (safezoneX + safezoneW - _w);
             private _ty = (_my + 0.025) min (safezoneY + safezoneH - _h);
+            (ctrlPosition (_display displayCtrl 77930)) params ["_px", "_py", "_pw", "_ph"];
+            if (_tx < _px + _pw && {_tx + _w > _px} && {_ty < _py + _ph} && {_ty + _h > _py}) then {
+                _tx = (_px - _w - 0.01) max safezoneX;
+                if (_mx < _px) then { _tx = (_mx - _w - 0.015) max safezoneX };
+            };
             _tipBg ctrlSetPosition [_tx, _ty, _w, _h];
             _tooltip ctrlSetPosition [_tx + 0.9 * _gx, _ty + 0.5 * _gy, _tw, _th];
             _accent ctrlSetPosition [_tx, _ty, 0.22 * _gx, _h];

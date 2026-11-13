@@ -40,13 +40,13 @@ waitUntil { dialog };
 dojump = 0;
 halo_position = getPosATL _unit;
 
-"spawn_marker" setMarkerTextLocal (localize "STR_HALO_PARAM");
+HPC_mapSelectText = (localize "STR_HALO_PARAM");
 private _halo_info = "Free jump. Targets closer than 300 m are refused.";
 if (GRLIB_halo_param > 1) then { _halo_info = format ["Free jump. Cooldown %1 min after jumping.<br/>Targets closer than 300 m are refused.", GRLIB_halo_param] };
 if (_is_vehicle) then { _halo_info = format ["<t color='#76CCB8' size='1.3'>%1 ammo</t><br/>You have %2 ammo.<br/>Targets closer than 300 m are refused.", _cost, player getVariable ["GREUH_ammo_count", 0]] };
 ((findDisplay 5203) displayCtrl 203) ctrlSetStructuredText parseText _halo_info;
 if (_is_vehicle) then {
-	"spawn_marker" setMarkerTextLocal (localize "STR_HALO_PARAM_VEH");
+	HPC_mapSelectText = (localize "STR_HALO_PARAM_VEH");
 	ctrlSetText [201, toUpper (localize "STR_HALO_PARAM_VEH")];
 	ctrlSetText [202, (localize "STR_HALO_PARAM_VEH")];
 };
@@ -57,14 +57,13 @@ onMapSingleClick {
 };
 
 while { dialog && alive _unit && dojump == 0 } do {
-	"spawn_marker" setMarkerPosLocal halo_position;
+	HPC_mapSelect = [halo_position, HPC_mapSelectText];
 	sleep 0.2;
 };
 
 onMapSingleClick "";
 closeDialog 0;
-"spawn_marker" setMarkerPosLocal markers_reset;
-"spawn_marker" setMarkerTextLocal "";
+HPC_mapSelect = [];
 
 if (dojump > 0) then {
 	if (player distance2D halo_position < 300) exitWith { hintSilent "Choose a destination farther from your current position." };

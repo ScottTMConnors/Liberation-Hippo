@@ -31,11 +31,23 @@ class HPC_MapPanelSubtitle : HPC_Label {
 	x = HMP_X + HMP_PAD; y = HMP_Y + 2.4 * HPC_GY; w = HMP_IW; h = 1.4 * HPC_GY;
 	font = "RobotoCondensed";
 	sizeEx = 0.9 * HPC_GY;
-	text = "Hover a marker for details";
+	text = "Hover a marker for details. Drag here to move.";
 };
 class HPC_MapPanelDivider : HPC_Text {
 	x = HMP_X + HMP_PAD; y = HMP_Y + 4.4 * HPC_GY; w = HMP_IW; h = 0.1 * HPC_GY;
 	colorBackground[] = HPC_C_LINE;
+};
+// transparent drag handle over the panel header (drag to move, double-click to reset)
+class HPC_MapPanelHandle : HPC_Button {
+	x = HMP_X; y = HMP_Y; w = HMP_W; h = 4.4 * HPC_GY;
+	tooltip = "Drag to move this panel. Double-click to put it back.";
+	colorBackground[] = {0,0,0,0};
+	colorBackgroundActive[] = {1,1,1,0.03};
+	colorFocused[] = {0,0,0,0};
+	colorBackgroundDisabled[] = {0,0,0,0};
+	soundEnter[] = {"",0,1};
+	soundPush[] = {"",0,1};
+	soundClick[] = {"",0,1};
 };
 class HPC_MapToggle : HPC_Button {
 	x = HMP_X + HMP_PAD; y = HMP_Y + 5.0 * HPC_GY; w = HMP_TW; h = 2.2 * HPC_GY;

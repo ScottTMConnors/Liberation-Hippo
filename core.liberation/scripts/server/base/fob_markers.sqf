@@ -1,70 +1,47 @@
+// Map points for sector defences and FOB facility buildings (drawn by HPC_mapWorld.sqf,
+// which also draws the FOBs, outposts and the Huron itself).
 waitUntil {sleep 1; !isNil "GRLIB_init_server"};
 waitUntil {sleep 1; !isNil "GRLIB_all_fobs"};
 
-private _markers = [];
-private _markers_def = [];
-private _markers_build = [];
+private _defense = [];   // point ids
+private _buildings = []; // point ids
+private _defenseCount = -1;
 GRLIB_redraw_marker_fob = true;
 
 sleep 2;
 while {true} do {
-	// FOB markers
-	if (count _markers != count GRLIB_all_fobs || GRLIB_redraw_marker_fob) then {
-		{ deleteMarker _x } foreach _markers;
-		_markers = [];
-		{
-			private _fob_pos = _x;
-			private _near_outpost = (_fob_pos in GRLIB_all_outposts);
-			private _marker_name = [_fob_pos] call F_getFobMarker;
-			private _marker = createMarkerLocal [_marker_name, markers_reset];
-			if (_near_outpost) then {
-				_marker setMarkerTypeLocal "b_support";
-				_marker setMarkerSizeLocal [ 1.2, 1.2 ];
-				_marker setMarkerTextLocal format ["Outpost %1",military_alphabet select _forEachIndex];
-				_marker setMarkerColorLocal "ColorYellow";
-			} else {
-				_marker setMarkerTypeLocal "b_hq";
-				_marker setMarkerSizeLocal [ 1.7, 1.7 ];
-				_marker setMarkerTextLocal format ["FOB %1",military_alphabet select _forEachIndex];
-				_marker setMarkerColorLocal "ColorYellow";
-			};
-			_marker setMarkerDrawPriority -1;
-			_marker setMarkerPos _fob_pos;
-			_markers pushback _marker;
-		} forEach GRLIB_all_fobs;
-	};
-
-	// Defended sectors markers
-	if (count _markers_def != count GRLIB_sector_defense || GRLIB_redraw_marker_fob) then {
-		{ deleteMarker _x } foreach _markers_def;
-		_markers_def = [];
+	// Defended sectors
+	if (count GRLIB_sector_defense != _defenseCount || GRLIB_redraw_marker_fob) then {
+		private _ids = [];
 		{
 			private _sector = _x;
 			private _def = GRLIB_sector_defense get _sector;
-			if (markerPos _sector isEqualTo [0,0,0]) then {
+			// FOB defences are keyed by F_getFobMarker names, which are not markers
+			private _pos = markerPos _sector;
+			private _fob = GRLIB_all_fobs findIf {([_x] call F_getFobMarker) == _sector};
+			if (_fob >= 0) then { _pos = GRLIB_all_fobs select _fob };
+			if (_pos isEqualTo [0,0,0]) then {
 				[_sector, 0] call sector_defenses_remote_call;
 			} else {
-				private _marker = createMarkerLocal [format ["defense_%1", _sector], markers_reset];
-				_marker setMarkerShapeLocal "ICON";
-				_marker setMarkerTypeLocal "loc_defend";
-				private _color = "ColorGrey";
-				switch (_def) do {
-					case 1:	{ _color = "#(0.75, 0.75, 0.75, 1.00)" };	// "ColorWhite"
-					case 2:	{ _color = "#(0.50, 0.50, 0.50, 1.00)" };	// "ColorGrey"
-					case 3:	{ _color = "#(0.25, 0.25, 0.25, 1.00)" };	// "ColorBlack"
+				private _color = switch (_def) do {
+					case 1: { "#(0.75,0.75,0.75,1)" };
+					case 2: { "#(0.50,0.50,0.50,1)" };
+					case 3: { "#(0.25,0.25,0.25,1)" };
+					default { "ColorGrey" };
 				};
-				_marker setMarkerColorLocal _color;
-				_marker setMarkerDrawPriority 1;
-				_marker setMarkerPos (markerPos _sector);
-				_markers_def pushback _marker;
+				private _id = format ["def_%1", _sector];
+				[_id, [_pos, "loc_defend", _color, "", 18, 0, "defense"]] call HPC_fnc_mapPoint;
+				_ids pushBack _id;
 			};
 		} forEach (keys GRLIB_sector_defense);
+		{ [_x, []] call HPC_fnc_mapPoint } forEach (_defense - _ids);
+		_defense = _ids;
+		_defenseCount = count GRLIB_sector_defense;
 	};
 
-	// Facility Buildings
+	// Facility buildings at FOBs
 	if ((round time) % 600 == 0 || GRLIB_redraw_marker_fob) then {
-		{ deleteMarker _x } foreach _markers_build;
-		_markers_build = [];
+		private _ids = [];
 		{
 			private _fob_pos = _x;
 			private _facility_buildings = [];
@@ -73,44 +50,28 @@ while {true} do {
 			_facility_buildings append (_fob_pos nearObjects [storage_medium_typename, GRLIB_fob_range]);
 			_facility_buildings append (_fob_pos nearObjects [storage_large_typename, GRLIB_fob_range]);
 			{
-				private _bulding = _x;
-				private _building_class = typeOf _bulding;
-				private _color = "ColorGrey";
-				private _type = "";
-				private _text = [_building_class] call F_getLRXName;
-
-				if (_building_class == medic_heal_typename) then {
-					_type = "loc_Hospital";
-					_color = "ColorGreen";
+				private _building = _x;
+				private _class = typeOf _building;
+				private _style = switch (true) do {
+					case (_class == medic_heal_typename): { ["loc_Hospital", "ColorGreen"] };
+					case (_class == Warehouse_typename): { ["loc_container", "ColorBlue"] };
+					case (_class in [storage_medium_typename, storage_large_typename]): { ["loc_container", "ColorBrown"] };
+					default { [] };
 				};
-				if (_building_class == Warehouse_typename) then {
-					_type = "loc_container";
-					_color = "ColorBlue";
-				};
-				if (_building_class in [storage_medium_typename, storage_large_typename]) then {
-					_type = "loc_container";
-					_color = "ColorBrown";
-				};
-				if (_type != "") then {
-					private _marker = createMarkerLocal [format ["defense_%1", (_bulding call BIS_fnc_netId)], markers_reset];
-					_marker setMarkerShapeLocal "ICON";
-					_marker setMarkerTypeLocal _type;
-					_marker setMarkerColorLocal _color;
-					_marker setMarkerTextLocal _text;
-					//_marker setMarkerDrawPriority 1;
-					_marker setMarkerPos (getPosATL _bulding);
-					_markers_build pushback _marker;
+				if (_style isNotEqualTo []) then {
+					private _id = format ["bld_%1", _building call BIS_fnc_netId];
+					[_id, [getPosATL _building, _style select 0, _style select 1, [_class] call F_getLRXName, 18, 0, "building"]] call HPC_fnc_mapPoint;
+					_ids pushBack _id;
 				};
 			} forEach _facility_buildings;
 		} forEach GRLIB_all_fobs;
+		{ [_x, []] call HPC_fnc_mapPoint } forEach (_buildings - _ids);
+		_buildings = _ids;
 	};
 
-	// Hurron
-	if !(isNull GRLIB_vehicle_huron) then {
-		"huronmarker" setMarkerPos (getPosATL GRLIB_vehicle_huron);
+	if (GRLIB_redraw_marker_fob) then {
+		GRLIB_redraw_marker_fob = false;
+		publicVariable "GRLIB_redraw_marker_fob";
 	};
-
-	GRLIB_redraw_marker_fob = false;
-	publicVariable "GRLIB_redraw_marker_fob";
 	sleep 3;
 };

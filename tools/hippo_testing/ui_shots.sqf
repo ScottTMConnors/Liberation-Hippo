@@ -455,5 +455,42 @@ if (_shotTeam isEqualType grpNull) then { [_shotTeam] call HPC_fnc_fireteamDisba
 PAR_AI_bros = PAR_AI_bros - [_shotUnit];
 deleteVehicle _shotUnit;
 deleteVehicle _shotVeh;
+// Map layer (HPC_mapWorld.sqf): whole map, mid zoom on the front, close on an enemy sector
+private _front = [99999, getPosATL player, sectors_allSectors - blufor_sectors] call F_getNearestSector;
+private _frontPos = if (_front == "") then {getPosATL player} else {markerPos _front};
+openMap true;
+uiSleep 1;
+{
+    _x params ["_scale", "_center", "_shot"];
+    mapAnimAdd [0, _scale, _center];
+    mapAnimCommit;
+    uiSleep 2.5;
+    setMousePosition [safezoneX + 0.02, safezoneY + safezoneH - 0.02];
+    private _mapCtrl = (findDisplay 12) displayCtrl 51;
+    diag_log ["HPC_UISHOT_MAPWORLD", _shot, count (missionNamespace getVariable ["HPC_mapSectors", []]), count sectors_allSectors,
+        count (missionNamespace getVariable ["HPC_sectorLinks", []]), count (missionNamespace getVariable ["HPC_mapPoints", createHashMap]),
+        _mapCtrl getVariable ["HPC_mapWorld", false], _front, markerPos _front, _mapCtrl ctrlMapWorldToScreen _frontPos,
+        (missionNamespace getVariable ["HPC_mapSectors", []]) param [0, []]];
+    // record what the map layers draw in one frame (tools/ui_render/map_frame.py)
+    HPC_mapRecord = [];
+    HPC_mapRecordFrame = diag_frameNo + 3;
+    waitUntil {diag_frameNo > HPC_mapRecordFrame};
+    diag_log ["HPC_MAPFRAME_BEGIN", _shot, [safezoneX, safezoneY, safezoneW, safezoneH], getResolution, count HPC_mapRecord];
+    { diag_log ["HPC_MAPFRAME", _shot, _x] } forEach HPC_mapRecord;
+    diag_log ["HPC_MAPFRAME_END", _shot];
+    [_shot, 1] call HPC_uiShot;
+    // the same view without the layers or the panel: background for the offline renderer
+    HPC_mapHideLayers = true;
+    { private _c = (findDisplay 12) displayCtrl _x; if (!isNull _c) then {_c ctrlShow false} } forEach (HPC_mapPanelIdcs + [77920, 77921, 77922]);
+    uiSleep 0.5;
+    [_shot + "_clean", 1] call HPC_uiShot;
+    HPC_mapHideLayers = false;
+    { private _c = (findDisplay 12) displayCtrl _x; if (!isNull _c) then {_c ctrlShow true} } forEach HPC_mapPanelIdcs;
+} forEach [
+    [0.6, [worldSize / 2, worldSize / 2, 0], "47_map_world"],
+    [0.2, ((getPosATL player) vectorAdd _frontPos) vectorMultiply 0.5, "48_map_front"],
+    [0.06, _frontPos, "49_map_sector"]
+];
+openMap false;
 diag_log format ["HPC_UISHOT_DONE|%1",HPC_testRun];
 ["RUN_DONE|11"] call _emit;

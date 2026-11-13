@@ -80,11 +80,7 @@ player setvariable ["PAR_grave_box", PAR_grave_box, true];
 PAR_backup_loadout = [];
 PAR_weapons_state = ["", "", ""];
 
-// Grave Marker
-_marker = createMarkerLocal ["PAR_grave_box_marker", markers_reset];
-_marker setMarkerShapeLocal "ICON";
-_marker setMarkerTypeLocal "KIA";
-_marker setMarkerTextlocal format ["%1's Grave.", name player];
+// Grave marker: a map point placed when the player dies (PAR_fn_death.sqf)
 
 // Init player
 // [player] call player_init;

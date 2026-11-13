@@ -39,11 +39,19 @@ MARKERS = {
     "mil_unknown": r"\A3\ui_f\data\map\markers\military\unknown_CA.paa",
     "mil_circle": r"\A3\ui_f\data\map\markers\military\circle_CA.paa",
 }
-TEX = "res/map/{}.paa"   # mission textures from tools/map_textures.py
+TEX = "res/map/{}.paa"
+MIL = r"\A3\ui_f\data\map\markers\military\{}_CA.paa"
+LOC = r"\A3\ui_f\data\map\mapcontrol\{}_CA.paa"
+CFG_MARKERS = {   # CfgMarkers classes the world layer uses -> icon texture
+    "mil_pickup": MIL.format("pickup"), "mil_warning": MIL.format("warning"), "mil_objective": MIL.format("objective"),
+    "mil_triangle": MIL.format("triangle"), "mil_arrow2": MIL.format("arrow2"), "mil_flag": MIL.format("flag"),
+    "loc_Fuelstation": LOC.format("fuelstation"), "loc_Transmitter": LOC.format("transmitter"),
+    "loc_defend": r"\A3\ui_f\data\map\locationtypes\defend_CA.paa",
+}   # mission textures from tools/map_textures.py
 
 # --- style (HPC_fnc_mapDraw)
-HALO_SCALE = 1.75
-HALO_ALPHA = 0.6
+HALO_SCALE = 1.45
+HALO_ALPHA = 0.15   # 0.3 in game, which shows about half as strong (map_frame.py)
 LABEL_SIZE = 0.032        # drawIcon textSize: about 0.7 x screen height in sizeEx terms (not UI-scaled)
 LABEL_FONT = "robotocondensedbold"
 GHOST = (0.95, 0.42, 0.36)
@@ -53,6 +61,8 @@ DEAD = (0.58, 0.61, 0.63)
 def icon_path(name):
     if "\\" in name or "/" in name:
         return name
+    if name in CFG_MARKERS:
+        return CFG_MARKERS[name]
     if name in MARKERS:
         return MARKERS[name]
     return NATO.format(name)
@@ -62,7 +72,7 @@ class MapPainter:
     def __init__(self, env, assets, warn):
         self.env, self.assets, self.warn = env, assets, warn
         # drawIcon sizes are screen pixels at 1080p-ish; scale with the output height
-        self.k = env.height / 1080.0
+        self.k = env.height / 1080.0 * 1.2   # drawIcon size 20 draws about 24 px at 1080p (calibrated with map_frame.py)
 
     def tex(self, path, color, size, angle=0):
         img = self.assets.image(path)
@@ -85,7 +95,7 @@ class MapPainter:
     def label(self, surface, text, color, at, size):
         if not text:
             return
-        px = LABEL_SIZE * 0.7 * self.env.height
+        px = LABEL_SIZE * 0.55 * self.env.height
         font, cap = R.get_font(LABEL_FONT, px)
         x = at[0] + size * self.k / 2 + 2
         y = at[1]
@@ -96,10 +106,10 @@ class MapPainter:
                stroke_fill=(0, 0, 0, int(rgba[3] * 0.85)))
         surface.alpha_composite(layer)
 
-    def mark(self, surface, icon, color, at, size, text):
+    def mark(self, surface, icon, color, at, size, text, angle=0):
         a = color[3] if len(color) > 3 else 1
         self.icon(surface, TEX.format("halo"), [0.02, 0.03, 0.035, HALO_ALPHA * a], at, size * HALO_SCALE)
-        self.icon(surface, icon_path(icon), color, at, size)
+        self.icon(surface, icon_path(icon), color, at, size, angle)
         self.label(surface, text, color, at, size)
 
     def marker(self, surface, m):
@@ -125,6 +135,33 @@ class MapPainter:
             self.icon(surface, TEX.format("ring_thin"), color[:3] + [0.85], at, 34)
         if m.get("disabled"):
             self.icon(surface, TEX.format("ring_dash"), [1, 0.6, 0.25, 0.95], at, 30)
+        if state == "sector":
+            # HPC_fnc_mapWorldDraw: owner ring, active zone and pulse, commander choice ring
+            if m.get("active"):
+                self.zone(surface, at, m.get("zone_px", 70), [1, 0.45, 0.25, 1])
+                p = float(m.get("pulse", 0.5))
+                self.icon(surface, TEX.format("ring_soft"), [1, 0.5, 0.25, 0.9 - 0.5 * p], at, size * (1.7 + 0.5 * p))
+            if m.get("choice"):
+                col = [0.4, 0.9, 0.45, 1] if m.get("my_vote") else [1, 0.82, 0.3, 0.95]
+                self.icon(surface, TEX.format("ring_dash"), col, at, size * 1.9, 15)
+            self.icon(surface, TEX.format("ring_thin"), color[:3] + [0.75], at, size * 1.45)
+            self.mark(surface, m["icon"], color, at, size, text)
+            if m.get("hover"):
+                self.icon(surface, TEX.format("brackets"), [1, 1, 1, 0.9], at, 48)
+            return
+        if state == "player":
+            self.mark(surface, m["icon"], color, at, size, text, m.get("dir", 0))
+            return
+        if state == "alert":
+            self.icon(surface, TEX.format("ring_soft"), [1, 0.3, 0.2, 0.7], at, 50)
+            self.mark(surface, "\\A3\\ui_f\\data\\map\\markers\\military\\warning_CA.paa", [1, 0.35, 0.25, 1], at, 24, text)
+            return
+        if state == "select":
+            self.icon(surface, TEX.format("brackets"), [0.46, 0.8, 0.72, 0.9], at, 40)
+            self.mark(surface, TEX.format("ring"), [0.46, 0.8, 0.72, 1], at, 18, text)
+            return
+        if m.get("zone_px"):
+            self.zone(surface, at, m["zone_px"], color)
         if state == "ghost":
             a = m.get("alpha", 0.8)
             color = list(GHOST) + [a]
@@ -140,6 +177,15 @@ class MapPainter:
             self.icon(surface, TEX.format("brackets"), [1, 1, 1, 0.9], at, 44)
         if m.get("selected"):
             self.icon(surface, TEX.format("ring"), [1, 0.85, 0.3, 0.8], at, 46)
+
+    def zone(self, surface, at, r, color):
+        """drawEllipse: 13% fill and a 75% outline."""
+        layer = Image.new("RGBA", surface.size, (0, 0, 0, 0))
+        c = R.to_rgba(color[:3] + [0.13])
+        o = R.to_rgba(color[:3] + [0.75])
+        r = r * self.k
+        ImageDraw.Draw(layer).ellipse([at[0] - r, at[1] - r, at[0] + r, at[1] + r], fill=c, outline=o, width=max(1, int(self.k)))
+        surface.alpha_composite(layer)
 
     def line(self, surface, a, b, color):
         layer = Image.new("RGBA", surface.size, (0, 0, 0, 0))

@@ -73,18 +73,11 @@ _setupObjects = {
 	_quest_item setVariable ["R3F_LOG_disabled", true, true];
 	[getPos _quest_item, 5] call build_cutter_remote_call;
 
-	// markers
-	_marker = createMarkerLocal ["GRLIB_A3W_Mission_SD_Item", getPosATL _quest_item];
-	_marker setMarkerShapeLocal "ICON";
-	_marker setMarkerTypeLocal "mil_dot";
-	_marker setMarkerColorLocal "Color5_FD_F";
-	_marker setMarkerTextlocal ([a3w_sd_item] call F_getLRXName);
-
-	_marker = createMarkerLocal ["GRLIB_A3W_Mission_SD_Marker", getPosATL _man1];
-	_marker setMarkerShapeLocal "ICON";
-	_marker setMarkerTypeLocal "mil_pickup";
-	_marker setMarkerColorLocal "ColorPink";
-	_marker setMarkerTextlocal (name _man1);
+	// map points: the parcel and the contact it goes to (both follow their object)
+	["GRLIB_A3W_Mission_SD_Item", [_quest_item, "mil_dot", "Color5_FD_F", [a3w_sd_item] call F_getLRXName, 16, 0, "mission"]] call HPC_fnc_mapPoint;
+	["GRLIB_A3W_Mission_SD_Marker", [_man1, "mil_pickup", "ColorPink", name _man1, 22, 0, "mission"]] call HPC_fnc_mapPoint;
+	HPC_sdContact = _man1;
+	HPC_sdItemShown = true;
 
 	GRLIB_A3W_Mission_SD = [0, [_man1, _man2, _man3, _man4], _quest_item];  // progression
 	publicVariable "GRLIB_A3W_Mission_SD";
@@ -109,7 +102,7 @@ _setupObjects = {
 	_vehicles = [_house, _quest_item] + (GRLIB_A3W_Mission_SD select 1);
 	_missionPos = markerPos (_waypoints select 0);
 	_missionPicture = getText (configFile >> "CfgVehicles" >> "C_Hatchback_01_F" >> "picture");
-	_missionHintText = ["STR_SPECIALDELI_MESSAGE1", sideMissionColor, markerText _missionLocation, [] call HPC_fnc_contactName];
+	_missionHintText = ["STR_SPECIALDELI_MESSAGE1", sideMissionColor, [_missionLocation] call HPC_fnc_sectorName, [] call HPC_fnc_contactName];
 	true;
 };
 
@@ -117,9 +110,10 @@ _waitUntilExec = nil;
 
 _waitUntilMarkerPos = {
 	private _next_unit = (GRLIB_A3W_Mission_SD select 1) select (GRLIB_A3W_Mission_SD select 0);
-	"GRLIB_A3W_Mission_SD_Marker" setMarkerTextLocal (name _next_unit);
-	"GRLIB_A3W_Mission_SD_Marker" setMarkerPosLocal (getPosATL _next_unit);
-	"GRLIB_A3W_Mission_SD_Marker" setMarkerAlpha 1;	
+	if !(_next_unit isEqualTo HPC_sdContact) then {
+		HPC_sdContact = _next_unit;
+		["GRLIB_A3W_Mission_SD_Marker", [_next_unit, "mil_pickup", "ColorPink", name _next_unit, 22, 0, "mission"]] call HPC_fnc_mapPoint;
+	};
 	(getPosATL _next_unit) vectorAdd [0,2,0]; 
 };
 
@@ -128,11 +122,11 @@ _waitUntilLastPos = {
 };
 
 _waitUntilCondition = {
-	if (alive _quest_item && (isNull (_quest_item getVariable ["R3F_LOG_est_transporte_par", objNull]))) then {
-		"GRLIB_A3W_Mission_SD_Item" setMarkerPosLocal (getPos _quest_item);
-		"GRLIB_A3W_Mission_SD_Item" setMarkerAlpha 1;
-	} else {
-		"GRLIB_A3W_Mission_SD_Item" setMarkerAlpha 0;
+	// the parcel point hides while it is carried
+	private _show = alive _quest_item && (isNull (_quest_item getVariable ["R3F_LOG_est_transporte_par", objNull]));
+	if !(_show isEqualTo HPC_sdItemShown) then {
+		HPC_sdItemShown = _show;
+		["GRLIB_A3W_Mission_SD_Item", [[], [_quest_item, "mil_dot", "Color5_FD_F", [a3w_sd_item] call F_getLRXName, 16, 0, "mission"]] select _show] call HPC_fnc_mapPoint;
 	};
 
 	(!alive _quest_item)
@@ -145,8 +139,8 @@ _failedExec = {
 	{ [_x, -3] call F_addReput } forEach (AllPlayers - (entities "HeadlessClient_F"));
 	private _msg = format [localize "STR_SIDE_FAILED_REPUT", -3];
 	[_msg] remoteExec ["HPC_fnc_info", 0];	
-	deleteMarker "GRLIB_A3W_Mission_SD_Item";
-	deleteMarker "GRLIB_A3W_Mission_SD_Marker";
+	["GRLIB_A3W_Mission_SD_Item", []] call HPC_fnc_mapPoint;
+	["GRLIB_A3W_Mission_SD_Marker", []] call HPC_fnc_mapPoint;
 	deleteVehicle _quest_item;
 	GRLIB_A3W_Mission_SD = nil;
 	publicVariable "GRLIB_A3W_Mission_SD";
@@ -156,8 +150,8 @@ _failedExec = {
 _successExec = {
 	// Mission completed
 	{ [_x, 7] call F_addReput } forEach ([_quest_item, 10] call F_getNearbyPlayers);
-	deleteMarker "GRLIB_A3W_Mission_SD_Item";
-	deleteMarker "GRLIB_A3W_Mission_SD_Marker";
+	["GRLIB_A3W_Mission_SD_Item", []] call HPC_fnc_mapPoint;
+	["GRLIB_A3W_Mission_SD_Marker", []] call HPC_fnc_mapPoint;
 	for "_i" from 1 to 2 do {
 		private _box = selectRandom [ammobox_i_typename, ammobox_b_typename, ammobox_o_typename];
 		[_box, getPosATL _quest_item, false] call boxSetup;

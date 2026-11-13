@@ -12,7 +12,7 @@ private _hostile_group = [];
 
 while {true} do {
 	waitUntil {sleep 0.1; (visibleMap || dialog) };
-	{ deleteMarkerLocal _x } foreach _hostile_markers;
+	{ [_x, [], false] call HPC_fnc_mapPoint } foreach _hostile_markers;
 	_hostile_markers = [];
 
 	_hostile_group = (groups GRLIB_side_enemy) select {
@@ -29,11 +29,8 @@ while {true} do {
 			_permMission = (_leader distance2D secondary_objective_position_marker < GRLIB_sector_size);
 			_nearRadioTower = ([(getPos _leader), GRLIB_side_friendly] call F_getNearestTower != "");
 			if (!_permMission && _nearRadioTower) then {
-				_marker = createMarkerLocal [format ["hostilegroup_%1",_x], markers_reset];
-				_marker setMarkerColorLocal GRLIB_color_enemy_bright;
-				_marker setMarkerTypeLocal "mil_warning";
-				_marker setMarkerSizeLocal [0.65, 0.65];
-				_marker setMarkerPosLocal (_leader getPos [floor(random 50), floor(random 360)]);
+				_marker = format ["hostile_%1", _forEachIndex];
+				[_marker, [_leader getPos [floor(random 50), floor(random 360)], "mil_warning", GRLIB_color_enemy_bright, "", 14, 0, "hostile"], false] call HPC_fnc_mapPoint;
 				_hostile_markers pushback _marker;
 			};
 		};

@@ -55,7 +55,6 @@ sectors_airSpawn = [];
 
 	if (_x select [0,5] == "tower") then {
 		sectors_tower pushback _x;
-		_x setMarkerTextLocal format ["%1 %2",markerText _x, mapGridPosition (markerPos _x)];
 		_ismissionsector = true;
 	};
 
@@ -63,3 +62,7 @@ sectors_airSpawn = [];
 		sectors_allSectors pushback _x;
 	};
 } foreach allMapMarkers;
+
+// Editor markers are sector and spawn definitions only: hide them on every machine (the map
+// is drawn by scripts\client\markers\HPC_mapWorld.sqf). Markers players place later stay visible.
+{ _x setMarkerAlphaLocal 0 } forEach allMapMarkers;

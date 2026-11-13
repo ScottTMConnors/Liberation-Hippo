@@ -17,36 +17,41 @@ private _stats_marker = [
 while {true} do {
 	_msg = "";
 	if (count A3W_sectors_in_use > 0) then {
-		_all_sectors = allMapMarkers select {
-			_x select [0,13] == "side_mission_" && _x find "_zone" == -1 &&
-			(markerPos _x) distance2D player <= GRLIB_sector_size
-		};
-		_sector = [_all_sectors, player] call F_nearestPosition;
+		// nearest side mission map point (HPC_fnc_mapPoint) within a sector size
+		_sector = "";
+		private _sectorPos = [0,0,0];
+		private _best = GRLIB_sector_size;
+		{
+			if (_x select [0,13] == "side_mission_") then {
+				private _d = (_y select 0) distance2D player;
+				if (_d <= _best) then { _best = _d; _sector = _x; _sectorPos = _y select 0 };
+			};
+		} forEach (missionNamespace getVariable ["HPC_mapPoints", createHashMap]);
 		if (_sector != "") then {
 			_mission = _sector select [13];		// strip marker prefix
 			_opf = 0;
 			// Resistance
 			if (_mission == "STR_RESISTANCE" && !isNil "GRLIB_A3W_Mission_MR_OPFOR") then {
-				_opf = { alive _x && _x distance2D (markerPos _sector) < (GRLIB_sector_size * 2) } count GRLIB_A3W_Mission_MR_OPFOR;
-				_res = { alive _x && _x distance2D (markerPos _sector) < GRLIB_sector_size } count GRLIB_A3W_Mission_MR_BLUFOR;
+				_opf = { alive _x && _x distance2D _sectorPos < (GRLIB_sector_size * 2) } count GRLIB_A3W_Mission_MR_OPFOR;
+				_res = { alive _x && _x distance2D _sectorPos < GRLIB_sector_size } count GRLIB_A3W_Mission_MR_BLUFOR;
 				if (_opf > 0) then {_msg = format [localize "STR_STATUS_RES_OPF", _res, _opf]};
 			};
 
 			// Defend patrol
 			if (_mission == "STR_DEFPATROL") then {
-				_opf = { alive _x && _x distance2D (markerPos _sector) < GRLIB_sector_size && (_x getVariable ["GRLIB_mission_AI", false])} count (units GRLIB_side_enemy);
-				_res = { alive _x && _x distance2D (markerPos _sector) < GRLIB_sector_size && (_x getVariable ["GRLIB_mission_AI", false])} count (units GRLIB_side_friendly);
+				_opf = { alive _x && _x distance2D _sectorPos < GRLIB_sector_size && (_x getVariable ["GRLIB_mission_AI", false])} count (units GRLIB_side_enemy);
+				_res = { alive _x && _x distance2D _sectorPos < GRLIB_sector_size && (_x getVariable ["GRLIB_mission_AI", false])} count (units GRLIB_side_friendly);
 				if (_opf > 0) then {_msg = format [localize "STR_STATUS_RES_OPF", _res, _opf]};
 			};
 
 			if (_mission == "STR_VEHICLEREP") then {
-				_opf = { alive _x && _x distance2D (markerPos _sector) < GRLIB_sector_size && (_x getVariable ["GRLIB_mission_AI", false])} count (units GRLIB_side_enemy);		
+				_opf = { alive _x && _x distance2D _sectorPos < GRLIB_sector_size && (_x getVariable ["GRLIB_mission_AI", false])} count (units GRLIB_side_enemy);		
 				if (_opf > 0) then {_msg = format [localize "STR_STATUS_OPF_ONLY", _opf]} else {_msg = "Repair the vehicle!"};
 			};
 
 			// Others
 			if (_mission in _stats_marker) then {
-				_opf = { alive _x && _x distance2D (markerPos _sector) < GRLIB_sector_size && (_x getVariable ["GRLIB_mission_AI", false])} count (units GRLIB_side_enemy);
+				_opf = { alive _x && _x distance2D _sectorPos < GRLIB_sector_size && (_x getVariable ["GRLIB_mission_AI", false])} count (units GRLIB_side_enemy);
 				if (_opf > 0) then {_msg = format [localize "STR_STATUS_OPF_ONLY", _opf]};
 			};
 		};

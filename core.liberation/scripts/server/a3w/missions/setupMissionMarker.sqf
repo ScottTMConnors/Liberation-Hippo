@@ -20,8 +20,10 @@ private ["_sector", "_sector_pos", "_range", "_pos", "_marker"];
 	};
 } forEach _mission_sectors;
 
+// dyn_mission_* are invisible ("empty") position holders used as mission locations
+// (markerPos, F_getNearestSector); in debug they are shown as map points.
 if (!isNil "GRLIB_LRX_debug") then {
-	{ _x setMarkerTypeLocal "mil_dot" } forEach A3W_mission_sectors;
+	{ ["dbg_" + _x, [markerPos _x, "mil_dot", "ColorBlack", "", 12, 0, "debug"]] call HPC_fnc_mapPoint } forEach A3W_mission_sectors;
 };
 
 SpawnMissionMarkers = A3W_mission_sectors apply {[_x, false, 0]};

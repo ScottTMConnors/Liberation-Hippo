@@ -21,21 +21,12 @@ if (_notif_type == 2) exitWith {
 	["lib_intel_fob", [_location_name]] call HPC_fnc_notify;
 
 	private _secondary_random_position_marker = secondary_objective_position_marker getPos [800, floor random 360];
-	private _secondary_marker = createMarkerLocal ["secondarymarker", _secondary_random_position_marker];
-	_secondary_marker setMarkerColorLocal GRLIB_color_enemy_bright;
-	_secondary_marker setMarkerTypeLocal "hd_unknown";
-
-	private _secondary_marker_zone = createMarkerLocal ["secondarymarkerzone", _secondary_random_position_marker];
-	_secondary_marker_zone setMarkerColorLocal GRLIB_color_enemy_bright;
-	_secondary_marker_zone setMarkerShapeLocal "ELLIPSE";
-	_secondary_marker_zone setMarkerBrushLocal "FDiagonal";
-	_secondary_marker_zone setMarkerSizeLocal [1500,1500];
+	["secondarymarker", [_secondary_random_position_marker, "hd_unknown", GRLIB_color_enemy_bright, "Secondary objective (approximate)", 22, 1500, "mission"], false] call HPC_fnc_mapPoint;
 };
 
 if (_notif_type == 3) exitWith {
 	["lib_secondary_fob_destroyed"] call HPC_fnc_notify;
-	deleteMarkerLocal "secondarymarker";
-	deleteMarkerLocal "secondarymarkerzone";
+	["secondarymarker", [], false] call HPC_fnc_mapPoint;
 	secondary_objective_position_marker = zeropos;
 };
 
@@ -65,15 +56,7 @@ if (_notif_type == 6) exitWith {
 	["lib_intel_sar", [_location_name]] call HPC_fnc_notify;
 
 	private _secondary_random_position_marker = secondary_objective_position_marker getPos [800, floor random 360];
-	private _secondary_marker = createMarkerLocal ["secondarymarker", _secondary_random_position_marker];
-	_secondary_marker setMarkerColorLocal GRLIB_color_enemy_bright;
-	_secondary_marker setMarkerTypeLocal "hd_unknown";
-
-	private _secondary_marker_zone = createMarkerLocal ["secondarymarkerzone", _secondary_random_position_marker];
-	_secondary_marker_zone setMarkerColorLocal GRLIB_color_enemy_bright;
-	_secondary_marker_zone setMarkerShapeLocal "ELLIPSE";
-	_secondary_marker_zone setMarkerBrushLocal "FDiagonal";
-	_secondary_marker_zone setMarkerSizeLocal [1500,1500];
+	["secondarymarker", [_secondary_random_position_marker, "hd_unknown", GRLIB_color_enemy_bright, "Secondary objective (approximate)", 22, 1500, "mission"], false] call HPC_fnc_mapPoint;
 };
 
 if (_notif_type == 7 || _notif_type == 8) exitWith {
@@ -83,8 +66,7 @@ if (_notif_type == 7 || _notif_type == 8) exitWith {
 	if (_notif_type == 8) then {
 		["lib_intel_sar_succeeded"] call HPC_fnc_notify;
 	};
-	deleteMarkerLocal "secondarymarker";
-	deleteMarkerLocal "secondarymarkerzone";
+	["secondarymarker", [], false] call HPC_fnc_mapPoint;
 	secondary_objective_position_marker = zeropos;
 };
 
@@ -107,14 +89,7 @@ if (_notif_type == 20) exitWith {
 	private _location_name = [secondary_objective_position_marker] call F_getLocationName;
 	["Fuel truck theft", format ["An enemy fuel truck is parked near %1 under guard. Steal it and bring it to a FOB.", _location_name], "warn", 10] call HPC_fnc_toast;
 	private _pos = secondary_objective_position_marker getPos [400, floor random 360];
-	private _marker = createMarkerLocal ["secondarymarker", _pos];
-	_marker setMarkerColorLocal GRLIB_color_enemy_bright;
-	_marker setMarkerTypeLocal "hd_unknown";
-	private _zone = createMarkerLocal ["secondarymarkerzone", _pos];
-	_zone setMarkerColorLocal GRLIB_color_enemy_bright;
-	_zone setMarkerShapeLocal "ELLIPSE";
-	_zone setMarkerBrushLocal "FDiagonal";
-	_zone setMarkerSizeLocal [700, 700];
+	["secondarymarker", [_pos, "hd_unknown", GRLIB_color_enemy_bright, "Fuel truck (approximate)", 22, 700, "mission"], false] call HPC_fnc_mapPoint;
 };
 
 if (_notif_type == 21) exitWith {
@@ -123,7 +98,6 @@ if (_notif_type == 21) exitWith {
 	} else {
 		["Fuel truck theft failed", "The enemy fuel truck was lost.", "bad", 8] call HPC_fnc_toast;
 	};
-	deleteMarkerLocal "secondarymarker";
-	deleteMarkerLocal "secondarymarkerzone";
+	["secondarymarker", [], false] call HPC_fnc_mapPoint;
 	secondary_objective_position_marker = zeropos;
 };

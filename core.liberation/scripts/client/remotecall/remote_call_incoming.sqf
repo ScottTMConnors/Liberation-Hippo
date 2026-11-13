@@ -4,12 +4,10 @@ params ["_attack_destination"];
 waitUntil {sleep 1; !isNil "GRLIB_color_enemy_bright"};
 
 private _marker_name = format ["opfor_incoming_marker_%1", (round time)];
-private _marker = createMarkerLocal [_marker_name, _attack_destination];
-_marker setMarkerTypeLocal "selector_selectedMission";
-_marker setMarkerColorLocal GRLIB_color_enemy_bright;
+[_marker_name, [_attack_destination, "selector_selectedMission", GRLIB_color_enemy_bright, "Enemy attack incoming", 26, 0, "alert"], false] call HPC_fnc_mapPoint;
 
 private _location_name = [_attack_destination] call F_getLocationName;
 ["lib_incoming", [_location_name]] call HPC_fnc_notify;
 
 sleep 180;
-deleteMarkerLocal _marker;
+[_marker_name, [], false] call HPC_fnc_mapPoint;

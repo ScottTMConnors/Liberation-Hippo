@@ -60,7 +60,7 @@ while {true} do {
             _tiedSectors = [] + GRLIB_AvailAttackSectors;
         };
         _winningSector = selectRandom _tiedSectors;
-        _msg = format ["The invasion will proceed to %1!", markerText _winningSector];
+        _msg = format ["The invasion will proceed to %1!", ([_winningSector] call HPC_fnc_sectorName)];
         [_msg, "info", "HQ"] remoteExec ["HPC_fnc_info", 0];
         [_winningSector] call HPC_fnc_startBattle;
     };

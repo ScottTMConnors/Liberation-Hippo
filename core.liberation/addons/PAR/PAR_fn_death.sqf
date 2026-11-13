@@ -50,7 +50,7 @@ if (_unit == player) then {
 		PAR_grave_box attachto [_grave];
 
 		// Marker
-		"PAR_grave_box_marker" setMarkerPosLocal PAR_grave_box;
+		["PAR_grave_box_marker", [PAR_grave_box, "KIA", [0.75, 0.78, 0.8, 1], format ["%1's grave", name player], 18, 0, "grave"], false] call HPC_fnc_mapPoint;
 	};
 
 	// TFAR
@@ -60,7 +60,7 @@ if (_unit == player) then {
 	};
 
 	// Marker
-	if (PAR_grave == 0) then { "PAR_grave_box_marker" setMarkerPosLocal _pos };
+	if (PAR_grave == 0) then { ["PAR_grave_box_marker", [_pos, "KIA", [0.75, 0.78, 0.8, 1], format ["%1's grave", name player], 18, 0, "grave"], false] call HPC_fnc_mapPoint };
 
 	// Respawn Penalty
 	if ([_unit] call F_getScore > (GRLIB_perm_log + 50)) then { [_unit, -10] remoteExec ["F_addScore", 2] };

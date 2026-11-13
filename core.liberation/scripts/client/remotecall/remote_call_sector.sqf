@@ -16,7 +16,7 @@ if (_status == 0) then {
 
 if (_status == 1) then {
 	["lib_sector_attacked", [_location_name]] call HPC_fnc_notify;
-	"opfor_capture_marker" setMarkerPosLocal (markerpos _sector);
+	HPC_attackAlert = [_marker_pos, ""];
 };
 
 if (_status == 2) then {
@@ -31,5 +31,3 @@ if (_status == 4) then {
 	["lib_sector_building", [_info]] call HPC_fnc_notify;
 };
 
-{ _x setMarkerColorLocal GRLIB_color_friendly } foreach blufor_sectors;
-{ _x setMarkerColorLocal GRLIB_color_enemy } foreach opfor_sectors;

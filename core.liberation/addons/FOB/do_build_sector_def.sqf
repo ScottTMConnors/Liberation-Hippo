@@ -45,7 +45,7 @@ while { dialog && alive player } do {
             _sectors_def pushback _sector;
         } forEach GRLIB_all_fobs;
 
-        private _sectors_sorted = (blufor_sectors - active_sectors) apply {[_x, (markerText _x)]};
+        private _sectors_sorted = (blufor_sectors - active_sectors) apply {[_x, ([_x] call HPC_fnc_sectorName)]};
         _sectors_sorted = [_sectors_sorted, [], { _x select 1 }, "ASCEND"] call BIS_fnc_sortBy;
         {
             _sector = _x select 0;

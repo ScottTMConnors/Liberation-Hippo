@@ -129,7 +129,7 @@ _failedExec = {
 
 _successExec = {
 	// Mission completed
-	{ [_x, 15] call F_addReput } forEach ([markerPos _marker, GRLIB_sector_size] call F_getNearbyPlayers);
+	{ [_x, 15] call F_addReput } forEach ([call _fnc_markerPos, GRLIB_sector_size] call F_getNearbyPlayers);
 	_successHintMessage = ["STR_PRI_CONV_MESSAGE3", sideMissionColor];
 };
 

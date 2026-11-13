@@ -1,9 +1,7 @@
+// Civilian side mission zone (20 m) as a map point; returns its id.
 params ["_text", "_pos"];
 
-private _marker = createMarkerLocal [format ["side_mission_civ_%1", _text], _pos];
-_marker setMarkerShapeLocal "ELLIPSE";
-_marker setMarkerBrushLocal "FDiagonal";
-_marker setMarkerSizeLocal [20,20];
-_marker setMarkerColor GRLIB_color_civilian;
+private _id = format ["side_mission_civ_%1", _text];
+[_id, [_pos, "", GRLIB_color_civilian, "", 20, 20, "mission"]] call HPC_fnc_mapPoint;
 
-_marker;
+_id;
