@@ -103,6 +103,7 @@ def main():
     ap.add_argument('--baseline', action='store_true')
     ap.add_argument('--clients', type=int, choices=[0,1,2], default=0)
     ap.add_argument('--steam-launch', action='store_true', help='Launch the isolated rendering client through Steam.')
+    ap.add_argument('--spawn', action='store_true', help='Test vehicle spawn spots (footprint, claims, simultaneous spawns).')
     ap.add_argument('--targeted', action='store_true', help='Test fortification action and coastal placement in a disposable mission.')
     ap.add_argument('--visual', action='store_true', help='Run isolated civilian and commander visual fixture (requires one client).')
     ap.add_argument('--ui-shots', action='store_true', help='Capture UI screenshots (menus, redeploy, HUD) from one rendering client into <run>/shots.')
@@ -146,6 +147,7 @@ def main():
     tests=stage/'hippo_tests'; tests.mkdir()
     cases=['engine.compile','startup.server','telemetry.ownership','civilians.ambient','civilians.traffic','sector.fortifications','sector.walls','settings.defaults','factions.available','settings.english','skills.toggle','damage.civilian','catalog.classification','catalog.order','catalog.unlockFilter','objects.simple','cargo.restore','vehicles.emptyPools','warfare.armedPool','save.garage','save.nestedCargo','save.crateHome','save.version','save.sectorUnderAttack','settings.layout','warfare.armorChoose','warfare.armorBank','warfare.armorPools','warfare.spawnClearance','crew.repair','crew.abandon','minefields.laid','minefields.cleared']
     if args.targeted: cases+=['placement.pier','placement.small','placement.building']
+    if args.spawn: cases+=['spawn.size','spawn.claims','spawn.vehicles']
     if args.movement: cases+=['civilians.displacement','outpost.commanderInterior','outpost.defenders']
     if args.scenario: cases+=['warfare.spawn','sector.commanderGate','sector.capture','warfare.cleanup']
     if args.commander: cases+=['commander.emptyRoster','commander.townLoaded','commander.progress','warfare.enemyFOB','commander.orders','commander.guardLocked','commander.returnFlag','intel.merge']
@@ -157,6 +159,10 @@ def main():
     (tests/'run.sqf').write_text((ROOT/'tools'/'hippo_testing'/'server.sqf').read_text(encoding='utf-8'),encoding='utf-8')
     shutil.copy2(ROOT/'tools/hippo_testing/review.sqf',tests/'review.sqf')
     shutil.copy2(ROOT/'tools/hippo_testing/features.sqf',tests/'features.sqf')
+    if args.spawn:
+        shutil.copy2(ROOT/'tools/hippo_testing/vehicle_spawn.sqf',tests/'vehicle_spawn.sqf')
+        p=tests/'run.sqf'
+        p.write_text(bump_run_done(p.read_text(encoding='utf-8').replace('[format ["RUN_DONE|%1",', 'call compile preprocessFileLineNumbers "hippo_tests\\vehicle_spawn.sqf";\n[format ["RUN_DONE|%1",'),3),encoding='utf-8')
     if args.targeted:
         shutil.copy2(ROOT/'tools/hippo_testing/placement.sqf',tests/'placement.sqf')
         p=tests/'run.sqf'
