@@ -1,0 +1,14 @@
+{
+  "110": {"rows": [
+    ["Assault 1  (8)", "\\A3\\ui_f\\data\\map\\markers\\nato\\b_inf.paa", "Attack Le Port", [1,0.86,0.4,1]],
+    ["Assault 2", "\\A3\\ui_f\\data\\map\\markers\\military\\respawn_inf_ca.paa", "Respawn 0:47", [0.55,0.6,0.64,1]],
+    ["Armor 1 (APC)  (3)  -  22 pts - APC ready, tank at 35", "\\A3\\ui_f\\data\\map\\markers\\nato\\b_mech_inf.paa", "Attack Lavalle", [0.92,0.94,0.95,1]],
+    ["Armor 2 (MRAP)  (4)  -  6 pts - APC at 15", "\\A3\\ui_f\\data\\map\\markers\\nato\\b_mech_inf.paa", "Defend FOB Alpha", [1,0.86,0.4,1]],
+    ["Armor 3  -  41 pts - tank ready", "\\A3\\ui_f\\data\\map\\markers\\military\\respawn_inf_ca.paa", "Respawn 3:12", [0.55,0.6,0.64,1]],
+    ["Armor 4  -  0 pts - APC at 15", "\\A3\\ui_f\\data\\map\\markers\\military\\respawn_inf_ca.paa", "Respawning...", [0.55,0.6,0.64,1]],
+    ["! Armor 5 (Tank)  (3)  -  4 pts - APC at 15", "\\A3\\ui_f\\data\\map\\markers\\nato\\b_armor.paa", "Attack Le Port", [1,0.55,0.45,1]]
+  ], "sel": 0},
+  "111": {"rows": [["Automatic: AI picks its own objective"], ["ATTACK  -  ACTIVE SECTORS","","",[0.46,0.8,0.72,1]], ["Le Port","\\A3\\ui_f\\data\\map\\markers\\military\\objective_CA.paa","",[1,0.55,0.48,1]]], "sel": 2},
+  "103": {"text": "4 groups under your command   -   2 following your orders   -   2 active objectives   -   3 respawning"},
+  "105": {"text": ""}
+}

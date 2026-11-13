@@ -186,6 +186,7 @@ HPC_fnc_templateAvailable = compileFinal preprocessFileLineNumbers "scripts\shar
 HPC_fnc_stopForFaction = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_stopForFaction.sqf";
 HPC_fnc_factionWarning = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_factionWarning.sqf";
 HPC_fnc_sectorState = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_sectorState.sqf";
+HPC_fnc_sectorName = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_sectorName.sqf"; // marker name without status
 HPC_fnc_loadSector = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_loadSector.sqf";
 HPC_fnc_loadingStart = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_loadingStart.sqf";
 HPC_fnc_loadingEnd = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_loadingEnd.sqf";

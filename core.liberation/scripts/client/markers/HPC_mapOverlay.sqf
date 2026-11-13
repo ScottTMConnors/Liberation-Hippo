@@ -135,22 +135,22 @@ HPC_fnc_mapOrderText = compileFinal toString {
     if !(_order isEqualTo []) exitWith {
         _order params ["_type", "_key"];
         switch (_type) do {
-            case "attack": {[format ["Attack %1", markerText _key], markerPos _key, true]};
-            case "defend": {[format ["Defend %1", markerText _key], markerPos _key, true]};
+            case "attack": {[format ["Attack %1", [_key] call HPC_fnc_sectorName], markerPos _key, true]};
+            case "defend": {[format ["Defend %1", [_key] call HPC_fnc_sectorName], markerPos _key, true]};
             case "hold": {
                 private _near = [_key, sectors_allSectors, 600] call _nearestSector;
-                [if (_near == "") then {"Hold position"} else {format ["Hold at %1", markerText _near]}, _key, true]
+                [if (_near == "") then {"Hold position"} else {format ["Hold at %1", [_near] call HPC_fnc_sectorName]}, _key, true]
             };
             default {[format ["Defend %1", [_key] call _fobName], _key, true]};
         }
     };
     private _auto = _group getVariable ["HPC_order", []];
-    if (_auto isEqualTo []) exitWith {["Auto", [], false]};
+    if (_auto isEqualTo []) exitWith {["Awaiting orders", [], false]};
     private _pos = _auto select 0;
     if ((_group getVariable ["HPC_warfareRole", ""]) == "guard") exitWith {[format ["Guarding %1", [_pos] call _fobName], _pos, false]};
     private _best = [_pos, active_sectors, 400] call _nearestSector;
-    if (_best != "") exitWith {[format ["Auto: attack %1", markerText _best], markerPos _best, false]};
-    ["Auto", _pos, false]
+    if (_best != "") exitWith {[format ["Attack %1", [_best] call HPC_fnc_sectorName], markerPos _best, false]};
+    ["Advancing", _pos, false]
 };
 
 // Player assets: every player's fireteams and built squads, and player-owned vehicles.

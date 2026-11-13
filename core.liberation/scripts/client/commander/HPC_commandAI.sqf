@@ -114,7 +114,6 @@ if !(active_sectors isEqualTo []) then {_focus = markerPos (active_sectors selec
 _map ctrlMapAnimAdd [0, 0.18, _focus];
 ctrlMapAnimCommit _map;
 
-private _roleOrder = createHashMapFromArray [["infantry", 0], ["light", 1], ["heavy", 2]];
 // One "auto after capture" checkbox per visible list row, in the column left of the list
 // (rowHeight of HPC_CmdList is 2.0 grid units; one unit = safezoneH / 54).
 private _rowHeight = 2 * safezoneH / 54;
@@ -138,6 +137,11 @@ for "_i" from 0 to (floor (_listH / _rowHeight) - 1) do {
     }];
     _checks pushBack _check;
 };
+private _slotKeys = ["Assault 1", "Assault 2", "Armor 1", "Armor 2", "Armor 3", "Armor 4", "Armor 5"];
+private _prices = missionNamespace getVariable ["HPC_armorPrices", createHashMap];
+private _tankPrice = _prices getOrDefault ["tank", 35];
+private _apcPrice = _prices getOrDefault ["apc", 15];
+private _pad = {params ["_n", "_width"]; private _t = str _n; while {count _t < _width} do {_t = "0" + _t}; _t};
 private _destSignature = [];
 private _lastSingle = grpNull;
 private _tick = 0;
@@ -165,14 +169,14 @@ private _fillDestinations = {
     ["Automatic: AI picks its own objective", ["auto", "", []], [0.62, 0.69, 0.72, 1]] call _add;
     ["ATTACK  -  ACTIVE SECTORS"] call _heading;
     if (active_sectors isEqualTo []) then {["   None yet: start a battle first", [], [0.5, 0.55, 0.6, 1]] call _add};
-    {[markerText _x, ["attack", _x, markerPos _x], [1, 0.55, 0.48, 1], "mil_objective"] call _add} forEach active_sectors;
+    {[[_x] call HPC_fnc_sectorName, ["attack", _x, markerPos _x], [1, 0.55, 0.48, 1], "mil_objective"] call _add} forEach active_sectors;
     ["DEFEND  -  FOB"] call _heading;
     if (GRLIB_all_fobs isEqualTo []) then {["   No FOB built", [], [0.5, 0.55, 0.6, 1]] call _add};
     {
         ["FOB " + ((missionNamespace getVariable ["military_alphabet", []]) param [_forEachIndex, str (_forEachIndex + 1)]), ["fob", +_x, +_x], [0.55, 0.88, 1, 1], "mil_flag"] call _add;
     } forEach GRLIB_all_fobs;
     ["DEFEND  -  SECTOR"] call _heading;
-    private _friendly = blufor_sectors apply {[markerText _x, _x]};
+    private _friendly = blufor_sectors apply {[[_x] call HPC_fnc_sectorName, _x]};
     _friendly sort true;
     if (_friendly isEqualTo []) then {["   No friendly sector", [], [0.5, 0.55, 0.6, 1]] call _add};
     {[_x select 0, ["defend", _x select 1, markerPos (_x select 1)], [0.6, 0.75, 1, 1], "mil_flag"] call _add} forEach _friendly;
@@ -189,54 +193,95 @@ while {!isNull _display} do {
             call _fillDestinations;
         };
 
-        private _groups = (call HPC_fnc_mapForceGroups) select {(_x getVariable ["HPC_warfareRole", ""]) in ["infantry", "light", "heavy"]};
-        private _sorted = _groups apply {[_roleOrder getOrDefault [_x getVariable ["HPC_warfareRole", ""], 9], _x getVariable ["HPC_warfareName", groupId _x], _x]};
-        _sorted sort true;
-        _groups = _sorted apply {_x select 2};
+        // One row per warfare slot (Assault 1-2, Armor 1-5): its live group, or its respawn state.
+        private _live = (call HPC_fnc_mapForceGroups) select {(_x getVariable ["HPC_warfareRole", ""]) in ["infantry", "light", "heavy"]};
+        private _rows = [];
+        {
+            private _key = _x;
+            private _index = _live findIf {(_x getVariable ["HPC_armorSquad", ""]) == _key || {(_x getVariable ["HPC_warfareName", ""]) == _key}};
+            private _group = if (_index < 0) then {grpNull} else {_live deleteAt _index};
+            private _slot = missionNamespace getVariable ["HPC_warfareSlot_" + _key, []];
+            if (!isNull _group || {!(_slot isEqualTo [])}) then {_rows pushBack [_key, _group, _slot]};
+        } forEach _slotKeys;
+        {_rows pushBack [_x getVariable ["HPC_warfareName", groupId _x], _x, []]} forEach _live;
+        private _groups = _rows apply {_x select 1};
         if !(_groups isEqualTo HPC_cmdGroups) then {
             private _selected = HPC_mapSelected;
             lbClear _groupsList;
             {
-                private _index = _groupsList lbAdd (groupId _x);
-                if (_x in _selected) then {_groupsList lbSetSelected [_index, true]};
+                private _index = _groupsList lbAdd "";
+                if (!isNull _x && {_x in _selected}) then {_groupsList lbSetSelected [_index, true]};
             } forEach _groups;
             HPC_cmdGroups = _groups;
         };
         {
-            private _group = _x;
-            ([_group] call HPC_fnc_mapGroupInfo) params ["_kind", "_name", "_marker", "_alive"];
-            ([_group] call HPC_fnc_mapOrderText) params ["_orderText", "_target", "_ordered"];
-            // vehicle crews show the points they have banked for their next vehicle
-            private _points = _group getVariable ["HPC_armorPoints", -1];
-            if (_points >= 0) then {_name = format ["%1 - %2 pts", _name, _points]};
-            private _combat = combatBehaviour _group == "COMBAT";
-            _groupsList lbSetText [_forEachIndex, format ["%1%2  [%3]  %4", ["", "! "] select _combat, _name, _alive, _orderText]];
-            _groupsList lbSetPicture [_forEachIndex, [_marker] call HPC_fnc_mapIcon];
-            _groupsList lbSetPictureColor [_forEachIndex, [0.3, 0.62, 1, 1]];
-            private _check = _checks param [_forEachIndex, controlNull];
-            if (!isNull _check) then {
-                private _return = _group getVariable ["HPC_cmdReturn", true];
-                // Only push server state into the box when it differs, so a fresh click is not undone.
-                if (!((cbChecked _check) isEqualTo _return) && {diag_tickTime - (_check getVariable ["HPC_clickedAt", -10]) > 3}) then {_check cbSetChecked _return};
-                if !(ctrlShown _check) then {_check ctrlShow true};
+            _x params ["_key", "_group", "_slot"];
+            private _row = _forEachIndex;
+            // vehicle crews: banked points and what they can buy next
+            private _pointsText = "";
+            if (_key find "Armor" == 0) then {
+                private _points = missionNamespace getVariable ["HPC_armorBank_" + _key, _group getVariable ["HPC_armorPoints", 0]];
+                _pointsText = format ["%1 pts - %2", _points, switch (true) do {
+                    case (_points >= _tankPrice): {"tank ready"};
+                    case (_points >= _apcPrice): {format ["APC ready, tank at %1", _tankPrice]};
+                    default {format ["APC at %1", _apcPrice]};
+                }];
             };
-            _groupsList lbSetColor [_forEachIndex, switch (true) do {
-                case _combat: {[1, 0.55, 0.45, 1]};
-                case _ordered: {[1, 0.86, 0.4, 1]};
-                default {[0.92, 0.94, 0.95, 1]};
-            }];
-            _groupsList lbSetTooltip [_forEachIndex, format ["%1 - %2 alive%3", _name, _alive, ["", " - in combat"] select _combat]];
-        } forEach HPC_cmdGroups;
+            private _check = _checks param [_row, controlNull];
+            if (isNull _group) then {
+                _slot params [["_state", "waiting"], ["_readyAt", -1]];
+                private _left = round ((_readyAt - serverTime) max 0);
+                private _right = if (_state == "respawning") then {
+                    if (_left > 0) then {format ["Respawn %1:%2", floor (_left / 60), [_left mod 60, 2] call _pad]} else {"Respawning..."}
+                } else {"Waiting for battle"};
+                _groupsList lbSetText [_row, _key + (["", "  -  " + _pointsText] select (_pointsText != ""))];
+                _groupsList lbSetTextRight [_row, _right];
+                _groupsList lbSetPicture [_row, ["respawn_inf"] call HPC_fnc_mapIcon];
+                _groupsList lbSetPictureColor [_row, [0.5, 0.55, 0.6, 1]];
+                _groupsList lbSetColor [_row, [0.55, 0.6, 0.64, 1]];
+                _groupsList lbSetColorRight [_row, [0.55, 0.6, 0.64, 1]];
+                _groupsList lbSetTooltip [_row, format ["%1 is %2.%3", _key, [toLower _right, "respawning"] select (_state == "respawning"), ["", " " + _pointsText + "."] select (_pointsText != "")]];
+                if (!isNull _check && {ctrlShown _check}) then {_check ctrlShow false};
+            } else {
+                ([_group] call HPC_fnc_mapGroupInfo) params ["_kind", "_name", "_marker", "_alive"];
+                ([_group] call HPC_fnc_mapOrderText) params ["_orderText", "_target", "_ordered"];
+                private _combat = combatBehaviour _group == "COMBAT";
+                private _text = format ["%1%2  (%3)", ["", "! "] select _combat, _name, _alive];
+                if (_pointsText != "") then {_text = _text + "  -  " + _pointsText};
+                _groupsList lbSetText [_row, _text];
+                _groupsList lbSetTextRight [_row, _orderText];
+                _groupsList lbSetPicture [_row, [_marker] call HPC_fnc_mapIcon];
+                _groupsList lbSetPictureColor [_row, [0.3, 0.62, 1, 1]];
+                private _color = switch (true) do {
+                    case _combat: {[1, 0.55, 0.45, 1]};
+                    case _ordered: {[1, 0.86, 0.4, 1]};
+                    default {[0.92, 0.94, 0.95, 1]};
+                };
+                _groupsList lbSetColor [_row, _color];
+                _groupsList lbSetColorRight [_row, _color];
+                _groupsList lbSetTooltip [_row, format ["%1 - %2 alive - %3%4%5", _name, _alive, _orderText, ["", " - in combat"] select _combat, ["", " - " + _pointsText] select (_pointsText != "")]];
+                if (!isNull _check) then {
+                    private _return = _group getVariable ["HPC_cmdReturn", true];
+                    // Only push server state into the box when it differs, so a fresh click is not undone.
+                    if (!((cbChecked _check) isEqualTo _return) && {diag_tickTime - (_check getVariable ["HPC_clickedAt", -10]) > 3}) then {_check cbSetChecked _return};
+                    if !(ctrlShown _check) then {_check ctrlShow true};
+                };
+            };
+        } forEach _rows;
         {if (_forEachIndex >= count HPC_cmdGroups && {ctrlShown _x}) then {_x ctrlShow false}} forEach _checks;
 
         (_display displayCtrl 103) ctrlSetText format [
             "%1 groups under your command   -   %2 following your orders   -   %3 active objective%4",
-            count HPC_cmdGroups,
-            {!((_x getVariable ["HPC_cmdOrder", []]) isEqualTo [])} count HPC_cmdGroups,
+            {!isNull _x} count HPC_cmdGroups,
+            {!isNull _x && {!((_x getVariable ["HPC_cmdOrder", []]) isEqualTo [])}} count HPC_cmdGroups,
             count active_sectors,
             ["s", ""] select (count active_sectors == 1)
         ];
         (_display displayCtrl 105) ctrlSetText (["", "No assault squads or armor yet." + endl + "They deploy from your FOBs once a battle starts."] select (HPC_cmdGroups isEqualTo []));
+        private _respawning = {isNull _x} count HPC_cmdGroups;
+        if (_respawning > 0) then {
+            (_display displayCtrl 103) ctrlSetText format ["%1   -   %2 respawning", ctrlText (_display displayCtrl 103), _respawning];
+        };
     };
 
     HPC_mapSelected = ((lbSelection _groupsList) apply {HPC_cmdGroups param [_x, grpNull]}) select {!isNull _x};

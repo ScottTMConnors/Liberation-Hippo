@@ -78,6 +78,13 @@ HPC_fnc_warfareGo = compileFinal {
         ["AWARE", "COMBAT"] select _mounted
     ] call HPC_fnc_groupOrder;
 };
+// Status of each friendly warfare slot for the commander window, which also lists slots
+// whose squad or vehicle is waiting to respawn: HPC_warfareSlot_<key> = [state, readyAt]
+// with state "waiting" (no battle), "active" or "respawning" (readyAt in serverTime).
+HPC_fnc_warfareSlot = compileFinal {
+    params ["_key", "_state", ["_delay", 0]];
+    missionNamespace setVariable ["HPC_warfareSlot_" + _key, [_state, [-1, serverTime + _delay] select (_state == "respawning")], true];
+};
 // Public tags read by the map overlay and the commander window.
 HPC_fnc_warfareTag = compileFinal {
     params ["_group", "_role", "_name"];
@@ -91,6 +98,8 @@ HPC_fnc_warfareTag = compileFinal {
 HPC_fnc_warfareInfantry = compileFinal {
     params ["_enemy", "_number"];
     private _side = if (_enemy) then {GRLIB_side_enemy} else {GRLIB_side_friendly};
+    private _slot = format ["Assault %1", _number];
+    if (!_enemy) then {[_slot, "waiting"] call HPC_fnc_warfareSlot};
     while {call HPC_fnc_warfareActive} do {
         waitUntil {sleep 2; !(call HPC_fnc_warfareActive) || {count GRLIB_all_fobs > 0 && count active_sectors > 0}};
         if !(call HPC_fnc_warfareActive) exitWith {};
@@ -104,6 +113,7 @@ HPC_fnc_warfareInfantry = compileFinal {
         };
         if (!isNull _group) then {
             [_group, "infantry", format [["Assault %1", "Enemy assault %1"] select _enemy, _number]] call HPC_fnc_warfareTag;
+            if (!_enemy) then {[_slot, "active"] call HPC_fnc_warfareSlot};
             private _target = [];
             while {call HPC_fnc_warfareActive && {{alive _x} count units _group > 0}} do {
                 private _order = if (_enemy) then {[]} else {[_group] call HPC_fnc_warfareOrder};
@@ -120,7 +130,9 @@ HPC_fnc_warfareInfantry = compileFinal {
             };
             [_group] call HPC_fnc_warfareDelete;
         };
-        sleep (if (_enemy) then {random [120,240,480]} else {random [30,60,90]});
+        private _delay = if (_enemy) then {random [120,240,480]} else {random [30,60,90]};
+        if (!_enemy) then {[_slot, "respawning", _delay] call HPC_fnc_warfareSlot};
+        sleep _delay;
     };
 };
 // AI vehicle crew ("Armor N"). The crew banks points from its kills (HPC_fnc_armorPoints, fed
@@ -131,6 +143,7 @@ HPC_fnc_warfareInfantry = compileFinal {
 // A disabled vehicle is field-repaired by the crew mechanic; one that cannot be repaired is
 // abandoned and the crew despawns (HPC_fnc_crewCare).
 HPC_armorPrices = createHashMapFromArray [["tank", 35], ["apc", 15], ["mrap", 0]];
+publicVariable "HPC_armorPrices";
 HPC_armorGroups = createHashMap;
 HPC_fnc_armorChoose = compileFinal {
     params ["_points"];
@@ -147,6 +160,7 @@ HPC_fnc_warfareVehicle = compileFinal {
     params ["_number"];
     private _key = format ["Armor %1", _number];
     private _typeNames = createHashMapFromArray [["tank", "Tank"], ["apc", "APC"], ["mrap", "MRAP"]];
+    [_key, "waiting"] call HPC_fnc_warfareSlot;
     while {call HPC_fnc_warfareActive} do {
         waitUntil {sleep 2; !(call HPC_fnc_warfareActive) || {count GRLIB_all_fobs > 0 && count active_sectors > 0}};
         if !(call HPC_fnc_warfareActive) exitWith {};
@@ -175,6 +189,7 @@ HPC_fnc_warfareVehicle = compileFinal {
             _group setVariable ["HPC_armorSquad", _key, true];
             _group setVariable ["HPC_armorPoints", [_key] call HPC_fnc_armorPoints, true];
             HPC_armorGroups set [_key, _group];
+            [_key, "active"] call HPC_fnc_warfareSlot;
             _vehicle setVariable ["HPC_warfare", true, true];
             _vehicle lock 3;	// locked for players only: the crew can still get back in after repairs
             // the driver (or any crew member) is the crew's mechanic
@@ -224,7 +239,9 @@ HPC_fnc_warfareVehicle = compileFinal {
             HPC_armorGroups deleteAt _key;
             [_group, _vehicle] call HPC_fnc_warfareDelete;
         };
-        sleep (if (!_spawned && {!(_pool isEqualTo [])}) then {random [10,20,30]} else {random [120,240,480]});
+        private _delay = if (!_spawned && {!(_pool isEqualTo [])}) then {random [10,20,30]} else {random [120,240,480]};
+        [_key, "respawning", _delay] call HPC_fnc_warfareSlot;
+        sleep _delay;
     };
 };
 

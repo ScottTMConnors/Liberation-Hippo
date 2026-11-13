@@ -2,15 +2,15 @@
 // Layout on the HPC grid: forces list (with per-row AUTO checkboxes created by the script in
 // the narrow column at its left), the map (created by the script over MapFrame, idc 141) in
 // the middle, destinations on the right, status/hint footer with the primary SEND button.
-#define CMD_W ((92 * HPC_GX) min (safezoneW - 2 * HPC_GX))
+#define CMD_W ((100 * HPC_GX) min (safezoneW - 2 * HPC_GX))
 #define CMD_H (47 * HPC_GY)
 #define CMD_X (0.5 - CMD_W / 2)
 #define CMD_Y (safezoneY + 3.5 * HPC_GY)
 #define CMD_PAD (1.1 * HPC_GX)
 #define CMD_CB_W (1.8 * HPC_GX)
 #define CMD_LIST_X (CMD_X + CMD_PAD + CMD_CB_W + 0.2 * HPC_GX)
-#define CMD_LIST_W (26 * HPC_GX)
-#define CMD_LEFT_W (28 * HPC_GX)
+#define CMD_LIST_W (34 * HPC_GX)
+#define CMD_LEFT_W (36 * HPC_GX)
 #define CMD_DEST_W (22 * HPC_GX)
 #define CMD_DEST_X (CMD_X + CMD_W - CMD_PAD - CMD_DEST_W)
 #define CMD_MAP_X (CMD_X + CMD_PAD + CMD_LEFT_W + 1.2 * HPC_GX)
@@ -184,7 +184,7 @@ class HPC_AICommand {
         class Hint : HPC_Text {
             idc = 104;
             style = ST_LEFT + ST_MULTI;
-            text = "AUTO box: once its target is taken, a checked group returns to automatic; an unchecked group stays and defends. FOB guards always stay at their FOB.";
+            text = "AUTO box: once its target is taken, a checked group returns to automatic; an unchecked group stays and defends. Grey rows are squads and vehicles waiting to respawn. FOB guards always stay at their FOB.";
             x = CMD_X + CMD_PAD; y = CMD_Y + 43.1 * HPC_GY; w = CMD_W - 2 * CMD_PAD - CMD_DEST_W - 1.2 * HPC_GX; h = 3.0 * HPC_GY;
             sizeEx = 0.85 * HPC_GY;
             colorText[] = HPC_C_MUTED;

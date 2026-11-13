@@ -50,8 +50,8 @@ private _ordered = [];
 } forEach _orderable;
 
 private _where = switch (_type) do {
-    case "attack": { format ["attack %1", markerText _key] };
-    case "defend": { format ["defend %1", markerText _key] };
+    case "attack": { format ["attack %1", [_key] call HPC_fnc_sectorName] };
+    case "defend": { format ["defend %1", [_key] call HPC_fnc_sectorName] };
     case "fob": { format ["defend FOB %1", [_key] call F_getFobName] };
     default { "pick their own objectives" };
 };
