@@ -553,6 +553,13 @@ while {true} do {
 			};
 
 			build_vehicle = _vehicle;
+			// manpower: count again once the crew is in (UAV crews are created a moment later)
+			[_vehicle] spawn {
+				params ["_vehicle"];
+				private _timeout = time + 5;
+				waitUntil { sleep 0.5; !alive _vehicle || {count crew _vehicle > 0} || {time > _timeout} };
+				[] call HPC_fnc_manpowerChanged;
+			};
 			["stats_blufor_vehicles_built", 1] remoteExecCall ["HPC_fnc_addStat", 2];
 		};
 	};

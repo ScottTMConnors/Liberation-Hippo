@@ -5,6 +5,10 @@
 params ["_pos", "_class"];
 if (count _pos < 2 || {surfaceIsWater _pos}) exitWith {false};
 private _radius = ((getNumber (configFile >> "CfgVehicles" >> _class >> "mapSize")) max 6) / 2 + 2;
+// a spot another spawn on this machine has just claimed (HPC_fnc_vehicleSpawnPos), whose vehicle may not exist yet
+if ((missionNamespace getVariable ["HPC_vehicleSpotClaims", []]) findIf {
+	time < (_x select 2) && {(_x select 0) distance2D _pos < (_x select 1) + _radius}
+} >= 0) exitWith {false};
 if ((surfaceNormal _pos) select 2 < 0.94) exitWith {false};
 if (count (nearestTerrainObjects [_pos, ["BUILDING","HOUSE","WALL","FENCE","ROCK","ROCKS","TREE","BUNKER","FORTRESS","RUIN","TRANSMITTER","POWER LINES","WATERTOWER","FUELSTATION"], _radius + 1, false, true]) > 0) exitWith {false};
 // mission objects: FOB structures, crates, statics, units and other vehicles
