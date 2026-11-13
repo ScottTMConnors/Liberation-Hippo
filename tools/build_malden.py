@@ -21,7 +21,7 @@ def sha(path): return hashlib.sha256(path.read_bytes()).hexdigest()
 OVERVIEW_TEXT='Hippos Conquest: a Liberation RX fork. Capture the island sector by sector with your squad: build FOBs, command AI forces and manage manpower, ammo and fuel.'
 
 # Map folder suffix -> terrain name shown in Arma.
-MAPS={'Malden':'Malden 2035','Tanoa':'Tanoa'}
+MAPS={'Malden':'Malden 2035','Tanoa':'Tanoa','Altis':'Altis','Stratis':'Stratis','Enoch':'Livonia','SefrouRamal':'Sefrou-Ramal'}
 
 def next_version(base_version, manifest_paths):
     """Advance the patch number after every successful local build (shared by all maps)."""
