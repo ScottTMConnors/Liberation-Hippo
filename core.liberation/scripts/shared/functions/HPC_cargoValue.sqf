@@ -2,7 +2,7 @@
 // _kind "item":   an F_getCargo entry (weapon [7 fields], [class, count], container [class, contents, 0])
 // _kind "object": a cargo object entry (class, crate [class, items], vehicle entry)
 // Prices: items use the arsenal price list (F_loadoutPrice), objects and vehicles their build
-// price (GRLIB_recycleable_info: [class, manpower, ammo, fuel, ...]); a vehicle's ammo price
+// price (HPC_buildInfo: [class, manpower, ammo, fuel, ...]); a vehicle's ammo price
 // scales with its condition like the recycle action. A vehicle's or crate's own cargo is included.
 params ["_kind", "_entry"];
 
@@ -26,9 +26,8 @@ private _itemValue = {
 
 private _buildPrice = {
 	params ["_class"];
-	private _row = GRLIB_recycleable_info select { (_x select 0) == _class };
-	if (_row isEqualTo []) exitWith { [0, 0] };
-	[(_row select 0) param [2, 0], (_row select 0) param [3, 0]]
+	private _row = HPC_buildInfo getOrDefault [toLower _class, []];
+	[_row param [2, 0], _row param [3, 0]]
 };
 
 if (_kind == "item") exitWith { [[_entry] call _itemValue, 0] };

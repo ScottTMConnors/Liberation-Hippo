@@ -81,21 +81,26 @@ light_vehicles = [
 	//["I_MRAP_03_F",2,25,2,0],
 	//["I_MRAP_03_hmg_F",5,100,2,GRLIB_perm_cpl],
 	//["I_MRAP_03_gmg_F",5,125,2,GRLIB_perm_sgt],
-	//["I_LT_01_cannon_F",2,200,2,GRLIB_perm_sgt],
+	//["I_LT_01_cannon_F",2,200,12,GRLIB_perm_sgt],
 	["B_Truck_01_transport_F",5,30,15,GRLIB_perm_cpl],
 	["B_Truck_01_covered_F",5,30,15,GRLIB_perm_cpl],
 	["B_Truck_01_flatbed_F",5,30,15,GRLIB_perm_cpl],
 	["I_Truck_02_transport_F",5,30,15,GRLIB_perm_cpl],
-	["I_Truck_02_covered_F",5,30,15,GRLIB_perm_cpl]
+	["I_Truck_02_covered_F",5,30,15,GRLIB_perm_cpl],
+	["B_Pickup_rf",2,25,10,GRLIB_perm_cpl],
+	["B_Pickup_Comms_rf",2,50,10,GRLIB_perm_cpl],
+	["B_Pickup_mmg_rf",5,100,10,GRLIB_perm_cpl],
+	["B_Pickup_aat_rf",5,125,10,GRLIB_perm_sgt],
+	["B_Tura_Offroad_armor_armed_lxWS",1,75,5,GRLIB_perm_cpl]
 ];
 
 heavy_vehicles = [
-	["B_LSV_01_armed_F",5,100,10,GRLIB_perm_ssg],
+	["B_LSV_01_armed_F",5,100,10,GRLIB_perm_sgt],
 	["B_MRAP_01_hmg_F",5,100,12,GRLIB_perm_cpl],
 	["B_MRAP_01_gmg_F",5,125,12,GRLIB_perm_sgt],
-	["B_APC_Wheeled_01_cannon_F",10,500,20,GRLIB_perm_sgm],
+	["B_APC_Wheeled_01_cannon_F",10,500,20,GRLIB_perm_sgt],
 	["B_APC_Wheeled_03_cannon_F",10,500,20,GRLIB_perm_sgm],
-	["B_APC_Tracked_01_rcws_F",10,500,20,GRLIB_perm_sgm]
+	["B_APC_Tracked_01_rcws_F",10,500,20,GRLIB_perm_sgt]
 ];
 
 air_vehicles = [
@@ -107,8 +112,8 @@ air_vehicles = [
 	// ["C_Plane_Civil_01_F",1,50,5,GRLIB_perm_sgt],
 	["B_Heli_Light_01_F",1,50,15,GRLIB_perm_sgt],
 	// ["B_Heli_Light_01_dynamicLoadout_F",1,150,15,GRLIB_perm_sfc],
-	["I_Heli_light_03_unarmed_F",1,50,5,GRLIB_perm_sgt],
-	["B_Heli_Transport_01_unarmed_F",1,500,5,GRLIB_perm_sgm]
+	["I_Heli_light_03_unarmed_F",1,50,15,GRLIB_perm_sgt],
+	["B_Heli_Transport_01_unarmed_F",5,500,35,GRLIB_perm_sgm]
 	// ["I_Heli_light_03_dynamicLoadout_F",10,500,20,GRLIB_perm_sgm],
 	// //["I_Plane_Fighter_03_dynamicLoadout_F", 10,3500,20,GRLIB_perm_ltc],
 	// ["B_Heli_Transport_03_F",10,1700,35,GRLIB_perm_cpt],
@@ -140,7 +145,7 @@ static_vehicles_AI = [
 
 support_vehicles_west = [
 	["B_G_Offroad_01_repair_F",5,150,5,GRLIB_perm_cpl],
-	["B_G_Van_01_fuel_F",5,130,40,GRLIB_perm_cpl],
+	["B_G_Van_01_fuel_F",5,120,60,GRLIB_perm_sgt],
 	["B_APC_Tracked_01_CRV_F",15,2000,50,GRLIB_perm_cpt]
 ];
 

@@ -6,11 +6,10 @@
 // in LRX_Mission_Params_Def,
 //   define parameter full name, list of choice, (optinal) custom value
 
+private _lrx_names = createHashMap;
 private _lrx_getParamValue = {
 	params ["_name"];
-	private _ret = GRLIB_mod_list_name select {_x select 0 == _name} select 0;
-	if (isNil "_ret") exitWith {"!! Unknown !!"};
-	(_ret select 1);
+	_lrx_names getOrDefault [toLower _name, "!! Unknown !!"]
 };
 
 private _lrx_get_mod_template = {
@@ -29,6 +28,8 @@ private _lrx_get_mod_template = {
 // condition first: these are usually already set, so do not always sleep half a second
 waitUntil {!isNil "GRLIB_mod_list_west" || {uiSleep 0.1; false}};
 waitUntil {!isNil "GRLIB_mod_list_east" || {uiSleep 0.1; false}};
+waitUntil {!isNil "GRLIB_mod_list_name" || {uiSleep 0.1; false}};
+{ _lrx_names set [toLower (_x select 0), _x select 1] } forEach GRLIB_mod_list_name;
 private _list_west = ([GRLIB_mod_list_west,"west"] call _lrx_get_mod_template);
 private _list_east = ([GRLIB_mod_list_east,"east"] call _lrx_get_mod_template);
 

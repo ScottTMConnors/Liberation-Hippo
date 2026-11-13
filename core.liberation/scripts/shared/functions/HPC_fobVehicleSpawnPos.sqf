@@ -1,24 +1,14 @@
 // Spawn position for an AI vehicle sent out from a FOB.
-// At least _minDist from every FOB (so it never lands inside the base), on flat open
-// ground or a road, with no building, wall, rock, tree, unit or vehicle in its footprint.
+// At least _minDist from every FOB (so it never lands inside the base), on a clear spot
+// (HPC_fnc_vehicleSpotClear: flat dry ground or road, nothing in the vehicle's footprint).
 // params: [fob position, vehicle class, min distance (120), max distance (350)]
 // Returns an ATL position, or [] when no clear spot was found.
 params ["_fob", "_class", ["_minDist", 120], ["_maxDist", 350]];
 if (count _fob < 2) exitWith {[]};
 
-private _size = (getNumber (configFile >> "CfgVehicles" >> _class >> "mapSize")) max 6;
-private _radius = _size / 2 + 2;
-
 private _clear = {
 	params ["_pos"];
-	if (surfaceIsWater _pos) exitWith {false};
-	if (GRLIB_all_fobs findIf {_x distance2D _pos < _minDist} >= 0) exitWith {false};
-	if ((surfaceNormal _pos) select 2 < 0.94) exitWith {false};
-	if (count (nearestTerrainObjects [_pos, ["BUILDING","HOUSE","WALL","FENCE","ROCK","ROCKS","TREE","BUNKER","FORTRESS","RUIN","TRANSMITTER","POWER LINES","WATERTOWER","FUELSTATION"], _radius + 1, false, true]) > 0) exitWith {false};
-	// mission objects: FOB structures, crates, statics, units and other vehicles
-	if (count (nearestObjects [_pos, ["AllVehicles","Static","Building","Thing","ReammoBox_F"], _radius + 4, true]) > 0) exitWith {false};
-	if (count (_pos nearEntities [["CAManBase","LandVehicle","Air","Ship"], _radius + 8]) > 0) exitWith {false};
-	true
+	(GRLIB_all_fobs findIf {_x distance2D _pos < _minDist} < 0) && {[_pos, _class] call HPC_fnc_vehicleSpotClear}
 };
 
 private _found = [];

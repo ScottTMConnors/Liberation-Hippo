@@ -6,7 +6,8 @@ private [
 	"_veh_man", "_veh_ammo", "_veh_fuel", "_tooltip", "_row", "_build_class",
     "_build_item", "_countCrew", "_countCargo", "_unit_desc", "_ammo_collected", "_fuel_collected"
 ];
-if (isNil "resources_infantry") exitWith {};
+if (isNil "HPC_fnc_manpowerRecount") exitWith {};
+[] call HPC_fnc_manpowerRecount;
 
 if (_trench) then {
 	buildtype = GRLIB_TrenchBuildType;

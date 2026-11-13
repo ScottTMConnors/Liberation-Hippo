@@ -1,5 +1,6 @@
-private _tent_cost = support_vehicles select {(_x select 0) == mobile_respawn} select 0 select 1;
+private _tent_cost = (HPC_buildInfo getOrDefault [toLower mobile_respawn, []]) param [1, 0];
 
+if (!isNil "HPC_fnc_manpowerRecount") then { [] call HPC_fnc_manpowerRecount };
 if ( _tent_cost > (infantry_cap - resources_infantry)) then {
 	hintSilent format [localize "STR_BEACON_UNPACK", resources_infantry];
 } else {

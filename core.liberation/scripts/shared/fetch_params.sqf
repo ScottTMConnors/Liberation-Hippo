@@ -158,6 +158,11 @@ if (GRLIB_LRX_Template_enabled) then {
 	if (typeName LRX_Template_version == "SCALAR") then {
 		if (LRX_Template_version >= 2 ) then {
 			[] call LRX_Template_fnc_loading;
+			// The mission bundles these templates; the mod only adds ones it lacks.
+			private _bundled = (GRLIB_mod_list_west + GRLIB_mod_list_east) apply {toLower _x};
+			LRX_mod_list_west = LRX_mod_list_west select {!(toLower _x in _bundled)};
+			LRX_mod_list_east = LRX_mod_list_east select {!(toLower _x in _bundled)};
+			LRX_mod_list_name = LRX_mod_list_name select {!(toLower (_x select 0) in _bundled)};
 			GRLIB_mod_list_west append LRX_mod_list_west;
 			GRLIB_mod_list_east append LRX_mod_list_east;
 			GRLIB_mod_list_name append LRX_mod_list_name;

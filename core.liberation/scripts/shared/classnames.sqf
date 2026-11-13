@@ -24,10 +24,10 @@ HPC_factionHeavyVehicles = +heavy_vehicles;
 
 ["classnames.catalog"] call HPC_fnc_loadMark;
 diag_log "--- LRX: Check West Classnames ---";
-private _blufor_vehicles = [];
-{ _blufor_vehicles pushBackUnique (_x select 0) } forEach (infantry_units_west + light_vehicles + heavy_vehicles + air_vehicles + static_vehicles + support_vehicles_west + buildings_west);
-{ _blufor_vehicles pushBackUnique _x } foreach (blufor_air + static_vehicles_AI + boats_west + blufor_squad_inf_light + blufor_squad_inf + blufor_squad_at + blufor_squad_aa + blufor_squad_mix);
-{ [_x] call F_checkClass } forEach _blufor_vehicles;
+private _blufor_vehicles = createHashMap; // class -> true: unique without pushBackUnique's linear scan
+{ _blufor_vehicles set [_x select 0, true] } forEach (infantry_units_west + light_vehicles + heavy_vehicles + air_vehicles + static_vehicles + support_vehicles_west + buildings_west);
+{ _blufor_vehicles set [_x, true] } foreach (blufor_air + static_vehicles_AI + boats_west + blufor_squad_inf_light + blufor_squad_inf + blufor_squad_at + blufor_squad_aa + blufor_squad_mix);
+{ [_x] call F_checkClass } forEach keys _blufor_vehicles;
 { units_loadout_overide set [_forEachIndex, toLower _x] } forEach units_loadout_overide;
 
 // Chopper disabled (force truck/ no taxi)
@@ -590,11 +590,9 @@ buildings append [
 	[land_cutter_typename,0,0,0,GRLIB_perm_inf]
 ];
 
-private _buildings_to_delete = [];
-{
-	if ((_x select 0) in (all_friendly_classnames + all_hostile_classnames)) then { _buildings_to_delete pushBack _x };
-} forEach buildings;
-buildings = buildings - _buildings_to_delete;
+private _vehicle_classes = createHashMap;
+{ _vehicle_classes set [_x, true] } forEach (all_friendly_classnames + all_hostile_classnames);
+buildings = buildings select { !((_x select 0) in _vehicle_classes) };
 
 all_lrx_buildings_classnames = buildings apply { _x select 0 };
 
@@ -634,7 +632,12 @@ GRLIB_recycleable_classnames append ["Air","Ship_F","LandVehicle","StaticWeapon"
 GRLIB_recycleable_classnames = GRLIB_recycleable_classnames arrayIntersect GRLIB_recycleable_classnames;
 GRLIB_recycleable_classnames = GRLIB_recycleable_classnames - GRLIB_recycleable_blacklist;
 GRLIB_recycleable_info = (light_vehicles + heavy_vehicles + air_vehicles + static_vehicles + support_vehicles + buildings + opfor_recyclable);
-
+// class (lower case) -> its build entry; the first listing of a class wins, as a linear search did
+HPC_buildInfo = createHashMap;
+{
+	private _k = toLower (_x select 0);
+	if !(_k in HPC_buildInfo) then { HPC_buildInfo set [_k, _x] };
+} forEach GRLIB_recycleable_info;
 // TRENCHES
 [] call compileFinal preprocessFileLineNumbers format ["default\default_trenches_classnames.sqf"];
 

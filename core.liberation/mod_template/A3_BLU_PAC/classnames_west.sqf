@@ -26,19 +26,19 @@ blufor_flag = "Flag_NATO_F";
 infantry_units_west = [
 	["Alsatian_Random_F",0,0,0,GRLIB_perm_col],
 	["Fin_random_F",0,0,0,0],
-	["B_T_Soldier_F",1,10,0,0],
-	["B_T_Medic_F",1,20,0,0],
-	["B_T_Engineer_F",1,20,0,0],
-	["B_T_Soldier_GL_F",1,30,0,GRLIB_perm_pfc],
-	["B_T_soldier_AR_F",1,30,0,GRLIB_perm_cpl],
-	["B_T_Soldier_LAT_F",1,30,0,0],
-	["B_T_soldier_M_F",1,30,0,GRLIB_perm_cpl],
-	["B_T_Support_GMG_F",1,30,0,GRLIB_perm_cpl],
-	["B_T_Recon_F",1,20,0,GRLIB_perm_sgt],
-	["B_T_Diver_F",1,20,0,GRLIB_perm_sgt],
-	["B_T_ghillie_tna_F",1,40,0,GRLIB_perm_cpl],
-	["B_T_Soldier_AA_F",1,50,0,GRLIB_perm_sfc],
-	["B_T_Soldier_AT_F",1,50,0,GRLIB_perm_sfc],
+	["B_T_Soldier_F",1,0,0,0],
+	["B_T_Medic_F",1,0,0,0],
+	["B_T_Engineer_F",1,0,0,0],
+	["B_T_Soldier_GL_F",1,0,0,GRLIB_perm_pfc],
+	["B_T_soldier_AR_F",1,0,0,GRLIB_perm_cpl],
+	["B_T_Soldier_LAT_F",1,0,0,0],
+	["B_T_soldier_M_F",1,0,0,GRLIB_perm_cpl],
+	["B_T_Support_GMG_F",1,0,0,GRLIB_perm_cpl],
+	["B_T_Recon_F",1,0,0,GRLIB_perm_sgt],
+	["B_T_Diver_F",1,0,0,GRLIB_perm_sgt],
+	["B_T_ghillie_tna_F",1,0,0,GRLIB_perm_sgm],
+	["B_T_Soldier_AA_F",1,0,0,GRLIB_perm_sfc],
+	["B_T_Soldier_AT_F",1,0,0,GRLIB_perm_sfc],
 	[crewman_classname,1,10,0,GRLIB_perm_pfc],
 	[pilot_classname,1,10,0,GRLIB_perm_ssg]
 ];
@@ -73,8 +73,8 @@ light_vehicles = [
 	["B_G_Offroad_01_F",1,10,5,0],
 	["B_G_Offroad_01_armed_F",1,50,5,GRLIB_perm_cpl],
 	["C_SUV_01_F",1,10,3,GRLIB_perm_pfc],
-	["C_Van_01_transport_F",1,15,5,0],
-	["B_T_MRAP_01_F",2,75,12,GRLIB_perm_cpl],
+	["C_Van_01_transport_F",1,15,7,0],
+	["B_T_MRAP_01_F",2,25,12,0],
 	["B_T_MRAP_01_hmg_F",5,100,12,GRLIB_perm_cpl],
 	["B_T_MRAP_01_gmg_F",5,125,12,GRLIB_perm_sgt],
 	["B_T_Truck_01_transport_F",5,30,15,GRLIB_perm_cpl],
@@ -84,7 +84,13 @@ light_vehicles = [
 	["B_T_LSV_01_armed_F",5,100,10,GRLIB_perm_sgt],
 	["B_T_LSV_01_AT_F",5,125,10,GRLIB_perm_sgt],
 	["B_T_UGV_01_olive_F",5,50,5,GRLIB_perm_cpl],
-	["B_T_UGV_01_rcws_olive_F",5,250,5,GRLIB_perm_msg]
+	["B_T_UGV_01_rcws_olive_F",5,250,5,GRLIB_perm_msg],
+	["B_Pickup_rf",2,25,10,GRLIB_perm_cpl],
+	["B_Pickup_Comms_rf",2,50,10,GRLIB_perm_cpl],
+	["B_Pickup_mmg_rf",5,100,10,GRLIB_perm_cpl],
+	["B_Pickup_aat_rf",5,125,10,GRLIB_perm_sgt],
+	["EF_B_MRAP_01_AT_NATO",5,150,12,GRLIB_perm_sgt],
+	["EF_B_MRAP_01_LAAD_NATO_T",5,200,12,GRLIB_perm_sfc]
 ];
 
 heavy_vehicles = [
@@ -109,8 +115,8 @@ air_vehicles = [
 	["B_Heli_Light_01_dynamicLoadout_F",1,150,15,GRLIB_perm_sfc],
 	["B_Heli_Transport_03_F",10,1700,35,GRLIB_perm_cpt],
 	["B_Heli_Transport_01_F",10,1000,35,GRLIB_perm_2lt],
-	["B_Heli_Transport_01_pylons_F",1,1500,5,GRLIB_perm_1lt],
-	["B_Heli_Transport_01_unarmed_F",1,500,5,GRLIB_perm_sgm],
+	["B_Heli_Transport_01_pylons_F",10,1500,35,GRLIB_perm_1lt],
+	["B_Heli_Transport_01_unarmed_F",5,500,35,GRLIB_perm_sgm],
 	["B_T_VTOL_01_infantry_F",10,1300,40,GRLIB_perm_1lt],
 	["B_T_VTOL_01_vehicle_F",10,1400,40,GRLIB_perm_1lt],
 	["B_T_VTOL_01_armed_F",20,2500,40,GRLIB_perm_maj],
@@ -118,7 +124,10 @@ air_vehicles = [
 	["B_Heli_Attack_01_pylons_dynamicLoadout_F",10,2550,30,GRLIB_perm_maj],
 	["B_Plane_CAS_01_dynamicLoadout_F",20,3000,50,GRLIB_perm_ltc],
 	["B_Plane_Fighter_01_F",20,4500,50,GRLIB_perm_col],
-	["B_Plane_Fighter_01_Stealth_F",20,2000,50,GRLIB_perm_ltc]
+	["B_Plane_Fighter_01_Stealth_F",20,5000,50,GRLIB_perm_col],
+	["B_Heli_EC_04_military_RF",10,1000,25,GRLIB_perm_2lt],
+	["B_Heli_EC_02_RF",10,1500,25,GRLIB_perm_1lt],
+	["B_Heli_EC_03_RF",10,1500,25,GRLIB_perm_1lt]
 ];
 
 blufor_air = [
@@ -139,8 +148,9 @@ static_vehicles = [
 	["B_Radar_System_01_F",0,500,0,GRLIB_perm_sgm],
 	["B_SAM_System_01_F",10,1500,0,GRLIB_perm_1lt],
 	["B_SAM_System_02_F",10,1500,0,GRLIB_perm_1lt],
-	["B_SAM_System_03_F",10,2500,30,GRLIB_perm_maj],
-	["B_AAA_System_01_F",10,1500,0,GRLIB_perm_1lt]
+	["B_SAM_System_03_F",10,2500,0,GRLIB_perm_maj],
+	["B_AAA_System_01_F",10,1500,0,GRLIB_perm_1lt],
+	["B_TwinMortar_RF",10,1500,0,GRLIB_perm_1lt]
 ];
 
 // *** Static Weapon with AI ***
@@ -154,8 +164,8 @@ static_vehicles_AI = [
 
 support_vehicles_west = [
 	["B_G_Offroad_01_repair_F",5,150,5,GRLIB_perm_cpl],
-	["B_G_Van_01_fuel_F",5,130,40,GRLIB_perm_cpl],
-	["B_T_APC_Tracked_01_CRV_F",5,2000,10,GRLIB_perm_sgt]
+	["B_G_Van_01_fuel_F",5,120,60,GRLIB_perm_sgt],
+	["B_T_APC_Tracked_01_CRV_F",15,2000,50,GRLIB_perm_cpt]
 ];
 
 //buildings_west_overide = true;

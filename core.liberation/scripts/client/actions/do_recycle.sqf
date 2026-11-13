@@ -77,8 +77,7 @@ if (_vehicle isKindOf "AllVehicles" && {alive _vehicle} && {_veh_class != mobile
 };
 
 // Classic Recycle
-private _objectinfo = (GRLIB_recycleable_info select { _x select 0 == _veh_class }) select 0;
-if (isNil "_objectinfo") then { _objectinfo = [_veh_class, 0, 0, 0] };
+private _objectinfo = HPC_buildInfo getOrDefault [toLower _veh_class, [_veh_class, 0, 0, 0]];
 
 dorecycle = 0;
 

@@ -14,7 +14,7 @@ FOB_truck_typename = "B_Truck_01_box_F";
 respawn_truck_typename = "I_Truck_02_medical_F";
 ammo_truck_typename = "I_Truck_02_ammo_F";
 fuel_truck_typename = "I_Truck_02_fuel_F";
-repair_truck_typename = "B_Truck_01_Repair_F";
+repair_truck_typename = "I_Truck_02_box_F";
 repair_sling_typename = "B_Slingload_01_Repair_F";
 fuel_sling_typename = "B_Slingload_01_Fuel_F";
 ammo_sling_typename = "B_Slingload_01_Ammo_F";
@@ -69,16 +69,16 @@ light_vehicles = [
 	["I_LT_01_cannon_F",2,200,12,GRLIB_perm_sgt],
 	["I_LT_01_AT_F",2,200,12,GRLIB_perm_sfc],
 	["I_LT_01_AA_F",2,200,12,GRLIB_perm_sfc],
-	["I_UGV_01_F",5,10,5,GRLIB_perm_pfc],
-	["I_UGV_01_rcws_F",5,250,5,GRLIB_perm_sgt]
+	["I_UGV_01_F",5,50,5,GRLIB_perm_cpl],
+	["I_UGV_01_rcws_F",5,250,5,GRLIB_perm_msg]
 ];
 
 heavy_vehicles = [
 	["I_E_APC_tracked_03_cannon_F",10,500,20,GRLIB_perm_sgt],
-	["I_APC_Wheeled_03_cannon_F",10,500,20,GRLIB_perm_msg],
-	["I_APC_tracked_03_cannon_F",10,500,20,GRLIB_perm_sgm],
-	["I_MBT_03_cannon_F",15,1000,25,GRLIB_perm_2lt],
-	["I_Truck_02_MRL_F",15,4000,25,GRLIB_perm_col]
+	["I_APC_Wheeled_03_cannon_F",10,500,20,GRLIB_perm_sgm],
+	["I_APC_tracked_03_cannon_F",10,500,20,GRLIB_perm_sgt],
+	["I_MBT_03_cannon_F",15,1500,35,GRLIB_perm_1lt],
+	["I_Truck_02_MRL_F",15,4000,30,GRLIB_perm_col]
 ];
 
 air_vehicles = [
@@ -87,12 +87,12 @@ air_vehicles = [
 	["I_UAV_02_dynamicLoadout_F",5,1000,5,GRLIB_perm_2lt],
 	["C_Plane_Civil_01_F",1,50,5,GRLIB_perm_sgt],
 	["I_Heli_light_03_unarmed_F",1,50,15,GRLIB_perm_sgt],
-	["I_Heli_light_03_dynamicLoadout_F",1,150,15,GRLIB_perm_sfc],
-	["I_E_Heli_light_03_dynamicLoadout_F",1,150,15,GRLIB_perm_sfc],
-	["I_Plane_Fighter_03_dynamicLoadout_F", 10,3500,50,GRLIB_perm_ltc],
-	["I_Plane_Fighter_03_Cluster_F",20,3000,50,GRLIB_perm_cpt],
+	["I_Heli_light_03_dynamicLoadout_F",10,500,20,GRLIB_perm_sgm],
+	["I_E_Heli_light_03_dynamicLoadout_F",10,500,20,GRLIB_perm_sgm],
+	["I_Plane_Fighter_03_dynamicLoadout_F",20,3000,50,GRLIB_perm_ltc],
+	["I_Plane_Fighter_03_Cluster_F",20,3000,50,GRLIB_perm_ltc],
 	["I_Plane_Fighter_04_F",20,4500,50,GRLIB_perm_col],
-	["I_Plane_Fighter_04_Cluster_F",20,4500,50,GRLIB_perm_col]
+	["I_Plane_Fighter_04_Cluster_F",20,5000,50,GRLIB_perm_col]
 ];
 
 blufor_air = [
@@ -111,11 +111,11 @@ static_vehicles = [
 	["I_HMG_01_high_F",0,10,0,GRLIB_perm_pfc],
 	["I_GMG_01_F",0,20,0,GRLIB_perm_cpl],
 	["I_GMG_01_high_F",0,20,0,GRLIB_perm_cpl],
-	["I_static_AA_F",0,50,0,GRLIB_perm_sgt],
-	["I_static_AT_F",0,50,0,GRLIB_perm_sgt],
+	["I_static_AA_F",0,150,0,GRLIB_perm_sfc],
+	["I_static_AT_F",0,150,0,GRLIB_perm_sfc],
 	["I_Mortar_01_F",0,500,0,GRLIB_perm_sgm],
-	["B_AAA_System_01_F",10,500,0,GRLIB_perm_sgm],
-	["I_E_SAM_System_03_F",10,800,0,GRLIB_perm_2lt]
+	["B_AAA_System_01_F",10,1500,0,GRLIB_perm_1lt],
+	["I_E_SAM_System_03_F",10,2500,0,GRLIB_perm_maj]
 ];
 
 // *** Static Weapon with AI ***
@@ -125,8 +125,8 @@ static_vehicles_AI = [
 ];
 
 support_vehicles_west = [
-	[repair_offroad,5,15,5,GRLIB_perm_pfc],
-	["I_G_Van_01_fuel_F",5,15,20,GRLIB_perm_pfc]
+	[repair_offroad,5,150,5,GRLIB_perm_cpl],
+	["I_G_Van_01_fuel_F",5,120,60,GRLIB_perm_sgt]
 ];
 
 buildings_west = [

@@ -61,8 +61,19 @@ if (_classname isKindOf "Air") then {
 	};
 
 	if (_classname != "") then {
-		if (_size != 0) then {
-			_spawn_pos = [_sectorpos, _size, _water_mode] call F_findSafePlace;
+		if (_water_mode == 2) then {
+			if (_size != 0) then { _spawn_pos = [_sectorpos, _size, _water_mode] call F_findSafePlace };
+		} else {
+			// Land vehicles always get a checked spot: flat, dry, nothing in their footprint
+			// (HPC_fnc_vehicleSpotClear). The asked position is kept when it is clear.
+			_spawn_pos = [_sectorpos, _classname, (_size max 0) + 80] call HPC_fnc_vehicleSpawnPos;
+			if (_spawn_pos isEqualTo []) then {
+				// nothing fully clear nearby (dense town, forest): the looser search, then the asked spot
+				diag_log format ["--- LRX Warning: no clear spot for %1 near %2, using a looser check", _classname, _sectorpos];
+				private _footprint = ((getNumber (configFile >> "CfgVehicles" >> _classname >> "mapSize")) max 6) / 2;
+				_spawn_pos = [_sectorpos, _footprint, 0] call F_findSafePlace;
+				if (_spawn_pos isEqualTo []) then { _spawn_pos = +_sectorpos };
+			};
 		};
 
 		if (count _spawn_pos == 0) exitWith {
@@ -157,18 +168,10 @@ if (_side == GRLIB_side_enemy) then {
 	// Enemy vehicles are often locked against players (the more valuable, the more likely);
 	// their own AI can still use them. HPC_lockpick holds the lockpick time in seconds.
 	if (_side == GRLIB_side_enemy) then {
-		private _row = GRLIB_recycleable_info select { (_x select 0) == _classname };
-		private _value = ((_row param [0, []]) param [2, 0]) min 1500;
+		private _value = ((HPC_buildInfo getOrDefault [toLower _classname, []]) param [2, 0]) min 1500;
 		if (random 1 < 0.3 + 0.6 * _value / 1500) then {
 			_vehicle setVariable ["HPC_lockpick", round (15 + 30 * _value / 1500), true];
 			_vehicle setVehicleLock "LOCKEDPLAYER";
-		};
-	};
-
-	// Search Gunner
-	if (_classname in (militia_vehicles + light_vehicles + heavy_vehicles)) then {
-		if (_vehicle isKindOf "LandVehicle") then {
-			[_vehicle] spawn F_getEmptyArmored;
 		};
 	};
 

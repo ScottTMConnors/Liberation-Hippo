@@ -61,35 +61,36 @@ light_vehicles = [
 	["O_SDV_01_F",5,30,5,GRLIB_perm_cpl],
 	["C_Scooter_Transport_01_F",1,5,1,0],
 	["SUV_01_base_black_F",1,10,1,0],
-	["O_G_Offroad_01_F",1,10,1,0],
-	["O_G_Offroad_01_armed_F",1,50,1,GRLIB_perm_cpl],
-	["C_SUV_01_F",1,10,1,GRLIB_perm_pfc],
-	["C_Van_01_transport_F",1,15,1,0],
-	["O_T_MRAP_02_ghex_F",2,25,2,0],
-	["O_T_MRAP_02_hmg_ghex_F",5,100,2,GRLIB_perm_cpl],
-	["O_T_MRAP_02_gmg_ghex_F",5,125,2,GRLIB_perm_sgt],
-	["O_T_Truck_02_F",5,10,5,GRLIB_perm_pfc],
-	["O_T_Truck_02_transport_F",5,10,5,GRLIB_perm_pfc],
-	["O_T_Truck_03_transport_ghex_F",5,50,5,GRLIB_perm_sgt],
-	["O_T_Truck_03_covered_ghex_F",5,50,5,GRLIB_perm_sgt],
-	["I_LT_01_cannon_F",2,200,2,GRLIB_perm_sgt],
-	["O_T_LSV_02_unarmed_F",2,25,2,GRLIB_perm_cpl],
-	["O_T_LSV_02_armed_F",5,100,2,GRLIB_perm_sgt],
-	["O_T_UGV_01_ghex_F",5,10,5,GRLIB_perm_pfc],
-	["O_T_UGV_01_rcws_ghex_F",5,250,5,GRLIB_perm_sgt]
+	["O_G_Offroad_01_F",1,10,5,0],
+	["O_G_Offroad_01_armed_F",1,50,5,GRLIB_perm_cpl],
+	["C_SUV_01_F",1,10,3,GRLIB_perm_pfc],
+	["C_Van_01_transport_F",1,15,7,0],
+	["O_T_MRAP_02_ghex_F",2,25,12,0],
+	["O_T_MRAP_02_hmg_ghex_F",5,100,12,GRLIB_perm_cpl],
+	["O_T_MRAP_02_gmg_ghex_F",5,125,12,GRLIB_perm_sgt],
+	["O_T_Truck_02_F",5,30,15,GRLIB_perm_cpl],
+	["O_T_Truck_02_transport_F",5,30,15,GRLIB_perm_cpl],
+	["O_T_Truck_03_transport_ghex_F",5,30,15,GRLIB_perm_cpl],
+	["O_T_Truck_03_covered_ghex_F",5,30,15,GRLIB_perm_cpl],
+	["I_LT_01_cannon_F",2,200,12,GRLIB_perm_sgt],
+	["O_T_LSV_02_unarmed_F",2,25,10,GRLIB_perm_cpl],
+	["O_T_LSV_02_armed_F",5,100,10,GRLIB_perm_sgt],
+	["O_T_UGV_01_ghex_F",5,50,5,GRLIB_perm_cpl],
+	["O_T_UGV_01_rcws_ghex_F",5,250,5,GRLIB_perm_msg],
+	["O_Pickup_rcws_rf",5,100,10,GRLIB_perm_cpl]
 ];
 
 heavy_vehicles = [
-	["O_T_APC_Wheeled_02_rcws_v2_ghex_F",10,400,10,GRLIB_perm_sgt],
-	["O_T_APC_Tracked_02_cannon_ghex_F",10,800,10,GRLIB_perm_sgt],
-	["O_T_APC_Tracked_02_AA_ghex_F",10,1500,10,GRLIB_perm_2lt],
-	["O_T_MBT_02_cannon_ghex_F",15,1500,15,GRLIB_perm_2lt],
-	["O_T_MBT_02_railgun_ghex_F",15,1800,15,GRLIB_perm_cpt],
-	["O_T_MBT_04_cannon_F",15,2500,15,GRLIB_perm_maj],
-	["O_T_MBT_04_command_F",15,2500,15,GRLIB_perm_maj],
-	["I_MBT_03_cannon_F",15,3500,15,GRLIB_perm_ltc],
-	["O_T_MBT_02_arty_ghex_F",15,4000,15,GRLIB_perm_col],
-	["I_E_Truck_02_MRL_F",15,4500,15,GRLIB_perm_col]
+	["O_T_APC_Wheeled_02_rcws_v2_ghex_F",10,500,20,GRLIB_perm_sgt],
+	["O_T_APC_Tracked_02_cannon_ghex_F",10,500,20,GRLIB_perm_sgt],
+	["O_T_APC_Tracked_02_AA_ghex_F",10,500,20,GRLIB_perm_sgm],
+	["O_T_MBT_02_cannon_ghex_F",15,1000,35,GRLIB_perm_2lt],
+	["O_T_MBT_02_railgun_ghex_F",15,1500,35,GRLIB_perm_1lt],
+	["O_T_MBT_04_cannon_F",15,3000,35,GRLIB_perm_ltc],
+	["O_T_MBT_04_command_F",15,3500,35,GRLIB_perm_ltc],
+	["I_MBT_03_cannon_F",15,1500,35,GRLIB_perm_1lt],
+	["O_T_MBT_02_arty_ghex_F",15,3500,30,GRLIB_perm_ltc],
+	["I_E_Truck_02_MRL_F",15,4000,30,GRLIB_perm_col]
 ];
 
 air_vehicles = [
@@ -98,13 +99,13 @@ air_vehicles = [
 	["O_UAV_02_dynamicLoadout_F",5,1000,5,GRLIB_perm_2lt],
 	["O_T_UAV_04_CAS_F",5,1500,10,GRLIB_perm_1lt],
 	["C_Plane_Civil_01_F",1,50,5,GRLIB_perm_sgt],
-	["O_Heli_Light_02_unarmed_F",1,250,5,GRLIB_perm_msg],
-	["O_Heli_Transport_04_F",3,500,10,GRLIB_perm_sgm],
-	["O_Heli_Light_02_dynamicLoadout_F",5,1000,10,GRLIB_perm_2lt],
-	["O_Heli_Attack_02_dynamicLoadout_F",10,2000,20,GRLIB_perm_cpt],
-	["O_T_VTOL_02_infantry_dynamicLoadout_F", 10,2500,20,GRLIB_perm_maj],
-	["O_Plane_CAS_02_dynamicLoadout_F",20,4000,40,GRLIB_perm_col],
-	["O_Plane_Fighter_02_F",20,4500,40,GRLIB_perm_col]
+	["O_Heli_Light_02_unarmed_F",1,50,15,GRLIB_perm_sgt],
+	["O_Heli_Transport_04_F",10,1300,35,GRLIB_perm_2lt],
+	["O_Heli_Light_02_dynamicLoadout_F",10,500,20,GRLIB_perm_sgm],
+	["O_Heli_Attack_02_dynamicLoadout_F",10,2250,30,GRLIB_perm_maj],
+	["O_T_VTOL_02_infantry_dynamicLoadout_F",20,2500,40,GRLIB_perm_maj],
+	["O_Plane_CAS_02_dynamicLoadout_F",20,3000,50,GRLIB_perm_ltc],
+	["O_Plane_Fighter_02_F",20,4500,50,GRLIB_perm_col]
 ];
 
 blufor_air = [
@@ -121,13 +122,14 @@ static_vehicles = [
 	["O_HMG_01_high_F",0,10,0,GRLIB_perm_pfc],
 	["O_GMG_01_F",0,20,0,GRLIB_perm_cpl],
 	["O_GMG_01_high_F",0,20,0,GRLIB_perm_cpl],
-	["O_static_AA_F",0,50,0,GRLIB_perm_sgt],
-	["O_static_AT_F",0,50,0,GRLIB_perm_sgt],
+	["O_static_AA_F",0,150,0,GRLIB_perm_sfc],
+	["O_static_AT_F",0,150,0,GRLIB_perm_sfc],
 	["O_Mortar_01_F",0,500,0,GRLIB_perm_sgm],
 	["O_Radar_System_02_F",10,500,0,GRLIB_perm_sgm],	
 	["B_SAM_System_01_F",10,1500,0,GRLIB_perm_1lt],
 	["B_AAA_System_01_F",10,1500,0,GRLIB_perm_1lt],
-	["O_SAM_System_04_F",10,1500,0,GRLIB_perm_1lt]
+	["O_SAM_System_04_F",10,1500,0,GRLIB_perm_1lt],
+	["O_TwinMortar_RF",10,1500,0,GRLIB_perm_1lt]
 ];
 
 // *** Static Weapon with AI ***
@@ -140,7 +142,7 @@ static_vehicles_AI = [
 
 support_vehicles_west = [
 	[repair_offroad,5,15,5,GRLIB_perm_pfc],
-	["O_G_Van_01_fuel_F",5,15,20,GRLIB_perm_pfc],
+	["O_G_Van_01_fuel_F",5,120,60,GRLIB_perm_sgt],
 	["Land_Pod_Heli_Transport_04_bench_F",0,50,0,GRLIB_perm_sgt],
 	["Land_Pod_Heli_Transport_04_covered_F",0,50,0,GRLIB_perm_sgt],
 	["Land_Pod_Heli_Transport_04_box_F",0,25,0,GRLIB_perm_cpl]

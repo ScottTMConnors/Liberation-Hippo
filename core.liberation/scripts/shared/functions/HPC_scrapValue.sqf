@@ -2,7 +2,7 @@
 // Vehicles pay 90% of their build cost, less damage; the ammo share slides down to 75% as its
 // weapons empty and the fuel share likewise as its tank empties. No manpower.
 // Fuel trucks the enemy spawned, or found at gas stations, pay a large fuel bonus on top
-// (HPC_fuelTruckScrapFuel), more than they cost to build.
+// (HPC_fuelTruckScrapFuel), more than they cost to build; fuel vans get 60% of it.
 // Anything else (crates, objects) pays GRLIB_recycling_percentage of its value.
 params ["_entry"];
 if !(_entry isEqualType [] && {count _entry >= 7}) exitWith {
@@ -28,6 +28,8 @@ private _tag = _entry param [10, ""];
 if (_tag in ["enemy", "civ"]) then {
 	// enemy trucks 100 fuel, civilian ones 80; up to 50% more with a full tank
 	private _base = HPC_fuelTruckScrapFuel select ([1, 0] select (_tag == "enemy"));
+	// a fuel van carries less than a truck: 60% of the bonus
+	if ((_entry select 0) isKindOf "Van_01_fuel_base_F") then { _base = _base * 0.6 };
 	_f = _f + round (_base * (1 + 0.5 * _fuelLvl));
 };
 [_a, _f]

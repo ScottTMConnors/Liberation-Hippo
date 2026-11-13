@@ -1,6 +1,8 @@
 params ["_price", ["_fuel", 0], ["_quietSuccess", false]];
 
-if (_price <= 0) exitWith {true};
+if (_price <= 0 && {_fuel <= 0}) exitWith {true};
+_price = _price max 0;
+_fuel = _fuel max 0;
 if (player getVariable ["trx_complete", 0] == 1) exitWith {false};
 
 // trx_complete
