@@ -88,6 +88,11 @@ foreach ($x in @($c.extraMissions | Where-Object { $_ })) {
     Copy-Item -LiteralPath $xp -Destination (Join-Path (Split-Path $mission) (Split-Path $xp -Leaf)) -Force
     $extraNames += [IO.Path]::GetFileNameWithoutExtension($xp)
 }
+# Other maps already installed in MPMissions by tools/build_malden.py (e.g. "Hippos_Conquest.Altis").
+foreach ($n in @($c.installedMissions | Where-Object { $_ })) {
+    if (!(Test-Path -LiteralPath (Join-Path (Split-Path $mission) "$n.pbo"))) { throw "Installed mission not found: $n.pbo (build it with tools/build_malden.py --map)" }
+    $extraNames += $n
+}
 $whitelist = (@($c.missionName) + $extraNames | ForEach-Object { '"' + $_ + '"' }) -join ','
 if ($manifest) { Copy-Item -LiteralPath $manifestPath -Destination (Join-Path $c.runtimeDirectory 'deployed-manifest.json') }
 

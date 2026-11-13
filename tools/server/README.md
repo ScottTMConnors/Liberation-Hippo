@@ -93,6 +93,7 @@ also accepts `-BindAddress`, `-Port`, `-HeadlessCount`, `-AdminPassword`,
 | `runtimeDirectory` | `mybuild/lan-server` | Configs, logs, profiles and campaign saves. Relative paths start at the repo root. |
 | `missionPackage` | auto | Mission `.pbo`. Auto uses this repo's latest build, then the Workshop download. |
 | `missionName` | `Hippos_Conquest.Malden` | Name the mission is installed under in `MPMissions`. |
+| `installedMissions` | `[]` | Other maps already built into `MPMissions` to offer in `#missions`, e.g. `["Hippos_Conquest.Altis"]`. |
 
 ## Mods
 
