@@ -456,16 +456,17 @@ class RscTitles
 		class Bar2 : ToastBar { idc = 9121; };
 		class Text2 : ToastText { idc = 9122; };
    };
-   // Kill feeds: everyone else's kills top left, yours and your squad's below the crosshair.
-   #define KF_X (safezoneX + 0.8 * HPC_GX)
+   // Kill feeds, both on the left: everyone else's kills at the top, yours and your
+   // squad's below them (clear of the vanilla radio icon at the screen edge).
+   #define KF_X (safezoneX + 3.6 * HPC_GX)
    #define KF_Y (safezoneY + 0.8 * HPC_GY)
    #define KF_W (30 * HPC_GX)
    #define KF_ROW (1.85 * HPC_GY)
-   #define KM_W (40 * HPC_GX)
-   #define KM_X (safezoneX + 0.5 * safezoneW - 0.5 * KM_W)
-   #define KM_Y (safezoneY + 0.62 * safezoneH)
-   #define KM_ROW (2.05 * HPC_GY)
-   // HPC_killFeedWorker shrinks each row to its text (ctrlTextWidth) and centres the personal rows.
+   #define KM_W (34 * HPC_GX)
+   #define KM_X KF_X
+   #define KM_Y (safezoneY + 0.27 * safezoneH)
+   #define KM_ROW (1.95 * HPC_GY)
+   // HPC_killFeedWorker shrinks each row to its text (ctrlTextWidth).
    class HPC_KillFeed
    {
 		name = "HPC_KillFeed";
@@ -485,7 +486,8 @@ class RscTitles
 		};
 		class MineRow : FeedRow {
 			x = KM_X; w = KM_W; h = KM_ROW - 0.25 * HPC_GY;
-			size = 1.25 * HPC_GY;
+			size = 1.2 * HPC_GY;
+			colorBackground[] = {0.06,0.09,0.09,0.62};
 		};
 		class G0 : FeedRow { idc = 9400; y = KF_Y + 0 * KF_ROW; };
 		class G1 : FeedRow { idc = 9401; y = KF_Y + 1 * KF_ROW; };
@@ -493,7 +495,7 @@ class RscTitles
 		class G3 : FeedRow { idc = 9403; y = KF_Y + 3 * KF_ROW; };
 		class G4 : FeedRow { idc = 9404; y = KF_Y + 4 * KF_ROW; };
 		class G5 : FeedRow { idc = 9405; y = KF_Y + 5 * KF_ROW; };
-		class M0 : MineRow { idc = 9410; y = KM_Y + 0 * KM_ROW; size = 1.4 * HPC_GY; };
+		class M0 : MineRow { idc = 9410; y = KM_Y + 0 * KM_ROW; size = 1.3 * HPC_GY; };
 		class M1 : MineRow { idc = 9411; y = KM_Y + 1 * KM_ROW; };
 		class M2 : MineRow { idc = 9412; y = KM_Y + 2 * KM_ROW; };
 		class M3 : MineRow { idc = 9413; y = KM_Y + 3 * KM_ROW; };

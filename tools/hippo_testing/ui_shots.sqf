@@ -99,6 +99,52 @@ if (!isNil "HPC_fnc_toast") then {
 ["06_news",1.5] call HPC_uiShot;
 active_sectors = _oldSectors;
 
+// Kill feeds: real kills through the server kill manager (setDamage with a killer).
+HPC_killFeedGlobal = nil; HPC_killFeedMine = nil;
+[player, {
+    params ["_player"];
+    private _base = _player getPos [40, getDir _player];
+    private _mk = {
+        params ["_grp", "_cls", "_off"];
+        private _u = _grp createUnit [_cls, _base getPos [_off, random 360], [], 0, "NONE"];
+        _u addMPEventHandler ["MPKilled", {_this spawn kill_manager}];
+        _u
+    };
+    private _east = createGroup [GRLIB_side_enemy, true];
+    private _ally = createGroup [GRLIB_side_friendly, true];
+    private _foes = [["O_Soldier_F",5],["O_Soldier_AR_F",8],["O_medic_F",10],["O_Soldier_GL_F",12],["O_Soldier_LAT_F",14]] apply {[_east] + _x call _mk};
+    { _x disableAI "ALL" } forEach _foes;
+    private _mate = [group _player, "B_Soldier_F", 3] call _mk;
+    private _allyA = [_ally, "B_Soldier_AR_F", 6] call _mk;
+    private _allyB = [_ally, "B_medic_F", 7] call _mk;
+    { _x disableAI "ALL" } forEach [_mate, _allyA, _allyB];
+    sleep 1;
+    (_foes select 0) setDamage [1, true, _player, _player];
+    sleep 0.6;
+    (_foes select 1) setDamage [1, true, _player, _player];
+    sleep 0.6;
+    (_foes select 2) setDamage [1, true, _mate, _mate];
+    sleep 0.6;
+    (_foes select 3) setDamage [1, true, _allyA, _allyA];
+    sleep 0.6;
+    _allyB setDamage [1, true, _foes select 4, _foes select 4];
+    sleep 0.6;
+    private _civ = (createGroup [GRLIB_side_civilian, true]) createUnit ["C_man_1", _base, [], 5, "NONE"];
+    _civ addMPEventHandler ["MPKilled", {_this spawn kill_manager}];
+    _civ disableAI "ALL";
+    sleep 0.5;
+    _civ setDamage [1, true, _foes select 4, _foes select 4];
+    sleep 0.6;
+    _allyA setDamage [1, true, _player, _player]; // friendly fire by the player
+}] remoteExec ["spawn", 2];
+private _kfEnd = diag_tickTime + 20;
+waitUntil {uiSleep 0.2; (!isNil "HPC_killFeedGlobal" && {count HPC_killFeedMine >= 3 && count HPC_killFeedGlobal >= 2}) || diag_tickTime > _kfEnd};
+diag_log ["HPC_KILLFEED", missionNamespace getVariable ["HPC_killFeedMine", []], missionNamespace getVariable ["HPC_killFeedGlobal", []]];
+["uishots.killFeed", !isNil "HPC_killFeedMine" && {count HPC_killFeedMine >= 3} && {count HPC_killFeedGlobal >= 2}] call _assert;
+private _mineText = (missionNamespace getVariable ["HPC_killFeedMine", []]) apply {_x select 0};
+["uishots.killFeedXP", (_mineText findIf {"+3 XP" in _x}) >= 0 && {(_mineText findIf {"SQUAD" in _x && {"+2 XP" in _x}}) >= 0}] call _assert;
+["07_kill_feed",0.8] call HPC_uiShot;
+
 // Action menu: run.py sends a mouse-wheel tick to the window.
 diag_log format ["HPC_UIWHEEL|%1",HPC_testRun];
 ["07_actions",1.5] call HPC_uiShot;
@@ -370,4 +416,4 @@ PAR_AI_bros = PAR_AI_bros - [_shotUnit];
 deleteVehicle _shotUnit;
 deleteVehicle _shotVeh;
 diag_log format ["HPC_UISHOT_DONE|%1",HPC_testRun];
-["RUN_DONE|8"] call _emit;
+["RUN_DONE|10"] call _emit;

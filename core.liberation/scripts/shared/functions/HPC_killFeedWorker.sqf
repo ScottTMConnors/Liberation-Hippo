@@ -1,8 +1,8 @@
-// Draws the kill feeds: global (top left, 6 rows) and personal (below the crosshair, 5 rows).
-// Each row is shrunk to its text so the dark backing hugs it; personal rows are centred.
+// Draws the kill feeds: global (top left, 6 rows) and personal (below it on the left, 5 rows).
+// Each row is shrunk to its text so the dark backing hugs it. Rows can be centred (unused).
 disableSerialization;
 private _gx = safezoneH * 0.75 / 54;
-private _globalX = safezoneX + 0.8 * _gx;
+private _globalX = safezoneX + 3.6 * _gx;
 private _centre = safezoneX + 0.5 * safezoneW;
 while {!(HPC_killFeedGlobal isEqualTo []) || !(HPC_killFeedMine isEqualTo [])} do {
 	private _display = uiNamespace getVariable ["HPC_KillFeedDisplay", displayNull];
@@ -32,7 +32,7 @@ while {!(HPC_killFeedGlobal isEqualTo []) || !(HPC_killFeedMine isEqualTo [])} d
 			};
 			_ctrl ctrlCommit 0;
 		};
-	} forEach [[HPC_killFeedGlobal, 9400, 6, 30 * _gx, false], [HPC_killFeedMine, 9410, 5, 40 * _gx, true]];
+	} forEach [[HPC_killFeedGlobal, 9400, 6, 30 * _gx, false], [HPC_killFeedMine, 9410, 5, 34 * _gx, false]];
 	uiSleep 0.1;
 };
 "HPC_KillFeedLayer" cutText ["", "PLAIN"];

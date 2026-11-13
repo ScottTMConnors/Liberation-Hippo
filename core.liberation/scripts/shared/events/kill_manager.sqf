@@ -171,8 +171,10 @@ if (isServer) then {
 					stats_opfor_soldiers_killed = stats_opfor_soldiers_killed + 1;
                     if (!isNull _rewardPlayer) then {
                         stats_opfor_killed_by_players = stats_opfor_killed_by_players + 1;
-                        [_rewardPlayer, 1] call F_addScore;
-                        _feedReward = "+1 XP";
+                        // 3 XP for your own kill, 2 XP for one by your squad, fireteams or AI
+                        private _xp = [2, 3] select (_rewardPlayer isEqualTo _killer);
+                        [_rewardPlayer, _xp] call F_addScore;
+                        _feedReward = format ["+%1 XP", _xp];
                     };
                     // AI vehicle crews bank one point per enemy soldier
                     private _armorKey = (group _killer) getVariable ["HPC_armorSquad", ""];
@@ -192,17 +194,12 @@ if (isServer) then {
 				if (_unit_side == GRLIB_side_friendly) exitWith {
 					stats_blufor_teamkills = stats_blufor_teamkills + 1;
 					_feedType = "tk";
-					private _penaltyText = "";
-					if (GRLIB_civ_penalties > 0 && {isPlayer _killer}) then {
-						[_killer, -50] call F_addScore;
-						_feedReward = "-50 XP";
-						_penaltyText = " -50 XP.";
-					};
+					// No XP penalty for teamkills; TK protection (punish/forgive) handles it.
 					// Only the shooter (or the owner of the AI that fired) and the victim see it.
 					private _shooter = [_rewardPlayer, _killer] select (isPlayer _killer);
 					if (!isNull _shooter && {isPlayer _shooter}) then {
 						_msg = if (_shooter == _killer) then {
-							format ["You killed friendly %1.%2", name _unit, _penaltyText]
+							format ["You killed friendly %1.", name _unit]
 						} else {
 							format ["Your AI %1 killed friendly %2.", name _killer, name _unit]
 						};
@@ -260,12 +257,15 @@ if (isServer) then {
 		if (!isNull _rewardPlayer) then {
 			_owner_id = getPlayerUID _rewardPlayer;
 			if (GRLIB_tk_mode > 0 && {!(_unit getVariable ["GRLIB_vehicle_owner", ""] in ["", "public", "server", _owner_id])}) then {
-				_penalty = 50;
-				_msg = format ["You destroyed a friendly %1: -%2 XP.", [_unit] call F_getLRXName, _penalty];
+				private _vehName = [_unit] call F_getLRXName;
+				_msg = format ["You destroyed a friendly %1.", _vehName];
 				[_msg, "bad", "Friendly fire", 8] remoteExec ["HPC_fnc_info", owner _rewardPlayer];
-				_feedReward = format ["-%1 XP", _penalty];
 				_feedType = "tk";
-				[_rewardPlayer, -_penalty] call F_addScore;
+				// The vehicle's owner may punish (harsher than for a soldier) or forgive.
+				private _vehOwner = (_unit getVariable ["GRLIB_vehicle_owner", ""]) call BIS_fnc_getUnitByUID;
+				if (!isNull _vehOwner) then {
+					[_vehOwner, _rewardPlayer, _vehName] remoteExec ["LRX_tk_vehicleCheck", owner _vehOwner];
+				};
 			};
 
 			if (_hostileVehicle) then {

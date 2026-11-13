@@ -8,7 +8,7 @@ private _esc = { (_this regexReplace ["&/g", "&amp;"]) regexReplace ["</g", "&lt
 private _color = {
 	switch (_this) do {
 		case GRLIB_side_friendly: { "#7CC6EE" };
-		case GRLIB_side_enemy: { "#EE6A60" };
+		case GRLIB_side_enemy: { "#FF8C82" };
 		case GRLIB_side_civilian: { "#C49BEA" };
 		default { "#DDE4E7" };
 	}
@@ -29,15 +29,32 @@ private _mine = (_rewardPlayer isEqualTo player) || {_killer isEqualTo player} |
 };
 
 if (_mine) then {
-	private _who = "";
-	if !(_killer isEqualTo player) then { _who = format ["<t color='#9EAFB5'>%1 </t>", _kLabel call _esc] };
+	// Reads as a sentence: [YOU] killed Rifleman <icon> 143 m   +1 XP
+	//                      [SQUAD] Grenadier killed Marksman <icon> 88 m
+	private _self = _killer isEqualTo player;
+	private _chip = {
+		params ["_label", "_hex"];
+		format ["<t font='RobotoCondensedBold' color='%1'>%2</t>  ", _hex, _label]
+	};
+	private _lead = switch (true) do {
+		case (_type == "tk"): { ["TEAMKILL", "#F7D27A"] call _chip };
+		case (_type == "civ"): { ["CIVILIAN", "#C49BEA"] call _chip };
+		case (_self): { ["YOU", "#9EE3D3"] call _chip };
+		default { ["SQUAD", "#7CC6EE"] call _chip };
+	};
+	private _who = if (_self) then { ["You", ""] select (_type in ["", "kamikaze"]) } else { (_kLabel regexReplace [" \(.*\)$", ""]) call _esc };	private _verb = switch (_type) do {
+		case "tk": { " killed friendly " };
+		case "civ": { " killed civilian " };
+		default { " killed " };
+	};
+	if (_who == "") then { _verb = "killed " }; // "YOU killed Rifleman" needs no subject
 	private _gain = "";
 	if (_reward != "" && {_rewardPlayer isEqualTo player}) then {
 		private _good = (_reward select [0, 1]) == "+";
-		_gain = format ["   <t font='RobotoCondensedBold' color='%1'>%2</t>", ["#F5A29C", "#A6EBA6"] select _good, _reward];
+		_gain = format ["    <t font='RobotoCondensedBold' color='%1'>%2</t>", ["#F5A29C", "#A6EBA6"] select _good, _reward];
 	};
-	private _text = format ["%1%2%3%4<t color='#9EAFB5'>%5 m</t>%6", _tag, _who, _victim, _img, _dist, _gain];
-	HPC_killFeedMine = ([[_text, diag_tickTime + 6]] + HPC_killFeedMine) select [0, 5];
+	private _text = format ["%1<t color='#DDE4E7'>%2</t><t color='#9EAFB5'>%3</t>%4%5<t color='#9EAFB5'>%6 m</t>%7", _lead, _who, _verb, _victim, _img, _dist, _gain];
+	HPC_killFeedMine = ([[_text, diag_tickTime + ([4, 6] select (_killer isEqualTo player || {_rewardPlayer isEqualTo player}))]] + HPC_killFeedMine) select [0, 5];
 } else {
 	private _text = format ["%1<t color='%2'%4>%3</t>%5%6", _tag, _kSide call _color, _kLabel call _esc, ["", " font='RobotoCondensedBold'"] select (isPlayer _killer), _img, _victim];
 	HPC_killFeedGlobal = ([[_text, diag_tickTime + 8]] + HPC_killFeedGlobal) select [0, 6];

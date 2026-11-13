@@ -20,6 +20,7 @@ heavily modified by pSiKO
 if (GRLIB_tk_mode == 0) exitWith {
 	LRX_tk_actions = compileFinal {};
 	LRX_tk_check = compileFinal {};
+	LRX_tk_vehicleCheck = compileFinal {};
 };
 
 LRX_tk_actions = compileFinal preprocessFileLineNumbers "addons\TKP\tk_actions.sqf";
@@ -52,6 +53,25 @@ LRX_tk_check = compileFinal {
 		};
 	};
 
+};
+
+// A player destroyed this player's vehicle (from kill_manager on the server).
+// Relax mode: the owner may punish (two warnings at once, harsher strike) or forgive.
+// Strict mode: the destroyer gets two warnings straight away.
+LRX_tk_vehicleCheck = compileFinal {
+	params ["_owner", "_killer", "_vehName"];
+	if (player != _owner || {isNull _killer} || {_killer == player}) exitWith {};
+	if (LRX_tk_vip find (name _killer) > -1) exitWith {};
+	private _killer_uid = getPlayerUID _killer;
+	if (GRLIB_tk_mode == 2) exitWith {
+		BTC_logic setVariable [_killer_uid, 2 + (BTC_logic getVariable [_killer_uid, 0]), true];
+		[_killer, player, true] remoteExec ["tk_actions_remote_call", 2];
+	};
+	if (LRX_tk_player_action <= GRLIB_tk_count) then {
+		player addAction [format ["<t color='#FF0080'>%1</t>: %2 (%3)", localize "STR_TK_ACTION1", name _killer, _vehName], "addons\TKP\tk_punish.sqf", [_killer_uid, _vehName], 999, false, true, "", ""];
+		[format ["%1 destroyed your %2. Punish or forgive from your action menu.", name _killer, _vehName], "warn", "Vehicle destroyed", 10] call HPC_fnc_info;
+		LRX_tk_player_action = LRX_tk_player_action + 1;
+	};
 };
 
 // Runs inline in init_client now, so the banner must not hold up startup.

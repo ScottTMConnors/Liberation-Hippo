@@ -1,16 +1,24 @@
-params ["_killer", "_unit"];
+params ["_killer", "_unit", ["_severe", false]];
 
 if (isDedicated) exitWith {};
 if (player != _killer) exitWith {};
 
-if (!isNil "_unit") exitWith {
-	private _r1 = createSimpleObject ["Land_ClutterCutter_small_F", getPosASL _killer];
-	[_r1, nil, true] remoteExec ["BIS_fnc_moduleLightning", 0];
-	_r1 spawn { sleep 10; deleteVehicle _this }; // the strike target is global; do not leave one per kill
+// Punished by the victim: lightning strike. A destroyed vehicle (_severe) strikes
+// twice, leaves the killer badly hurt and counts two warnings (set by tk_punish),
+// so it falls through to the warning / ban check below.
+if (!isNil "_unit") then {
+	for "_i" from 1 to ([1, 2] select _severe) do {
+		private _r1 = createSimpleObject ["Land_ClutterCutter_small_F", getPosASL _killer];
+		[_r1, nil, true] remoteExec ["BIS_fnc_moduleLightning", 0];
+		_r1 spawn { sleep 10; deleteVehicle _this }; // the strike target is global; do not leave one per kill
+		sleep 1.5;
+	};
 	private _msg = format [localize "STR_TK_INFO2", name _unit];
-	["Team kill", _msg, "bad", 6, true] call HPC_fnc_toast;
+	if (_severe) then { _msg = format ["%1 punished you for destroying their vehicle. That counts as two warnings.", name _unit] };
+	["Team kill", _msg, "bad", 8, true] call HPC_fnc_toast;
 	sleep 3;
 };
+if (!isNil "_unit" && {!_severe}) exitWith {};
 
 private _kill = BTC_logic getVariable [PAR_Grp_ID, 0];
 if (_kill < GRLIB_tk_count - 1) then {
@@ -55,5 +63,5 @@ if (_kill >= GRLIB_tk_count) then {
 	sleep 300;
 };
 
-[_killer, -5] remoteExec ["F_addScore", 2];
-_killer setDamage 0.7;
+// No XP loss for teamkills; the strike hurts instead.
+_killer setDamage ([0.7, 0.9] select _severe);
