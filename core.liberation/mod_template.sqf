@@ -91482,7 +91482,6 @@ GRLIB_west_modder = "Z@Warrior";
 // Min. Mod. Requ.: CBA_A3, RHS Plus, RHSAFRF, RHSUSAF, RHSGREF, RHSSAF
 // optional Mod: BWMOD
 
-systemChat "Bin Drin";systemChat "Bin Drin";systemChat "Bin Drin";systemChat "Bin Drin";
 
 
 //huron_typename = "FP_UAF_Mi17_Unarmed";  		// comment to use value from lobby/server.cfg

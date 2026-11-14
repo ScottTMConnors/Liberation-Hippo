@@ -60,12 +60,12 @@ class liberation_secondary {
 	};
 	class MissionImage : HPC_Picture {
 		idc = 106;
-		x = SEC_X + SEC_PAD; y = SEC_BODY_Y; w = SEC_LW; h = 12.4 * HPC_GY;
+		x = SEC_X + SEC_PAD; y = SEC_BODY_Y; w = SEC_LW; h = 9.4 * HPC_GY;	// leaves room for every operation without scrolling
 		colorBackground[] = {0,0,0,0.3};
 	};
 	class MissionsList : HPC_ListBox {
 		idc = 101;
-		x = SEC_X + SEC_PAD; y = SEC_BODY_Y + 13 * HPC_GY; w = SEC_LW; h = SEC_BODY_H - 13 * HPC_GY;
+		x = SEC_X + SEC_PAD; y = SEC_BODY_Y + 10 * HPC_GY; w = SEC_LW; h = SEC_BODY_H - 10 * HPC_GY;
 		colorBackground[] = {0,0,0,0.18};
 		onLBSelChanged = "";
 	};

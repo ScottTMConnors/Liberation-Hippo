@@ -18,8 +18,6 @@ fnc_VAM_common_setup = compileFinal preprocessFileLineNumbers "addons\VAM\vehicl
 fnc_VAM_common_camo_check = compileFinal preprocessFileLineNumbers "addons\VAM\vehicles\fnc_VAM_common_camo_check.sqf";
 fnc_VAM_common_comp_check = compileFinal preprocessFileLineNumbers "addons\VAM\vehicles\fnc_VAM_common_comp_check.sqf";
 
-// declared in init_shared.sqf
-//fnc_VAM_common_camo = compileFinal preprocessFileLineNumbers "addons\VAM\vehicles\fnc_VAM_common_camo.sqf";
-//fnc_VAM_common_comp = compileFinal preprocessFileLineNumbers "addons\VAM\vehicles\fnc_VAM_common_comp.sqf";
+// fnc_VAM_common_camo and fnc_VAM_common_comp are compiled in init_shared.sqf
 
-systemchat localize "STR_VAM_INITIALIZED";
+diag_log localize "STR_VAM_INITIALIZED";

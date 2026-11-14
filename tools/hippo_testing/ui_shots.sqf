@@ -167,6 +167,7 @@ HPC_testFuel = nil;
     ];
     { deleteVehicle _x } forEach [_enemy, _built, _mrap];
     resources_intel = resources_intel max 100;
+    waitUntil {sleep 1; !isNil "LRX_MissionMarkersMil"};	// mission markers are set up after start
     [4, true] spawn start_secondary_remote_call;
     sleep 20;
     sleep 3;
@@ -361,7 +362,7 @@ if (_buildOk) then {
     };
     if (_row >= 0) then {_list lnbSetCurSelRow _row};
     uiSleep 1;
-    _crewShown = ctrlShown ((findDisplay 5501) displayCtrl 121) && {(ctrlText 122) find "Spawn with crew" == 0};
+    _crewShown = ctrlShown ((findDisplay 5501) displayCtrl 121) && {(ctrlText 122) find "With crew" == 0};
     ["08b_build_vehicles",0.5] call HPC_uiShot;
     // Longest page, scrolled near the end: row bands and the selection bar stay on their rows
     // and stop at the scrollbar.

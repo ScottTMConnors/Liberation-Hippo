@@ -460,7 +460,6 @@ R3F_LOG_FNCT_3D_mesh_collision_objs = compileFinal {
 		] call R3F_LOG_FNCT_3D_bbox_intersect_bbox
 	)}) exitWith {false};
 
-	systemChat format ["PROBABLE INTERSECT MESH : %1 @ %2", _objet2, time];//TODO REMOVE
 
 	_pos_test = ATLtoASL (player modelToWorld [0,16,20]);// TODO remplacer par R3F_LOG_FNCT_3D_tirer_position_degagee_ciel
 

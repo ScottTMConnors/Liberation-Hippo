@@ -1,0 +1,9 @@
+{
+  "101": {"rows": [
+    ["FOB Hunting", "", "150 intel", [1,1,1,1]],
+    ["Convoy Hijack", "", "70 intel", [1,1,1,1]],
+    ["Search and Rescue", "", "10 intel", [1,1,1,1]],
+    ["Start the Armageddon", "", "1000 intel", [1,1,1,1]],
+    ["Fuel Truck Theft", "", "40 intel", [1,1,1,1]]
+  ], "sel": 0}
+}
