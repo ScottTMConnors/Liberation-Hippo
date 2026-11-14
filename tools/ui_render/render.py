@@ -909,6 +909,25 @@ class StructuredLayout:
 
 
 # ---------------------------------------------------------------- CLI
+SAMPLES_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "samples")
+
+
+def load_samples():
+    """samples/*.json keyed by lower-case dialog class: the "_class" field when present,
+    else the file name (variants such as liberation_build_fireteam.json need "_class")."""
+    found = {}
+    if not os.path.isdir(SAMPLES_DIR):
+        return found
+    for name in sorted(os.listdir(SAMPLES_DIR)):
+        if not name.endswith(".json"):
+            continue
+        with open(os.path.join(SAMPLES_DIR, name), encoding="utf-8") as fh:
+            sample = json.load(fh)
+        key = str(sample.pop("_class", name[:-5])).lower()
+        found.setdefault(key, sample)
+    return found
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("classname", nargs="?")
@@ -939,12 +958,15 @@ def main(argv=None):
     data = {}
     if args.data:
         data = json.loads(args.data) if args.data.strip().startswith("{") else json.load(open(args.data, encoding="utf-8"))
+        data.pop("_class", None)
     assets = A.Assets(warn=warn)
     if args.all:
         out = args.output or "ui_render_out"
         os.makedirs(out, exist_ok=True)
+        samples = {} if args.data else load_samples()
         for kind, c in mission.dialogs():
-            r = Renderer(mission, env, assets, data.get(c.name, {}), args.debug, warn)
+            fill = data.get(c.name) or samples.get(c.name.lower(), {})
+            r = Renderer(mission, env, assets, fill, args.debug, warn)
             img = r.render(c, args.background, args.scale_dialog)
             img.convert("RGB").save(os.path.join(out, c.name + ".png"))
             print("rendered", c.name)

@@ -25,6 +25,11 @@ usually means `ARMA3_TOOLS_DIR` is unset (see AGENTS.local.md for this machine).
        [--data data.json] [--background mybuild/hippo_tests/<run>/shots/<shot>.png] [--debug]
    ```
    - `--list` shows every dialog / RscTitles class; `--all -o dir` renders all.
+     `--all` fills each dialog from its sample: `samples/<class>.json`, or any sample
+     with a `"_class": "<DialogClass>"` field (name variants and differently named
+     samples need it). Run `--all` after theme changes and look at every PNG.
+   - Controls a script hides in onLoad still draw without data: list them in the
+     sample's `"hide"` array, or overlaps in the render are false alarms.
    - `--data` fills what scripts set at runtime, keyed by idc: list `rows`
      (`[text, icon, rightText, iconColor]`; LISTNBOX rows are cell lists or
      `{"cells","icon","iconColor","iconRight","iconRightColor","color"}`) + `sel`, `text` (structured text
