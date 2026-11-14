@@ -102,7 +102,7 @@ while { dialog && alive player } do {
 		if (lbCurSel 515 == -1) then { lbSetCurSel [515, 0] };
 		_grp = groups_list select (lbCurSel 515);
 		if (_grp in global_locked_group) then {
-			ctrlSetText [516, "UnLock"];
+			ctrlSetText [516, "Unlock"];
 		} else {
 			ctrlSetText [516, "Lock"];
 		};

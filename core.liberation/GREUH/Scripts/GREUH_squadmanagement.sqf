@@ -41,7 +41,7 @@ switch (squadaction) do {
 			} else {
 				hint "Squad locked.";
 				[_grp, "add"] remoteExec ["addel_group_remote_call", 2];
-				ctrlSetText [516, "UnLock"];
+				ctrlSetText [516, "Unlock"];
 			};
 		};
 	};
