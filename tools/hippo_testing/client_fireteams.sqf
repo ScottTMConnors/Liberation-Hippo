@@ -51,7 +51,7 @@ if (_team isEqualType grpNull) then {
 	_crewOk = local _team && {_driver in units _team} && {_gunner in units _team} && {!(_driver in units GRLIB_player_group)} &&
 		{(_team getVariable ["HPC_fireteamVehicle", objNull]) == _veh} && {objectParent _driver == _veh} && {objectParent _gunner == _veh} &&
 		{_driver in PAR_AI_bros} && {(_driver getVariable ["PAR_Grp_ID", ""]) == _tag} && {(_driver getVariable ["HPC_fireteam", ""]) != ""} &&
-		{([_driver] call HPC_fnc_rewardPlayer) isEqualTo player};
+		{getPlayerUID ([_driver] call HPC_fnc_rewardPlayer) == getPlayerUID player};	// by UID: harness clients share one Steam account
 	diag_log ["HPC_FIRETEAM_VEHICLE", _team, units _team, objectParent _driver, objectParent _gunner, leader _team, [_driver] call HPC_fnc_rewardPlayer];
 };
 ["fireteam.vehicleCrew", _crewOk] call _assert;
