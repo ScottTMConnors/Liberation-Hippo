@@ -287,7 +287,7 @@ if (deploy == 1) then {
 			_destdist = 12;
 		};
 		if (_destpos distance2D zeropos < 300) exitWith {};
-		if (surfaceIsWater _destpos) exitWith { [_destpos] call do_onboard };
+		if (!_mobile && {surfaceIsWater _destpos}) exitWith { [_destpos] call do_onboard };
 		private _unit_list = units group player;
 		private _list_redep = _unit_list select {
 			!(isPlayer _x) && (isNull objectParent _x) &&
