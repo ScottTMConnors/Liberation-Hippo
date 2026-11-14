@@ -54,7 +54,7 @@ the lobby parameters.
 Built on the idea of crub's Team Map Intel:
 
 - Every friendly AI group is on the map with a NATO symbol: AI Warfare squads
-  and armor, FOB guards, base staff, mission units and garrisons. Lines show
+  and armor, FOB guards, mission units and garrisons. Lines show
   each squad's objective (yellow for commander orders).
 - **Enemy intel**: enemy groups appear only while your side knows about them
   (what friendly AI on the server and headless clients, and your own group,

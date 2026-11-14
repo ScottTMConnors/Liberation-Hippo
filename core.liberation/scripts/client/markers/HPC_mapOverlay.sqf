@@ -1,5 +1,5 @@
 // Hippos map overlay, drawn locally on each client. Modelled on crub's "Team Map Intel":
-// - friendly AI groups (AI Warfare squads and armor, FOB guards, base staff, mission units, garrisons)
+// - friendly AI groups (AI Warfare squads and armor, FOB guards, mission units, garrisons)
 //   with their objective (yellow line = commander order, faint blue = automatic)
 // - enemy groups only while our side knows about them (knowsAbout, merged from the server,
 //   headless clients and the player's own group); when intel is lost the group keeps its
@@ -100,7 +100,6 @@ HPC_fnc_mapGroupInfo = compileFinal toString {
     private _kind = switch (true) do {
         case (_role == "guard"): {"guard"};
         case (_role != ""): {"warfare"};
-        case ((_leader getVariable ["HPC_ambientKind", ""]) == "friendly"): {"staff"};
         case (_leader getVariable ["GRLIB_mission_AI", false]): {"mission"};
         case ((_leader getVariable ["GRLIB_in_building", false]) || {_leader getVariable ["HPC_holdPath", false]}): {"garrison"};
         default {"other"};
@@ -108,7 +107,6 @@ HPC_fnc_mapGroupInfo = compileFinal toString {
     private _name = _group getVariable ["HPC_warfareName", ""];
     if (_name == "") then {
         _name = switch (_kind) do {
-            case "staff": {"Base staff"};
             case "mission": {"Mission unit"};
             case "garrison": {"Garrison"};
             default {
@@ -691,7 +689,6 @@ private _summary = {
             ["b_inf", "#4D9EFF", "Assault squads", _assault] call _row,
             ["b_armor", "#4D9EFF", "Armor", _armor] call _row,
             ["b_inf", "#66D1FF", "FOB guards", _counts getOrDefault ["guard", 0]] call _row,
-            ["b_inf", "#94B8DB", "Base staff groups", _counts getOrDefault ["staff", 0]] call _row,
             ["b_inf", "#F2C75A", "Other friendly AI", (_counts getOrDefault ["mission", 0]) + (_counts getOrDefault ["garrison", 0]) + (_counts getOrDefault ["other", 0])] call _row,
             ["b_inf", "#66E673", "Your fireteams and squads", _counts getOrDefault ["mine", 0]] call _row,
             ["b_motor_inf", "#66E673", "Your vehicles", {(_x select 4) == "mine"} count HPC_mapVehicles] call _row,
@@ -769,12 +766,11 @@ while {true} do {
                 private _group = _x;
                 ([_group] call HPC_fnc_mapGroupInfo) params ["_kind", "_name", "_marker", "_alive"];
                 ([_group] call HPC_fnc_mapOrderText) params ["_orderText", "_target", "_ordered"];
-                private _size = switch (_kind) do {case "warfare": {26}; case "guard": {22}; case "staff": {14}; default {20}};
+                private _size = switch (_kind) do {case "warfare": {26}; case "guard": {22}; default {20}};
                 private _label = if (_kind in ["warfare", "guard"]) then {format ["%1 (%2) - %3", _name, _alive, _orderText]} else {format ["%1 (%2)", _name, _alive]};
                 private _color = switch (_kind) do {
                     case "warfare": {[0.3, 0.62, 1, 1]};
                     case "guard": {[0.4, 0.82, 1, 1]};
-                    case "staff": {[0.58, 0.72, 0.86, 0.7]};
                     case "mission": {[0.95, 0.78, 0.35, 1]};
                     default {[0.45, 0.7, 0.97, 0.9]};
                 };
