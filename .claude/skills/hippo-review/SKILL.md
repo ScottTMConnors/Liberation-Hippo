@@ -68,6 +68,19 @@ The server run compiles everything and fails on any RPT script error.
 - Dialogs: ESC closes them. For must-stay UIs (PAR wounded screen) reopen in the
   loop rather than blocking ESC (players need the pause menu).
 
+- Waits on physics (a helicopter landing, a wreck settling, crew getting out)
+  need a timeout and an `alive`/`isNull` check: a wreck caught in trees never
+  reaches the ground, and the thread leaks forever.
+- No `systemChat`/`hint` for init or debug output; players see it. Use `diag_log`.
+- Scroll-menu actions on objects near the player: register a handler with
+  `HPC_fnc_nearRegister` and filter with `HPC_fnc_nearOf` (shared scan,
+  `scripts/client/actions/HPC_nearScan.sqf`) instead of starting another loop.
+  Handlers run scheduled and must not suspend. Action conditions start with
+  `GRLIB_player_is_menuok` so they hide in vehicles, menus and build mode.
+- Polling loops: prefer events (`EntityCreated`, `Killed`) plus a slow sweep;
+  broadcast state only when it changes, and per-panel telemetry only to
+  machines that have the panel open.
+
 ## 4. Conventions
 
 - `core.autocrlf=true`: working-tree files are CRLF; preserve each file's endings.
