@@ -124,13 +124,15 @@ private _isSling = { params ["_lst"]; count _lst > 0 && {(_lst select 0) isEqual
 
 // ---------- live objects ----------
 private _liveR3F = {
-	params ["_o"];
+	params [["_o", objNull]];
+	if (!(_o isEqualType objNull) || {isNull _o}) exitWith { [] };	// the vehicle may be gone by now
 	private _l = if (GRLIB_ACE_enabled) then { _o getVariable ["ace_cargo_loaded", []] } else { _o getVariable ["R3F_LOG_objets_charges", []] };
 	_l select { _x isEqualType "" || {!isNull _x} }
 };
-private _liveLRX = { params ["_o"]; (_o getVariable ["GRLIB_ammo_vehicle_load", []]) select { !isNull _x } };
+private _liveLRX = { params [["_o", objNull]]; if (!(_o isEqualType objNull) || {isNull _o}) exitWith { [] }; (_o getVariable ["GRLIB_ammo_vehicle_load", []]) select { !isNull _x } };
 private _liveItems = {
-	params ["_o"];
+	params [["_o", objNull]];
+	if (!(_o isEqualType objNull) || {isNull _o}) exitWith { [] };
 	if (typeOf _o == playerbox_typename && {_o != (player getVariable ["GRLIB_player_box", objNull])}) exitWith { [] };
 	[_o, true] call F_getCargo
 };
