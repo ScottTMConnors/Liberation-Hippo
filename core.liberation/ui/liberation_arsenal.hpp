@@ -61,7 +61,7 @@ class liberation_arsenal {
 	class LoadoutList : StdListNBox {
 		idc = 201;
 		x = ARS_X + ARS_PAD; y = ARS_Y + 6.6 * HPC_GY; w = ARS_IW; h = 20 * HPC_GY;
-		columns[] = {0.03, 0.78};
+		columns[] = {0, 0.78};
 		font = "RobotoCondensed";
 		sizeEx = 1.05 * HPC_GY;
 		rowHeight = 2.1 * HPC_GY;

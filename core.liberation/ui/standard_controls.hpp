@@ -469,8 +469,8 @@ class StdListNBox : StdListBox {
 	idc = -1;
 	type = CT_LIST_N_BOX;
 	drawSideArrows = 0;
-	idcLeft = -10;
-	idcRight = -11;
+	idcLeft = -1;  // not -1 reserves side-arrow space: the selection bar would stop short of the row edges
+	idcRight = -1;
 	period = 0.3;
 	autoScrollSpeed = -1;
 	autoScrollDelay = 5;

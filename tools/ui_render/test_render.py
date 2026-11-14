@@ -112,5 +112,17 @@ class ExprTest(unittest.TestCase):
         self.assertAlmostEqual(v, e.szX + 1.5)
 
 
+class MissionListTest(unittest.TestCase):
+    def test_listnbox_selection_spans_row(self):
+        # Every ListNBox must keep idcLeft/idcRight at -1 or its selection bar stops short.
+        import contextlib
+        import io
+        import render as R
+        out = io.StringIO()
+        with tempfile.TemporaryDirectory() as tmp, contextlib.redirect_stdout(out), contextlib.redirect_stderr(out):
+            R.main(["--all", "-o", tmp, "-v"])
+        self.assertNotIn("idcLeft/idcRight not -1", out.getvalue())
+
+
 if __name__ == "__main__":
     unittest.main()

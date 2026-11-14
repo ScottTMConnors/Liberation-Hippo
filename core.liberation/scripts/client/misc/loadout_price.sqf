@@ -14,7 +14,7 @@ if (GRLIB_ACE_enabled) then {
 				_loadout_loaded = _x select 1;
 				[_unit, _loadout_loaded] call CBA_fnc_setLoadout;
 				_price = [_unit] call F_loadoutPrice;
-				GRLIB_saved_loadouts pushback [_name, _price, _loadout_loaded];
+				GRLIB_saved_loadouts pushback [_name, _price, _loadout_loaded, [_unit] call F_blockedItems];
 			};
 		} foreach _saved_loadouts_ace;
 		deleteVehicle _unit;
@@ -28,7 +28,7 @@ if (GRLIB_ACE_enabled) then {
                 _name = _x;
                 [_unit, [profileNamespace, _name]] call bis_fnc_loadInventory;
                 _price = [_unit] call F_loadoutPrice;
-                GRLIB_saved_loadouts pushback [_name, _price, ""];
+                GRLIB_saved_loadouts pushback [_name, _price, "", [_unit] call F_blockedItems];
             };
         } foreach _saved_loadouts;
         deleteVehicle _unit;

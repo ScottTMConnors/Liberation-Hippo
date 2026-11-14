@@ -47,6 +47,9 @@ script-created controls exist only via --data).
   muted subtitle, thin divider, close "X" top-right, primary action
   `HPC_ButtonAccent` bottom-right.
 - Body text ~1.0 GY, labels 0.8 GY, list rows 2.0-2.2 GY, buttons >= 2.6 GY.
+- ListNBox: inherit `HPC_ListNBox` or keep `idcLeft = -1; idcRight = -1;` - any other
+  value reserves side-arrow space and the selection bar stops short of the row
+  (the renderer warns; `test_render` fails).
 - No `ST_VCENTER` on CT_STATIC (hides the text); single-line statics are
   already vertically centred.
 - Keep every idc, idd, class name, action and onXxx handler scripts use (grep

@@ -699,11 +699,18 @@ class Renderer:
         colpos = [try_eval(c, self.env, 0) for c in columns] if isinstance(columns, list) else None
         layer = Image.new("RGBA", (max(1, int(box[2] - box[0])), max(1, int(box[3] - box[1]))), (0, 0, 0, 0))
         w = layer.width
+        # The engine reserves side-arrow space at both row ends when idcLeft/idcRight
+        # are not -1, so the selection bar (and the row content) stops short of the edges.
+        arrow = 0.0
+        if nbox and (self.num(cls, "idcLeft", -1) != -1 or self.num(cls, "idcRight", -1) != -1):
+            arrow = rh
+            self.warn(f"{cls.path()}: ListNBox idcLeft/idcRight not -1; the selection bar will not span the row "
+                      "(inherit HPC_ListNBox or set idcLeft = -1; idcRight = -1;)")
         y = 0.0
         for i, row in enumerate(rows):
             if y >= layer.height:
                 break
-            rb = (0, y, w, y + rh)
+            rb = (arrow, y, w - arrow, y + rh)
             selected = sel is not None and i == int(sel)
             if selected:
                 fill(layer, rb, selbg)

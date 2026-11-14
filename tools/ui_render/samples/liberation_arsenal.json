@@ -1,0 +1,49 @@
+{
+ "201": {
+  "rows": [
+   [
+    "Rifleman",
+    "120"
+   ],
+   {
+    "cells": [
+     "Marksman (CSAT gear)",
+     "Blocked"
+    ],
+    "color": [
+     0.4,
+     0.4,
+     0.4,
+     1
+    ]
+   },
+   {
+    "cells": [
+     "Heavy AT",
+     "900"
+    ],
+    "color": [
+     0.4,
+     0.4,
+     0.4,
+     1
+    ]
+   }
+  ],
+  "sel": 1
+ },
+ "206": {
+  "text": "Can't load - not allowed: CSAR Fatigues, Carrier GL Rig +2 more"
+ },
+ "203": {
+  "rows": [
+   [
+    "Watson"
+   ]
+  ],
+  "sel": 0
+ },
+ "hide": [
+  205
+ ]
+}

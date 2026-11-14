@@ -25,9 +25,13 @@ ctrlSetText [206, format ["Ammo available: %1", _ammo_collected]];
 if (count GRLIB_saved_loadouts > 0) then {
 	lbClear 201;
 	{
-		((findDisplay 5251) displayCtrl (201)) lnbAddRow [format ["%1" ,_x select 0], format ["%1" ,_x select 1]];
+		private _blocked = _x param [3, []];
+		((findDisplay 5251) displayCtrl (201)) lnbAddRow [format ["%1" ,_x select 0], ([format ["%1" ,_x select 1], "Blocked"] select (count _blocked > 0))];
+		if (count _blocked > 0) then {
+			((findDisplay 5251) displayCtrl (201)) lnbSetTooltip [[((lnbSize 201) select 0) - 1, 0], format ["Not allowed by the arsenal filter: %1", _blocked joinString ", "]];
+		};
 
- 		if ((_x select 1) <= _ammo_collected) then {
+ 		if ((_x select 1) <= _ammo_collected && count _blocked == 0) then {
 			((findDisplay 5251) displayCtrl (201)) lnbSetColor  [[((lnbSize 201) select 0) - 1, 0], [1,1,1,1]];
 			((findDisplay 5251) displayCtrl (201)) lnbSetColor  [[((lnbSize 201) select 0) - 1, 1], [1,1,1,1]];
 		} else {
@@ -63,13 +67,16 @@ while { dialog && (alive player) && !([player] call PAR_is_wounded) && edit_load
 	private _cur_sel = (lbCurSel 201);
 	if (_cur_sel != -1) then {
 		private _selected_loadout = GRLIB_saved_loadouts select _cur_sel;
-		if ((_selected_loadout select 1) <= _ammo_collected) then {
-			ctrlEnable [202, true];
-		} else {
-			ctrlEnable [202, false];
-		};
+		private _blocked = _selected_loadout param [3, []];
+		ctrlEnable [202, (_selected_loadout select 1) <= _ammo_collected && count _blocked == 0];
+		ctrlSetText [206, call {
+			if (count _blocked > 0) exitWith { format ["Can't load - not allowed: %1%2", (_blocked select [0, 2]) joinString ", ", ["", format [" +%1 more", count _blocked - 2]] select (count _blocked > 2)] };
+			if ((_selected_loadout select 1) > _ammo_collected) exitWith { format ["Not enough ammo: needs %1, you have %2", _selected_loadout select 1, _ammo_collected] };
+			format ["Ammo available: %1", _ammo_collected]
+		}];
 	};
 
+	if (load_loadout > 0 && {_cur_sel < 0 || {!ctrlEnabled ((findDisplay 5251) displayCtrl 202)}}) then { load_loadout = 0; exit_on_load = 0 };
 	if (load_loadout > 0) then {
 		private _selected_loadout = GRLIB_saved_loadouts select _cur_sel;
 		private _loaded_loadout = (_selected_loadout select 0);

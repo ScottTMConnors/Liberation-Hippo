@@ -17,6 +17,7 @@ dog_bark = compileFinal preprocessFileLineNumbers "scripts\client\actions\dog_ba
 fetch_permission = compileFinal preprocessFileLineNumbers "scripts\client\misc\fetch_permission.sqf";
 get_player_name = compileFinal preprocessFileLineNumbers "scripts\client\misc\get_player_name.sqf";
 is_allowed_item = compileFinal preprocessFileLineNumbers "scripts\client\misc\is_allowed_item.sqf";
+F_blockedItems = compileFinal preprocessFileLineNumbers "scripts\client\misc\blocked_items.sqf";
 is_menuok = compileFinal preprocessFileLineNumbers "scripts\client\misc\is_menuok.sqf";
 loadout_price = compileFinal preprocessFileLineNumbers "scripts\client\misc\loadout_price.sqf";
 paraDrop = compileFinal preprocessFileLineNumbers "scripts\client\spawn\paraDrop.sqf";

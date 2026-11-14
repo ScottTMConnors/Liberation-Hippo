@@ -24,13 +24,6 @@ if ((_display getVariable ["HPC_filterPage", -1]) != _page) then {
     lbClear _typeControl;
     _factionControl lbAdd "All available factions";
     _factionControl lbSetData [0, ""];
-    // With every loaded faction available, default to the mission's own faction.
-    private _factionDefault = 0;
-    if (missionNamespace getVariable ["HPC_AllFactions", false]) then {
-        _factionDefault = _factionControl lbAdd "Mission faction";
-        _factionControl lbSetData [_factionDefault, "#mission"];
-    };
-    _display setVariable ["HPC_factionDefault", _factionDefault];
     _typeControl lbAdd "All types";
     _typeControl lbSetData [0, ""];
     private _factions = [];
@@ -45,9 +38,31 @@ if ((_display getVariable ["HPC_filterPage", -1]) != _page) then {
         _factions pushBackUnique [_name, _faction];
         _types pushBackUnique (_data select 1);
     } forEach _entries;
+    // The team's faction (the most common faction of the template's infantry) is
+    // preselected; its row also lists every template class from other factions.
+    if (isNil "HPC_teamFaction") then {
+        private _counts = createHashMap;
+        {
+            private _f = getText (configFile >> "CfgVehicles" >> (_x select 0) >> "faction");
+            if (_f != "") then {_counts set [_f, (_counts getOrDefault [_f, 0]) + 1]};
+        } forEach infantry_units_west;
+        HPC_teamFaction = "";
+        private _best = 0;
+        {if (_y > _best) then {_best = _y; HPC_teamFaction = _x}} forEach _counts;
+    };
+    if (HPC_teamFaction != "" && {(_factions findIf {(_x select 1) == HPC_teamFaction}) < 0}) then {
+        private _name = getText (configFile >> "CfgFactionClasses" >> HPC_teamFaction >> "displayName");
+        _factions pushBack [[_name, HPC_teamFaction] select (_name == ""), HPC_teamFaction];
+    };
     _factions sort true;
     _types sort true;
-    {private _row = _factionControl lbAdd (_x select 0); _factionControl lbSetData [_row, _x select 1]} forEach _factions;
+    private _factionDefault = 0;
+    {
+        private _row = _factionControl lbAdd (_x select 0);
+        _factionControl lbSetData [_row, _x select 1];
+        if (HPC_teamFaction != "" && {(_x select 1) == HPC_teamFaction}) then {_factionDefault = _row};
+    } forEach _factions;
+    _display setVariable ["HPC_factionDefault", _factionDefault];
     {private _row = _typeControl lbAdd _x; _typeControl lbSetData [_row, _x]} forEach _types;
     _factionControl lbSetCurSel _factionDefault;
     _typeControl lbSetCurSel 0;
@@ -60,7 +75,7 @@ _entries select {
     private _class = _x select 0;
     private _data = [_class] call _metadata;
     (_faction == "" || {(_data select 0) == _faction} ||
-        {_faction == "#mission" && {_page > 5 || {toLower _class in (missionNamespace getVariable ["HPC_templateClasses", createHashMap])}}}) &&
+        {_faction == HPC_teamFaction && {_page > 5 || {toLower _class in (missionNamespace getVariable ["HPC_templateClasses", createHashMap])}}}) &&
     {(_type == "" || {(_data select 1) == _type})} &&
     {(_search == "" || {(_data select 2) find _search >= 0})}
 };

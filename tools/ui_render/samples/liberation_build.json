@@ -11,9 +11,11 @@
  "1702": {
   "rows": [
    "All available factions",
-   "Mission faction"
+   "AAF",
+   "CSAT",
+   "NATO"
   ],
-  "sel": 1
+  "sel": 3
  },
  "1703": {
   "rows": [

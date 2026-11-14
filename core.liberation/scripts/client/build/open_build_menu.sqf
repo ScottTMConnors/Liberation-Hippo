@@ -136,7 +136,7 @@ _display setVariable ["HPC_collapsed", []];
     _display setVariable ["HPC_collapsed",[]];
     build_refresh = true;
 }];
-// Per-dropdown resets: faction to the mission faction, type to all types.
+// Per-dropdown resets: faction to the team faction, type to all types.
 (_display displayCtrl 1710) ctrlAddEventHandler ["ButtonClick", {
     private _display = ctrlParent (_this select 0);
     (_display displayCtrl 1702) lbSetCurSel (_display getVariable ["HPC_factionDefault", 0]);
