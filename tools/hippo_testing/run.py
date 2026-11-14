@@ -104,6 +104,8 @@ def main():
     ap.add_argument('--clients', type=int, choices=[0,1,2], default=0)
     ap.add_argument('--steam-launch', action='store_true', help='Launch the isolated rendering client through Steam.')
     ap.add_argument('--spawn', action='store_true', help='Test vehicle spawn spots (footprint, claims, simultaneous spawns).')
+    ap.add_argument('--load-error', action='store_true', help='A mission script errors during loading; checks the loading screen stops at once.')
+    ap.add_argument('--rejoin', action='store_true', help='One client is downed inside the respawn cooldown, leaves and rejoins; checks the rejoin is not held on the loading screen.')
     ap.add_argument('--targeted', action='store_true', help='Test fortification action and coastal placement in a disposable mission.')
     ap.add_argument('--visual', action='store_true', help='Run isolated civilian and commander visual fixture (requires one client).')
     ap.add_argument('--ui-shots', action='store_true', help='Capture UI screenshots (menus, redeploy, HUD) from one rendering client into <run>/shots.')
@@ -123,6 +125,8 @@ def main():
     args = ap.parse_args()
     GAME=args.game_directory
     if args.steam_launch and args.clients != 1: ap.error("--steam-launch requires --clients 1")
+    if args.load_error and args.clients != 1: ap.error("--load-error requires --clients 1")
+    if args.rejoin and args.clients != 1: ap.error("--rejoin requires --clients 1")
     if args.targeted and args.clients != 1: ap.error("--targeted requires --clients 1")
     if args.visual and args.clients != 1: ap.error("--visual requires --clients 1")
     if args.ui_shots and args.clients != 1: ap.error("--ui-shots requires --clients 1")
@@ -209,6 +213,9 @@ def main():
         settings='GRLIB_LRX_params set ["HippoAllFactions", createHashMapFromArray [[GRLIB_PARAM_ValueKey,1]]];\n'
         p=stage/'scripts/server/fetch_params.sqf'
         p.write_text(p.read_text(encoding='utf-8-sig').replace('// Save back cleaned params',settings+'\n// Save back cleaned params'),encoding='utf-8')
+    if args.rejoin:
+        p=stage/'scripts/server/fetch_params.sqf'
+        p.write_text(p.read_text(encoding='utf-8-sig').replace('// Save back cleaned params','GRLIB_LRX_params set ["RespawnCD", createHashMapFromArray [[GRLIB_PARAM_ValueKey,240]]];\n// Save back cleaned params'),encoding='utf-8')
     (stage/'initServer.sqf').write_text(f'HPC_testRun="{run_id}"; HPC_testVariant="{args.variant}"; HPC_testControl="{args.control or ""}"; HPC_testBaseline={str(args.baseline).lower()}; HPC_testScenario={str(args.scenario).lower()}; HPC_testCommander={str(args.commander).lower()}; HPC_testHold={str(args.hold > 0).lower()}; publicVariable "HPC_testHold"; HPC_testScripts='+json.dumps(scripts).replace('\\\\','\\')+'; [] execVM "hippo_tests\\run.sqf";\n',encoding='utf-8')
     if args.missing_faction:
         injection = '''
@@ -242,12 +249,17 @@ addMissionEventHandler ["MPEnded",{
         # Test clients cannot press the lobby OK button, so skip role assignment.
         p=stage/'description.ext'
         p.write_text(re.sub(r'skipLobby\s*=\s*0;','skipLobby = 1;',p.read_text(encoding='utf-8-sig')),encoding='utf-8')
-        shutil.copy2(ROOT/('tools/hippo_testing/targeted_client.sqf' if args.targeted else 'tools/hippo_testing/visual_client.sqf' if args.visual else 'tools/hippo_testing/ui_shots.sqf' if args.ui_shots else 'tools/hippo_testing/client.sqf'),tests/'client.sqf')
+        shutil.copy2(ROOT/('tools/hippo_testing/load_error_client.sqf' if args.load_error else 'tools/hippo_testing/rejoin_client.sqf' if args.rejoin else 'tools/hippo_testing/targeted_client.sqf' if args.targeted else 'tools/hippo_testing/visual_client.sqf' if args.visual else 'tools/hippo_testing/ui_shots.sqf' if args.ui_shots else 'tools/hippo_testing/client.sqf'),tests/'client.sqf')
         shutil.copy2(ROOT/'tools/hippo_testing/client_fireteams.sqf',tests/'client_fireteams.sqf')
         if args.visual:
             shutil.copy2(ROOT/'tools/hippo_testing/visual_server.sqf',tests/'visual_server.sqf')
             with (tests/'run.sqf').open('a', encoding='utf-8') as f: f.write('\nHPC_visualServerReady = true; publicVariable \"HPC_visualServerReady\";\n')
             with (stage/'initServer.sqf').open('a', encoding='utf-8') as f: f.write('\n[] execVM \"hippo_tests\\visual_server.sqf\";\n')
+        if args.load_error: (stage/'scripts'/'hpc_test_load_error.sqf').write_text('HPC_test_undefined_7Q + 1;',encoding='utf-8')
+        if args.load_error:
+            p=stage/'scripts/client/init_client.sqf'; code=p.read_text(encoding='utf-8-sig'); spot='diag_log "--- Client Init start ---";'
+            if code.count(spot)!=1: raise RuntimeError('Load error instrumentation target changed')
+            p.write_text(code.replace(spot,spot+'\n[] call compile preprocessFileLineNumbers "scripts\\hpc_test_load_error.sqf";'),encoding='utf-8')
         (stage/'initPlayerLocal.sqf').write_text(f'HPC_testRun="{run_id}"; [] execVM "hippo_tests\\client.sqf";\n',encoding='utf-8')
     compaction=None
     if args.compact:
@@ -300,6 +312,8 @@ addMissionEventHandler ["MPEnded",{
     roles=['server']+[f'client{i+1}' for i in range(args.clients)]+((['hc1','hc2'] if args.attribution else ['hc1','hc2','hc1_rejoin']) if args.headless else [])
     client_cases=['startup.client','player.abilities','catalog.filters','catalog.empty','purchase.filtered','reward.owner','services.cooldown','revive.manual','mods.handlers','catalog.groups','catalog.singleType','catalog.rankVisible','catalog.toggle','catalog.tools','map.overlay','map.remoteShots','commander.window','mods.damage','zeus.assigned','zeus.owned_only','zeus.no_cheats','zeus.build_place','build.crew_joins_squad','zeus.build_cancel','zeus.remote_own','zeus.remote_refused','zeus.master','zeus.master_admin','ui.actionTitle','missions.contactName','missions.hintFormat','garage.restartRetrieve','garage.service','cargo.moveBox','cargo.moveItems','cargo.nestedVehicle','cargo.takeOutObject','cargo.takeOutItems','cargo.storeCrate','cargo.sell','cargo.scrap','cargo.receive','cargo.lootUnclaimed','fireteam.mixedRefused','fireteam.vehicleCrew','fireteam.orders','fireteam.window','fireteam.disband','fireteam.foot','fireteam.lostToast','crews.keepUnderAI','medic.sendCondition','ui.screenCover']
     if args.targeted: client_cases=['startup.client','fortifications.build','fortifications.sound']
+    if args.rejoin: client_cases=['rejoin.cooldown']
+    if args.load_error: client_cases=['loading.failFast']
     if args.visual: client_cases=['startup.client','visual.objectivePanel','visual.civilianMovement','visual.commanderPost']
     if args.ui_shots: client_cases=['uishots.spawned','uishots.dialogs','uishots.tutorialKey','uishots.inputFree','uishots.adminTabs','uishots.missionAdminStays','uishots.crewCheckbox','uishots.crewEnabledNonCommander','uishots.killFeed','uishots.killFeedXP','uishots.fuelEconomy']
     shots_taken=set(); wheels_sent=set(); keys_sent=set()
@@ -309,7 +323,7 @@ addMissionEventHandler ["MPEnded",{
         manifest['compaction']={k:compaction[k] for k in ('source_bytes','release_bytes','renamed_files')}
         manifest['compaction_report_sha256']=sha(out/'compaction.json')
         (out/'manifest.json').write_text(json.dumps(manifest,indent=2),encoding='utf-8')
-    process=None; completed=False; rpt=''; stop_reason='watchdog'; clients={}; pipes={}; connected=set(); last_connect={}; client_ready={}; headless={}; hc_dropped=False;hc_stop_all=False;hc_last_connect={}
+    process=None; completed=False; rpt=''; stop_reason='watchdog'; clients={}; pipes={}; connected=set(); last_connect={}; client_ready={}; rejoined=False; headless={}; hc_dropped=False;hc_stop_all=False;hc_last_connect={}
     def logs(folder):
         return '\n'.join(p.read_text(errors='replace') for p in dict.fromkeys(list(folder.glob('*.rpt'))+list(folder.glob('*.RPT'))))
     try:
@@ -396,10 +410,19 @@ addMissionEventHandler ["MPEnded",{
                         stop_process(child)
                 if any(p.poll() is not None for role,(p,_) in headless.items() if not hc_stop_all and not (role=='hc1' and hc_dropped)):
                     stop_reason='headless_early_exit';break
+            if args.rejoin and not rejoined and f'HPC_TEST|{run_id}|client1|CLIENT_REJOIN' in logs(clients['client1'][1]):
+                rejoined=True
+                old,folder,pipe_name=clients['client1']
+                stop_process(old)
+                if 'client1' in pipes: pipes.pop('client1').close()
+                connected.discard('client1'); client_ready.pop('client1',None)
+                time.sleep(5)
+                clients['client1']=(subprocess.Popen(manifest['client1_argv'],cwd=GAME,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL),folder,pipe_name)
+                print(json.dumps({'rejoin':'relaunched'}),flush=True)
             if any(child.poll() is not None or 'Error creating Direct3D' in logs(folder) for child,folder,_ in clients.values()):
                 stop_reason='client_startup_failure'; break
             for role,(_,folder,pipe_name) in clients.items():
-                if role not in connected or (f'HPC_TEST|{run_id}|{role}|RUN_START|' not in logs(folder) and time.monotonic()-last_connect.get(role,0)>120):
+                if role not in connected or (f'HPC_TEST|{run_id}|{role}|' not in logs(folder) and time.monotonic()-last_connect.get(role,0)>120):
                     if 'MovesType CfgMovesMaleSdr load time' not in logs(folder): continue
                     # Steam/profile/audio initialization continues after the
                     # pipe opens. Do not interrupt an ongoing connection with

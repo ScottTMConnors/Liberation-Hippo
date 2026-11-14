@@ -18,6 +18,7 @@ waitUntil { uiSleep 0.1; !isNil "GRLIB_init_server" };
 titleText ["", "PLAIN", 100];
 
 diag_log "--- Client Init start ---";
+GRLIB_player_spawned = false; // read by kick_idle, which starts before the respawn cooldown wait
 
 // Server Init Error
 if (abort_loading) exitWith {
@@ -45,6 +46,7 @@ if (PAR_Grp_ID == "" || !(isPlayer player)) exitWith {
 // Enforce White list
 GRLIB_is_Commander = (player getvariable ["GRLIB_is_Commander", false]);
 [] call compileFinal preprocessFileLineNumbers "scripts\client\commander\enforce_whitelist.sqf";
+["client.whitelist"] call HPC_fnc_loadMark;
 
 private _name = name player;
 if (toLower _name in GRLIB_blacklisted_names || (_name == str parseNumber _name) || (count trim _name <= 2)) exitWith {
@@ -58,6 +60,7 @@ if (toLower _name in GRLIB_blacklisted_names || (_name == str parseNumber _name)
 
 // LRX_Template mod version check
 waitUntil {uiSleep 0.1; !isNil "GRLIB_LRX_Template_version"};
+["client.templateVersion"] call HPC_fnc_loadMark;
 private _version_checked = true;
 if (!isNil "LRX_Template_version") then {
 	if (typeName LRX_Template_version == "SCALAR") then {
@@ -76,6 +79,7 @@ if (!_version_checked) exitWith {
 };
 
 waitUntil {uiSleep 0.1; !isNil "GRLIB_global_stop"};
+["client.globalStop"] call HPC_fnc_loadMark;
 if (GRLIB_global_stop == 1) exitWith {
 	private _msg = localize "STR_MSG_FINAL_MISSION_RUNNING";
 	[] call HPC_fnc_loadingEnd; // otherwise the native loading screen hides the message
@@ -86,6 +90,7 @@ if (GRLIB_global_stop == 1) exitWith {
 };
 
 waitUntil {uiSleep 0.1; !isNil "GRLIB_endgame"};
+["client.endgame"] call HPC_fnc_loadMark;
 if (GRLIB_endgame == 1) exitWith {
 	private _msg = localize "STR_MSG_END_GAME";
 	[] call HPC_fnc_loadingEnd; // otherwise the native loading screen hides the message
@@ -102,9 +107,10 @@ if (GRLIB_kick_idle > 0) then {
 waitUntil {uiSleep 0.1; !isNil "BTC_logic"};
 ["client.checks"] call HPC_fnc_loadMark;
 if (GRLIB_respawn_cooldown > 0) then {
-	// stored as serverTime (time restarts at 0 on rejoin); never wait longer than one cooldown
+	// Stored as serverTime (a rejoining client's own time restarts at 0); a reconnect waits at most one minute.
 	private _cooldown = BTC_logic getVariable [format ["%1_last_respawn", PAR_Grp_ID], 0];
-	_cooldown = _cooldown min (serverTime + GRLIB_respawn_cooldown);
+	_cooldown = _cooldown min (serverTime + 60);
+	diag_log format ["--- LRX Client: rejoin cooldown %1 s", round ((_cooldown - serverTime) max 0)];
 	if (_cooldown > serverTime) then {
 		// Cooldown can exceed the loading screen's 300 s deadline and hides the message.
 		[] call HPC_fnc_loadingEnd;

@@ -2,8 +2,7 @@
 if (GRLIB_respawn_cooldown > 0) then {
 	private _cooldown = player getVariable ["GRLIB_last_respawn", 0];
 	if (_cooldown > time) then {
-		count_death = count_death + 1;
-		_respawn_delay = round (count_death * _respawn_delay);
+		count_death = (missionNamespace getVariable ["count_death", 0]) + 1;
 		// shared as serverTime: a rejoining client's own time restarts at 0
 		BTC_logic setVariable [format ["%1_last_respawn", PAR_Grp_ID], serverTime + (_cooldown - time), true];
 	} else {
@@ -123,7 +122,6 @@ while { alive player && ([player] call PAR_is_wounded) && _bleedout_timer > 0 } 
 	uiSleep 1;
 };
 
-deletemarker _mk1;
 
 "colorCorrections" ppEffectAdjust [1, 1, 0, [0,0,0,0], [1,1,1,1], [1,0,0,0]];
 "colorCorrections" ppEffectCommit 2;

@@ -3,6 +3,7 @@
 params [["_keepBlack", false]];
 if (!hasInterface || !(missionNamespace getVariable ["HPC_nativeLoadingActive",false])) exitWith {};
 HPC_nativeLoadingActive = false;
+if (!isNil "HPC_loadingErrorEH") then {removeMissionEventHandler ["ScriptError", HPC_loadingErrorEH]; HPC_loadingErrorEH = nil};
 HPC_nativeLoadingProgress = 1;
 progressLoadingScreen 1;
 ["HipposConquestStartup"] call BIS_fnc_endLoadingScreen;
