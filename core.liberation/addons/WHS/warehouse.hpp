@@ -11,7 +11,7 @@
 #define WHS_LIST_H (WHS_H - 14.2 * HPC_GY)
 
 class WHS_ListN : StdListNBox {
-	font = "RobotoCondensed";
+	font = "PuristaMedium";
 	sizeEx = 1.05 * HPC_GY;
 	rowHeight = 2.1 * HPC_GY;
 	shadow = 0;
@@ -55,7 +55,7 @@ class Warehouse {
 		};
 		class Subtitle : HPC_Label {
 			x = WHS_LX; y = WHS_Y + 2.5 * HPC_GY; w = WHS_W - 2 * WHS_PAD; h = 1.4 * HPC_GY;
-			font = "RobotoCondensed";
+			font = "PuristaMedium";
 			sizeEx = 0.95 * HPC_GY;
 			text = "Store supply barrels and crates, or withdraw them from stock for ammo.";
 		};
@@ -87,7 +87,7 @@ class Warehouse {
 		class EmptyOut : HPC_Label {
 			idc = 130;
 			style = ST_CENTER;
-			font = "RobotoCondensed";
+			font = "PuristaMedium";
 			sizeEx = HPC_GY;
 			x = WHS_LX; y = WHS_LIST_Y + 7 * HPC_GY; w = WHS_CW; h = 2 * HPC_GY;
 			text = "No barrels or crates nearby";
@@ -110,7 +110,7 @@ class Warehouse {
 		class EmptyIn : HPC_Label {
 			idc = 131;
 			style = ST_CENTER;
-			font = "RobotoCondensed";
+			font = "PuristaMedium";
 			sizeEx = HPC_GY;
 			x = WHS_RX; y = WHS_LIST_Y + 7 * HPC_GY; w = WHS_CW; h = 2 * HPC_GY;
 			text = "The warehouse is empty";
@@ -118,7 +118,7 @@ class Warehouse {
 		class Summary : HPC_Label {
 			idc = 132;
 			style = ST_RIGHT;
-			font = "RobotoCondensed";
+			font = "PuristaMedium";
 			sizeEx = 0.95 * HPC_GY;
 			x = WHS_RX; y = WHS_Y + WHS_H - 6.6 * HPC_GY; w = WHS_CW; h = 1.5 * HPC_GY;
 			text = "";

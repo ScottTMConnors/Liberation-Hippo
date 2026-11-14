@@ -34,7 +34,7 @@ class liberation_notice {
 	};
 	class Subtitle : HPC_Label {
 		x = NOT_X + NOT_PAD; y = NOT_Y + 2.5 * HPC_GY; w = NOT_W - 2 * NOT_PAD; h = 1.4 * HPC_GY;
-		font = "RobotoCondensed";
+		font = "PuristaMedium";
 		sizeEx = 0.95 * HPC_GY;
 		text = "Important notes for players new to this server.";
 	};
@@ -83,7 +83,7 @@ class liberation_notice {
 				text = "$STR_NOTICE_TEXT1";
 				size = 1.1 * HPC_GY;
 				class Attributes {
-					font = "RobotoCondensed";
+					font = "PuristaMedium";
 					color = "#EBEFF1";
 					align = "left";
 					valign = "top";

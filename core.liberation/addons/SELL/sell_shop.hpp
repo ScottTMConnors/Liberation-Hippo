@@ -7,7 +7,7 @@
 #define SSH_IW (SSH_W - 2 * SSH_PAD)
 
 class SSH_ListN : StdListNBox {
-	font = "RobotoCondensed";
+	font = "PuristaMedium";
 	sizeEx = 1.05 * HPC_GY;
 	rowHeight = 2.1 * HPC_GY;
 	shadow = 0;
@@ -51,7 +51,7 @@ class Sell_Shop {
 		};
 		class Subtitle : HPC_Label {
 			x = SSH_X + SSH_PAD; y = SSH_Y + 2.5 * HPC_GY; w = SSH_IW; h = 1.4 * HPC_GY;
-			font = "RobotoCondensed";
+			font = "PuristaMedium";
 			sizeEx = 0.95 * HPC_GY;
 			text = "Sell the cargo of your nearby vehicles and crates for ammo.";
 		};
@@ -87,14 +87,14 @@ class Sell_Shop {
 		class EmptyList : HPC_Label {
 			idc = 130;
 			style = ST_CENTER;
-			font = "RobotoCondensed";
+			font = "PuristaMedium";
 			sizeEx = HPC_GY;
 			x = SSH_X + SSH_PAD; y = SSH_Y + 15 * HPC_GY; w = SSH_IW; h = 2 * HPC_GY;
 			text = "Nothing with sellable cargo nearby";
 		};
 		class Status : HPC_Label {
 			idc = 131;
-			font = "RobotoCondensed";
+			font = "PuristaMedium";
 			sizeEx = 0.95 * HPC_GY;
 			x = SSH_X + SSH_PAD; y = SSH_Y + SSH_H - 6.6 * HPC_GY; w = SSH_IW; h = 1.5 * HPC_GY;
 			text = "";

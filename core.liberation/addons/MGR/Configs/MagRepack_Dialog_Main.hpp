@@ -42,13 +42,13 @@ class MGR_SlotList : HPC_ListBox {
 };
 class MGR_SlotHint : HPC_Label {
 	style = ST_CENTER;
-	font = "RobotoCondensed";
+	font = "PuristaMedium";
 	sizeEx = 1.0 * HPC_GY;
 };
 class MGR_SlotInfo : HPC_StructuredText {
 	size = 1.0 * HPC_GY;
 	class Attributes {
-		font = "RobotoCondensed";
+		font = "PuristaMedium";
 		color = "#EBEFF1";
 		align = "left";
 		valign = "middle";
@@ -67,8 +67,7 @@ class MGR_ConvertButton : HPC_Button {
 // their group and slide in.
 class MGR_AmmoBarGroup : outlw_MR_RscControlsGroup {};
 class MGR_OptionButton : HPC_Button {
-	font = "RobotoCondensed";
-	sizeEx = 0.95 * HPC_GY;
+	font = "PuristaMedium";
 };
 
 class MagRepack_Dialog_Main
@@ -104,7 +103,7 @@ class MagRepack_Dialog_Main
 			idc = 1009;
 			text = "Drag a magazine onto Source and one onto Target to move rounds. Right-click a slot to empty it.";
 			x = MGR_X(MGR_LX); y = MGR_Y(2.5); w = MGR_GW(MGR_W - 6); h = MGR_GH(1.4);
-			font = "RobotoCondensed";
+			font = "PuristaMedium";
 			sizeEx = 0.95 * HPC_GY;
 		};
 		class MR_ButtonClose : HPC_Button

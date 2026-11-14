@@ -569,7 +569,7 @@ while { !isNull _display && alive player } do {
 	if (_row != _selRow) then {
 		_selRow = _row;
 		(_display displayCtrl 2422) ctrlSetStructuredText parseText (if (_stack isEqualTo []) then { "<t color='#8FA3B4'>Select a stack to move, take out or sell it.</t>" } else {
-			format ["<t font='RobotoCondensedBold' color='#EBEFF1'>%1</t><t color='#8FA3B4'>   %2   |   QTY </t><t color='#EBEFF1'>%3</t><t color='#8FA3B4'>   |   SELLS FOR </t><t color='#7FD3C0'>%4</t>",
+			format ["<t font='PuristaSemibold' color='#EBEFF1'>%1</t><t color='#8FA3B4'>   %2   |   QTY </t><t color='#EBEFF1'>%3</t><t color='#8FA3B4'>   |   SELLS FOR </t><t color='#7FD3C0'>%4</t>",
 				_stack select 0, toUpper (_stack select 1), _stack select 2, ([_stack, _stack select 2] call _sellValue) call _amountText]
 		});
 	};

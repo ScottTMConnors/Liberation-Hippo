@@ -22,7 +22,7 @@ class DALE_RscButton {
 	colorText[] 				= {1,1,1,1};
 	deletable = 0;
 	fade = 0;
-	font = "PuristaLight";
+	font = "PuristaMedium";
 	offsetPressedX = 0;
 	offsetPressedY = 0;
 	offsetX = 0;
@@ -65,7 +65,7 @@ class DALE_RscCombo {
 
 	deletable = 0;
 	fade = 0;
-	font = "PuristaLight";
+	font = "PuristaMedium";
 	maxHistoryDelay = 1;
 	rowHeight = __EVAL(safezoneH * 0.02);
 	sizeEx = __EVAL(safezoneH * 0.02);
@@ -133,7 +133,7 @@ class DALE_RscLoadout {
 		};
 		class subtitle : HPC_Label {
 			x = DALE_IMG_X; y = DALE_IMG_Y - 3.7 * HPC_GY; w = DALE_IMG_W; h = 1.4 * HPC_GY;
-			font = "RobotoCondensed";
+			font = "PuristaMedium";
 			sizeEx = 0.95 * HPC_GY;
 			text = "Pick a preset or set each pylon. The seat icon switches pilot or gunner control.";
 		};
@@ -160,7 +160,7 @@ class DALE_RscLoadout {
 
 			colorbackground[] = {0,0,0,0.25};
 			colorText[] = {0,0,0,0};
-			font = "PuristaLight";
+			font = "PuristaMedium";
 			sizeEx = 0;
 			shadow = 0;
 			style = 128;
@@ -179,7 +179,7 @@ class DALE_RscLoadout {
 			deletable = 0;
 			fade = 0;
 			fixedWidth = 0;
-			font = "TahomaB";
+			font = "PuristaSemibold";
 			lineSpacing = 0;
 			shadow = 0;
 			sizeEx = 0;
@@ -195,7 +195,7 @@ class DALE_RscLoadout {
 			y = __EVAL(safezoneY + safezoneH * (0.505-DALE_VAR_DLGHEIGHTIMG/2));
 			w = __EVAL(safezoneW * DALE_VAR_DLGWIDTHSECTION*2);
 			h = 2 * HPC_GY;
-			font = "RobotoCondensed";
+			font = "PuristaMedium";
 			sizeEx = HPC_GY;
 			tooltip = "Pylon preset";
 		};
@@ -205,7 +205,7 @@ class DALE_RscLoadout {
 			y = __EVAL(safezoneY + safezoneH * (0.505-DALE_VAR_DLGHEIGHTIMG/2));
 			w = __EVAL(safezoneW * DALE_VAR_DLGWIDTHSECTION*2);
 			h = 2 * HPC_GY;
-			font = "RobotoCondensed";
+			font = "PuristaMedium";
 			sizeEx = HPC_GY;
 			tooltip = "Weapon release mode";
 		};

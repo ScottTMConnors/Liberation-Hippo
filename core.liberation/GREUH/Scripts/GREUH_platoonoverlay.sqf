@@ -67,8 +67,8 @@ GRLIB_nametag_units = [];
 
 				_color = [0.8,1,0.2,_alpha];
 				if ( _x == group player) then { _color = [1,0.9,0.3,_alpha] };
-				drawIcon3D [platoon_icon1, _color, _grouppos, _size / 2, _size / 2,0, format ["%1 - %2%3",groupID _x, name (leader _x),_distlabel], 2, 0.03 * _textalpha, "puristaMedium"];
-				drawIcon3D [platoon_icon2, _color, _grouppos, _size, _size,0, "", 2, 0.04, "puristaMedium"];
+				drawIcon3D [platoon_icon1, _color, _grouppos, _size / 2, _size / 2,0, format ["%1 - %2%3",groupID _x, name (leader _x),_distlabel], 2, 0.03 * _textalpha, "PuristaMedium"];
+				drawIcon3D [platoon_icon2, _color, _grouppos, _size, _size,0, "", 2, 0.04, "PuristaMedium"];
 			};
 		} foreach GRLIB_overlay_groups;
 	};
@@ -113,7 +113,7 @@ GRLIB_nametag_units = [];
 			_height = 2 + ((player distance _nextunit) / (0.75 * _local_nametags_distance));
 			_iconpos = [getPosATL _nextunit select 0,  getPosATL _nextunit select 1,  (getPosATL _nextunit select 2) + _height];
 			_playername = [_nextunit] call get_player_name;
-			drawIcon3D [_drawicon, _color, _iconpos , 0.75, 0.75, 0, format ["%1", _playername] , 2, 0.032, "puristaMedium"];
+			drawIcon3D [_drawicon, _color, _iconpos , 0.75, 0.75, 0, format ["%1", _playername] , 2, 0.032, "PuristaMedium"];
 
 		} foreach GRLIB_nametag_units;
 	};

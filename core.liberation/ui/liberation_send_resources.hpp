@@ -39,7 +39,7 @@ class liberation_send_resources {
 	};
 	class Subtitle : HPC_Label {
 		x = SND_X + SND_PAD; y = SND_Y + 2.5 * HPC_GY; w = SND_IW; h = 1.4 * HPC_GY;
-		font = "RobotoCondensed";
+		font = "PuristaMedium";
 		sizeEx = 0.95 * HPC_GY;
 		text = "Transfer ammo and fuel from your account to another player.";
 	};
@@ -91,7 +91,7 @@ class liberation_send_resources {
 	class PlayerList : StdCombo {
 		idc = 231;
 		x = SND_X + SND_PAD + SND_LBL_W; y = SND_Y + 13.4 * HPC_GY; w = SND_IW - SND_LBL_W; h = 2.4 * HPC_GY;
-		font = "RobotoCondensed";
+		font = "PuristaMedium";
 		sizeEx = 1.05 * HPC_GY;
 		wholeHeight = 14 * HPC_GY;
 		colorBackground[] = {0.12,0.15,0.16,0.95};

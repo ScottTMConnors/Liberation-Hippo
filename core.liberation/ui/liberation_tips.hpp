@@ -34,7 +34,7 @@ class liberation_tips {
 	};
 	class Subtitle : HPC_Label {
 		x = TIP_X + TIP_PAD; y = TIP_Y + 2.5 * HPC_GY; w = TIP_W - 2 * TIP_PAD; h = 1.4 * HPC_GY;
-		font = "RobotoCondensed";
+		font = "PuristaMedium";
 		sizeEx = 0.95 * HPC_GY;
 		text = "Short tips to get more out of Hippos Conquest.";
 	};
@@ -83,7 +83,7 @@ class liberation_tips {
 				text = "$STR_TUTO_TEXT12";
 				size = 1.1 * HPC_GY;
 				class Attributes {
-					font = "RobotoCondensed";
+					font = "PuristaMedium";
 					color = "#EBEFF1";
 					align = "left";
 					valign = "top";

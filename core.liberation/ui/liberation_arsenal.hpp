@@ -32,7 +32,7 @@ class liberation_arsenal {
 	};
 	class Subtitle : HPC_Label {
 		x = ARS_X + ARS_PAD; y = ARS_Y + 2.5 * HPC_GY; w = ARS_IW; h = 1.4 * HPC_GY;
-		font = "RobotoCondensed";
+		font = "PuristaMedium";
 		sizeEx = 0.95 * HPC_GY;
 		text = "Saved kits and their ammo cost. Double-click to load.";
 	};
@@ -62,7 +62,7 @@ class liberation_arsenal {
 		idc = 201;
 		x = ARS_X + ARS_PAD; y = ARS_Y + 6.6 * HPC_GY; w = ARS_IW; h = 20 * HPC_GY;
 		columns[] = {0, 0.78};
-		font = "RobotoCondensed";
+		font = "PuristaMedium";
 		sizeEx = 1.05 * HPC_GY;
 		rowHeight = 2.1 * HPC_GY;
 		shadow = 0;
@@ -76,7 +76,7 @@ class liberation_arsenal {
 		idc = 205;
 		style = ST_CENTER;
 		x = ARS_X + ARS_PAD; y = ARS_Y + 14.6 * HPC_GY; w = ARS_IW; h = 2 * HPC_GY;
-		font = "RobotoCondensed";
+		font = "PuristaMedium";
 		sizeEx = HPC_GY;
 		text = "No saved loadouts yet - use Edit Loadout";
 	};
@@ -88,13 +88,11 @@ class liberation_arsenal {
 	};
 	class EditButton : HPC_Button {
 		x = ARS_X + ARS_PAD; y = ARS_Y + 30.6 * HPC_GY; w = (ARS_IW - 0.4 * HPC_GX) / 2; h = 2.6 * HPC_GY;
-		sizeEx = 0.95 * HPC_GY;
 		text = $STR_EDIT_LOADOUT;
 		action = "edit_loadout = 1;";
 	};
 	class RespawnButton : EditButton {
 		x = ARS_X + ARS_PAD + (ARS_IW + 0.4 * HPC_GX) / 2;
-		sizeEx = 0.85 * HPC_GY;
 		text = $STR_MAKE_RESPAWN_LOADOUT;
 		tooltip = "Use your current kit when you respawn";
 		action = "respawn_loadout = 1;";
@@ -106,7 +104,7 @@ class liberation_arsenal {
 	class PlayersCombo : StdCombo {
 		idc = 203;
 		x = ARS_X + ARS_PAD; y = ARS_Y + 35.6 * HPC_GY; w = ARS_IW; h = 2.4 * HPC_GY;
-		font = "RobotoCondensed";
+		font = "PuristaMedium";
 		sizeEx = HPC_GY;
 		wholeHeight = 14 * HPC_GY;
 		colorBackground[] = {0.12,0.15,0.16,0.95};
@@ -117,14 +115,13 @@ class liberation_arsenal {
 	class TransferButton : HPC_Button {
 		idc = 204;
 		x = ARS_X + ARS_PAD; y = ARS_Y + 38.6 * HPC_GY; w = ARS_IW; h = 2.6 * HPC_GY;
-		sizeEx = 0.95 * HPC_GY;
 		text = $STR_LOAD_PLAYER_LOADOUT;
 		action = "load_from_player = lbCurSel 203;";
 	};
 	class AmmoInfo : HPC_Label {
 		idc = 206;
 		x = ARS_X + ARS_PAD; y = ARS_Y + 41.9 * HPC_GY; w = ARS_IW; h = 1.4 * HPC_GY;
-		font = "RobotoCondensed";
+		font = "PuristaMedium";
 		sizeEx = 0.95 * HPC_GY;
 		text = "";
 	};

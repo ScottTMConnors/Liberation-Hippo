@@ -34,7 +34,7 @@ class MagRepack_Dialog_About
 		{
 			text = "Moves rounds between magazines of the same ammo.";
 			x = MGRA_X(1.5); y = MGRA_Y(2.5); w = MGR_GW(MGRA_W - 3); h = MGR_GH(1.4);
-			font = "RobotoCondensed";
+			font = "PuristaMedium";
 			sizeEx = 0.95 * HPC_GY;
 		};
 		class A_ButtonClose : HPC_Button
@@ -83,7 +83,6 @@ class MagRepack_Dialog_About
 			text = "$STR_MGR_COPY";
 			action = "copyToClipboard 'http://forums.bistudio.com/showthread.php?151402-Mag-Repack';";
 			tooltip = "http://forums.bistudio.com/showthread.php?151402-Mag-Repack";
-			sizeEx = 0.9 * HPC_GY;
 			x = MGRA_X(MGRA_W - 11.5); y = MGRA_Y(11.2); w = MGR_GW(10); h = MGR_GH(2.2);
 		};
 		class A_FooterDivider : HPC_Text

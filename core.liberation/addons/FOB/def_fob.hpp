@@ -10,7 +10,7 @@
 #define FDF_IW2 (27 * HPC_GX)
 
 class FDF_ListN : StdListNBox {
-	font = "RobotoCondensed";
+	font = "PuristaMedium";
 	sizeEx = 1.05 * HPC_GY;
 	rowHeight = 2.1 * HPC_GY;
 	shadow = 0;
@@ -54,7 +54,7 @@ class FOB_Defense {
 		};
 		class Subtitle : HPC_Label {
 			x = FDF_X + FDF_PAD; y = FDF_Y + 2.5 * HPC_GY; w = FDF_IW; h = 1.4 * HPC_GY;
-			font = "RobotoCondensed";
+			font = "PuristaMedium";
 			sizeEx = 0.95 * HPC_GY;
 			text = "Build a defense template around this FOB.";
 		};
@@ -112,7 +112,7 @@ class FOB_Defense {
 		};
 		class Input_InnerBG_F : HPC_Label {
 			idc = 524;
-			font = "RobotoCondensed";
+			font = "PuristaMedium";
 			sizeEx = 0.95 * HPC_GY;
 			x = FDF_IX + FDF_PAD; y = FDF_Y + 2.5 * HPC_GY; w = FDF_IW2 - 2 * FDF_PAD; h = 1.4 * HPC_GY;
 			text = "Paste the exported object array, then press OK.";

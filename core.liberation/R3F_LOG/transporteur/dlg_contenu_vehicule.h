@@ -82,7 +82,7 @@ class R3F_LOG_dlg_contenu_vehicule
 	class R3F_LOG_dlg_CV_sous_titre : HPC_Label
 	{
 		x = R3F_CV_X + R3F_CV_PAD; y = R3F_CV_Y + 2.5 * HPC_GY; w = R3F_CV_IW; h = 1.4 * HPC_GY;
-		font = "RobotoCondensed";
+		font = "PuristaMedium";
 		sizeEx = 0.95 * HPC_GY;
 		text = "Objects loaded in this vehicle. Double-click one to unload it.";
 	};
@@ -158,7 +158,7 @@ class R3F_LOG_dlg_contenu_vehicule
 	{
 		idc = R3F_LOG_IDC_DLG_CV_VIDE;
 		style = ST_CENTER;
-		font = "RobotoCondensed";
+		font = "PuristaMedium";
 		sizeEx = HPC_GY;
 		x = R3F_CV_X + R3F_CV_PAD; y = R3F_CV_Y + 18 * HPC_GY; w = R3F_CV_IW; h = 2 * HPC_GY;
 		text = "This vehicle carries no cargo";
@@ -167,7 +167,7 @@ class R3F_LOG_dlg_contenu_vehicule
 	class R3F_LOG_dlg_CV_credits : HPC_Label
 	{
 		idc = R3F_LOG_IDC_DLG_CV_CREDITS;
-		font = "RobotoCondensed";
+		font = "PuristaMedium";
 		sizeEx = 0.75 * HPC_GY;
 		colorText[] = {0.62,0.69,0.72,0.6};
 		x = R3F_CV_X + R3F_CV_PAD; y = R3F_CV_Y + R3F_CV_H - 1.3 * HPC_GY; w = R3F_CV_IW; h = 1.1 * HPC_GY;

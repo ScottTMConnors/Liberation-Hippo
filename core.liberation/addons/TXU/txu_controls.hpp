@@ -22,7 +22,7 @@ class TXU_GUI_RscButton
 	h = 0.039216;
 	text = "";
 	shadow = 2;
-	font = "RobotoCondensed";
+	font = "PuristaMedium";
 	//sizeEx = GUI_TEXT_SIZE_MEDIUM;
 	sizeEx = TXU_GUI_TEXT_SIZE_MEDIUM;
 	offsetX = 0;

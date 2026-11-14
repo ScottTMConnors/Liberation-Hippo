@@ -91,7 +91,7 @@
 #define MB_BUTTON_CANCEL  2
 #define MB_BUTTON_USER    4
 
-#define FONTM             "puristaMedium"
+#define FONTM             "PuristaMedium"
 
 #ifdef COLOR_BROWN
 #undef COLOR_BROWN
@@ -313,7 +313,7 @@ class GREUH_Menu {
 		x = 0; y = 0; w = 0; h = 0;
 		colorText[] = GO_C_TEXT;
 		colorBackground[] = {0,0,0,0};
-		font = "RobotoCondensed";
+		font = "PuristaMedium";
 		sizeEx = GO_GY;
 		shadow = 0;
 		text = "";
@@ -417,7 +417,7 @@ class GREUH_Menu {
 	};
 	class GREUH_Subtitle : GREUH_Label {
 		x = GO_X + GO_PAD; y = GO_Y + 2.5 * GO_GY; w = GO_W - 2 * GO_PAD;
-		font = "RobotoCondensed";
+		font = "PuristaMedium";
 		sizeEx = 0.95 * GO_GY;
 		text = "Player squads, map awareness, view distance, terrain detail and ear plugs.";
 	};
@@ -458,7 +458,7 @@ class GREUH_Menu {
 	class GREUH_SquadList : RscListBox {
 		idc = 515;
 		x = GO_LX; y = GO_Y + 7 * GO_GY; w = 23 * GO_GX; h = 13.4 * GO_GY;
-		font = "RobotoCondensed";
+		font = "PuristaMedium";
 		sizeEx = GO_GY;
 		rowHeight = 2 * GO_GY;
 		colorText[] = GO_C_TEXT;
@@ -535,7 +535,7 @@ class GREUH_Menu {
 		type = CT_EDIT;
 		style = ST_LEFT;
 		x = GO_LX + 0.8 * GO_GX; y = GO_Y + 21.5 * GO_GY; w = 22.2 * GO_GX; h = 2.6 * GO_GY;
-		font = "RobotoCondensed";
+		font = "PuristaMedium";
 		sizeEx = GO_GY;
 		text = "";
 		autocomplete = "";

@@ -52,7 +52,7 @@ class outlw_MR_RscPicture
 	style = 48;
 	colorBackground[] = {0,0,0,0};
 	colorText[] = {1,1,1,1};
-	font = "TahomaB";
+	font = "PuristaSemibold";
 	sizeEx = 0;
 	lineSpacing = 0;
 	text = "";
@@ -191,7 +191,7 @@ class outlw_MR_RscButtonMenu
 	};
 	class Attributes
 	{
-		font = "PuristaLight";
+		font = "PuristaMedium";
 		color = "#E5E5E5";
 		align = "left";
 		shadow = "false";

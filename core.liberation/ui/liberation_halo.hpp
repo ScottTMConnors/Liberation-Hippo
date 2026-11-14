@@ -33,7 +33,7 @@ class liberation_halo {
 	};
 	class Subtitle : HPC_Label {
 		x = HAL_X + HAL_PAD; y = HAL_Y + 2.5 * HPC_GY; w = HAL_W - 2 * HAL_PAD; h = 1.4 * HPC_GY;
-		font = "RobotoCondensed";
+		font = "PuristaMedium";
 		sizeEx = 0.95 * HPC_GY;
 		text = "Pick a target point on the map.";
 	};
@@ -59,7 +59,7 @@ class liberation_halo {
 		size = 0.95 * HPC_GY;
 		text = "1. Click the map to move the marker.<br/>2. Scroll to zoom, drag to pan.<br/>3. Confirm with the button below.";
 		class Attributes {
-			font = "RobotoCondensed";
+			font = "PuristaMedium";
 			color = "#EBEFF1";
 			align = "left";
 			valign = "top";
@@ -76,7 +76,7 @@ class liberation_halo {
 		size = 0.95 * HPC_GY;
 		text = "";
 		class Attributes {
-			font = "RobotoCondensed";
+			font = "PuristaMedium";
 			color = "#EBEFF1";
 			align = "left";
 			valign = "top";

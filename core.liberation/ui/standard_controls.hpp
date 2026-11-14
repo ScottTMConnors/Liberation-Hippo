@@ -340,7 +340,7 @@ class RscText
         style = ST_LEFT;
         colorBackground[] = {0, 0, 0, 0};
         colorText[] = {1, 1, 1, 1};
-        font = "Bitstream";
+        font = "PuristaMedium";
         sizeEx = 0.04;
 };
 

@@ -46,7 +46,7 @@ class liberation_menu {
 	};
 	class Subtitle : HPC_Label {
 		x = MNU_SX + MNU_PAD; y = MNU_Y + 2.5 * HPC_GY; w = MNU_SIDE_W - 2 * MNU_PAD; h = 1.4 * HPC_GY;
-		font = "RobotoCondensed";
+		font = "PuristaMedium";
 		sizeEx = 0.95 * HPC_GY;
 		text = "Take the island back, one sector at a time.";
 	};
@@ -81,7 +81,7 @@ class liberation_menu {
 		size = 0.85 * HPC_GY;
 		text = "<t color='#9EB0B8'>Join the fight to pick a spawn point.<br/>How to play opens the field manual.<br/>ESC opens the game menu.</t>";
 		class Attributes {
-			font = "RobotoCondensed";
+			font = "PuristaMedium";
 			color = "#9EB0B8";
 			align = "left";
 			valign = "bottom";

@@ -62,7 +62,7 @@ GRLIB_SetupParamMenu = compileFinal {
                 _control = _display ctrlCreate [ "RscText", (100 + _idx), _group ];
                 _control ctrlSetPosition [ 0.8 * _gx, _idx * _rowH, _comboX - (1.6 * _gx), _rowH];
                 _control ctrlSetText _name;
-                _control ctrlSetFont "RobotoCondensed";
+                _control ctrlSetFont "PuristaMedium";
                 _control ctrlSetFontHeight _gy;
                 _description = _hash get GRLIB_PARAM_DescriptionKey;
                 if (isNil "_description") then { _description = "" };

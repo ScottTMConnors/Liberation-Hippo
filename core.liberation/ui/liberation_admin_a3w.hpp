@@ -38,7 +38,7 @@ class liberation_admin_a3w {
 	};
 	class Subtitle : HPC_Label {
 		x = A3A_X + A3A_PAD; y = A3A_Y + 2.5 * HPC_GY; w = A3A_W - 6 * HPC_GX; h = 1.4 * HPC_GY;
-		font = "RobotoCondensed";
+		font = "PuristaMedium";
 		sizeEx = 0.95 * HPC_GY;
 		text = "A3W mission debugging for admins. Apply to send to the server.";
 	};

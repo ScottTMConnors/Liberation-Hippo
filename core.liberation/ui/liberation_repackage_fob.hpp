@@ -35,7 +35,7 @@ class liberation_repackage_fob {
 	};
 	class Subtitle : HPC_Label {
 		x = RPK_IX; y = RPK_Y + 2.5 * HPC_GY; w = RPK_IW - 3 * HPC_GX; h = 1.4 * HPC_GY;
-		font = "RobotoCondensed";
+		font = "PuristaMedium";
 		sizeEx = 0.95 * HPC_GY;
 		text = "Pack up this FOB so it can be moved and redeployed.";
 	};

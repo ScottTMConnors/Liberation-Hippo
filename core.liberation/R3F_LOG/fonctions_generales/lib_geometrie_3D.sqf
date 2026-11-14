@@ -1031,7 +1031,7 @@ addMissionEventHandler ["Draw3D",
 		//	};
 		//} forEach (nearestObjects [player, ["All"], 15] - [player]);
 
-		drawIcon3D ["\A3\ui_f\data\map\vehicleicons\iconManMedic_ca.paa", [1,0,0,1], positionCameraToWorld [0, 0, 1], 0.2, 0.2, 0, "", 1, 0, "TahomaB"];
+		drawIcon3D ["\A3\ui_f\data\map\vehicleicons\iconManMedic_ca.paa", [1,0,0,1], positionCameraToWorld [0, 0, 1], 0.2, 0.2, 0, "", 1, 0, "PuristaSemibold"];
 
 		//if !(isNil "R3F_LOG_liste_objets_en_deplacement") then
 		//{

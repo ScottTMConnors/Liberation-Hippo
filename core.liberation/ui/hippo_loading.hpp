@@ -34,7 +34,7 @@ class HPC_LoadingScreen {
         class Status : Title {
             idc = 101;
             text = "Preparing mission data...";
-            font = "RobotoCondensed";
+            font = "PuristaMedium";
             y = safezoneY + 0.79 * safezoneH;
             h = 0.03 * safezoneH;
             sizeEx = 0.021 * safezoneH;

@@ -7,7 +7,7 @@
 #define ALG_IW (ALG_W - 2 * ALG_PAD)
 
 class ALG_ListN : StdListNBox {
-	font = "RobotoCondensed";
+	font = "PuristaMedium";
 	sizeEx = 1.05 * HPC_GY;
 	rowHeight = 2.1 * HPC_GY;
 	shadow = 0;
@@ -51,7 +51,7 @@ class AI_Logistic {
 		};
 		class Subtitle : HPC_Label {
 			x = ALG_X + ALG_PAD; y = ALG_Y + 2.5 * HPC_GY; w = ALG_IW; h = 1.4 * HPC_GY;
-			font = "RobotoCondensed";
+			font = "PuristaMedium";
 			sizeEx = 0.95 * HPC_GY;
 			text = "Choose the transport an AI driver will use for supply runs.";
 		};
@@ -87,7 +87,7 @@ class AI_Logistic {
 		class EmptyList : HPC_Label {
 			idc = 130;
 			style = ST_CENTER;
-			font = "RobotoCondensed";
+			font = "PuristaMedium";
 			sizeEx = HPC_GY;
 			x = ALG_X + ALG_PAD; y = ALG_Y + 14 * HPC_GY; w = ALG_IW; h = 2 * HPC_GY;
 			text = "No free owned transport nearby";

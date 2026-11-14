@@ -16,12 +16,12 @@ private _color = {
 private _img = ["", format [" <img size='1.15' color='#E6EBED' image='%1'/> ", _icon]] select (_icon != "");
 if (_img == "") then { _img = " <t color='#9EAFB5'>&#62;</t> " };
 private _tag = switch (_type) do {
-	case "tk": { "<t color='#F7D27A' font='RobotoCondensedBold'>TEAMKILL </t>" };
-	case "civ": { "<t color='#C49BEA' font='RobotoCondensedBold'>CIVILIAN </t>" };
-	case "kamikaze": { "<t color='#F7D27A' font='RobotoCondensedBold'>KAMIKAZE </t>" };
+	case "tk": { "<t color='#F7D27A' font='PuristaSemibold'>TEAMKILL </t>" };
+	case "civ": { "<t color='#C49BEA' font='PuristaSemibold'>CIVILIAN </t>" };
+	case "kamikaze": { "<t color='#F7D27A' font='PuristaSemibold'>KAMIKAZE </t>" };
 	default { "" };
 };
-private _victim = format ["<t color='%1'%3>%2</t>", _vSide call _color, _vLabel call _esc, ["", " font='RobotoCondensedBold'"] select _vPlayer];
+private _victim = format ["<t color='%1'%3>%2</t>", _vSide call _color, _vLabel call _esc, ["", " font='PuristaSemibold'"] select _vPlayer];
 
 private _ftOwner = missionNamespace getVariable ["PAR_Grp_ID", "-"];
 private _mine = (_rewardPlayer isEqualTo player) || {_killer isEqualTo player} || {
@@ -34,7 +34,7 @@ if (_mine) then {
 	private _self = _killer isEqualTo player;
 	private _chip = {
 		params ["_label", "_hex"];
-		format ["<t font='RobotoCondensedBold' color='%1'>%2</t>  ", _hex, _label]
+		format ["<t font='PuristaSemibold' color='%1'>%2</t>  ", _hex, _label]
 	};
 	private _lead = switch (true) do {
 		case (_type == "tk"): { ["TEAMKILL", "#F7D27A"] call _chip };
@@ -51,12 +51,12 @@ if (_mine) then {
 	private _gain = "";
 	if (_reward != "" && {_rewardPlayer isEqualTo player}) then {
 		private _good = (_reward select [0, 1]) == "+";
-		_gain = format ["    <t font='RobotoCondensedBold' color='%1'>%2</t>", ["#F5A29C", "#A6EBA6"] select _good, _reward];
+		_gain = format ["    <t font='PuristaSemibold' color='%1'>%2</t>", ["#F5A29C", "#A6EBA6"] select _good, _reward];
 	};
 	private _text = format ["%1<t color='#DDE4E7'>%2</t><t color='#9EAFB5'>%3</t>%4%5<t color='#9EAFB5'>%6 m</t>%7", _lead, _who, _verb, _victim, _img, _dist, _gain];
 	HPC_killFeedMine = ([[_text, diag_tickTime + ([4, 6] select (_killer isEqualTo player || {_rewardPlayer isEqualTo player}))]] + HPC_killFeedMine) select [0, 5];
 } else {
-	private _text = format ["%1<t color='%2'%4>%3</t>%5%6", _tag, _kSide call _color, _kLabel call _esc, ["", " font='RobotoCondensedBold'"] select (isPlayer _killer), _img, _victim];
+	private _text = format ["%1<t color='%2'%4>%3</t>%5%6", _tag, _kSide call _color, _kLabel call _esc, ["", " font='PuristaSemibold'"] select (isPlayer _killer), _img, _victim];
 	HPC_killFeedGlobal = ([[_text, diag_tickTime + 8]] + HPC_killFeedGlobal) select [0, 6];
 };
 if (isNil "HPC_killFeedWorker" || {scriptDone HPC_killFeedWorker}) then {

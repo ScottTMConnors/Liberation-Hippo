@@ -58,7 +58,7 @@ addMissionEventHandler ["Draw3D",{
 	{
 		_x params ["_obj", "_dz", "_text", "_icon", "_size"];
 		if (!isNull _obj) then {
-			private _font = ["RobotoCondensed", "TahomaB"] select (_obj == chimera_sign);
+			private _font = ["PuristaMedium", "PuristaSemibold"] select (_obj == chimera_sign);
 			drawIcon3D ["", [1,1,1,1], (ASLToAGL getPosASL _obj) vectorAdd [0, 0, _dz], _icon, _icon, 0, _text, 2, _size, _font, "center"];
 		};
 	} forEach HPC_draw3dLabels;

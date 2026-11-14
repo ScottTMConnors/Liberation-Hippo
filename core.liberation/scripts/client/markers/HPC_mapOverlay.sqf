@@ -211,7 +211,7 @@ HPC_fnc_mapVehicleTooltip = compileFinal toString {
     private _team = "";
     { private _number = (group _x) getVariable ["HPC_fireteamNumber", 0]; if (_number > 0) exitWith {_team = groupId group _x} } forEach _crew;
     [
-        format ["<t font='PuristaBold' size='1' color='%1'>%2</t><t align='right' size='0.85' color='%1'>%3</t><br/>",
+        format ["<t font='PuristaSemibold' size='1' color='%1'>%2</t><t align='right' size='0.85' color='%1'>%3</t><br/>",
             switch (_cat) do {case "mine": {"#66E673"}; case "enemy": {"#FF5A47"}; case "empty": {"#C7B880"}; default {"#CC8CFF"}},
             toUpper getText (configOf _vehicle >> "displayName"),
             switch (_cat) do {
@@ -233,7 +233,7 @@ HPC_fnc_mapVehicleTooltip = compileFinal toString {
 
 // Marker style (tools/map_render.py mirrors it, keep both in step):
 // - every group/vehicle icon sits on a dark soft halo (1.75x) so it reads on any terrain,
-//   labels are RobotoCondensedBold 0.032 with an outline (shadow 2)
+//   labels are PuristaSemibold 0.032 with an outline (shadow 2)
 // - yours: thin ring; disabled vehicle: orange dashed ring; in combat: soft red ring that
 //   breathes; commander order: gold line and a gold ring on the objective
 // - last known enemy: the same icon and label, faded, inside a slowly turning dashed ring
@@ -278,7 +278,7 @@ HPC_fnc_mapDraw = compileFinal toString {
     private _mark = {
         params ["_icon", "_color", "_pos", "_size", "_text"];
         [_halo, [0.02, 0.03, 0.035, 0.3 * (_color select 3)], _pos, _size * 1.45, _size * 1.45, 0] call _dI;
-        [_icon, _color, _pos, _size, _size, 0, _text, 2, 0.032, "RobotoCondensedBold", "right"] call _dI;
+        [_icon, _color, _pos, _size, _size, 0, _text, 2, 0.032, "PuristaSemibold", "right"] call _dI;
     };
     private _mouseDistance = {(_map ctrlMapWorldToScreen _this) distance2D _mouse};
     if (HPC_mapShowForces) then {
@@ -415,7 +415,7 @@ HPC_fnc_mapTooltipText = compileFinal toString {
         private _vehicles = [];
         { if (!isNull objectParent _x && {!(objectParent _x in _vehicles)}) then {_vehicles pushBack objectParent _x} } forEach units _group;
         [
-            format ["<t font='PuristaBold' size='1' color='%1'>%2</t><t align='right' size='0.85' color='#C9D4DE'>%3 alive</t><br/>",
+            format ["<t font='PuristaSemibold' size='1' color='%1'>%2</t><t align='right' size='0.85' color='#C9D4DE'>%3 alive</t><br/>",
                 ["#CC8CFF", "#66E673"] select _mine, toUpper ([groupId _group, "SQUAD"] select !_fireteam), {alive _x} count units _group],
             format ["<t size='0.85' color='%1'>%2</t><br/>", ["#CC8CFF", "#66E673"] select _mine, if (_mine) then {"Yours"} else {"Commanded by " + ([_owner] call HPC_fnc_mapOwnerName)}],
             if (_vehicles isEqualTo []) then {""} else {format ["<img image='%1' size='1.8'/> <t size='0.8' color='#C9D4DE'>%2</t><br/>", getText (configOf (_vehicles select 0) >> "picture"), getText (configOf (_vehicles select 0) >> "displayName")]},
@@ -428,7 +428,7 @@ HPC_fnc_mapTooltipText = compileFinal toString {
         toUpper (([_group] call HPC_fnc_mapGroupInfo) select 1)
     };
     private _lines = [format [
-        "<t font='PuristaBold' size='1' color='%1'>%2</t><t align='right' size='0.85' color='#C9D4DE'>%3 alive</t><br/>",
+        "<t font='PuristaSemibold' size='1' color='%1'>%2</t><t align='right' size='0.85' color='#C9D4DE'>%3 alive</t><br/>",
         ["#66B3FF", "#FF5A47"] select _enemy, _title, {alive _x} count units _group
     ]];
     if !(_foot isEqualTo []) then {_lines pushBack ((_foot select [0, 14]) joinString "") + "<br/>"};
@@ -576,7 +576,7 @@ private _summary = {
         params ["_icon", "_color", "_label", "_value", ["_valueColor", "#FFFFFF"]];
         private _zero = _value isEqualTo 0;
         format [
-            "<img image='%1' color='%2' size='0.9'/>  <t color='%3'>%4</t><t align='right' font='RobotoCondensedBold' color='%5'>%6</t><br/>",
+            "<img image='%1' color='%2' size='0.9'/>  <t color='%3'>%4</t><t align='right' font='PuristaSemibold' color='%5'>%6</t><br/>",
             [_icon] call HPC_fnc_mapIcon, _color, ["#DDE4E7", "#74838A"] select _zero, _label, [_valueColor, "#5D6B72"] select _zero, _value
         ]
     };
@@ -611,9 +611,9 @@ private _summary = {
     _lines append [
         _gap,
         ["OPERATIONS", ""] call _section,
-        format ["<t color='#DDE4E7'>Active objectives</t><t align='right' font='RobotoCondensedBold' color='#FF8C82'>%1</t><br/>", count active_sectors],
-        format ["<t color='#DDE4E7'>Under commander orders</t><t align='right' font='RobotoCondensedBold' color='#FFD04D'>%1</t><br/>", _ordered],
-        format ["<t color='#DDE4E7'>Commander</t><t align='right' font='RobotoCondensedBold' color='#FFFFFF'>%1</t><br/>", if (_commander isEqualTo []) then {"none"} else {name (_commander select 0)}],
+        format ["<t color='#DDE4E7'>Active objectives</t><t align='right' font='PuristaSemibold' color='#FF8C82'>%1</t><br/>", count active_sectors],
+        format ["<t color='#DDE4E7'>Under commander orders</t><t align='right' font='PuristaSemibold' color='#FFD04D'>%1</t><br/>", _ordered],
+        format ["<t color='#DDE4E7'>Commander</t><t align='right' font='PuristaSemibold' color='#FFFFFF'>%1</t><br/>", if (_commander isEqualTo []) then {"none"} else {name (_commander select 0)}],
         _gap,
         format [
             "<t size='0.8' color='#8FA3B4'><img image='%1' color='#4D9EFF' size='0.9'/> AI  <img image='%1' color='#66E673' size='0.9'/> Yours  <img image='%1' color='#CC8CFF' size='0.9'/> Players  <img image='%1' color='#FF5A47' size='0.9'/> Enemy  <img image='%1' color='#C7B880' size='0.9'/> Empty<br/>Dashed ring: last known.  Cross: destroyed.<br/>Red ring: in combat.  Gold: commander orders.</t>",
@@ -834,11 +834,11 @@ while {true} do {
             if (!(_key isEqualTo _tooltipKey) || {_now - _tooltipAt > 1}) then {
                 private _text = switch (true) do {
                     case (_isGhost && {_ghost select 7}): {
-                        format ["<t font='PuristaBold' size='1' color='#B5BEC3'>ENEMY GROUP</t><t align='right' size='0.85' color='#B5BEC3'>DESTROYED</t><br/><t size='0.85' color='#8FA3B4'>Wiped out %1 ago. The marker clears in %2.</t>",
+                        format ["<t font='PuristaSemibold' size='1' color='#B5BEC3'>ENEMY GROUP</t><t align='right' size='0.85' color='#B5BEC3'>DESTROYED</t><br/><t size='0.85' color='#8FA3B4'>Wiped out %1 ago. The marker clears in %2.</t>",
                             (_now - (_ghost select 5)) call HPC_fnc_mapAgo, ((_ghost select 6) - _now) call HPC_fnc_mapAgo]
                     };
                     case (_isGhost): {
-                        format ["<t font='PuristaBold' size='0.85' color='#F08A80'>LAST KNOWN POSITION</t><t align='right' size='0.85' color='#F08A80'>%1 ago</t><br/>%2<br/><t size='0.8' color='#8FA3B4'>Contact lost; the group may have moved.</t>",
+                        format ["<t font='PuristaSemibold' size='0.85' color='#F08A80'>LAST KNOWN POSITION</t><t align='right' size='0.85' color='#F08A80'>%1 ago</t><br/>%2<br/><t size='0.8' color='#8FA3B4'>Contact lost; the group may have moved.</t>",
                             (_now - (_ghost select 5)) call HPC_fnc_mapAgo, (_ghost select 8) regexReplace ["<t size='0.8' color='#8FA3B4'>Spotted by our forces</t>", ""]]
                     };
                     case (_isGroup): {[_target] call HPC_fnc_mapTooltipText};

@@ -9,7 +9,7 @@
 #define SDF_RW (SDF_W - 2 * SDF_PAD - SDF_LW - 1.2 * HPC_GX)
 
 class SDF_ListN : StdListNBox {
-	font = "RobotoCondensed";
+	font = "PuristaMedium";
 	sizeEx = 1.05 * HPC_GY;
 	rowHeight = 2.1 * HPC_GY;
 	shadow = 0;
@@ -53,7 +53,7 @@ class Sector_Defense {
 		};
 		class Subtitle : HPC_Label {
 			x = SDF_X + SDF_PAD; y = SDF_Y + 2.5 * HPC_GY; w = SDF_W - 2 * SDF_PAD; h = 1.4 * HPC_GY;
-			font = "RobotoCondensed";
+			font = "PuristaMedium";
 			sizeEx = 0.95 * HPC_GY;
 			text = "Pick a FOB or sector, then choose the garrison it should keep.";
 		};
@@ -89,7 +89,7 @@ class Sector_Defense {
 		class EmptyList : HPC_Label {
 			idc = 131;
 			style = ST_CENTER;
-			font = "RobotoCondensed";
+			font = "PuristaMedium";
 			sizeEx = HPC_GY;
 			x = SDF_X + SDF_PAD; y = SDF_Y + 16 * HPC_GY; w = SDF_LW; h = 2 * HPC_GY;
 			text = "No FOBs or friendly sectors";
@@ -126,7 +126,7 @@ class Sector_Defense {
 		};
 		class Usage : HPC_Label {
 			idc = 130;
-			font = "RobotoCondensed";
+			font = "PuristaMedium";
 			sizeEx = 0.95 * HPC_GY;
 			x = SDF_RX; y = SDF_Y + 21.2 * HPC_GY; w = SDF_RW; h = 1.5 * HPC_GY;
 			text = "";

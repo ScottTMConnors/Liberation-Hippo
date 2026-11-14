@@ -85,7 +85,7 @@ if (isNil "HPC_fnc_ftDraw") then { HPC_fnc_ftDraw = compileFinal {
 	} forEach HPC_ftTeams;
 	if !(HPC_ftDestination isEqualTo []) then {
 		private _pulse = 0.55 + 0.4 * sin (diag_tickTime * 300);
-		_map drawIcon [["mil_destroy"] call HPC_fnc_mapIcon, [1, 0.85, 0.2, _pulse], HPC_ftDestination, 26, 26, 0, "Destination", 1, 0.035, "RobotoCondensedBold", "right"];
+		_map drawIcon [["mil_destroy"] call HPC_fnc_mapIcon, [1, 0.85, 0.2, _pulse], HPC_ftDestination, 26, 26, 0, "Destination", 1, 0.035, "PuristaSemibold", "right"];
 		if (!isNull _selected && {alive leader _selected}) then {
 			_map drawLine [getPosASLVisual leader _selected, HPC_ftDestination, [1, 0.85, 0.2, 0.8]];
 		};

@@ -10,7 +10,7 @@ GRLIB_buildoverlay_cfg = configFile >> "cfgVehicles";
 			{
 				if ( alive _x ) then {
 					drawIcon3D [ GRLIB_buildoverlay_icon, GRLIB_buildoverlay_color, [ (getpos _x) select 0, (getpos _x) select 1, 1.5], 
-					1, 1, 0, format [ "%1", getText (GRLIB_buildoverlay_cfg >> typeof _x >> "displayName") ], 2, 0.04, "puristaMedium"];
+					1, 1, 0, format [ "%1", getText (GRLIB_buildoverlay_cfg >> typeof _x >> "displayName") ], 2, 0.04, "PuristaMedium"];
 				};
 			} foreach GRLIB_conflicting_objects;
 		};

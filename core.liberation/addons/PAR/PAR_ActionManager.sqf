@@ -15,7 +15,7 @@ addMissionEventHandler ["Draw3D",{
 	if (!isNull HPC_PAR_nearGrave) then {
 		private _grave = HPC_PAR_nearGrave;
 		private _grave_pos = ASLToAGL getPosASL _grave;
-		drawIcon3D [getMissionPath "res\skull.paa", [1,1,1,1], _grave_pos vectorAdd [0, 0, 1], 2, 2, 0, (_grave getVariable ["PAR_grave_message", ""]), 2, 0.05, "RobotoCondensed", "center"];
+		drawIcon3D [getMissionPath "res\skull.paa", [1,1,1,1], _grave_pos vectorAdd [0, 0, 1], 2, 2, 0, (_grave getVariable ["PAR_grave_message", ""]), 2, 0.05, "PuristaMedium", "center"];
 	};
 }];
 

@@ -12,7 +12,7 @@
 #define COLOR_WHITE         { 1, 1, 1, 1 }
 #define COLOR_BLEEDOUT      { 0.66,0,0,0.8 }
 #define COLOR_OPFOR_NOALPHA { 1, 0, 0, 1 }
-#define FONTM               "puristaMedium"
+#define FONTM               "PuristaMedium"
 
 // Teamkill punishment screen (TKP): black screen, faint skull, message line 667.
 class par_deathscreen {
@@ -74,7 +74,7 @@ class par_respawn {
 	};
 	class PAR_Subtitle : HPC_Label {
 		x = PAR_X + PAR_PAD; y = PAR_Y + 2.5 * HPC_GY; w = PAR_W - 2 * PAR_PAD; h = 1.4 * HPC_GY;
-		font = "RobotoCondensed";
+		font = "PuristaMedium";
 		sizeEx = 0.95 * HPC_GY;
 		text = "Hold on for a medic, or respawn once the timer allows it.";
 	};
@@ -108,7 +108,7 @@ class par_respawn {
 		x = PAR_X + PAR_PAD; y = PAR_Y + 9.2 * HPC_GY; w = PAR_W - 2 * PAR_PAD; h = 4.6 * HPC_GY;
 		size = 1.05 * HPC_GY;
 		class Attributes {
-			font = "RobotoCondensed";
+			font = "PuristaMedium";
 			color = "#9EB0B8";
 			align = "center";
 			valign = "top";

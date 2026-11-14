@@ -45,7 +45,7 @@ class MagRepack_Dialog_Keybindings
 		{
 			text = "Press the key that should open Mag Repack.";
 			x = MGRK_X(1.5); y = MGRK_Y(2.5); w = MGR_GW(MGRK_W - 3); h = MGR_GH(1.4);
-			font = "RobotoCondensed";
+			font = "PuristaMedium";
 			sizeEx = 0.95 * HPC_GY;
 		};
 		class KB_ButtonClose : HPC_Button

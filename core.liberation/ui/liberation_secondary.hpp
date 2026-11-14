@@ -36,7 +36,7 @@ class liberation_secondary {
 	};
 	class Subtitle : HPC_Label {
 		x = SEC_X + SEC_PAD; y = SEC_Y + 2.5 * HPC_GY; w = SEC_W - 2 * SEC_PAD; h = 1.4 * HPC_GY;
-		font = "RobotoCondensed";
+		font = "PuristaMedium";
 		sizeEx = 0.95 * HPC_GY;
 		text = "Spend intel to launch a side operation. One operation can run at a time.";
 	};
@@ -104,7 +104,7 @@ class liberation_secondary {
 				x = 0; y = 0; w = SEC_RW - 2.2 * HPC_GX; h = SEC_BODY_H - 1.2 * HPC_GY;
 				size = 1.05 * HPC_GY;
 				class Attributes {
-					font = "RobotoCondensed";
+					font = "PuristaMedium";
 					color = "#EBEFF1";
 					align = "left";
 					valign = "top";

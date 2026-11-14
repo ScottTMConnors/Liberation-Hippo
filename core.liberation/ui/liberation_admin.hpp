@@ -28,7 +28,7 @@
 #define ADM_ADD_S (ADM_ADD_W + 0.4 * HPC_GX)
 
 class HPCA_Combo : StdCombo {
-	font = "RobotoCondensed";
+	font = "PuristaMedium";
 	sizeEx = HPC_GY;
 	wholeHeight = 14 * HPC_GY;
 	colorBackground[] = {0.12,0.15,0.16,0.95};
@@ -39,7 +39,7 @@ class HPCA_Combo : StdCombo {
 class HPCA_Edit : StdButton {
 	type = CT_EDIT;
 	style = ST_LEFT;
-	font = "RobotoCondensed";
+	font = "PuristaMedium";
 	sizeEx = HPC_GY;
 	text = "";
 	action = "";
@@ -67,7 +67,6 @@ class HPCA_Check {
 	shadow = 0;
 };
 class HPCA_IconButton : HPC_Button {
-	sizeEx = 0.95 * HPC_GY;
 };
 
 class liberation_admin {
@@ -106,7 +105,7 @@ class liberation_admin {
 	};
 	class Subtitle : HPC_Label {
 		x = ADM_LX; y = ADM_Y + 2.5 * HPC_GY; w = ADM_W - 6 * HPC_GX; h = 1.4 * HPC_GY;
-		font = "RobotoCondensed";
+		font = "PuristaMedium";
 		sizeEx = 0.95 * HPC_GY;
 		text = "Server administration. Every action is logged on the server.";
 	};

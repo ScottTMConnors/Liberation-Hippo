@@ -41,7 +41,7 @@ class HPC_cargo_manager {
 		};
 		class Subtitle : HPC_Label {
 			x = CGM_X + CGM_PAD; y = CGM_Y + 2.5 * HPC_GY; w = CGM_IW; h = 1.4 * HPC_GY;
-			font = "RobotoCondensed";
+			font = "PuristaMedium";
 			sizeEx = 0.95 * HPC_GY;
 			text = "Your home stockpile, garage and nearby vehicles and crates. Move, take out, sell, scrap or send cargo.";
 		};
@@ -122,7 +122,7 @@ class HPC_cargo_manager {
 		class EmptyContents : HPC_Label {
 			idc = 2421;
 			style = ST_CENTER;
-			font = "RobotoCondensed";
+			font = "PuristaMedium";
 			sizeEx = HPC_GY;
 			x = CGM_RX; y = CGM_LY + 5 * HPC_GY; w = CGM_RW; h = 2 * HPC_GY;
 			text = "Empty";
@@ -130,7 +130,7 @@ class HPC_cargo_manager {
 		// result of the last action
 		class Status : HPC_Label {
 			idc = 2440;
-			font = "RobotoCondensed";
+			font = "PuristaMedium";
 			sizeEx = 0.95 * HPC_GY;
 			colorText[] = HPC_C_MUTED;
 			x = CGM_RX; y = CGM_LY + CGM_LH + 1.3 * HPC_GY; w = CGM_RW; h = 1.4 * HPC_GY;

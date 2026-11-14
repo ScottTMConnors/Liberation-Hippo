@@ -10,7 +10,7 @@
 #define VGA_LY (VGA_Y + 8.5 * HPC_GY)
 
 class VGA_ListN : StdListNBox {
-	font = "RobotoCondensed";
+	font = "PuristaMedium";
 	sizeEx = 1.05 * HPC_GY;
 	rowHeight = 2.1 * HPC_GY;
 	shadow = 0;
@@ -54,7 +54,7 @@ class VIRT_vehicle_garage {
 		};
 		class Subtitle : HPC_Label {
 			x = VGA_X + VGA_PAD; y = VGA_Y + 2.5 * HPC_GY; w = VGA_IW; h = 1.4 * HPC_GY;
-			font = "RobotoCondensed";
+			font = "PuristaMedium";
 			sizeEx = 0.95 * HPC_GY;
 			text = "Store nearby vehicles with their cargo, or bring stored ones back.";
 		};
@@ -110,7 +110,7 @@ class VIRT_vehicle_garage {
 		class EmptyList : HPC_Label {
 			idc = 130;
 			style = ST_CENTER;
-			font = "RobotoCondensed";
+			font = "PuristaMedium";
 			sizeEx = HPC_GY;
 			x = VGA_X + VGA_PAD; y = VGA_Y + 16 * HPC_GY; w = VGA_IW; h = 2 * HPC_GY;
 			text = "No vehicles nearby or in storage";

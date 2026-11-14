@@ -41,7 +41,7 @@ class liberation_params {
 	};
 	class Subtitle : HPC_Label {
 		x = SET_X + SET_PAD; y = SET_Y + 2.5 * HPC_GY; w = SET_W - 6 * HPC_GX; h = 1.4 * HPC_GY;
-		font = "RobotoCondensed";
+		font = "PuristaMedium";
 		sizeEx = 0.95 * HPC_GY;
 		text = "Campaign options for this server. Hover a setting to read what it does; most changes need a mission restart.";
 	};
@@ -81,7 +81,7 @@ class liberation_params {
 		x = SET_BODY_X + 0.8 * HPC_GX; y = SET_Y + 39.4 * HPC_GY; w = SET_BODY_W - 1.6 * HPC_GX; h = 2.2 * HPC_GY;
 		size = 0.9 * HPC_GY;
 		class Attributes {
-			font = "RobotoCondensed";
+			font = "PuristaMedium";
 			color = "#9EB0B8";
 			align = "left";
 			valign = "top";

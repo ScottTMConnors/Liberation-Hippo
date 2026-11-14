@@ -29,7 +29,7 @@ class HPC_MapPanelTitle : HPC_Heading {
 };
 class HPC_MapPanelSubtitle : HPC_Label {
 	x = HMP_X + HMP_PAD; y = HMP_Y + 2.4 * HPC_GY; w = HMP_IW; h = 1.4 * HPC_GY;
-	font = "RobotoCondensed";
+	font = "PuristaMedium";
 	sizeEx = 0.9 * HPC_GY;
 	text = "Hover a marker for details. Drag here to move.";
 };
@@ -51,13 +51,12 @@ class HPC_MapPanelHandle : HPC_Button {
 };
 class HPC_MapToggle : HPC_Button {
 	x = HMP_X + HMP_PAD; y = HMP_Y + 5.0 * HPC_GY; w = HMP_TW; h = 2.2 * HPC_GY;
-	sizeEx = 0.85 * HPC_GY;
 };
 class HPC_MapPanelBody : HPC_StructuredText {
 	x = HMP_X + HMP_PAD; y = HMP_BODY_Y; w = HMP_IW; h = 18 * HPC_GY;
 	size = 0.95 * HPC_GY;
 	class Attributes {
-		font = "RobotoCondensed";
+		font = "PuristaMedium";
 		color = "#EBEFF1";
 		align = "left";
 		valign = "middle";
@@ -66,7 +65,6 @@ class HPC_MapPanelBody : HPC_StructuredText {
 };
 class HPC_MapCommandButton : HPC_ButtonAccent {
 	x = HMP_X + HMP_PAD; y = HMP_BODY_Y + 18.4 * HPC_GY; w = HMP_IW; h = 2.6 * HPC_GY;
-	sizeEx = 1.0 * HPC_GY;
 	text = "COMMAND AI FORCES";
 };
 class HPC_MapTooltipBg : HPC_Text {
@@ -77,7 +75,7 @@ class HPC_MapTooltip : HPC_StructuredText {
 	x = 0; y = 0; w = HMP_TIP_W; h = 6 * HPC_GY;
 	size = 0.95 * HPC_GY;
 	class Attributes {
-		font = "RobotoCondensed";
+		font = "PuristaMedium";
 		color = "#EBEFF1";
 		align = "left";
 		valign = "middle";
@@ -93,7 +91,7 @@ class HPC_MapFeedRow : HPC_StructuredText {
 	x = HMF_X; y = HMF_Y; w = 30 * HPC_GX; h = HMF_ROW - 0.25 * HPC_GY;
 	size = 1.1 * HPC_GY;
 	colorBackground[] = {0.035,0.045,0.05,0.78};
-	class Attributes { font = "RobotoCondensed"; color = "#DDE4E7"; align = "left"; valign = "middle"; shadow = 1; };
+	class Attributes { font = "PuristaMedium"; color = "#DDE4E7"; align = "left"; valign = "middle"; shadow = 1; };
 };
 class HPC_MapFeedMine : HPC_MapFeedRow {
 	size = 1.15 * HPC_GY;

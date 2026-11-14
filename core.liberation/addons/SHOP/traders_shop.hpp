@@ -16,7 +16,7 @@
 #define TSH_BTN_Y (TSH_Y + TSH_H - 4.4 * HPC_GY)
 
 class TSH_ListN : StdListNBox {
-	font = "RobotoCondensed";
+	font = "PuristaMedium";
 	sizeEx = 1.05 * HPC_GY;
 	rowHeight = 2.1 * HPC_GY;
 	shadow = 0;
@@ -64,7 +64,7 @@ class Traders_Shop {
 		};
 		class Subtitle : HPC_Label {
 			x = TSH_LX; y = TSH_Y + 2.5 * HPC_GY; w = TSH_W - 2 * TSH_PAD; h = 1.4 * HPC_GY;
-			font = "RobotoCondensed";
+			font = "PuristaMedium";
 			sizeEx = 0.95 * HPC_GY;
 			text = "Sell your nearby vehicles for ammo, or buy vehicles from the trader.";
 		};
@@ -102,7 +102,7 @@ class Traders_Shop {
 		class EmptySell : HPC_Label {
 			idc = 130;
 			style = ST_CENTER;
-			font = "RobotoCondensed";
+			font = "PuristaMedium";
 			sizeEx = HPC_GY;
 			x = TSH_LX; y = TSH_LIST_Y + 6 * HPC_GY; w = TSH_LW; h = 2 * HPC_GY;
 			text = "No owned vehicles within 50 m";
@@ -154,7 +154,7 @@ class Traders_Shop {
 		};
 		class DetailWallet : HPC_Label {
 			idc = 126;
-			font = "RobotoCondensed";
+			font = "PuristaMedium";
 			sizeEx = 0.95 * HPC_GY;
 			x = TSH_RX; y = TSH_LIST_Y + 14.7 * HPC_GY; w = TSH_RW; h = 1.5 * HPC_GY;
 			text = "";

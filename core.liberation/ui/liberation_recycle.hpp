@@ -39,7 +39,7 @@ class liberation_recycle {
 	};
 	class Subtitle : HPC_Label {
 		x = RCY_IX; y = RCY_Y + 2.5 * HPC_GY; w = RCY_IW - 3 * HPC_GX; h = 1.4 * HPC_GY;
-		font = "RobotoCondensed";
+		font = "PuristaMedium";
 		sizeEx = 0.95 * HPC_GY;
 		text = "Remove this object and get resources back.";
 	};

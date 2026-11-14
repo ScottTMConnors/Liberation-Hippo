@@ -38,7 +38,7 @@ class liberation_deploy {
 	};
 	class Subtitle : HPC_Label {
 		x = DEP_X + DEP_PAD; y = DEP_Y + 2.5 * HPC_GY; w = DEP_W - 2 * DEP_PAD; h = 1.4 * HPC_GY;
-		font = "RobotoCondensed";
+		font = "PuristaMedium";
 		sizeEx = 0.95 * HPC_GY;
 		text = "Choose where to insert. Double-click to deploy.";
 	};
@@ -64,7 +64,7 @@ class liberation_deploy {
 	class LoadoutsCombo : StdCombo {
 		idc = 203;
 		x = DEP_X + DEP_PAD; y = DEP_Y + 6.9 * HPC_GY; w = DEP_W - 2 * DEP_PAD; h = 2.2 * HPC_GY;
-		font = "RobotoCondensed";
+		font = "PuristaMedium";
 		sizeEx = 1.05 * HPC_GY;
 		wholeHeight = 14 * HPC_GY;
 		colorBackground[] = {0.12,0.15,0.16,0.95};

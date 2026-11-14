@@ -29,7 +29,7 @@ class VAM_GUI
 		};
 		class Subtitle : HPC_Label {
 			x = VAM_PX + VAM_PAD; y = VAM_PY + 2.5 * HPC_GY; w = VAM_IW; h = 1.4 * HPC_GY;
-			font = "RobotoCondensed";
+			font = "PuristaMedium";
 			sizeEx = 0.95 * HPC_GY;
 			text = "Change camouflage and parts, and add items to the vehicle cargo.";
 		};

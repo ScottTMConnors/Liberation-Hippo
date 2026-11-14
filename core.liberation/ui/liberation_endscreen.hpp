@@ -30,7 +30,7 @@ class liberation_endscreen {
 	};
 	class SubTitle : HPC_Label {
 		style = ST_CENTER;
-		font = "RobotoCondensed";
+		font = "PuristaMedium";
 		sizeEx = 1.2 * HPC_GY;
 		x = END_X + END_PAD; y = END_Y + 4.9 * HPC_GY; w = END_IW; h = 1.8 * HPC_GY;
 		text = $STR_VICTORY_TEXT;

@@ -72,7 +72,7 @@ class HPC_AICommand {
         };
         class Subtitle : HPC_Label {
             x = CMD_X + CMD_PAD; y = CMD_Y + 2.5 * HPC_GY; w = CMD_W - 6 * HPC_GX; h = 1.4 * HPC_GY;
-            font = "RobotoCondensed";
+            font = "PuristaMedium";
             sizeEx = 0.95 * HPC_GY;
             text = "Send assault squads and armor to attack an active sector or to hold a friendly sector or FOB.";
         };
@@ -101,7 +101,7 @@ class HPC_AICommand {
         class GroupsHint : HPC_Label {
             text = "Ctrl / Shift: pick several";
             style = ST_RIGHT;
-            font = "RobotoCondensed";
+            font = "PuristaMedium";
             x = CMD_LIST_X + CMD_LIST_W - 14 * HPC_GX; y = CMD_Y + 5.2 * HPC_GY; w = 14 * HPC_GX; h = 1.4 * HPC_GY;
         };
         class MapHeader : HPC_Label {
@@ -139,7 +139,6 @@ class HPC_AICommand {
             idc = 120;
             text = "All";
             x = CMD_X + CMD_PAD; y = CMD_BTN_Y; w = CMD_QS_W; h = 2.6 * HPC_GY;
-            sizeEx = 0.9 * HPC_GY;
             action = "['all'] call HPC_fnc_cmdAction";
             tooltip = "Select every group.";
         };
@@ -168,7 +167,6 @@ class HPC_AICommand {
             idc = 131;
             text = "Return to automatic";
             x = CMD_DEST_X; y = CMD_BTN_Y; w = CMD_DEST_W; h = 2.6 * HPC_GY;
-            sizeEx = 0.9 * HPC_GY;
             action = "['auto'] call HPC_fnc_cmdAction";
             tooltip = "Clear your order for the selected groups; the AI picks its own objective again.";
         };

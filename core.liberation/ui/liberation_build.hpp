@@ -68,7 +68,7 @@ class liberation_build {
 	};
 	class Subtitle : HPC_Label {
 		x = BLD_IX; y = BLD_Y + 2.5 * HPC_GY; w = BLD_W - 6 * HPC_GX; h = 1.4 * HPC_GY;
-		font = "RobotoCondensed";
+		font = "PuristaMedium";
 		sizeEx = 0.95 * HPC_GY;
 		text = "Recruit units and buy vehicles, defenses and supplies at this base.";
 	};
@@ -216,14 +216,12 @@ class liberation_build {
 	class CatalogUnlocked : HPC_Button {
 		idc = 1704;
 		x = BLD_IX + 50.2 * HPC_GX; y = BLD_FLT_Y; w = 9.6 * HPC_GX; h = 2.2 * HPC_GY;
-		sizeEx = 0.9 * HPC_GY;
 		text = "Unlocked only: OFF";
 		tooltip = "Hide items locked by rank or an uncaptured base. Unlocked items remain visible even if you cannot yet afford them.";
 	};
 	class CatalogReset : HPC_Button {
 		idc = 1708;
 		x = BLD_IX + 60.4 * HPC_GX; y = BLD_FLT_Y; w = 7.4 * HPC_GX; h = 2.2 * HPC_GY;
-		sizeEx = 0.9 * HPC_GY;
 		text = "Reset filters";
 		tooltip = "Reset search, faction, type and sort order to their defaults, show locked items, and expand groups.";
 	};
@@ -254,13 +252,12 @@ class liberation_build {
 		idc = 1709;
 		x = BLD_IX + 3.6 * HPC_GX; y = BLD_COL_Y + 0.2 * HPC_GY; w = 10.5 * HPC_GX; h = 1.4 * HPC_GY;
 		sizeEx = 0.8 * HPC_GY;
-		font = "RobotoCondensed";
+		font = "PuristaMedium";
 		text = "";
 	};
 	class CatalogExpand : HPC_Button {
 		idc = 1706;
 		x = BLD_IX + BLD_LIST_W - 8.4 * HPC_GX; y = BLD_HDR_Y + 0.1 * HPC_GY; w = 4.1 * HPC_GX; h = 1.8 * HPC_GY;
-		sizeEx = 0.85 * HPC_GY;
 		text = "Expand";
 		tooltip = "Expand all matching type groups.";
 	};
@@ -292,7 +289,7 @@ class liberation_build {
 		idc = 1717;
 		x = BLD_COL_AM + BLD_MARK_DX; y = BLD_COL_Y + 0.45 * HPC_GY; w = 0.9 * HPC_GX; h = 1.7 * HPC_GY;
 		sizeEx = 1.7 * HPC_GY;
-		font = "PuristaBold";
+		font = "PuristaSemibold";
 		colorText[] = HPC_C_ACCENT;
 		text = "";
 	};
@@ -338,7 +335,7 @@ class liberation_build {
 		x = BLD_DIX; y = BLD_HDR_Y + 12.6 * HPC_GY; w = BLD_DIW; h = BLD_PB - 15.6 * HPC_GY - (BLD_HDR_Y + 12.6 * HPC_GY);
 		size = 1.2 * HPC_GY;
 		class Attributes {
-			font = "RobotoCondensed";
+			font = "PuristaMedium";
 			color = "#EBEFF1";
 			align = "left";
 			valign = "top";

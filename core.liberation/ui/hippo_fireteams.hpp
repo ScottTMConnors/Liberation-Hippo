@@ -70,7 +70,7 @@ class HPC_Fireteams {
         };
         class Subtitle : HPC_Label {
             x = FT_X + FT_PAD; y = FT_Y + 2.5 * HPC_GY; w = FT_W - 6 * HPC_GX; h = 1.4 * HPC_GY;
-            font = "RobotoCondensed";
+            font = "PuristaMedium";
             sizeEx = 0.95 * HPC_GY;
             text = "Split squadmates off into fireteams that act on their own, and give them orders from the map.";
         };
@@ -92,7 +92,7 @@ class HPC_Fireteams {
         class SquadHint : HPC_Label {
             text = "Ctrl / Shift: pick several";
             style = ST_RIGHT;
-            font = "RobotoCondensed";
+            font = "PuristaMedium";
             x = FT_X + FT_PAD + FT_LEFT_W - 14 * HPC_GX; y = FT_Y + 5.2 * HPC_GY; w = 14 * HPC_GX; h = 1.4 * HPC_GY;
         };
         class MapHeader : HPC_Label {
@@ -133,7 +133,6 @@ class HPC_Fireteams {
             idc = 2610;
             text = "Make fireteam";
             x = FT_X + FT_PAD; y = FT_BTN_Y; w = FT_LEFT_W; h = FT_BTN_H;
-            sizeEx = 0.95 * HPC_GY;
             action = "['make'] call HPC_fnc_fireteamAction";
             tooltip = "Make a fireteam of the selected squadmates. Soldiers in a vehicle can only be teamed with others in the same vehicle; that fireteam then crews it.";
         };
@@ -141,7 +140,6 @@ class HPC_Fireteams {
             idc = 2630;
             text = "Disband";
             x = FT_RIGHT_X; y = FT_BTN_Y; w = (FT_RIGHT_W - 0.4 * HPC_GX) / 2; h = FT_BTN_H;
-            sizeEx = 0.9 * HPC_GY;
             action = "['disband'] call HPC_fnc_fireteamAction";
             tooltip = "Return the selected fireteam to your squad. Its soldiers keep their vehicle seats.";
         };
@@ -157,7 +155,6 @@ class HPC_Fireteams {
             idc = 2650;
             text = "Move";
             x = (FT_MAP_X + 0 * (FT_ORD_W + 0.4 * HPC_GX)); y = FT_BTN_Y; w = FT_ORD_W; h = FT_BTN_H;
-            sizeEx = 0.85 * HPC_GY;
             action = "['move'] call HPC_fnc_fireteamAction";
             tooltip = "Go to the destination and hold there.";
         };

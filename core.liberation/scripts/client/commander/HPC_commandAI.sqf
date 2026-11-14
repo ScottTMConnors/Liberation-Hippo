@@ -66,7 +66,7 @@ if (isNil "HPC_fnc_cmdDrawDests") then { HPC_fnc_cmdDrawDests = compileFinal {
                     case "fob": {[0.4, 0.85, 1, 0.9]};
                     default {[0.35, 0.65, 1, 0.6]};
                 };
-                _map drawIcon [[["mil_objective", "mil_flag"] select (_type != "attack")] call HPC_fnc_mapIcon, _color, _pos, 22, 22, 0, ["", _x param [3, ""]] select _labels, 1, 0.03, "RobotoCondensedBold", "right"];
+                _map drawIcon [[["mil_objective", "mil_flag"] select (_type != "attack")] call HPC_fnc_mapIcon, _color, _pos, 22, 22, 0, ["", _x param [3, ""]] select _labels, 1, 0.03, "PuristaSemibold", "right"];
             };
         };
     } forEach HPC_cmdDests;

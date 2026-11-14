@@ -35,7 +35,7 @@ class liberation_permissions {
 	};
 	class Subtitle : HPC_Label {
 		x = PRM_X + PRM_PAD; y = PRM_Y + 2.5 * HPC_GY; w = PRM_W - 2 * PRM_PAD; h = 1.4 * HPC_GY;
-		font = "RobotoCondensed";
+		font = "PuristaMedium";
 		sizeEx = 0.95 * HPC_GY;
 		text = "Server rules set by the admin: what each player is allowed to drive and do on this server. Not vehicle sharing.";
 	};
@@ -131,7 +131,7 @@ class liberation_permissions {
 
 	class Hint : HPC_Label {
 		x = PRM_X + PRM_PAD; y = PRM_Y + PRM_H - 4.4 * HPC_GY; w = 40 * HPC_GX; h = 3.2 * HPC_GY;
-		font = "RobotoCondensed";
+		font = "PuristaMedium";
 		sizeEx = 0.9 * HPC_GY;
 		text = "Green = allowed, red = denied. Default applies to players without their own row. Saved for everyone.";
 	};

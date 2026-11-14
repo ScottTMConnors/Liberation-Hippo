@@ -23,7 +23,7 @@ class HPC_Text {
 	x = 0; y = 0; w = 0; h = 0;
 	colorText[] = HPC_C_TEXT;
 	colorBackground[] = {0,0,0,0};
-	font = "RobotoCondensed";
+	font = "PuristaMedium";
 	sizeEx = HPC_GY;
 	shadow = 0;
 	text = "";
@@ -56,7 +56,7 @@ class HPC_StructuredText {
 	size = HPC_GY;
 	shadow = 0;
 	class Attributes {
-		font = "RobotoCondensed";
+		font = "PuristaMedium";
 		color = "#EBEFF1";
 		align = "left";
 		valign = "middle";
@@ -70,7 +70,7 @@ class HPC_Button {
 	x = 0; y = 0; w = 0; h = 0;
 	default = false;
 	font = "PuristaSemibold";
-	sizeEx = HPC_GY;
+	sizeEx = 0.9 * HPC_GY;
 	colorText[] = HPC_C_TEXT;
 	colorFocused[] = {0.16,0.20,0.21,0.95};
 	colorDisabled[] = {1,1,1,0.3};
@@ -98,14 +98,13 @@ class HPC_ButtonAccent : HPC_Button {
 	colorFocused[] = HPC_C_ACCENT;
 	colorBackground[] = HPC_C_ACCENT;
 	colorBackgroundActive[] = {0.62,0.92,0.84,1};
-	sizeEx = 1.25 * HPC_GY;
 };
 class HPC_ListBox {
 	idc = -1;
 	type = CT_LISTBOX;
 	style = LB_TEXTURES;
 	x = 0; y = 0; w = 0; h = 0;
-	font = "RobotoCondensed";
+	font = "PuristaMedium";
 	sizeEx = 1.05 * HPC_GY;
 	rowHeight = 2.1 * HPC_GY;
 	colorText[] = HPC_C_TEXT;
@@ -154,7 +153,7 @@ class HPC_Edit {
 	type = CT_EDIT;
 	style = ST_LEFT;
 	x = 0; y = 0; w = 0; h = 0;
-	font = "RobotoCondensed";
+	font = "PuristaMedium";
 	sizeEx = 1.05 * HPC_GY;
 	colorText[] = HPC_C_TEXT;
 	colorDisabled[] = {1,1,1,0.3};
@@ -171,7 +170,7 @@ class HPC_Combo {
 	type = CT_COMBO;
 	style = ST_LEFT;
 	x = 0; y = 0; w = 0; h = 0;
-	font = "RobotoCondensed";
+	font = "PuristaMedium";
 	sizeEx = 1.05 * HPC_GY;
 	wholeHeight = 14 * HPC_GY;
 	colorText[] = HPC_C_TEXT;

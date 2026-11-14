@@ -102,7 +102,7 @@ HPC_fnc_mapWorldDraw = compileFinal toString {
 	private _mark = {
 		params ["_icon", "_color", "_pos", "_size", "_text", ["_angle", 0]];
 		[_halo, [0.02, 0.03, 0.035, 0.3 * (_color select 3)], _pos, _size * 1.45, _size * 1.45, 0] call _dI;
-		[_icon, _color, _pos, _size, _size, _angle, _text, 2, 0.032, "RobotoCondensedBold", "right"] call _dI;
+		[_icon, _color, _pos, _size, _size, _angle, _text, 2, 0.032, "PuristaSemibold", "right"] call _dI;
 	};
 	private _zone = {
 		params ["_pos", "_radius", "_color"];
@@ -171,7 +171,7 @@ HPC_fnc_mapWorldDraw = compileFinal toString {
 			// far out: a small dot (towns, factories, towers) or diamond (cities, bases)
 			private _pip = [10, 13] select _big;
 			[_halo, [0.02, 0.03, 0.035, 0.45], _pos, _pip * 1.9, _pip * 1.9, 0] call _dI;
-			[_tex get (["pip", "pip_diamond"] select _big), _color, _pos, _pip, _pip, 0, _text, 2, 0.032, "RobotoCondensedBold", "right"] call _dI;
+			[_tex get (["pip", "pip_diamond"] select _big), _color, _pos, _pip, _pip, 0, _text, 2, 0.032, "PuristaSemibold", "right"] call _dI;
 		};
 	} forEach HPC_mapSectors;
 	if (HPC_mapSectorHover != "") then {
@@ -220,7 +220,7 @@ HPC_fnc_mapWorldDraw = compileFinal toString {
 				[[_icon] call HPC_fnc_mapTexture, _color, _pos, _size, _label, _angle] call _mark;
 			};
 			if (_pos isNotEqualTo [] && {_icon == ""} && {_text != ""}) then {
-				["#(rgb,1,1,1)color(1,1,1,0)", _color, _pos, 1, 1, 0, _text, 2, 0.032, "RobotoCondensedBold", "right"] call _dI;
+				["#(rgb,1,1,1)color(1,1,1,0)", _color, _pos, 1, 1, 0, _text, 2, 0.032, "PuristaSemibold", "right"] call _dI;
 			};
 		} forEach _x;
 	} forEach _points;

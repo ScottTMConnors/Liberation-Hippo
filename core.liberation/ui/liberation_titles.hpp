@@ -230,7 +230,7 @@ class RscTitles
 		class HudValue : HPC_Text {
 			style = ST_LEFT;
 			w = HUD_CELL - 1.7 * HPC_GX; h = 1.25 * HPC_GY;
-			font = "RobotoCondensedBold";
+			font = "PuristaSemibold";
 			sizeEx = 1.0 * HPC_GY;
 			shadow = 1;
 		};
@@ -270,7 +270,7 @@ class RscTitles
 			idc = 403;
 			style = ST_RIGHT;
 			x = HUD_X + HUD_W - 4.8 * HPC_GX; w = 4.2 * HPC_GX;
-			font = "RobotoCondensedBold";
+			font = "PuristaSemibold";
 			sizeEx = 1.05 * HPC_GY;
 			colorText[] = {1,1,1,1};
 		};
@@ -284,7 +284,7 @@ class RscTitles
 			style = ST_LEFT;
 			x = HUD_X + 0.75 * HPC_GX; y = HUD_Y + 4.2 * HPC_GY; w = HUD_W - 1.1 * HPC_GX; h = 5 * HPC_GY;
 			size = 0.92 * HPC_GY;
-			class Attributes { font = "RobotoCondensed"; color = "#E9EEF0"; align = "left"; valign = "top"; shadow = 0; };
+			class Attributes { font = "PuristaMedium"; color = "#E9EEF0"; align = "left"; valign = "top"; shadow = 0; };
 		};
 		class ObjectiveAccent : HPC_Text {
 			idc = 519;
@@ -348,7 +348,7 @@ class RscTitles
 			idc = 516;
 			x = HUD_X - 5 * HPC_GX; y = 0.8 * safezoneH + safezoneY; w = HUD_W + 5 * HPC_GX; h = 0.18 * safezoneH;
 			size = 0.85 * HPC_GY;
-			class Attributes { font = "RobotoCondensed"; color = "#F2C14E"; align = "right"; valign = "top"; shadow = 1; };
+			class Attributes { font = "PuristaMedium"; color = "#F2C14E"; align = "right"; valign = "top"; shadow = 1; };
 		};
 		class CentralLabel : HPC_Text {
 			idc = 266;
@@ -412,7 +412,7 @@ class RscTitles
 			idc = 9304;
 			x = PRO_X + 7.6 * HPC_GX; y = PRO_Y + 5.2 * HPC_GY; w = PRO_W - 8.6 * HPC_GX; h = 4.6 * HPC_GY;
 			size = 0.85 * HPC_GY;
-			class Attributes { font = "RobotoCondensed"; color = "#C9D3D7"; align = "left"; valign = "top"; shadow = 0; };
+			class Attributes { font = "PuristaMedium"; color = "#C9D3D7"; align = "left"; valign = "top"; shadow = 0; };
 		};
    };
 
@@ -444,7 +444,7 @@ class RscTitles
 			x = TOAST_X + 0.9 * HPC_GX; y = safezoneY; w = TOAST_W - 1.5 * HPC_GX; h = 0;
 			size = 1.0 * HPC_GY;
 			fade = 1;
-			class Attributes { font = "RobotoCondensed"; color = "#DDE4E7"; align = "left"; valign = "top"; shadow = 0; };
+			class Attributes { font = "PuristaMedium"; color = "#DDE4E7"; align = "left"; valign = "top"; shadow = 0; };
 		};
 		class Bg0 : ToastBg { idc = 9100; };
 		class Bar0 : ToastBar { idc = 9101; };
@@ -482,7 +482,7 @@ class RscTitles
 			x = KF_X; w = KF_W; h = KF_ROW - 0.25 * HPC_GY;
 			size = 1.15 * HPC_GY;
 			colorBackground[] = {0.035,0.045,0.05,0.5};
-			class Attributes { font = "RobotoCondensed"; color = "#DDE4E7"; align = "left"; valign = "middle"; shadow = 1; };
+			class Attributes { font = "PuristaMedium"; color = "#DDE4E7"; align = "left"; valign = "middle"; shadow = 1; };
 		};
 		class MineRow : FeedRow {
 			x = KM_X; w = KM_W; h = KM_ROW - 0.25 * HPC_GY;

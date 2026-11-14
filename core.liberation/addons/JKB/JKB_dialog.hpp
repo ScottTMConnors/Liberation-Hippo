@@ -52,7 +52,7 @@ class JKB_dialog {
 		};
 		class Subtitle : HPC_Label {
 			x = JKB_X + JKB_PAD; y = JKB_Y + 2.5 * HPC_GY; w = JKB_IW; h = 1.4 * HPC_GY;
-			font = "RobotoCondensed";
+			font = "PuristaMedium";
 			sizeEx = 0.95 * HPC_GY;
 			text = "Pick a track and play it for yourself.";
 		};
@@ -99,7 +99,7 @@ class JKB_dialog {
 		class JKB_titleList : StdCombo {
 			idc = 231;
 			x = JKB_X + JKB_PAD; y = JKB_Y + 12 * HPC_GY; w = JKB_IW; h = 2.2 * HPC_GY;
-			font = "RobotoCondensed";
+			font = "PuristaMedium";
 			sizeEx = 1.05 * HPC_GY;
 			wholeHeight = 18 * HPC_GY;
 			colorBackground[] = {0.12,0.15,0.16,0.95};

@@ -33,7 +33,7 @@ class HPC_AILoad {
         };
         class Subtitle : HPC_Label {
             text = "Where the mission's AI runs and how hard each machine is working.";
-            font = "RobotoCondensed";
+            font = "PuristaMedium";
             sizeEx = 0.9 * HPC_GY;
             x = AIL_X + AIL_PAD; y = AIL_Y + 2.1 * HPC_GY; w = 0.48 * safezoneW; h = 1.3 * HPC_GY;
         };
@@ -41,7 +41,6 @@ class HPC_AILoad {
             idc = 101;
             text = "Pause display";
             x = AIL_X + AIL_W - 2.8 * HPC_GX - 0.6 * HPC_GX - 11 * HPC_GX; y = AIL_Y + 0.7 * HPC_GY; w = 11 * HPC_GX; h = 1.9 * HPC_GY;
-            sizeEx = 0.85 * HPC_GY;
             action = "uiNamespace setVariable ['HPC_AILoadPaused',!(uiNamespace getVariable ['HPC_AILoadPaused',false])]";
             tooltip = "Freeze this view; the mission and telemetry keep running.";
         };

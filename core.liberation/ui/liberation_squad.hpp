@@ -54,7 +54,7 @@ class liberation_squad {
 	};
 	class Subtitle : HPC_Label {
 		x = SQ_X + SQ_PAD; y = SQ_Y + 2.5 * HPC_GY; w = SQ_W - 2 * SQ_PAD; h = 1.4 * HPC_GY;
-		font = "RobotoCondensed";
+		font = "PuristaMedium";
 		sizeEx = 0.95 * HPC_GY;
 		text = "Inspect your AI squad members, re-equip, promote, rename or dismiss them.";
 	};
@@ -94,7 +94,7 @@ class liberation_squad {
 		style = ST_PICTURE;
 		colorText[] = {1,1,1,1};
 		colorBackground[] = {0,0,0,0};
-		font = "RobotoCondensed";
+		font = "PuristaMedium";
 		sizeEx = HPC_GY;
 		x = SQ_CX; y = SQ_BODY + 1.6 * HPC_GY; w = SQ_CW; h = 20 * HPC_GY;
 		text = "#(argb,512,512,1)r2t(rtt,1.333)";
@@ -236,14 +236,12 @@ class liberation_squad {
 	class GREUH_ButtonName_Rename : HPC_ButtonAccent {
 		idc = 525;
 		x = SQ_RX + SQ_RW - 10.6 * HPC_GX; y = SQ_BODY + 28.8 * HPC_GY; w = 5 * HPC_GX; h = 2.6 * HPC_GY;
-		sizeEx = 0.95 * HPC_GY;
 		text = $STR_RENAME_BUTTON;
 		action = "unitname = ctrlText 527;";
 	};
 	class GREUH_ButtonName_Abort : HPC_Button {
 		idc = 526;
 		x = SQ_RX + SQ_RW - 5.4 * HPC_GX; y = SQ_BODY + 28.8 * HPC_GY; w = 5 * HPC_GX; h = 2.6 * HPC_GY;
-		sizeEx = 0.95 * HPC_GY;
 		text = $STR_CANCEL_BUTTON;
 		action = "GRLIB_squadaction = -1;";
 	};
@@ -252,7 +250,7 @@ class liberation_squad {
 		type = CT_EDIT;
 		style = ST_LEFT;
 		x = SQ_RX + 0.8 * HPC_GX; y = SQ_BODY + 28.8 * HPC_GY; w = SQ_RW - 11.8 * HPC_GX; h = 2.6 * HPC_GY;
-		font = "RobotoCondensed";
+		font = "PuristaMedium";
 		sizeEx = HPC_GY;
 		text = "";
 		autocomplete = "";

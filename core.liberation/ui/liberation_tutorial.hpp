@@ -36,7 +36,7 @@ class liberation_tutorial {
 	};
 	class Subtitle : HPC_Label {
 		x = TUT_X + TUT_PAD; y = TUT_Y + 2.5 * HPC_GY; w = TUT_W - 2 * TUT_PAD; h = 1.4 * HPC_GY;
-		font = "RobotoCondensed";
+		font = "PuristaMedium";
 		sizeEx = 0.95 * HPC_GY;
 		text = "Pick a chapter to learn how Hippos Conquest plays.";
 	};
@@ -101,7 +101,7 @@ class liberation_tutorial {
 				x = 0; y = 0; w = TUT_RW - 2.2 * HPC_GX; h = TUT_BODY_H - 1.2 * HPC_GY;
 				size = 1.05 * HPC_GY;
 				class Attributes {
-					font = "RobotoCondensed";
+					font = "PuristaMedium";
 					color = "#EBEFF1";
 					align = "left";
 					valign = "top";

@@ -14,7 +14,7 @@ class VAM_RscText {
 	style = 0;
 	shadow = 1;
 	colorShadow[] =	{0,0,0,0.5};
-	font = "RobotoCondensed";
+	font = "PuristaMedium";
 	SizeEx = "(((((safezoneW / safezoneH) min 1.2) / 1.2) / 25) * 1)";
 	linespacing = 1;
 	tooltipColorText[] = {1,1,1,1};
@@ -69,7 +69,7 @@ class VAM_RscListBox {
 	w = 0.3;
 	h = 0.3;
 	style = 16;
-	font = "RobotoCondensed";
+	font = "PuristaMedium";
 	sizeEx = 1.05 * HPC_GY;
 	shadow = 0;
 	colorShadow[] = {0,0,0,0.5};
@@ -101,7 +101,7 @@ class VAM_RscButton {
 	w = 0.095589;
 	h = 0.039216;
 	shadow = 2;
-	font = "RobotoCondensed";
+	font = "PuristaMedium";
 	sizeEx = "(((((safezoneW / safezoneH) min 1.2) / 1.2) / 25) * 1)";
 	url = "";
 	offsetX = 0;

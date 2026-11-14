@@ -30,7 +30,7 @@ class liberation_airdrop {
 	};
 	class Subtitle : HPC_Label {
 		x = AIR_X + AIR_PAD; y = AIR_Y + 2.5 * HPC_GY; w = AIR_W - 2 * AIR_PAD; h = 1.4 * HPC_GY;
-		font = "RobotoCondensed";
+		font = "PuristaMedium";
 		sizeEx = 0.95 * HPC_GY;
 		text = "Request support paid with ammo. Grayed out: rank too low or not enough ammo.";
 	};
@@ -50,7 +50,7 @@ class liberation_airdrop {
 	class AirRowLabel : HPC_StructuredText {
 		size = 0.95 * HPC_GY;
 		class Attributes {
-			font = "RobotoCondensed";
+			font = "PuristaMedium";
 			color = "#EBEFF1";
 			align = "left";
 			valign = "middle";
