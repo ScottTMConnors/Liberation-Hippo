@@ -590,4 +590,4 @@ uiSleep 1;
 ];
 openMap false;
 diag_log format ["HPC_UISHOT_DONE|%1",HPC_testRun];
-["RUN_DONE|11"] call _emit;
+["RUN_DONE|15"] call _emit;	// one per uishots case in run.py client_cases
