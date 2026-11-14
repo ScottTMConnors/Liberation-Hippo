@@ -31,6 +31,55 @@ class Mission
 '''
 
 
+# Commander first, plus a High Command module synced to it and one unrelated link
+SQM_HC = '''version=54;
+class Mission
+{
+	class Entities
+	{
+		items=2;
+		class Item0
+		{
+			dataType="Group";
+			class Entities
+			{
+				class Item0
+				{
+					init="this setVariable [""GRLIB_is_Commander"", true, true];";
+					id=5;
+				};
+			};
+			id=4;
+		};
+		class Item1
+		{
+			dataType="Logic";
+			id=9;
+			type="HighCommand";
+		};
+	};
+	class Connections
+	{
+		class Links
+		{
+			items=2;
+			class Item0
+			{
+				linkID=0;
+				item0=5;
+				item1=9;
+			};
+			class Item1
+			{
+				linkID=1;
+				item0=5;
+				item1=7;
+			};
+		};
+	};
+};
+'''
+
 class MapLayoutTest(unittest.TestCase):
     def test_fix_moves_commander_first(self):
         self.assertTrue(map_layout.problems(SQM))
@@ -39,6 +88,16 @@ class MapLayoutTest(unittest.TestCase):
         self.assertLess(fixed.index('GRLIB_is_Commander'), fixed.index('side="West"'))
         self.assertEqual(fixed.count('\n\t\tclass Item0'), 1)
         self.assertEqual(fixed.count('\n\t\tclass Item1'), 1)
+
+    def test_fix_removes_high_command(self):
+        self.assertEqual(map_layout.problems(SQM_HC), ['High Command module present'])
+        fixed = map_layout.fix(SQM_HC)
+        self.assertEqual(map_layout.problems(fixed), [])
+        self.assertNotIn('HighCommand', fixed)
+        self.assertIn('\n\t\titems=1;', fixed)
+        self.assertNotIn('item1=9;', fixed)
+        self.assertIn('item1=7;', fixed)
+        self.assertIn('\n\t\t\titems=1;', fixed)
 
     def test_missing_commander_is_reported(self):
         self.assertTrue(map_layout.problems(SQM.replace('GRLIB_is_Commander', 'x')))

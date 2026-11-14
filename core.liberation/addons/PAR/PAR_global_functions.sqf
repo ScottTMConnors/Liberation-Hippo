@@ -24,16 +24,9 @@ PAR_deathSound = compileFinal {
 
 PAR_protected_units = compileFinal {
 	params ["_unit"];
-	private _my_squad = player getVariable ["my_squad", grpNull];
-	if (isNil "_unit") then {
-		((PAR_AI_bros + units _my_squad) select { alive _x });
-	} else {
-		if (_unit in PAR_AI_bros || _unit == player) then {
-			(PAR_AI_bros select { alive _x });
-		} else {
-			(units _my_squad select { alive _x });
-		};
-	};
+	if (isNil "_unit" || {_unit in PAR_AI_bros} || {_unit == player}) then {
+		(PAR_AI_bros select { alive _x })
+	} else { [] };
 };
 
 PAR_unblock_AI = compileFinal {

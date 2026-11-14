@@ -78,6 +78,7 @@ while { count GRLIB_preview_spheres < 36 } do {
 { _x setObjectTexture [0, "#(rgb,8,8,3)color(0,1,0,1)"] } foreach GRLIB_preview_spheres;
 
 manned = false;
+HPC_buildCrewTeam = false;
 gridmode = 0;
 repeatbuild = false;
 build_rotation = 0;
@@ -508,6 +509,15 @@ while {true} do {
 					PAR_AI_bros pushBackUnique _x;
 				} forEach (crew _vehicle);
 				if (_crewGrp != group player) then { deleteGroup _crewGrp };
+				// the crew becomes its own fireteam when asked ("As fireteam"), or when it does not fit
+				// in the squad (at most HPC_squadCap AI)
+				private _full = ([] call HPC_fnc_squadCount) > HPC_squadCap;
+				if (_full || {missionNamespace getVariable ["HPC_buildCrewTeam", false]}) then {
+					private _team = [(crew _vehicle) select { !isPlayer _x }] call HPC_fnc_fireteamMake;
+					if (_team isEqualType "") then { diag_log ["HPC_CREW_FIRETEAM", _team] } else {
+						[format ["%1The %2 crew formed %3.", ["", "Your squad is full. "] select _full, getText (configOf _vehicle >> "displayName"), groupId _team]] call HPC_fnc_info;
+					};
+				};
 			};
 
 			// UAVs
@@ -588,4 +598,5 @@ while {true} do {
 		dobuild = 0;
 	};
 	manned = false;
+	HPC_buildCrewTeam = false;
 };

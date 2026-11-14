@@ -97,8 +97,6 @@ if (dojump > 0) then {
 		if (!isNil "_my_dog") then { [_my_dog, true] remoteExec ["hideObjectGlobal", 2] };
 
 		private _units = units group _unit;
-		private _my_squad = _unit getVariable ["my_squad", nil];
-		if (!isNil "_my_squad") then { { _units pushBack _x } forEach units _my_squad };
 
 		// Jump!
 		private _unit_list_halo = _units select {

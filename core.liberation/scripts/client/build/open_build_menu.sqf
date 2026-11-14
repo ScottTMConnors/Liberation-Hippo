@@ -27,6 +27,10 @@ private _old_selected_item = -1;
 private _cfg = configFile >> "cfgVehicles";
 
 if !(createDialog "liberation_build") exitWith {};
+HPC_ftMode = false;
+[findDisplay 5501, false] call HPC_fnc_buildRosterShow;
+((findDisplay 5501) displayCtrl 125) ctrlSetChecked (HPC_ftRoster isNotEqualTo []);
+((findDisplay 5501) displayCtrl 1808) ctrlAddEventHandler ["LBDblClick", { ['remove'] call HPC_fnc_buildRoster }];
 
 private _display = findDisplay 5501;
 private _title = localize "STR_BUILD_TITLE";
@@ -46,6 +50,7 @@ if (count squads == 0) then {
 
 private _fob_type = [GRLIB_player_nearest_fob] call F_getFobType;
 private _near_outpost = (_fob_type == 1);
+HPC_buildAtOutpost = _near_outpost;	// read by the Buy fireteam window
 private _water_fob = (_fob_type == 2);
 private _near_warehouse = ([player, "WAREHOUSE", GRLIB_fob_range, false] call F_check_near);
 private _squad_leader = (player == leader group player);
@@ -69,9 +74,11 @@ private _buildpages = [
 private _categoryButtons = [102,103,104,105,106,109,107,108];
 {(_display displayCtrl _x) ctrlSetTooltip (_buildpages select _forEachIndex)} forEach _categoryButtons;
 (_display displayCtrl 120) ctrlSetTooltip "Purchase the selected item. Rank, resources and base restrictions apply.";
-(_display displayCtrl 121) ctrlSetTooltip "Build with an AI crew. No extra ammo or fuel; while the crew is alive the vehicle uses its manpower and the crew joins your squad and counts toward your active units.";
+(_display displayCtrl 121) ctrlSetTooltip "Build with an AI crew. No extra ammo or fuel; while the crew is alive the vehicle uses its manpower and the crew joins your squad (or forms its own fireteam when your squad is full).";
 private _crewTypes = [GRLIB_TransportVehicleBuildType,GRLIB_CombatVehicleBuildType,GRLIB_AerialBuildType,GRLIB_DefenceBuildType];
 private _manpowerTypes = [GRLIB_InfantryBuildType,GRLIB_SquadBuildType];
+// a squad is bought as a fireteam of at most HPC_fireteamCap soldiers, 1 manpower each
+private _manpowerOf = { params ["_item"]; if (buildtype == GRLIB_SquadBuildType) then { (count (_item select 0)) min HPC_fireteamCap } else { _item select 1 } };
 
 if (_trench) then {
 	{ ctrlEnable [_x, false] } forEach [102, 103, 104, 105, 106, 107, 108, 109];
@@ -210,7 +217,7 @@ ctrlEnable [121, false];
 
 while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryBuildType, GRLIB_SquadBuildType])} do {
 	if (_old_buildtype != buildtype) then { build_refresh = true };
-    private _resources = [[player] call F_getScore, player getVariable ["GREUH_ammo_count",0], player getVariable ["GREUH_fuel_count",0], resources_infantry, infantry_cap, count PAR_AI_bros, +blufor_sectors];
+    private _resources = [[player] call F_getScore, player getVariable ["GREUH_ammo_count",0], player getVariable ["GREUH_fuel_count",0], resources_infantry, infantry_cap, count PAR_AI_bros, [0, count units GRLIB_player_group] select (buildtype == GRLIB_InfantryBuildType), +blufor_sectors];
     if !(_resources isEqualTo _oldResources) then {_oldResources = _resources; _score = _resources select 0; build_refresh = true};
     private _filters = [ctrlText (_display displayCtrl 1701), lbCurSel (_display displayCtrl 1702), lbCurSel (_display displayCtrl 1703), missionNamespace getVariable ["HPC_catalogSort", 0]];
     if !(_filters isEqualTo _oldFilters) then {build_refresh = true; _oldFilters = _filters};
@@ -363,7 +370,7 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
             private _availableManpower = (infantry_cap - resources_infantry) max 0;
             private _mpApplies = buildtype in _manpowerTypes;
             private _costs = [[_requiredAmmo,_ammo_collected,"Ammo",2],[_x select 3,_fuel_collected,"Fuel",3]];
-            if (_mpApplies) then {_costs pushBack [_x select 1,_availableManpower,"Manpower",1]} else {
+            if (_mpApplies) then {_costs pushBack [[_x] call _manpowerOf,_availableManpower,"Manpower",1]} else {
                 lnbSetTooltip [110,[_row,1],if (buildtype in _crewTypes) then {format ["Manpower: %1, used only when built with an AI crew (%2 free).",_x select 1,_availableManpower]} else {"No manpower needed."}];
             };
             {
@@ -372,7 +379,7 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
                 if (_required > _available) then {_reasons pushBack format ["Need %1 more %2.",_required - _available,toLower _label]};
             } forEach _costs;
 			if (
-				(_mpApplies && (_x select 1 > 0) && ((_x select 1) > (infantry_cap - resources_infantry))) ||
+				(_mpApplies && {([_x] call _manpowerOf) > (infantry_cap - resources_infantry)}) ||
 				((_x select 2 > 0) && ((if (_near_outpost) then {round ((_x select 2) * 1.5)} else {_x select 2}) > _ammo_collected)) ||
 				((_x select 3 > 0) && ((_x select 3) > _fuel_collected))
 				) then {
@@ -386,9 +393,9 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
                         _reasons pushBack "You already have a dog.";
 					};
 				} else {
-					if (count PAR_AI_bros >= ([_score] call F_getRank) select 1) then {
+					if (!HPC_ftMode && {{alive _x && {!isPlayer _x}} count units GRLIB_player_group >= HPC_squadCap}) then {
 						_affordable = false;
-                        _reasons pushBack "Your rank's AI recruitment limit has been reached.";
+                        _reasons pushBack format ["Your squad is full (%1 AI). Move soldiers into a fireteam to make room.", HPC_squadCap];
 					};
 					if !(player getVariable ["GRLIB_squad_context_loaded", false]) then {
 						_affordable = false;
@@ -430,13 +437,6 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
 				if (_build_class == Warehouse_typename && (_near_warehouse || _water_fob)) then {
 					_affordable = false;
                     _reasons pushBack "A warehouse is already nearby, or this is a naval FOB.";
-				};
-			};
-
-			if ( buildtype == GRLIB_SquadBuildType ) then {
-				if !(isNil {player getVariable "my_squad"}) then {
-					_affordable = false;
-                    _reasons pushBack "You already command a purchased squad.";
 				};
 			};
 
@@ -543,13 +543,8 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
 	};
 
 	_affordable_crew = _affordable;
-	private _unitcap = { alive _x && (_x distance2D lhd) >= 200 } count (units player);
-	if (_unitcap >= GRLIB_blufor_cap) then {
-		_affordable_crew = false;
-		if (buildtype == GRLIB_InfantryBuildType || buildtype == GRLIB_SquadBuildType) then {
-			_affordable = false;
-		};
-	};
+	// AI in your own squad (fireteams not counted); a crew that does not fit forms its own fireteam
+	private _squadCount = {alive _x && {!isPlayer _x}} count units GRLIB_player_group;
 
 	// Crew checkbox: a crewed vehicle also needs its manpower free.
 	private _selItem = if (_selected_item >= 0 && {_selected_item < count _build_list}) then {_build_list select _selected_item} else {[]};
@@ -563,11 +558,30 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
 	_crewCtrl ctrlEnable (_crewShown && _affordable_crew && _linked_unlocked && dobuild == 0);
 	if (!ctrlEnabled _crewCtrl && {ctrlChecked _crewCtrl}) then {_crewCtrl ctrlSetChecked false};
 	private _withCrew = _crewShown && {ctrlChecked _crewCtrl};
-	ctrlSetText [122, if (_selItem isEqualTo []) then {"Spawn with crew (costs manpower)"} else {format ["Spawn with crew (+%1 manpower)", _selItem select 1]}];
+	ctrlSetText [122, if (_selItem isEqualTo []) then {"With crew (costs manpower)"} else {format ["With crew (+%1 manpower)", _selItem select 1]}];
+	// As fireteam: the crew forms its own fireteam; always so when the squad is full
+	private _teamCtrl = _display displayCtrl 123;
+	_teamCtrl ctrlShow _crewShown;
+	(_display displayCtrl 124) ctrlShow _crewShown;
+	_teamCtrl ctrlEnable (_withCrew && {ctrlEnabled _crewCtrl} && {_squadCount < HPC_squadCap});
+	if (_withCrew && {_squadCount >= HPC_squadCap}) then {_teamCtrl ctrlSetChecked true};
+	if (!_withCrew && {ctrlChecked _teamCtrl}) then {_teamCtrl ctrlSetChecked false};
+	// Recruit into a fireteam: infantry page, squad leader only; opens the roster panel
+	private _ftShown = buildtype == GRLIB_InfantryBuildType && {leader group player == player};
+	(_display displayCtrl 125) ctrlShow _ftShown;
+	(_display displayCtrl 126) ctrlShow _ftShown;
+	private _ftMode = _ftShown && {ctrlChecked (_display displayCtrl 125)};
+	if (_ftMode isNotEqualTo HPC_ftMode) then {
+		HPC_ftMode = _ftMode;
+		[_display, _ftMode] call HPC_fnc_buildRosterShow;
+		build_refresh = true;
+	};
+	if (_ftMode) then { [_display] call HPC_fnc_buildRosterUpdate };
+	_teamCtrl ctrlSetTooltip (if (_squadCount >= HPC_squadCap) then {"Your squad is full: the crew forms its own fireteam."} else {"The crew forms its own fireteam instead of joining your squad."});
 
 	// Cost grid: what the selection costs against what you have.
 	private _hasSel = _selItem isNotEqualTo [];
-	private _mpCost = if (!_hasSel) then {"-"} else {if (buildtype in _manpowerTypes || _withCrew) then {_selItem select 1} else {0}};
+	private _mpCost = if (!_hasSel) then {"-"} else {if (buildtype in _manpowerTypes || _withCrew) then {[_selItem] call _manpowerOf} else {0}};
 	private _ammoCost = if (!_hasSel) then {"-"} else {if (_near_outpost) then {round ((_selItem select 2) * 1.5)} else {_selItem select 2}};
 	private _fuelCost = if (!_hasSel) then {"-"} else {_selItem select 3};
 	{
@@ -580,9 +594,9 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
 		[1732, _ammoCost, player getVariable ["GREUH_ammo_count",0], ""],
 		[1733, _fuelCost, player getVariable ["GREUH_fuel_count",0], ""]
 	];
-	// Active units: red when the cap is reached.
-	ctrlSetText [1734, format ["%1 / %2", _unitcap, GRLIB_blufor_cap]];
-	(_display displayCtrl 1734) ctrlSetTextColor (if (_unitcap >= GRLIB_blufor_cap) then {[0.9,0.4,0.36,1]} else {[0.92,0.94,0.95,1]});
+	// Squad: red when it is full.
+	ctrlSetText [1734, format ["%1 / %2", _squadCount, HPC_squadCap]];
+	(_display displayCtrl 1734) ctrlSetTextColor (if (_squadCount >= HPC_squadCap) then {[0.9,0.4,0.36,1]} else {[0.92,0.94,0.95,1]});
 
 	_link_color = "#75CCB8";
 	_link_str = localize "STR_VEHICLE_UNLOCKED";
@@ -600,10 +614,22 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
         _selection = [buildtype, +(_build_list select _selected_item)];
     };
     HPC_buildSelection = _selection;
-	ctrlEnable [120, (if (_withCrew) then {_affordable_crew} else {_affordable}) && _linked_unlocked && dobuild == 0 && count HPC_buildSelection == 2];
+	private _canBuild = (if (_withCrew) then {_affordable_crew} else {_affordable}) && _linked_unlocked && dobuild == 0 && count HPC_buildSelection == 2;
+	if (HPC_ftMode) then {
+		// fireteam mode: Build adds to the roster, while the roster has room and its total stays affordable
+		private _rosterMp = 0;
+		private _rosterAmmo = 0;
+		{ _rosterMp = _rosterMp + (_x select 1); _rosterAmmo = _rosterAmmo + (_x select 2) } forEach HPC_ftRoster;
+		_canBuild = _canBuild && {count HPC_ftRoster < ([] call HPC_fnc_buildRosterRoom)} &&
+			{_rosterMp + (_selItem param [1, 0]) <= _freeManpower} &&
+			{_rosterAmmo + (if (_ammoCost isEqualType 0) then {_ammoCost} else {0}) <= (player getVariable ["GREUH_ammo_count", 0])};
+	};
+	(_display displayCtrl 120) ctrlSetText (if (HPC_ftMode) then {"Add to fireteam"} else {localize "STR_BUILD_BUTTON"});
+	ctrlEnable [120, _canBuild];
     private _purchaseTip = if (_selectedRow >= 0 && {_selected_item >= 0}) then {lnbData [110,[_selectedRow,2]]} else {"Select an item to see its preview and purchase it."};
     if (_purchaseTip == "") then {_purchaseTip = "Purchase the selected item."};
-    if (_unitcap >= GRLIB_blufor_cap && {buildtype in [GRLIB_InfantryBuildType,GRLIB_SquadBuildType]}) then {_purchaseTip = "Your active unit limit has been reached."};
+    if (_squadCount >= HPC_squadCap && {buildtype == GRLIB_InfantryBuildType} && {!HPC_ftMode}) then {_purchaseTip = "Your squad is full. Tick Recruit into a fireteam, or move soldiers into a fireteam to make room."};
+    if (HPC_ftMode) then {_purchaseTip = "Add the selected soldier to the fireteam on the left; Buy fireteam recruits them all."};
     (_display displayCtrl 120) ctrlSetTooltip _purchaseTip;
 	if (_selected_item < 0 && {_rowItems findIf {_x >= 0} >= 0}) then {
 		(_display displayCtrl 163) ctrlSetStructuredText composeText [(text "Select an item to see its cost and details.") setAttributes ["color", "#9EB0B8"]];
@@ -612,4 +638,5 @@ while { dialog && alive player && (dobuild == 0 || buildtype in [GRLIB_InfantryB
 };
 
 hintSilent "";
+HPC_ftMode = false;
 if (!alive player || dobuild != 0) then { closeDialog 0 };

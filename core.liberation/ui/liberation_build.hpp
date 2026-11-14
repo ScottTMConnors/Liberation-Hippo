@@ -31,6 +31,13 @@
 #define BLD_DW (BLD_W - 2 * BLD_PAD - BLD_LIST_W - 1.2 * HPC_GX)
 #define BLD_DIX (BLD_DX + 0.8 * HPC_GX)
 #define BLD_DIW (BLD_DW - 1.6 * HPC_GX)
+// Fireteam roster panel: left of the menu; the script slides the whole menu right to make room.
+#define FTP_W (22 * HPC_GX)
+#define FTP_X (BLD_X - FTP_W - 0.6 * HPC_GX)
+#define FTP_PAD (1.1 * HPC_GX)
+#define FTP_IX (FTP_X + FTP_PAD)
+#define FTP_IW (FTP_W - 2 * FTP_PAD)
+#define FTP_HALF ((FTP_IW - 0.4 * HPC_GX) / 2)
 
 class liberation_build {
 	idd = 5501;
@@ -46,7 +53,8 @@ class liberation_build {
 	"LabelSearch", "LabelFaction", "LabelType", "LabelOptions",
 	"ColumnItem", "AmmoImage","FuelImage",
 	"BuildList","LabelPreview","BuildPreview","ItemDetails","LinkedSector","CostBG", "CostHeadLeft", "CostHeadRight", "CostIcon1", "CostIcon2", "CostIcon3", "CostIcon4", "CostLabel1", "CostLabel2", "CostLabel3", "CostLabel4", "CostValue1", "CostValue2", "CostValue3", "CostValue4",
-	"CrewCheck","CrewLabel","BuildButton","PageLabel",
+	"CrewCheck","CrewLabel","CrewTeamCheck","CrewTeamLabel","FireteamCheck","FireteamLabel","BuildButton","PageLabel",
+	"FtPanel","FtAccent","FtTitle","FtSubtitle","FtDivider","FtJoinLabel","FtJoin","FtRosterHead","FtRoster","FtEmpty","FtRemove","FtClear","FtCostBG","FtCost","FtBuy",
 	"CatalogSearchLabel", "CatalogSearch", "CatalogFaction", "CatalogType", "CatalogUnlocked", "CatalogClear", "CatalogExpand", "CatalogCollapse", "CatalogReset", "CatalogCount", "CatalogFactionReset", "CatalogTypeReset", "SortMark2", "SortMark3", "SortItem", "SortAmmo", "SortFuel"
 	};
 
@@ -372,7 +380,7 @@ class liberation_build {
 	};
 	class CostLabel2 : CostLabel1 { idc = 1722; y = BLD_PB - 10.5 * HPC_GY; text = "Ammo"; };
 	class CostLabel3 : CostLabel1 { idc = 1723; y = BLD_PB - 8.9 * HPC_GY; text = "Fuel"; };
-	class CostLabel4 : CostLabel1 { idc = 1724; y = BLD_PB - 7.3 * HPC_GY; text = "Active units"; };
+	class CostLabel4 : CostLabel1 { idc = 1724; y = BLD_PB - 7.3 * HPC_GY; text = "Squad"; };
 	class CostValue1 : CostLabel1 {
 		idc = 1731;
 		style = ST_RIGHT;
@@ -406,14 +414,129 @@ class liberation_build {
 	};
 	class CrewLabel : HPC_Text {
 		idc = 122;
-		x = BLD_DIX + 4.0 * HPC_GX; y = BLD_PB - 5.5 * HPC_GY; w = BLD_DIW - 4.0 * HPC_GX; h = 1.8 * HPC_GY;
+		x = BLD_DIX + 4.0 * HPC_GX; y = BLD_PB - 5.5 * HPC_GY; w = BLD_DIW - 15.6 * HPC_GX; h = 1.8 * HPC_GY;
 		sizeEx = 0.95 * HPC_GY;
-		text = "Spawn with crew (costs manpower)";
+		text = "With crew (costs manpower)";
+	};
+	// The crew forms its own fireteam instead of joining your squad (enabled by script with CrewCheck).
+	class CrewTeamCheck : CrewCheck {
+		idc = 123;
+		x = BLD_DIX + BLD_DIW - 11.4 * HPC_GX;
+		tooltip = "The crew forms its own fireteam instead of joining your squad. Useful when your squad is full.";
+	};
+	class CrewTeamLabel : HPC_Text {
+		idc = 124;
+		x = BLD_DIX + BLD_DIW - 7.8 * HPC_GX; y = BLD_PB - 5.5 * HPC_GY; w = 7.8 * HPC_GX; h = 1.8 * HPC_GY;
+		sizeEx = 0.95 * HPC_GY;
+		text = "As fireteam";
+	};
+	// Infantry page: recruit several soldiers at once straight into a fireteam (shown by script).
+	// Infantry page: recruit into a fireteam instead of the squad (shown by script).
+	class FireteamCheck : CrewCheck {
+		idc = 125;
+		tooltip = "Recruit into a fireteam: Build adds the soldier to the fireteam panel on the left, and Buy fireteam recruits them all at once.";
+	};
+	class FireteamLabel : CrewLabel {
+		idc = 126;
+		w = BLD_DIW - 4.0 * HPC_GX;
+		text = "Recruit into a fireteam";
+	};
+
+	// Fireteam roster panel (idc 1800-1814), shown by script with the menu slid right.
+	class FtPanel : HPC_Panel {
+		idc = 1800;
+		colorBackground[] = HPC_C_PANEL_SOLID;
+		x = FTP_X; y = BLD_Y; w = FTP_W; h = BLD_H;
+	};
+	class FtAccent : HPC_Text {
+		idc = 1801;
+		x = FTP_X; y = BLD_Y; w = 0.28 * HPC_GX; h = 4.2 * HPC_GY;
+		colorBackground[] = HPC_C_ACCENT;
+	};
+	class FtTitle : HPC_Heading {
+		idc = 1802;
+		text = "NEW FIRETEAM";
+		x = FTP_IX; y = BLD_Y + 0.5 * HPC_GY; w = FTP_IW; h = 2.2 * HPC_GY;
+		sizeEx = 1.55 * HPC_GY;
+	};
+	class FtSubtitle : HPC_Label {
+		idc = 1803;
+		x = FTP_IX; y = BLD_Y + 2.5 * HPC_GY; w = FTP_IW; h = 1.4 * HPC_GY;
+		font = "PuristaMedium";
+		sizeEx = 0.95 * HPC_GY;
+		text = "Pick soldiers, then buy them together.";
+	};
+	class FtDivider : HPC_Text {
+		idc = 1804;
+		x = FTP_IX; y = BLD_Y + 4.6 * HPC_GY; w = FTP_IW; h = 0.1 * HPC_GY;
+		colorBackground[] = HPC_C_LINE;
+	};
+	class FtJoinLabel : HPC_Label {
+		idc = 1805;
+		text = "JOIN";
+		x = FTP_IX; y = BLD_TAB_Y; w = FTP_IW; h = 1.4 * HPC_GY;
+	};
+	class FtJoin : HPC_Combo {
+		idc = 1806;
+		x = FTP_IX; y = BLD_TAB_Y + 1.6 * HPC_GY; w = FTP_IW; h = 2.0 * HPC_GY;
+		tooltip = "Make a new fireteam, or add the soldiers to one of your on-foot fireteams with room.";
+	};
+	class FtRosterHead : HPC_Label {
+		idc = 1807;
+		text = "MEMBERS";
+		x = FTP_IX; y = BLD_TAB_Y + 4.4 * HPC_GY; w = FTP_IW; h = 1.4 * HPC_GY;
+	};
+	class FtRoster : HPC_ListBox {
+		idc = 1808;
+		style = LB_TEXTURES;
+		x = FTP_IX; y = BLD_TAB_Y + 6.0 * HPC_GY; w = FTP_IW; h = BLD_PB - 13.7 * HPC_GY - (BLD_TAB_Y + 6.0 * HPC_GY);
+		sizeEx = 0.95 * HPC_GY;
+		rowHeight = 2.0 * HPC_GY;
+		colorBackground[] = {0,0,0,0.22};
+		tooltip = "Double-click a soldier to take him out of the fireteam.";
+	};
+	class FtEmpty : HPC_Text {
+		idc = 1809;
+		style = ST_CENTER + ST_MULTI;
+		x = FTP_IX + HPC_GX; y = BLD_TAB_Y + 12 * HPC_GY; w = FTP_IW - 2 * HPC_GX; h = 6 * HPC_GY;
+		colorText[] = HPC_C_MUTED;
+		sizeEx = 0.95 * HPC_GY;
+		text = "Empty. Select a soldier in the list and press Add to fireteam.";
+	};
+	class FtRemove : HPC_Button {
+		idc = 1810;
+		text = "Remove";
+		x = FTP_IX; y = BLD_PB - 13.2 * HPC_GY; w = FTP_HALF; h = 2.6 * HPC_GY;
+		tooltip = "Take the selected soldier out of the fireteam.";
+		action = "['remove'] call HPC_fnc_buildRoster";
+	};
+	class FtClear : FtRemove {
+		idc = 1811;
+		text = "Clear";
+		x = FTP_IX + FTP_HALF + 0.4 * HPC_GX;
+		tooltip = "Empty the fireteam.";
+		action = "['clear'] call HPC_fnc_buildRoster";
+	};
+	class FtCostBG : HPC_Text {
+		idc = 1812;
+		x = FTP_IX; y = BLD_PB - 10.0 * HPC_GY; w = FTP_IW; h = 5.6 * HPC_GY;
+		colorBackground[] = {0,0,0,0.22};
+	};
+	class FtCost : HPC_StructuredText {
+		idc = 1813;
+		x = FTP_IX + 0.5 * HPC_GX; y = BLD_PB - 9.6 * HPC_GY; w = FTP_IW - 1.0 * HPC_GX; h = 4.8 * HPC_GY;
+		size = 1.0 * HPC_GY;
+	};
+	class FtBuy : HPC_ButtonAccent {
+		idc = 1814;
+		text = "Buy fireteam";
+		x = FTP_IX; y = BLD_PB - 3.5 * HPC_GY; w = FTP_IW; h = 2.9 * HPC_GY;
+		action = "['buy'] call HPC_fnc_buildRoster";
 	};
 	class BuildButton : HPC_ButtonAccent {
 		idc = 120;
 		x = BLD_DIX; y = BLD_PB - 3.5 * HPC_GY; w = BLD_DIW; h = 2.9 * HPC_GY;
 		text = $STR_BUILD_BUTTON;
-		action = "private _crew = (findDisplay 5501) displayCtrl 121; manned = ctrlShown _crew && {ctrlEnabled _crew} && {ctrlChecked _crew}; dobuild = 1;";
+		action = "if (missionNamespace getVariable ['HPC_ftMode', false]) exitWith { ['add'] call HPC_fnc_buildRoster }; private _crew = (findDisplay 5501) displayCtrl 121; manned = ctrlShown _crew && {ctrlEnabled _crew} && {ctrlChecked _crew}; HPC_buildCrewTeam = manned && {ctrlChecked ((findDisplay 5501) displayCtrl 123)}; dobuild = 1;";
 	};
 };

@@ -3,7 +3,6 @@ waitUntil { sleep 1; !(isNil "resources_infantry") };
 GRLIB_player_admin_actions = [];
 GRLIB_player_vehicle_actions = [];
 GRLIB_player_dog_actions = [];
-GRLIB_player_squad_actions = [];
 
 // Tuto
 private _icon_tuto = "\a3\ui_f\data\map\markers\handdrawn\unknown_ca.paa";
@@ -27,10 +26,6 @@ player addAction [([localize "STR_EXTENDED_OPTIONS", "\a3\ui_f\data\igui\cfg\sim
 // Dog - Actions
 private _my_dog = player getVariable "my_dog";
 if (!isNil "_my_dog") then { [true] call player_dog_actions };
-
-// Squad - Actions
-private _my_squad = player getVariable "my_squad";
-if (!isNil "_my_squad") then { [true] call player_squad_actions };
 
 // Support vehicle
 player addAction [([localize "STR_VEH_SUPPORT", "res\ui_veh.paa", "info"] call HPC_fnc_actionTitle),"scripts\client\actions\do_support.sqf","",997,false,true,"","call GRLIB_checkVehicleSupport"];

@@ -46,7 +46,7 @@ private _layout = [
 ["HippoEasyAI", _campaign, "Easy AI", "Give friendly AI the highest skill and enemy AI the lowest. Disabled uses the normal Liberation skill levels."],
 ["HippoVehicleProgression", _campaign, "Enemy vehicle progression", "Enemy heavy vehicles unlock as enemy readiness rises. Disabled lets the enemy use every vehicle tier from the start."],
 ["Opforcap", _campaign, "Enemy unit limit", "Above this many enemy units, extra patrols, counterattacks and side missions wait. Sector defenders and AI forces can still go over it."],
-["ResourcesMultiplier", _campaign, "Resource income", "Multiplies resources from captured sectors, crate production limits, passive income and manpower. Prices are not changed."],
+["ResourcesMultiplier", _campaign, "Resource income", "Multiplies resources from captured sectors, crate production limits and passive income. Prices are not changed."],
 ["PassiveIncome", _campaign, "Passive income", "Pay ammunition to the team on a timer instead of producing ammunition crates at military sectors. Disabled keeps crate production."],
 ["PassiveIncomeAmmount", _campaign, "Passive income amount", "Ammunition paid per captured military sector each payout, before the resource income multiplier."],
 ["DayDuration", _campaign, "Day speed", "How fast daytime passes. x1 is real time; below 1 lengthens the day, above 1 shortens it."],
@@ -79,8 +79,6 @@ private _layout = [
 ["A3WDelay", _world, "Side mission interval", "Time between new side missions, while fewer than the limit are running."],
 
 // PLAYERS AND SQUADS
-["SquadSize", _players, "Starting squad size", "AI soldiers a player can recruit at the lowest rank. Each rank adds one more, up to Maximum squad size. This is a recruitment limit, not soldiers given for free."],
-["MaxSquadSize", _players, "Maximum squad size", "Most AI soldiers a player can recruit, reached at the highest ranks. Fireteams count towards this limit."],
 ["Fatigue", _players, "Stamina", "Players tire when running and carrying weight. Disabled gives unlimited stamina."],
 ["ForceEnglish", _players, "English AI voices", "Give friendly AI English voices. The interface language is not changed."],
 

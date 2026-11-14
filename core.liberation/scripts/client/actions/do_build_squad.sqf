@@ -1,45 +1,25 @@
+// Squad tab purchase: the squad is recruited straight into a fireteam of its own (at most
+// HPC_fireteamCap soldiers, leader first), commanded from the Fireteams window like any other.
 params ["_classname", ["_squadName", "Squad"]];
 
-private _pos = getPosATL player;
-private _grp = createGroup [GRLIB_side_friendly, true];
-_grp setGroupIdGlobal [format ["%1 %2", _squadName, groupId _grp]];
+private _classes = _classname select [0, HPC_fireteamCap];
+private _before = units GRLIB_player_group;
+{ [_x] call do_build_unit } forEach _classes;
+private _units = (units GRLIB_player_group) - _before;
+if (_units isEqualTo []) exitWith { diag_log ["HPC_SQUAD_BUY", "no units", _squadName] };
 
-private ["_unitrank", "_unit", "_class_overide"];
+// the first soldier leads, the second is his second in command
 {
-	_unitrank = "PRIVATE";
-	if(_forEachIndex == 0) then { _unitrank = "SERGEANT" };
-	if(_forEachIndex == 1) then { _unitrank = "CORPORAL" };
-	_unit = _grp createUnit [_x, _pos, [], 15, "NONE"];
-	[_unit] joinSilent _grp;
-	_unit setVariable ["PAR_Grp_ID", format["AI_%1", PAR_Grp_ID], true];
-	[_unit] call PAR_fn_AI_Damage_EH;
-	[_unit] call F_fixModUnit;
-	_unit setUnitRank _unitrank;
-	_unit setSkill 0.65;
-[_unit] call HPC_fnc_applyEasyAI;
-	_unit enableIRLasers true;
-	_unit enableGunLights "Auto";
-	if (GRLIB_force_english) then { _unit setSpeaker (format ["Male0%1ENG", round (1 + floor random 9)]) };
-	_class_overide = toLower _x;
-	if (_class_overide in units_loadout_overide) then {
-		private _path = format ["mod_template\%1\loadout\%2.sqf", GRLIB_mod_west, _class_overide];
-		[_path, _unit] call F_getTemplateFile;
-		// Override loadouts give weapons without magazines; refill like spawned AI.
-		[_unit] spawn reammo_ai;
-	};
-	sleep 0.2;
-} foreach _classname;
+	_x setUnitRank (["SERGEANT", "CORPORAL"] param [_forEachIndex, "PRIVATE"]);
+	_x setSkill 0.65;
+} forEach _units;
 
-_grp setCombatMode "GREEN";
-_grp setBehaviourStrong "AWARE";
-
-["stats_blufor_soldiers_recruited", count (units _grp)] remoteExecCall ["HPC_fnc_addStat", 2];
-if (player != hcLeader _grp) then {
-	(hcLeader _grp) hcRemoveGroup _grp;
-	player hcSetGroup [_grp];
+private _team = [_units] call HPC_fnc_fireteamMake;
+if (_team isEqualType "") then {
+	diag_log ["HPC_SQUAD_BUY", _team, _squadName];
+	[format ["%1 joined your squad: %2", _squadName, _team]] call HPC_fnc_info;
+} else {
+	[format ["%1 recruited as %2. Command it from the Fireteams window.", _squadName, groupId _team]] call HPC_fnc_info;
+	uiNamespace setVariable ["HPC_ftSelectTeam", _team];
 };
-player setVariable ["my_squad", _grp, true];
-
-[_grp] call F_deleteWaypoints;
-[true] call player_squad_actions;
 build_refresh = true;

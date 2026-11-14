@@ -3,7 +3,9 @@
 Rules the shared mission code cannot apply by itself, because they live in each
 map's own layout:
 - exactly one playable Commander group (GRLIB_is_Commander), listed first so
-  it is the first slot in the lobby.
+  it is the first slot in the lobby;
+- no High Command module (squads bought in the build menu are fireteams, not
+  High Command groups).
 
     python tools/map_layout.py            # check all maps, exit 1 on a problem
     python tools/map_layout.py --fix      # rewrite maps that break a rule
@@ -64,16 +66,74 @@ def commander_index(text):
     return found, items
 
 
+def high_command(text):
+    """Return [(item index, entity id)] of top-level High Command modules."""
+    start, end, items = mission_items(text)
+    body = text[start:end]
+    found = []
+    for i, (s, e) in enumerate(items):
+        block = body[s:e]
+        if re.search(r'(?m)^\t\t\ttype="HighCommand";', block):
+            found.append((i, int(re.search(r'(?m)^\t\t\tid=(\d+);', block).group(1))))
+    return found
+
+
 def problems(text):
+    issues = []
+    if high_command(text):
+        issues.append('High Command module present')
     found, _ = commander_index(text)
     if len(found) != 1:
-        return [f'expected one Commander group, found {len(found)}']
+        return issues + [f'expected one Commander group, found {len(found)}']
     if found[0] != 0:
-        return [f'Commander group is Item{found[0]}, must be Item0 (first lobby slot)']
-    return []
+        issues.append(f'Commander group is Item{found[0]}, must be Item0 (first lobby slot)')
+    return issues
+
+
+def _renumber(body, items, keep):
+    """Keep the item blocks whose index is in keep, renumbered from Item0; fix items=N."""
+    texts = [body[s:e] for i, (s, e) in enumerate(items) if i in keep]
+    texts = [re.sub(r'^(\t+)class Item\d+', lambda m, n=n: f'{m.group(1)}class Item{n}', x, count=1) for n, x in enumerate(texts)]
+    head = re.sub(r'items=\d+;', f'items={len(texts)};', body[:items[0][0]], count=1)
+    return head + '\n'.join(texts) + body[items[-1][1]:]
+
+
+def remove_high_command(text):
+    found = high_command(text)
+    if not found:
+        return text
+    ids = {i for _, i in found}
+    start, end, items = mission_items(text)
+    body = text[start:end]
+    gone = {i for i, _ in found}
+    text = text[:start] + _renumber(body, items, [i for i in range(len(items)) if i not in gone]) + text[end:]
+    # sync links to the module
+    links = re.search(r'(?m)^\t\tclass Links\s*\{', text)
+    if links:
+        l_start = links.end() - 1
+        l_end = _block_end(text, l_start)
+        body = text[l_start + 1:l_end]
+        link_items = []
+        for item in re.finditer(r'(?m)^\t\t\tclass Item\d+\s*\{', body):
+            e = _block_end(body, item.end() - 1)
+            link_items.append((item.start(), body.index(';', e) + 1))
+        keep = []
+        for n, (s, e) in enumerate(link_items):
+            block = body[s:e]
+            ends = {int(x) for x in re.findall(r'(?m)^\t\t\t\titem[01]=(\d+);', block)}
+            if not (ends & ids):
+                keep.append(n)
+        if link_items:
+            if keep:
+                body = _renumber(body, link_items, keep)
+            else:
+                body = re.sub(r'items=\d+;', 'items=0;', body[:link_items[0][0]], count=1) + body[link_items[-1][1]:]
+            text = text[:l_start + 1] + body + text[l_end:]
+    return text
 
 
 def fix(text):
+    text = remove_high_command(text)
     found, items = commander_index(text)
     if len(found) != 1:
         raise ValueError(f'expected one Commander group, found {len(found)}')

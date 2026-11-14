@@ -1,7 +1,7 @@
 GRLIB_vehicle_need_support = [];
 
 private [
-	"_unitList", "_my_squad",
+	"_unitList",
 	"_near_arsenal", "_primary_weapon", "_needammo1", "_needammo2", "_maxpri", "_minpri",
 	"_near_medic", "_needmedic",
 	"_near_repair", "_near_refuel", "_near_lhd", "_list_vehicles", "_vehicle",
@@ -34,9 +34,6 @@ while {true} do {
 	waitUntil {sleep 1; GRLIB_player_spawned};
 
 	_unitList = (units group player) select { local _x && lifeState _x != "INCAPACITATED" };
-	_my_squad = player getVariable ["my_squad", nil];
-	if (!isNil "_my_squad") then { { _unitList pushBack _x } forEach units _my_squad };
-	{_unitList append units _x} foreach hcAllGroups player;
 	// same filter for every source: local commands below, and never stand up an unconscious unit
 	_unitList = (_unitList arrayIntersect _unitList) select { local _x && {lifeState _x != "INCAPACITATED"} };
 

@@ -30,7 +30,6 @@ player_fob_actions = compileFinal preprocessFileLineNumbers "scripts\client\acti
 player_init = compileFinal preprocessFileLineNumbers "scripts\client\spawn\player_init.sqf";
 player_loadout = compileFinal preprocessFileLineNumbers "scripts\client\spawn\player_loadout.sqf";
 player_respawn = compileFinal preprocessFileLineNumbers "scripts\client\spawn\player_respawn.sqf";
-player_squad_actions = compileFinal preprocessFileLineNumbers "scripts\client\actions\player_squad_actions.sqf";
 player_vehicle_actions = compileFinal preprocessFileLineNumbers "scripts\client\actions\player_vehicle_actions.sqf";
 save_loadout_cargo = compileFinal preprocessFileLineNumbers "scripts\client\misc\save_loadout_cargo.sqf";
 save_personal_arsenal = compileFinal preprocessFileLineNumbers "scripts\client\actions\save_personal_arsenal.sqf";
@@ -62,5 +61,6 @@ HPC_fnc_sendMedics = compileFinal toString {
 	hintSilent format ["Medic requested for %1 downed squadmate%2.", _sent, ["s", ""] select (_sent == 1)];
 };
 [] call compileFinal preprocessFileLineNumbers "scripts\client\misc\HPC_fireteamFunctions.sqf"; // fireteams
+[] call compileFinal preprocessFileLineNumbers "scripts\client\build\HPC_buildRoster.sqf"; // build menu fireteam roster
 HPC_fnc_screenCover = compileFinal preprocessFileLineNumbers "scripts\client\ui\HPC_screenCover.sqf"; // black cover for camera handoffs
 HPC_fnc_escPause =compileFinal preprocessFileLineNumbers "scripts\client\ui\HPC_escPause.sqf"; // ESC -> pause menu over must-stay screens

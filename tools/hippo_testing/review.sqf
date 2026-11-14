@@ -64,7 +64,8 @@ diag_log ["HPC_CIVILIAN_TEST",_normalCount,_denseCount,_agentsOK,count HPC_ambie
 private _trafficBefore = missionNamespace getVariable ["HPC_ambientTraffic",[]];
 HPC_ambientTraffic = [];
 GRLIB_civilian_activity = 1;
-for "_i" from 1 to 3 do {[[[_civilianHome,12]],[]] call HPC_fnc_ambientTraffic};
+// a spawn spot is picked at random and can miss: try until three are on the road
+for "_i" from 1 to 8 do { if (count HPC_ambientTraffic < 3) then {[[[_civilianHome,12]],[]] call HPC_fnc_ambientTraffic} };
 private _trafficOK = count HPC_ambientTraffic == 3 && {HPC_ambientTraffic findIf {!alive driver _x || {!([group driver _x] call HPC_fnc_hcEligible)} || {count waypoints group driver _x < 3}} < 0};
 diag_log ["HPC_TRAFFIC_TEST",count HPC_ambientTraffic,HPC_ambientTraffic apply {[typeOf _x,alive driver _x,[group driver _x] call HPC_fnc_hcEligible,count waypoints group driver _x]}];
 [[],[]] call HPC_fnc_ambientTraffic;

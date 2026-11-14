@@ -6,7 +6,7 @@ HPC_fnc_zeusOwned = compileFinal {
 	params ["_unit"];
 	private _grp = group _unit;
 	(_grp isEqualTo group player) ||
-	{hcLeader _grp isEqualTo player} ||
+	{(_grp getVariable ["HPC_fireteamOwner", ""]) == PAR_Grp_ID} ||
 	{(vehicle _unit) getVariable ["GRLIB_vehicle_owner", ""] == PAR_Grp_ID}
 };
 
@@ -40,8 +40,13 @@ HPC_fnc_masterZeus = compileFinal {
 	private _end = time + 10;
 	waitUntil { uiSleep 0.1; getAssignedCuratorLogic player isEqualTo HPC_masterCurator || time > _end };
 	if !(getAssignedCuratorLogic player isEqualTo HPC_masterCurator) exitWith { hint "Master Zeus unavailable." };
-	openCuratorInterface;
-	waitUntil { uiSleep 0.1; !isNull findDisplay 312 || time > _end + 5 };
+	// the interface can refuse to open right after the curator swap: try again until it shows
+	private _openBy = time + 15;
+	while { isNull findDisplay 312 && {time < _openBy} } do {
+		openCuratorInterface;
+		private _wait = time + 2;
+		waitUntil { uiSleep 0.1; !isNull findDisplay 312 || time > _wait };
+	};
 	// vanilla remote control closes the display: wait until back on the player
 	waitUntil { uiSleep 0.5; isNull findDisplay 312 && {cameraOn isEqualTo vehicle player} };
 	[player, false] remoteExec ["zeus_assign_remote_call", 2];

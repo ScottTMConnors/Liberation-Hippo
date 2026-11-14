@@ -4,13 +4,11 @@
 // --- settings layout
 private _rows = LRX_Mission_Params;
 private _cats = (keys _rows) apply { (_rows get _x) get GRLIB_PARAM_CategoryKey };
-private _removed = ["SectorDespawn", "HideOpfor", "CommanderMode"] findIf { _x in keys _rows } < 0;
-private _squad = ((_rows get "SquadSize") get GRLIB_PARAM_OptionValuesKey);
-private _maxSquad = ((_rows get "MaxSquadSize") get GRLIB_PARAM_OptionValuesKey);
+private _removed = ["SectorDespawn", "HideOpfor", "CommanderMode", "SquadSize", "MaxSquadSize"] findIf { _x in keys _rows } < 0;
 private _english = language != "English" || {((_rows get "Minefields") get GRLIB_PARAM_NameKey) == "Minefields" && {((_rows get "FilterArsenal") get GRLIB_PARAM_NameKey) == "Arsenal contents"}};
 private _grouped = ((_rows get "HippoNearbyBattles") get GRLIB_PARAM_CategoryKey) == GRLIB_PARAM_BattleCatKey && {((_rows get "HippoAIWarfare") get GRLIB_PARAM_CategoryKey) == GRLIB_PARAM_BattleCatKey};
-diag_log ["HPC_SETTINGS_LAYOUT", _removed, selectMax _squad, selectMax _maxSquad, _english, _grouped, _cats arrayIntersect _cats];
-["settings.layout", _removed && {selectMax _squad == 12} && {selectMax _maxSquad == 20} && {_english} && {_grouped} && {_cats findIf { !(_x in GRLIB_PARAM_CatOrder) } < 0}] call _assert;
+diag_log ["HPC_SETTINGS_LAYOUT", _removed, _english, _grouped, _cats arrayIntersect _cats];
+["settings.layout", _removed && {_english} && {_grouped} && {_cats findIf { !(_x in GRLIB_PARAM_CatOrder) } < 0}] call _assert;
 
 // --- vehicle crew economy
 private _choices = { params ["_points", "_n"]; private _r = []; for "_i" from 1 to _n do { _r pushBack ([_points] call HPC_fnc_armorChoose) }; _r };

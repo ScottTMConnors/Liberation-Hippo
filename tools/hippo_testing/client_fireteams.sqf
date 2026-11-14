@@ -19,7 +19,12 @@ private _recruit = {
 	PAR_AI_bros pushBackUnique _unit;
 	_unit
 };
-private _spot = [player getPos [25, getDir player], 6, 0, 80] call F_findSafePlace;
+// a spot clear of other vehicles (a parked helicopter can push the MRAP crew out)
+private _spot = [];
+{
+	private _try = [player getPos [25, getDir player + _x], 6, 0, 80] call F_findSafePlace;
+	if (_try isNotEqualTo [] && {(_try nearEntities [["LandVehicle", "Air", "Ship"], 15]) isEqualTo []}) exitWith { _spot = _try };
+} forEach [0, 90, 180, 270, 45, 135, 225, 315];
 if (_spot isEqualTo []) then { _spot = player getPos [25, getDir player] };
 private _veh = createVehicle ["B_MRAP_01_hmg_F", _spot, [], 0, "NONE"];
 _veh setVariable ["GRLIB_vehicle_owner", PAR_Grp_ID, true];
@@ -32,6 +37,7 @@ GRLIB_player_group addVehicle _veh;
 _driver assignAsDriver _veh;
 _gunner assignAsGunner _veh;
 sleep 2;
+diag_log ["HPC_FIRETEAM_FIXTURE_VEH", typeOf _veh, alive _veh, damage _veh, getPosATL _veh, objectParent _driver, objectParent _gunner, (_veh nearEntities [["LandVehicle", "Air", "Ship"], 30]) apply { [typeOf _x, _x distance _veh] }];
 
 // mixed foot and vehicle: refused
 private _mixed = [[_foot, _driver]] call HPC_fnc_fireteamMake;
@@ -92,12 +98,68 @@ private _footOk = _footTeam isEqualType grpNull && {_foot in units _footTeam} &&
 if (_footTeam isEqualType grpNull) then { [_footTeam] call HPC_fnc_fireteamDisband };
 ["fireteam.foot", _footOk && {_foot in units GRLIB_player_group}] call _assert;
 
+// squad and fireteam limits; add, move between fireteams, return to the squad; board and get out
+private _extra = [];
+for "_i" from 1 to 3 do { _extra pushBack ([player getPos [6, 40 + _i * 25]] call _recruit) };
+_extra params ["_e1", "_e2", "_e3"];
+sleep 1;
+private _ftA = [[_e1]] call HPC_fnc_fireteamMake;
+private _ftB = [[_e2]] call HPC_fnc_fireteamMake;
+private _limitsOk = false;
+private _rideOk = false;
+if (_ftA isEqualType grpNull && {_ftB isEqualType grpNull}) then {
+	private _addOk = ([[_e3], _ftA] call HPC_fnc_fireteamAdd) == "" && {_e3 in units _ftA};
+	private _moveOk = ([[_e3], _ftB] call HPC_fnc_fireteamTransfer) == "" && {_e3 in units _ftB};
+	private _relOk = ([[_e3]] call HPC_fnc_fireteamRelease) == "" && {_e3 in units GRLIB_player_group} && {(_e3 getVariable ["HPC_fireteam", ""]) == ""};
+	private _oldFt = HPC_fireteamCap;
+	HPC_fireteamCap = 1;
+	private _ftCapOk = ([[_e3], _ftA] call HPC_fnc_fireteamAdd) != "" && {([[_e3, _foot]] call HPC_fnc_fireteamMake) isEqualType ""};
+	HPC_fireteamCap = _oldFt;
+	private _oldSq = HPC_squadCap;
+	HPC_squadCap = [] call HPC_fnc_squadCount;
+	private _sqCapOk = ([[_e2]] call HPC_fnc_fireteamRelease) != "" && {([_ftB] call HPC_fnc_fireteamDisband) != ""} && {_e2 in units _ftB};
+	HPC_squadCap = _oldSq;
+	private _mp = [] call HPC_fnc_manpowerRecount;
+	private _mpOk = _mp >= ({ alive _x && !isPlayer _x } count (units GRLIB_player_group + units _ftA + units _ftB));
+	_limitsOk = _addOk && _moveOk && _relOk && _ftCapOk && _sqCapOk && _mpOk;
+	diag_log ["HPC_FIRETEAM_LIMITS", _addOk, _moveOk, _relOk, _ftCapOk, _sqCapOk, _mpOk, _mp];
+
+	// board the squad's crewed MRAP as passengers, then get out
+	private _board = [_ftA, "board", getPosATL _veh] call HPC_fnc_fireteamOrder;
+	private _by = diag_tickTime + 40;
+	waitUntil { sleep 0.5; objectParent _e1 == _veh || {diag_tickTime > _by} };
+	private _aboard = objectParent _e1 == _veh && {(assignedVehicleRole _e1) param [0, ""] == "Cargo"};
+	private _state = [_ftA] call HPC_fnc_fireteamState;
+	private _dismount = [_ftA, "dismount"] call HPC_fnc_fireteamOrder;
+	_by = diag_tickTime + 20;
+	waitUntil { sleep 0.5; isNull objectParent _e1 || {diag_tickTime > _by} };
+	private _out = isNull objectParent _e1 && {objectParent _driver == _veh};
+	_rideOk = _board == "" && _aboard && _dismount == "" && _out;
+	diag_log ["HPC_FIRETEAM_RIDE", _board, _aboard, _state, _dismount, _out, objectParent _e1, assignedVehicleRole _e1];
+};
+["fireteam.limits", _limitsOk] call _assert;
+["fireteam.boardDismount", _rideOk] call _assert;
+{ if (_x isEqualType grpNull) then { [(units _x) select { alive _x }] call HPC_fnc_fireteamRelease } } forEach [_ftA, _ftB];
+{ PAR_AI_bros = PAR_AI_bros - [_x]; deleteVehicle _x } forEach _extra;
+sleep 1;
+
+// a Squad tab purchase arrives as its own fireteam, sergeant leading
+private _squadTeams = [] call HPC_fnc_fireteamList;
+[[blufor_squad_inf select 0, blufor_squad_inf select 0, blufor_squad_inf select 0], "Test squad"] call do_build_squad;
+private _bought = ([] call HPC_fnc_fireteamList) - _squadTeams;
+private _squadOk = count _bought == 1 && {count units (_bought select 0) == 3} && {rank leader (_bought select 0) == "SERGEANT"} &&
+	{(units (_bought select 0)) findIf { !(_x in PAR_AI_bros) } < 0};
+diag_log ["HPC_SQUAD_BUY_TEST", _bought, _bought apply { units _x }];
+["fireteam.squadPurchase", _squadOk] call _assert;
+{ private _u = (units _x) select { alive _x }; PAR_AI_bros = PAR_AI_bros - _u; HPC_ftDisbanded pushBackUnique netId _x; { deleteVehicle _x } forEach _u } forEach _bought;
+sleep 1;
+
 // a fireteam wiped out raises a toast; the map overlay lists your fireteams in green
 private _lostTeam = [[_foot]] call HPC_fnc_fireteamMake;
 private _lostOk = false;
 if (_lostTeam isEqualType grpNull) then {
 	openMap true;
-	sleep 3;
+	sleep 5;	// the fireteam manager looks every 4 s: let it see the team first
 	private _drawn = HPC_mapForces findIf { (_x select 0) isEqualTo _lostTeam && {(_x select 7) == "mine"} } >= 0;
 	openMap false;
 	HPC_ftLastLost = -1;

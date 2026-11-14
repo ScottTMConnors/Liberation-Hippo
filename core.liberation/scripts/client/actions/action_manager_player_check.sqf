@@ -6,13 +6,6 @@ GRLIB_checkOperator = compileFinal {
 	(GRLIB_player_is_menuok && GRLIB_admin_menu && (GRLIB_player_admin || PAR_Grp_ID in GRLIB_whitelisted_moderators))
 };
 
-GRLIB_checkSquad = compileFinal {
-	private _my_squad = player getVariable ["my_squad", nil];
-	if (isNil "_my_squad") exitWith { false };
-	private _in_vehicle = { !isNull objectParent _x } count (units _my_squad);
-	(GRLIB_player_is_menuok && _in_vehicle == 0);
-};
-
 GRLIB_check_Dog = compileFinal {
 	(GRLIB_player_is_menuok && !isNil {player getVariable ["my_dog", nil]});
 };

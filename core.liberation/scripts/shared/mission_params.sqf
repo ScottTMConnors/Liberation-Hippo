@@ -71,8 +71,6 @@ GRLIB_PARAM_DeathChat = "DeathChat";
 GRLIB_PARAM_ForceEnglish = "ForceEnglish";
 GRLIB_PARAM_MaxSpawnPoint = "MaxSpawnPoint";
 GRLIB_PARAM_Redeploy = "Redeploy";
-GRLIB_PARAM_SquadSize = "SquadSize";
-GRLIB_PARAM_MaxSquadSize = "MaxSquadSize";
 GRLIB_PARAM_PlatoonView = "PlatoonView";
 GRLIB_PARAM_NameTags = "NameTags";
 GRLIB_PARAM_MapMarkers = "MapMarkers";
@@ -761,24 +759,6 @@ _Mission_Params = [
             format [localize "STR_RESPAWN_OPT0", 50],
             format [localize "STR_RESPAWN_OPT0", 60]
         ]]
-    ]],
-    [GRLIB_PARAM_SquadSize, createHashMapFromArray [
-        [GRLIB_PARAM_ValueKey, 2],
-        [GRLIB_PARAM_NameKey, localize "STR_PARAM_SQUAD_SIZE_START"],
-        [GRLIB_PARAM_OptionLabelKey, ["0","1","2","3","4","5","6","7","8","9","10","11","12"]],
-        [GRLIB_PARAM_OptionValuesKey, [0,1,2,3,4,5,6,7,8,9,10,11,12]],
-        [GRLIB_PARAM_CategoryKey, GRLIB_PARAM_PlayerCatKey],
-        [GRLIB_PARAM_DescriptionKey, localize "STR_PARAM_SQUAD_SIZE_START_DESC"],
-        [GRLIB_PARAM_OptionDescriptionKey, [0,1,2,3,4,5,6,7,8,9,10,11,12] apply {format ["%1 AI soldiers at the starting rank", _x]}]
-    ]],
-    [GRLIB_PARAM_MaxSquadSize, createHashMapFromArray [
-        [GRLIB_PARAM_ValueKey, 5],
-        [GRLIB_PARAM_NameKey, localize "STR_PARAM_SQUAD_SIZE"],
-        [GRLIB_PARAM_OptionLabelKey, ["0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20"]],
-        [GRLIB_PARAM_OptionValuesKey, [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]],
-        [GRLIB_PARAM_CategoryKey, GRLIB_PARAM_PlayerCatKey],
-        [GRLIB_PARAM_DescriptionKey, localize "STR_PARAM_SQUAD_SIZE_DESC"],
-        [GRLIB_PARAM_OptionDescriptionKey, [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20] apply {format ["Up to %1 AI soldiers", _x]}]
     ]],
     [GRLIB_PARAM_DeathChat, createHashMapFromArray [
         [GRLIB_PARAM_ValueKey, 0],

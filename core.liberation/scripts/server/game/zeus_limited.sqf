@@ -48,9 +48,6 @@ HPC_fnc_zeusRefresh = compileFinal {
 	// fireteams and other squadmates outside the player's group (tagged Bros_<uid>)
 	private _tag = format ["Bros_%1", _uid];
 	_units append (allUnits select { alive _x && {(_x getVariable ["PAR_Grp_ID", ""]) == _tag} });
-	{
-		if (hcLeader _x isEqualTo _player) then { _units append ((units _x) select { alive _x }) };
-	} forEach (groups GRLIB_side_friendly);
 	private _owned = _units + (vehicles select { alive _x && {_x getVariable ["GRLIB_vehicle_owner", ""] == _uid} });
 	{ if (!isNull objectParent _x) then { _owned pushBack (objectParent _x) } } forEach _units;
 	_owned = _owned arrayIntersect _owned;

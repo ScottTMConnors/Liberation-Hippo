@@ -42,5 +42,14 @@ private _alt = _pos select 2;
 } foreach (units _grp);
 
 sleep 2;
+// the squad holds at most HPC_squadCap AI: the soldiers beyond it form fireteams
+private _overflow = (units GRLIB_player_group) select { alive _x && {!isPlayer _x} && {(_x getVariable ["HPC_fireteam", ""]) == ""} };
+_overflow = _overflow select [HPC_squadCap, count _overflow];
+while { _overflow isNotEqualTo [] } do {
+    private _chunk = _overflow select [0, HPC_fireteamCap];
+    _overflow = _overflow - _chunk;
+    private _team = [_chunk] call HPC_fnc_fireteamMake;
+    if (_team isEqualType "") exitWith { diag_log ["HPC_FIRETEAM_OVERFLOW", _team] };
+};
 player setVariable ["GRLIB_squad_context_loaded", true, true];
 hintSilent "";

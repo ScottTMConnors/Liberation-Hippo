@@ -37,7 +37,6 @@ private _fnc_copyState = {
         _unit setVariable ["GRLIB_TFAR_SW_config", (_oldUnit getVariable ["GRLIB_TFAR_SW_config", []]), true];
         _unit setVariable ["GRLIB_TFAR_LR_config", (_oldUnit getVariable ["GRLIB_TFAR_LR_config", []]), true];
         _unit setVariable ["my_dog", (_oldUnit getVariable ["my_dog", nil])];
-        _unit setVariable ["my_squad", (_oldUnit getVariable ["my_squad", nil])];
     };
 };
 

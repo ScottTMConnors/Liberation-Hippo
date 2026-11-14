@@ -17,28 +17,7 @@ private _prefix_tag = "";
 [player] call F_correctUAVT;
 player connectTerminalToUAV objNull;
 
-// HCI Command IA
-hcRemoveAllGroups player;
-
-private _commander = ([player] call F_getCommander);
-if (_commander) then {
-	private _my_veh = vehicles select {
-		(_x getVariable ["GRLIB_vehicle_manned", false]) &&
-		([player, _x] call is_owner) &&
-		(_x getVariable ["R3F_LOG_disabled", false]) &&
-		!(typeOf _x in uavs_vehicles + static_vehicles_AI)
-	};
-	{ player hcSetGroup [group _x] } foreach _my_veh;
-	_prefix_tag = "Commander ";
-};
-
-private _my_squad = player getVariable ["my_squad", nil];
-if (!isNil "_my_squad") then {
-	if (player != hcLeader _my_squad) then {
-		(hcLeader _my_squad) hcRemoveGroup _my_squad;
-		player hcSetGroup [_my_squad];
-	};
-};
+if ([player] call F_getCommander) then { _prefix_tag = "Commander " };
 
 private _reput = [player] call F_getReputText;
 private _color = _reput select 0;

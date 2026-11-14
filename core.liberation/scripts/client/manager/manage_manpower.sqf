@@ -16,7 +16,10 @@ HPC_fnc_manpowerRecount = compileFinal {
 		_grp addEventHandler ["UnitLeft", { [] call HPC_fnc_manpowerChanged }];
 	};
 
-	private _used = { !(isPlayer _x) && alive _x } count units _grp;
+	// every living AI soldier of the squad and of its fireteams
+	private _soldiers = units _grp;
+	if (!isNil "HPC_fnc_fireteamList") then { { _soldiers append units _x } forEach ([] call HPC_fnc_fireteamList) };
+	private _used = { !(isPlayer _x) && alive _x } count _soldiers;
 	private _mobile = ([] call F_getMobileRespawns) select { _x getVariable ["GRLIB_vehicle_owner", ""] == PAR_Grp_ID };
 	private _vehicles = [];
 	if (GRLIB_permission_vehicles) then {

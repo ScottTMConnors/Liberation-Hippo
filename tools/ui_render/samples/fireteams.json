@@ -1,7 +1,7 @@
 {
-  "hide": [2603, 2621, 2641],
+  "hide": [2603, 2621, 2624, 2641],
   "2601": {"rows": [
-    ["ON FOOT", "", "", [0.46,0.80,0.72,1]],
+    ["ON FOOT  (3)", "", "", [0.46,0.80,0.72,1]],
     ["   Rifleman  -  Pvt. Miller", "\\A3\\ui_f\\data\\map\\vehicleicons\\iconMan_ca.paa", "", [0.62,0.92,0.84,1]],
     ["   Autorifleman  -  Pvt. Diaz", "\\A3\\ui_f\\data\\map\\vehicleicons\\iconManMG_ca.paa", "", [0.62,0.92,0.84,1]],
     ["   Medic  -  Cpl. Novak", "\\A3\\ui_f\\data\\map\\vehicleicons\\iconManMedic_ca.paa", "", [0.62,0.92,0.84,1]],
@@ -10,10 +10,23 @@
     ["   Gunner  -  Pvt. Lindqvist", "\\A3\\ui_f\\data\\map\\vehicleicons\\iconMan_ca.paa", "", [0.62,0.92,0.84,1]],
     ["   Passenger  -  Pvt. Brown", "\\A3\\ui_f\\data\\map\\vehicleicons\\iconMan_ca.paa", "", [0.62,0.92,0.84,1]]
   ], "sel": 5},
+  "2604": {"text": "3 / 10 AI"},
+  "2605": {"text": "Manpower  27 / 55"},
   "2620": {"rows": [
-    ["Fireteam 1  -  Marshall  (4)", "\\A3\\ui_f\\data\\map\\markers\\nato\\b_mech_inf.paa", "", [0.3,0.62,1,1]],
-    ["Fireteam 2  -  On foot  (2)", "\\A3\\ui_f\\data\\map\\markers\\nato\\b_inf.paa", "", [0.3,0.62,1,1]]
-  ], "sel": 0},
-  "2660": {"text": "Fireteam 1: moving to the destination."},
+    ["Fireteam 1  -  Marshall  (3/10)", "\\A3\\ui_f\\data\\map\\markers\\nato\\b_motor_inf.paa", "", [0.3,0.62,1,1]],
+    ["Fireteam 2  -  On foot  (6/10)", "\\A3\\ui_f\\data\\map\\markers\\nato\\b_inf.paa", "", [0.3,0.62,1,1]],
+    ["Fireteam 3  -  On foot  (4/10)", "\\A3\\ui_f\\data\\map\\markers\\nato\\b_inf.paa", "", [0.3,0.62,1,1]]
+  ], "sel": 1},
+  "2622": {"text": "FIRETEAM 2 MEMBERS  (6/10)"},
+  "2623": {"rows": [
+    ["Team Leader  -  Sgt. Hale", "\\A3\\ui_f\\data\\map\\vehicleicons\\iconMan_ca.paa", "", [0.3,0.62,1,1]],
+    ["Rifleman (Passenger)  -  Pvt. Ortiz", "\\A3\\ui_f\\data\\map\\vehicleicons\\iconMan_ca.paa", "", [0.3,0.62,1,1]],
+    ["Autorifleman (Passenger)  -  Pvt. Kim", "\\A3\\ui_f\\data\\map\\vehicleicons\\iconManMG_ca.paa", "", [0.3,0.62,1,1]],
+    ["Medic (Passenger)  -  Pvt. Adebayo", "\\A3\\ui_f\\data\\map\\vehicleicons\\iconManMedic_ca.paa", "", [0.3,0.62,1,1]],
+    ["Grenadier  -  Pvt. Walsh  (downed)", "\\A3\\ui_f\\data\\map\\vehicleicons\\iconMan_ca.paa", "", [0.3,0.62,1,1]],
+    ["Rifleman (AT)  -  Pvt. Moreau", "\\A3\\ui_f\\data\\map\\vehicleicons\\iconManEngineer_ca.paa", "", [0.3,0.62,1,1]]
+  ], "sel": 1},
+  "2633": {"rows": [["Fireteam 3  (4/10)", "", "", [1,1,1,1]]], "sel": 0},
+  "2660": {"text": "Fireteam 2: boarding the AMV-7 Marshall."},
   "2655": {"text": "Hold fire"}
 }
