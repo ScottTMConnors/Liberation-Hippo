@@ -559,7 +559,7 @@
 			<Czech>Respawn</Czech>
 		</Key>
 		<Key ID="STR_KILL">
-			<Original>Kill Enemy</Original>		
+			<Original>Kill enemy</Original>		
 		</Key>
 		<Key ID="STR_ARSENAL_BOX">
 			<Original>Arsenal box</Original>
@@ -2841,7 +2841,7 @@
 			<Czech>-- EXPORTOVAT ŠABLONU FOB</Czech>
 		</Key>
 		<Key ID="STR_SAVE_CHANGES">
-			<Original>Save and Continue</Original>
+			<Original>Save and continue</Original>
 			<French>Enregistrer et continuer</French>
 			<German>Speichern und Fortfahren</German>
 			<Spanish>Guardar y continuar</Spanish>
@@ -7849,7 +7849,7 @@
 			<Czech>Loď</Czech>
 		</Key>
 		<Key ID="STR_AIRDROP_AIRSUPREMACY">
-			<Original>Air Superiority</Original>
+			<Original>Air superiority</Original>
 			<Russian>Воздух</Russian>
 			<French>Air Suprématie</French>
 			<Japanese>制空権</Japanese>
@@ -7859,7 +7859,7 @@
 			<Czech>Letecká převaha</Czech>
 		</Key>
 		<Key ID="STR_AIRDROP_ARTY">
-			<Original>Artillery Fire</Original>
+			<Original>Artillery fire</Original>
 			<French>Tir d'Artillerie</French>
 			<Chinesesimp>炮火支援</Chinesesimp>
 			<Chinese>炮火支援</Chinese>
@@ -8027,7 +8027,7 @@
 			<Czech>Ammobox</Czech>
 		</Key>
 		<Key ID="STR_ADMIN_CAPTURE">
-			<Original>Capture Sector</Original>
+			<Original>Capture sector</Original>
 			<Chinesesimp>占领区域</Chinesesimp>
 			<Chinese>占领区域</Chinese>
 		</Key>
@@ -8041,7 +8041,7 @@
 			<Czech>Stavět</Czech>
 		</Key>
 		<Key ID="STR_ADMIN_UNBAN">
-			<Original>Unban Player</Original>
+			<Original>Unban player</Original>
 			<Russian>Разбанить Игрока</Russian>
 			<Japanese>プレイヤーのBANを解除</Japanese>
 			<Chinesesimp>解禁玩家</Chinesesimp>
@@ -8072,7 +8072,7 @@
 			<Original>Cleanup</Original>
 		</Key>
 		<Key ID="STR_ADMIN_UNLOCK">
-			<Original>Unlock Vehicle</Original>
+			<Original>Unlock vehicle</Original>
 			<Russian>Открыть машину</Russian>
 			<Japanese>乗り物を開錠する</Japanese>
 			<Chinesesimp>解锁车辆</Chinesesimp>
@@ -8176,7 +8176,7 @@
 
 		<!-- liberation_squad.hpp -->
 		<Key ID="STR_LIKEME">
-			<Original>Like Me</Original>
+			<Original>Like me</Original>
 			<Russian>Как я</Russian>
 			<French>Like Me</French>
 			<Japanese>自装備をユニットに反映</Japanese>
@@ -12933,7 +12933,7 @@
 			<Czech>Název obrany</Czech>
 		</Key>
 		<Key ID="STR_FOB_BUILD">
-			<Original>BUILD</Original>
+			<Original>Build</Original>
 			<French>CONSTRUIRE</French>
 			<German>BAUEN</German>
 			<Spanish>CONSTRUIR</Spanish>
@@ -12981,7 +12981,7 @@
 			<Czech>Seznam sektorů</Czech>
 		</Key>
 		<Key ID="STR_FOB_OFF">
-			<Original>OFF</Original>
+			<Original>Off</Original>
 			<French>OFF</French>
 			<German>Aus</German>
 			<Spanish>Apagado</Spanish>
@@ -14097,7 +14097,7 @@
 			<Czech>-- VSTUPTE DO OBCHODU --</Czech>
 		</Key>
 		<Key ID="STR_SHOP_ACTION1">
-			<Original>SELL</Original>
+			<Original>Sell</Original>
 			<Russian>ПРОДАТЬ</Russian>
 			<French>VENDRE</French>
 			<Chinesesimp>出售</Chinesesimp>
@@ -14106,7 +14106,7 @@
 			<Czech>PRODAT</Czech>
 		</Key>
 		<Key ID="STR_SHOP_ACTION2">
-			<Original>BUY</Original>
+			<Original>Buy</Original>
 			<Russian>КУПИТЬ</Russian>
 			<French>ACHETER</French>
 			<Chinesesimp>购买</Chinesesimp>
@@ -14221,7 +14221,7 @@
 		</Container>
 		<Container name="Dialogs">
 			<Key ID="STR_DALE_Dialogs_Apply">
-				<Original>APPLY</Original>
+				<Original>Apply</Original>
 				<Russian>ПРИМЕНИТЬ</Russian>
 				<Dutch>TOEPASSEN</Dutch>
 				<German>ANWENDEN</German>
@@ -14232,7 +14232,7 @@
 				<Czech>POTVRDIT</Czech>
 			</Key>
 			<Key ID="STR_DALE_Dialogs_Cancel">
-				<Original>CANCEL</Original>
+				<Original>Cancel</Original>
 				<Russian>ОТМЕНА</Russian>
 				<Dutch>ANNULEREN</Dutch>
 				<German>ABBRECHEN</German>
@@ -14463,7 +14463,7 @@
 			<Chinese>武器庫物品</Chinese>
 		</Key>
 		<Key ID="STR_VAM_ARSENAL_VEHICLE">
-			<Original>Put to Cargo</Original>
+			<Original>Put to cargo</Original>
 			<Chinesesimp>装入库存</Chinesesimp>
 			<Chinese>裝入庫存</Chinese>
 		</Key>

@@ -94,7 +94,7 @@ class AI_Logistic {
 		};
 		class SellButton : HPC_ButtonAccent {
 			idc = 120;
-			text = "SELECT";
+			text = "Select";
 			action = "logistic_action = 1";
 			x = ALG_X + ALG_W - ALG_PAD - 14 * HPC_GX; y = ALG_Y + ALG_H - 4.4 * HPC_GY; w = 14 * HPC_GX; h = 3.2 * HPC_GY;
 		};

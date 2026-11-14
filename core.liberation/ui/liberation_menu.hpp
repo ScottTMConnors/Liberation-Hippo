@@ -62,7 +62,7 @@ class liberation_menu {
 		idc = 321;
 		x = MNU_SX + MNU_PAD; y = MNU_Y + 7.6 * HPC_GY; w = MNU_BTN_W; h = MNU_BTN_H;
 		sizeEx = 1.5 * HPC_GY;
-		text = "JOIN THE FIGHT";
+		text = "Join the fight";
 		action = "startgame=1;";
 	};
 	class LabelHelp : LabelStart {
@@ -73,7 +73,7 @@ class liberation_menu {
 		idc = 322;
 		x = MNU_SX + MNU_PAD; y = MNU_Y + 14.6 * HPC_GY; w = MNU_BTN_W; h = MNU_BTN_H;
 		sizeEx = 1.3 * HPC_GY;
-		text = "HOW TO PLAY";
+		text = "How to play";
 		action = "[] execVM 'scripts\client\ui\tutorial_manager.sqf'";
 	};
 	class Footer : HPC_StructuredText {

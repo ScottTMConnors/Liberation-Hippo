@@ -292,16 +292,17 @@ class GREUH_Menu {
 	movingEnable = false;
 	controlsBackground[] = {"GREUH_OuterBG", "GREUH_ListBG"};
 	controls[] = {"GREUH_Accent","GREUH_Header","GREUH_Subtitle","GREUH_Divider","GREUH_ColumnLine","GREUH_SquadLabel",
-	"GREUH_SquadZone","GREUH_PlatoonLabel","GREUH_ViewDistance","GREUH_WorldQuality",
-	"GREUH_Close","GREUH_ButtonWorldVeryLow","GREUH_ButtonWorldLow","GREUH_ButtonWorldNormal","GREUH_ButtonWorldHigh",
-	"GREUH_Slider","GREUH_SliderVD","GREUH_LabelMarkers","GREUH_TeammatesYes","GREUH_TeammatesNo","GREUH_LabelPlatoon",
-	"GREUH_PlatoonYes","GREUH_PlatoonNo","GREUH_LabelPlatoonActive","GREUH_LabelMarkersActive","GREUH_SquadList",
-	"GREUH_ButtonJoin","GREUH_ButtonNew","GREUH_ButtonRename","GREUH_PlatoonZone","GREUH_ViewZone","GREUH_WorldZone",
-	"GREUH_MarkersZone","GREUH_LabelZone","GREUH_Squad_OuterBG","GREUH_Squad_InnerBG","GREUH_Squad_OuterBG_F",
-	"GREUH_Squad_InnerBG_F","GREUH_ButtonName_Rename","GREUH_ButtonName_Abort","GREUH_Squad_TextField","GREUH_LabelVD",
-	"GREUH_SliderVeh","GREUH_LabelVDVeh","GREUH_SliderVDVeh","GREUH_SliderObj","GREUH_LabelVDObj","GREUH_SliderVDObj",
-	"GREUH_ButtonLock","GREUH_LabelNametags","GREUH_NametagsActive","GREUH_NametagsYes","GREUH_NametagsNo",
-	"GREUH_FPSLabel","GREUH_FPSEdit","GREUH_earplug","GREUH_Slider2","GREUH_SliderEP","GREUH_LabelEP","GREUH_Done"};
+	"GREUH_PlatoonLabel","GREUH_ViewDistance","GREUH_WorldQuality","GREUH_Close","GREUH_ButtonWorldVeryLow",
+	"GREUH_ButtonWorldLow","GREUH_ButtonWorldNormal","GREUH_ButtonWorldHigh","GREUH_Slider","GREUH_SliderVD",
+	"GREUH_LabelMarkers","GREUH_TeammatesYes","GREUH_TeammatesNo","GREUH_LabelPlatoon","GREUH_PlatoonYes",
+	"GREUH_PlatoonNo","GREUH_LabelPlatoonActive","GREUH_LabelMarkersActive","GREUH_SquadList","GREUH_ButtonJoin",
+	"GREUH_ButtonNew","GREUH_ButtonRename","GREUH_Squad_OuterBG","GREUH_Squad_InnerBG","GREUH_Squad_OuterBG_F",
+	"GREUH_Squad_InnerBG_F","GREUH_ButtonName_Rename","GREUH_ButtonName_Abort","GREUH_Squad_TextField",
+	"GREUH_LabelVD","GREUH_SliderVeh","GREUH_LabelVDVeh","GREUH_SliderVDVeh","GREUH_SliderObj","GREUH_LabelVDObj",
+	"GREUH_SliderVDObj","GREUH_ButtonLock","GREUH_LabelNametags","GREUH_NametagsActive","GREUH_NametagsYes",
+	"GREUH_NametagsNo","GREUH_FPSLabel","GREUH_FPSEdit","GREUH_earplug","GREUH_Slider2","GREUH_SliderEP",
+	"GREUH_LabelEP","GREUH_Done","GREUH_SquadZone","GREUH_PlatoonZone","GREUH_ViewZone","GREUH_WorldZone",
+	"GREUH_MarkersZone","GREUH_LabelZone"};
 
 	objects[] = {};
 
@@ -349,7 +350,7 @@ class GREUH_Menu {
 		x = 0; y = 0; w = 0; h = 2.6 * GO_GY;
 		default = false;
 		font = "PuristaSemibold";
-		sizeEx = 0.95 * GO_GY;
+		sizeEx = 0.9 * GO_GY;
 		colorText[] = GO_C_TEXT;
 		colorFocused[] = {0.16,0.20,0.21,0.95};
 		colorDisabled[] = {1,1,1,0.3};
@@ -377,7 +378,6 @@ class GREUH_Menu {
 		colorFocused[] = GO_C_ACCENT;
 		colorBackground[] = GO_C_ACCENT;
 		colorBackgroundActive[] = {0.62,0.92,0.84,1};
-		sizeEx = 1.2 * GO_GY;
 	};
 	class GREUH_SliderBase {
 		idc = -1;
@@ -441,7 +441,7 @@ class GREUH_Menu {
 	};
 	class GREUH_Done : GREUH_ButtonAccent {
 		x = GO_X + GO_W - GO_PAD - 10 * GO_GX; y = GO_Y + GO_H - 4.4 * GO_GY; w = 10 * GO_GX; h = 3.2 * GO_GY;
-		text = "DONE";
+		text = "Done";
 		action = "closeDialog 0";
 	};
 
@@ -520,7 +520,6 @@ class GREUH_Menu {
 	class GREUH_ButtonName_Rename : GREUH_ButtonAccent {
 		idc = 525;
 		x = GO_LX + 23.6 * GO_GX; y = GO_Y + 21.5 * GO_GY; w = 5 * GO_GX;
-		sizeEx = 0.95 * GO_GY;
 		text = "Rename";
 		action = "squadname = ctrlText 527";
 	};

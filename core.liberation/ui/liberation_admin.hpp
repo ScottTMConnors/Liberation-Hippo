@@ -126,28 +126,28 @@ class liberation_admin {
 	// ---- Tabs (the active one is highlighted by admin_menu.sqf) ----
 	class TabWorld : HPC_Button {
 		idc = 1650;
-		text = "WORLD";
+		text = "World";
 		tooltip = "Spawn objects, sectors, time and Zeus";
 		action = "HPC_adminPage = 0";
 		x = ADM_LX; y = ADM_Y + 5.3 * HPC_GY; w = ADM_TAB_W; h = 2.6 * HPC_GY;
 	};
 	class TabCampaign : TabWorld {
 		idc = 1651;
-		text = "CAMPAIGN";
+		text = "Campaign";
 		tooltip = "Save, export, import and cleanup";
 		action = "HPC_adminPage = 1";
 		x = ADM_LX + ADM_TAB_S;
 	};
 	class TabPlayers : TabWorld {
 		idc = 1652;
-		text = "PLAYERS";
+		text = "Players";
 		tooltip = "Give resources, teleport to, kick, ban and unban players";
 		action = "HPC_adminPage = 2";
 		x = ADM_LX + 2 * ADM_TAB_S;
 	};
 	class TabTools : TabWorld {
 		idc = 1653;
-		text = "TOOLS";
+		text = "Tools";
 		tooltip = "Personal toggles, mission admin and AI load";
 		action = "HPC_adminPage = 3";
 		x = ADM_LX + 3 * ADM_TAB_S;
@@ -251,7 +251,7 @@ class liberation_admin {
 	class LabelCampaign : HPC_Label {
 		idc = 1662;
 		x = ADM_LX; y = ADM_C; w = ADM_COL; h = 1.4 * HPC_GY;
-		text = "CAMPAIGN";
+		text = "Campaign";
 	};
 	class SaveButton : HPC_Button {
 		idc = 1628;
@@ -300,7 +300,7 @@ class liberation_admin {
 	class LabelPlayer : HPC_Label {
 		idc = 1663;
 		x = ADM_LX; y = ADM_C; w = ADM_PL_W; h = 1.4 * HPC_GY;
-		text = "PLAYERS";
+		text = "Players";
 	};
 	// Every player: online ones first, then saved players who are offline.
 	class PlayerList : HPC_ListBox {
@@ -456,7 +456,7 @@ class liberation_admin {
 	class CancelButton : HPC_Button {
 		idc = 1605;
 		action = "closeDialog 0";
-		text = "EXIT";
+		text = "Exit";
 		x = ADM_X + ADM_W - ADM_PAD - 14 * HPC_GX; y = ADM_Y + ADM_H - 3.9 * HPC_GY; w = 14 * HPC_GX; h = 2.9 * HPC_GY;
 	};
 
@@ -495,7 +495,7 @@ class liberation_admin {
 	class Input_ButtonName_Ok : HPC_ButtonAccent {
 		idc = 525;
 		x = ADM_LX + 2 * ADM_B3S; y = ADM_C + 14.4 * HPC_GY; w = ADM_B3; h = ADM_BH;
-		text = "IMPORT";
+		text = "Import";
 		action = "input_save = ctrlText 527;";
 	};
 

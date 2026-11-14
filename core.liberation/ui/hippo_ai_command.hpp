@@ -66,7 +66,7 @@ class HPC_AICommand {
     };
     class controls {
         class Title : HPC_Heading {
-            text = "COMMAND AI FORCES";
+            text = "Command AI forces";
             x = CMD_X + CMD_PAD; y = CMD_Y + 0.5 * HPC_GY; w = CMD_W - 6 * HPC_GX; h = 2.2 * HPC_GY;
             sizeEx = 1.55 * HPC_GY;
         };
@@ -189,7 +189,7 @@ class HPC_AICommand {
         };
         class Send : HPC_ButtonAccent {
             idc = 130;
-            text = "SEND ORDER";
+            text = "Send order";
             x = CMD_DEST_X; y = CMD_Y + 42.2 * HPC_GY; w = CMD_DEST_W; h = 3.4 * HPC_GY;
             action = "['send'] call HPC_fnc_cmdAction";
             tooltip = "Send the selected groups to the selected destination.";

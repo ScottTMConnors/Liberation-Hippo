@@ -118,7 +118,7 @@ class liberation_admin_a3w {
 	};
 	class ApplyButton : HPC_ButtonAccent {
 		idc = 1610;
-		text = "APPLY";
+		text = "Apply";
 		onButtonClick = "apply_a3w_conf = 1";
 		x = A3A_X + A3A_W - A3A_PAD - 14 * HPC_GX; y = A3A_Y + A3A_H - 3.9 * HPC_GY; w = 14 * HPC_GX; h = 2.9 * HPC_GY;
 	};

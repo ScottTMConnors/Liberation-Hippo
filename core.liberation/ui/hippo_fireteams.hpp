@@ -212,7 +212,7 @@ class HPC_Fireteams {
         };
         class CloseButton : HPC_ButtonAccent {
             idc = 2662;
-            text = "CLOSE";
+            text = "Close";
             x = FT_RIGHT_X; y = FT_Y + 40.2 * HPC_GY; w = FT_RIGHT_W; h = 3.4 * HPC_GY;
             action = "(uiNamespace getVariable ['HPC_FireteamsDisplay',displayNull]) closeDisplay 1";
         };

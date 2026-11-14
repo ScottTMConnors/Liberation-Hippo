@@ -90,7 +90,7 @@ class liberation_deploy {
 	class DeployButton : HPC_ButtonAccent {
 		idc = 202;
 		x = DEP_X + DEP_PAD; y = DEP_Y + DEP_H - 4.4 * HPC_GY; w = DEP_W - 2 * DEP_PAD; h = 3.2 * HPC_GY;
-		text = "DEPLOY";
+		text = "Deploy";
 		action = "deploy = 1";
 	};
 	class DeployMap : kndr_MapControl {
@@ -104,7 +104,7 @@ class liberation_deploy {
 		x = DEP_MAP_X + DEP_MAP_W - 7 * HPC_GX; y = DEP_MAP_Y + 0.5 * HPC_GY; w = 6.5 * HPC_GX; h = 1.7 * HPC_GY;
 		sizeEx = 0.85 * HPC_GY;
 		colorBackground[] = {0.035,0.045,0.05,0.85};
-		text = "EXPAND MAP";
+		text = "Expand map";
 		action = "fullmap = fullmap + 1;";
 	};
 };

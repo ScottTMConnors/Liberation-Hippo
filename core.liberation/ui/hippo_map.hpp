@@ -65,7 +65,7 @@ class HPC_MapPanelBody : HPC_StructuredText {
 };
 class HPC_MapCommandButton : HPC_ButtonAccent {
 	x = HMP_X + HMP_PAD; y = HMP_BODY_Y + 18.4 * HPC_GY; w = HMP_IW; h = 2.6 * HPC_GY;
-	text = "COMMAND AI FORCES";
+	text = "Command AI forces";
 };
 class HPC_MapTooltipBg : HPC_Text {
 	x = 0; y = 0; w = HMP_TIP_W + 1.4 * HPC_GX; h = 7 * HPC_GY;
@@ -107,9 +107,9 @@ class HPC_MapOverlayPreview {
 		class Title : HPC_MapPanelTitle { idc = 77931; };
 		class Subtitle : HPC_MapPanelSubtitle { idc = 77932; };
 		class Divider : HPC_MapPanelDivider { idc = 77933; };
-		class Forces : HPC_MapToggle { idc = 77902; text = "FORCES"; };
-		class Intel : HPC_MapToggle { idc = 77905; text = "INTEL"; x = HMP_X + HMP_PAD + HMP_TW + 0.4 * HPC_GX; };
-		class Shots : HPC_MapToggle { idc = 77903; text = "SHOTS"; x = HMP_X + HMP_PAD + 2 * (HMP_TW + 0.4 * HPC_GX); };
+		class Forces : HPC_MapToggle { idc = 77902; text = "Forces"; };
+		class Intel : HPC_MapToggle { idc = 77905; text = "Intel"; x = HMP_X + HMP_PAD + HMP_TW + 0.4 * HPC_GX; };
+		class Shots : HPC_MapToggle { idc = 77903; text = "Shots"; x = HMP_X + HMP_PAD + 2 * (HMP_TW + 0.4 * HPC_GX); };
 		class Body : HPC_MapPanelBody { idc = 77901; };
 		class Command : HPC_MapCommandButton { idc = 77904; };
 		class TooltipBg : HPC_MapTooltipBg { idc = 77922; };

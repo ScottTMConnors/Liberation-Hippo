@@ -213,12 +213,12 @@ while { dialog && alive player && deploy == 0} do {
 			_map ctrlSetPosition [_mx, _my, _mw, _mh];
 			_map_frame ctrlSetPosition [_mx - 0.3 * _gx, _my - 0.3 * _gy, _mw + 0.6 * _gx, _mh + 0.6 * _gy];
 			_map_button ctrlSetPosition [_mx + _mw - (_button_small select 2) - 0.5 * _gx, _my + 0.5 * _gy, _button_small select 2, _button_small select 3];
-			_map_button ctrlSetText "COLLAPSE MAP";
+			_map_button ctrlSetText "Collapse map";
 		} else {
 			_map ctrlSetPosition _map_small;
 			_map_frame ctrlSetPosition _frame_small;
 			_map_button ctrlSetPosition _button_small;
-			_map_button ctrlSetText "EXPAND MAP";
+			_map_button ctrlSetText "Expand map";
 		};
 		{ _x ctrlCommit 0 } forEach [_map, _map_frame, _map_button];
 		_oldsel = -1;

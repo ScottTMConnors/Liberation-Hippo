@@ -380,7 +380,7 @@ class MagRepack_Dialog_Main
 		class MR_ButtonOptions : HPC_ButtonAccent
 		{
 			idc = 2400;
-			text = "DONE";
+			text = "Done";
 			action = "closeDialog 0;";
 			x = MGR_X(MGR_W - 13.5); y = MGR_Y(32.4); w = MGR_GW(12); h = MGR_GH(2.8);
 		};

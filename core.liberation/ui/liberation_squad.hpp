@@ -212,7 +212,7 @@ class liberation_squad {
 	class ConfirmButton : HPC_ButtonAccent {
 		idc = 213;
 		x = SQ_RX + SQ_RW - 10 * HPC_GX; y = SQ_Y + SQ_H - 4.4 * HPC_GY; w = 10 * HPC_GX; h = 3.2 * HPC_GY;
-		text = "DONE";
+		text = "Done";
 		action = "closeDialog 0";
 	};
 
