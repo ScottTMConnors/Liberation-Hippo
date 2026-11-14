@@ -84,8 +84,8 @@ if ( _alive_crew_count == 0 ) then {
 [_vehicle_list] spawn cleanMissionVehicles;
 
 sleep 5;
-{ deleteVehicle _x } forEach units _grppatrol;
-{ deleteVehicle _x } forEach units _grpsentry;
+{ [_x] call HPC_fnc_deleteUnit } forEach units _grppatrol;
+{ [_x] call HPC_fnc_deleteUnit } forEach units _grpsentry;
 deleteVehicle _helowreck;
 deleteVehicle _helofire;
 

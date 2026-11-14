@@ -56,8 +56,8 @@ if (_success) then {
 
 [_vehicle_list] spawn cleanMissionVehicles;
 sleep 5;
-{ deleteVehicle _x } forEach units _grppatrol;
-{ deleteVehicle _x } forEach units _grpsentry;
+{ [_x] call HPC_fnc_deleteUnit } forEach units _grppatrol;
+{ [_x] call HPC_fnc_deleteUnit } forEach units _grpsentry;
 
 sleep 60;
 GRLIB_secondary_in_progress = -1;

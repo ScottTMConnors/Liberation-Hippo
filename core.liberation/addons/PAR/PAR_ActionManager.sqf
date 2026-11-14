@@ -10,7 +10,7 @@ HPC_PAR_nearGrave = objNull;
 	HPC_PAR_nearGrave = ([_objs, "grave", PAR_graves, 2.5] call HPC_fnc_nearOf) param [0, objNull];
 }] call HPC_fnc_nearRegister;
 addMissionEventHandler ["Draw3D",{
-	if (!isNull HPC_PAR_nearGrave) then {
+	if (!isNull HPC_PAR_nearGrave && {player distance HPC_PAR_nearGrave < 3}) then {
 		private _grave = HPC_PAR_nearGrave;
 		private _grave_pos = ASLToAGL getPosASL _grave;
 		drawIcon3D [getMissionPath "res\skull.paa", [1,1,1,1], _grave_pos vectorAdd [0, 0, 1], 2, 2, 0, (_grave getVariable ["PAR_grave_message", ""]), 2, 0.05, "PuristaMedium", "center"];

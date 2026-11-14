@@ -16,8 +16,8 @@ if (floor random 100 > 50 && count militia_vehicles > 0) then {
 	private _veh_type = selectRandom militia_vehicles;
 	_opfor_veh = [_sector_pos, _veh_type, 3, GRLIB_side_enemy, "militia", true, true] call F_libSpawnVehicle;
 	_opfor_grp = group driver _opfor_veh;
+	if (isNull _opfor_grp) exitWith {};	// leaves this branch; the null check below ends the patrol
 	[_opfor_grp, _sector_pos, _opfor_veh] spawn add_civ_waypoints_veh;
-	if (isNull _opfor_grp) exitWith {};
 	diag_log format ["--- LRX start Enemy Patrol %1 (%2)", _opfor_grp, _veh_type];
 } else {
 	_opfor_grp = [_sector_pos, (4 + floor random 3), "militia", false] call createCustomGroup;

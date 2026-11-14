@@ -65,6 +65,7 @@ class liberation_airdrop {
 		idc = 1607;
 		x = AIR_X + AIR_PAD; y = AIR_Y + 7 * HPC_GY; w = AIR_BTN_W; h = 2.6 * HPC_GY;
 		text = $STR_AIRDROP_TAXI;
+		tooltip = "Call a helicopter taxi to your position. Cost and cooldown are shown beside the button.";
 		action = "air_type=10;do_action=1";
 	};
 	class LabelTaxi : AirRowLabel {
@@ -79,6 +80,7 @@ class liberation_airdrop {
 		idc = 1600;
 		x = AIR_X + AIR_PAD; y = AIR_Y + 12 * HPC_GY; w = AIR_BTN_W; h = 2.6 * HPC_GY;
 		text = $STR_AIRDROP_LIGHT;
+		tooltip = "Drop a light vehicle at your position by parachute.";
 		action = "air_type=1;do_action=1";
 	};
 	class LabelLight : AirRowLabel {
@@ -89,6 +91,7 @@ class liberation_airdrop {
 		idc = 1601;
 		x = AIR_X + AIR_PAD; y = AIR_Y + 15 * HPC_GY; w = AIR_BTN_W; h = 2.6 * HPC_GY;
 		text = $STR_AIRDROP_LIGHTPLUS;
+		tooltip = "Drop an armed light vehicle at your position by parachute.";
 		action = "air_type=2;do_action=1";
 	};
 	class LabelLight2 : AirRowLabel {
@@ -99,6 +102,7 @@ class liberation_airdrop {
 		idc = 1602;
 		x = AIR_X + AIR_PAD; y = AIR_Y + 18 * HPC_GY; w = AIR_BTN_W; h = 2.6 * HPC_GY;
 		text = $STR_AIRDROP_ARMORED;
+		tooltip = "Drop an armored vehicle at your position by parachute.";
 		action = "air_type=3;do_action=1";
 	};
 	class LabelMed : AirRowLabel {
@@ -109,6 +113,7 @@ class liberation_airdrop {
 		idc = 1603;
 		x = AIR_X + AIR_PAD; y = AIR_Y + 21 * HPC_GY; w = AIR_BTN_W; h = 2.6 * HPC_GY;
 		text = $STR_AIRDROP_TRUCK;
+		tooltip = "Drop a supply truck at your position by parachute.";
 		action = "air_type=4;do_action=1";
 	};
 	class LabelSup : AirRowLabel {
@@ -119,6 +124,7 @@ class liberation_airdrop {
 		idc = 1604;
 		x = AIR_X + AIR_PAD; y = AIR_Y + 24 * HPC_GY; w = AIR_BTN_W; h = 2.6 * HPC_GY;
 		text = $STR_AIRDROP_APC;
+		tooltip = "Drop an APC at your position by parachute.";
 		action = "air_type=5;do_action=1";
 	};
 	class LabelHeavy : AirRowLabel {
@@ -129,6 +135,7 @@ class liberation_airdrop {
 		idc = 1606;
 		x = AIR_X + AIR_PAD; y = AIR_Y + 27 * HPC_GY; w = AIR_BTN_W; h = 2.6 * HPC_GY;
 		text = $STR_AIRDROP_BOAT;
+		tooltip = "Drop a boat at your position by parachute.";
 		action = "air_type=6;do_action=1";
 	};
 	class LabelBoat : AirRowLabel {
@@ -143,6 +150,7 @@ class liberation_airdrop {
 		idc = 1605;
 		x = AIR_X + AIR_PAD; y = AIR_Y + 32 * HPC_GY; w = AIR_BTN_W; h = 2.6 * HPC_GY;
 		text = $STR_AIRDROP_AIRSUPREMACY;
+		tooltip = "Call an air strike on the enemy near your position.";
 		action = "air_type=7;do_action=1";
 	};
 	class LabelAir : AirRowLabel {
@@ -153,6 +161,7 @@ class liberation_airdrop {
 		idc = 1608;
 		x = AIR_X + AIR_PAD; y = AIR_Y + 35 * HPC_GY; w = AIR_BTN_W; h = 2.6 * HPC_GY;
 		text = $STR_AIRDROP_ARTY;
+		tooltip = "Call an artillery strike near your position.";
 		action = "air_type=8;do_action=1";
 	};
 	class LabelArty : AirRowLabel {
@@ -163,6 +172,7 @@ class liberation_airdrop {
 		idc = 1610;
 		x = AIR_X + AIR_W - AIR_PAD - 12 * HPC_GX; y = AIR_Y + AIR_H - 4.2 * HPC_GY; w = 12 * HPC_GX; h = 3.0 * HPC_GY;
 		text = $STR_AIRDROP_CANCEL;
+		tooltip = "Close without ordering anything.";
 		action = "closeDialog 0";
 		default = true;
 	};

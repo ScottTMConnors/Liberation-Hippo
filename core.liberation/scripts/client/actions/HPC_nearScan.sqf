@@ -11,8 +11,10 @@ HPC_nearRadius = 50;
 waitUntil {sleep 1; !isNil "GRLIB_player_spawned"};
 private _next = 0;
 while {true} do {
+	if (!GRLIB_player_spawned) then { HPC_PAR_nearGrave = objNull };
 	waitUntil {sleep 1; GRLIB_player_spawned};
-	private _objs = nearestObjects [player, [], HPC_nearRadius];
+	// the first pass registers the handlers' class lists; later passes search only those
+	private _objs = if (HPC_nearClasses isEqualTo []) then {[]} else {nearestObjects [player, HPC_nearClasses, HPC_nearRadius]};
 	{
 		private _handler = _x;
 		[_objs] call _handler;

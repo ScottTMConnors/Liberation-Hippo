@@ -312,7 +312,6 @@
 		 * Seuls les joueurs et les IA commandées par les joueurs (locales) seront protégés.
 		 * Les IA n'étant pas commandées par un joueur ne seront pas protégées, ce qui est un moindre mal.
 		 */
-		//[] spawn compileFinal preprocessFileLineNumbers "R3F_LOG\systeme_protection_blessures.sqf";
 
 		waitUntil {!(isNull (findDisplay 46))};
     	diag_log "-------- R3F Logistics Initialized --------";

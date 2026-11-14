@@ -100,8 +100,8 @@ HPC_vehWreckClasses = _wreck_class;
 	private _neardead = allDeadMen select {(_x distance2D player < _searchradius) && {isNil {_x getVariable "GRLIB_dead_action"}} && {!([_x, "LHD", GRLIB_sector_size, false] call F_check_near)}};
 	{
 		_unit = _x;
-		_unit addAction [([localize "STR_REMOVE_BODY", "", "info"] call HPC_fnc_actionTitle),{ [_this select 0] remoteExec ["hideBody", _this select 0]},"",100,false,true,"","", GRLIB_ActionDist_3];
-		_unit addAction [([localize "STR_LOOT_BODY", "", "info"] call HPC_fnc_actionTitle),"scripts\client\actions\do_loot.sqf","",101,false,true,"","(loadAbs _target > 120)",GRLIB_ActionDist_3];
+		_unit addAction [([localize "STR_REMOVE_BODY", "", "info"] call HPC_fnc_actionTitle),{ [_this select 0] remoteExec ["hideBody", _this select 0]},"",100,false,true,"","GRLIB_player_is_menuok", GRLIB_ActionDist_3];
+		_unit addAction [([localize "STR_LOOT_BODY", "", "info"] call HPC_fnc_actionTitle),"scripts\client\actions\do_loot.sqf","",101,false,true,"","GRLIB_player_is_menuok && {loadAbs _target > 120}",GRLIB_ActionDist_3];
 		_unit setVariable ["GRLIB_dead_action", true];
 	} forEach _neardead;
 
@@ -114,8 +114,8 @@ HPC_vehWreckClasses = _wreck_class;
 			"<t color='#FFFF00'>" + localize "STR_NEUTRALIZE" + "</t>",
 			"\a3\ui_f_oldman\data\IGUI\Cfg\holdactions\destroy_ca.paa",
 			"\a3\ui_f_oldman\data\IGUI\Cfg\holdactions\destroy_ca.paa",
-			"!(isActionMenuVisible) && alive _target && _this distance2D _target < 3 && count (crew _target) == 0",
-			"_caller distance2D _target < 3 && count (crew _target) == 0",
+			"!(isActionMenuVisible) && alive _target && _this distance2D _target < 3 && count (crew _target) == 0 && {_target getVariable ['GRLIB_vehicle_owner', ''] == 'server'}",
+			"_caller distance2D _target < 3 && count (crew _target) == 0 && {_target getVariable ['GRLIB_vehicle_owner', ''] == 'server'}",
 			{ },
 			{ },
 			{ [player, _target] remoteExec ["destroy_static_remote_call", 2] },

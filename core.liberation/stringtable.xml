@@ -26,42 +26,6 @@
 			<Portuguese>Com o poder da Liberdade e da Democracia, você deve libertar este país da opressão da OPFOR.</Portuguese>
 			<Czech>S mocí svobody a demokracie osvobodíte tuto zemi od útlaku.</Czech>
 		</Key>
-		<Key ID="STR_Deploy_OnPoint">
-			<Original>Deploy</Original>
-			<French>Déploiement</French>
-			<German>Bereitstellen</German>
-			<Spanish>Despliegue</Spanish>
-			<Russian>Развёртывание</Russian>
-			<Chinesesimp>部署</Chinesesimp>
-			<Chinese>部署</Chinese>
-			<Japanese>出撃</Japanese>
-			<Portuguese>Posicionar</Portuguese>
-			<Czech>Nasadit</Czech>
-		</Key>
-		<Key ID="STR_Deploy_InProgress">
-			<Original>Deployment in progress...</Original>
-			<French>Déploiement en cours ...</French>
-			<German>Bereitstellung in Arbeit</German>
-			<Spanish>Despliegue en curso ...</Spanish>
-			<Russian>Развёртывание в процессе ...</Russian>
-			<Chinesesimp>正在部署中...</Chinesesimp>
-			<Chinese>正在部署中...</Chinese>
-			<Japanese>出撃中...</Japanese>
-			<Portuguese>Posicionamento em progresso...</Portuguese>
-			<Czech>Probíhá nasazení ...</Czech>
-		</Key>
-		<Key ID="STR_CLOSE">
-			<Original>Close</Original>
-			<French>Fermer</French>
-			<German>Schliessen</German>
-			<Spanish>Cerca</Spanish>
-			<Russian>Закрыть</Russian>
-			<Chinesesimp>关闭</Chinesesimp>
-			<Chinese>關閉</Chinese>
-			<Japanese>閉じる</Japanese>
-			<Portuguese>Perto</Portuguese>
-			<Czech>Zavřít</Czech>
-		</Key>
 		<Key ID="STR_REVIVE_LABEL">
 			<Original>YOU ARE WOUNDED</Original>
 			<French>VOUS ETES BLESSE</French>
@@ -138,18 +102,6 @@
 			<Portuguese>Municao</Portuguese>
 			<Czech>Munice</Czech>
 		</Key>
-		<Key ID="STR_UNITCAP">
-			<Original>Unit cap</Original>
-			<French>Limite</French>
-			<German>Einheitenbegrenzung</German>
-			<Spanish>Límite de unidades</Spanish>
-			<Russian>Мобилизованных</Russian>
-			<Chinesesimp>单位上限</Chinesesimp>
-			<Chinese>單位上限</Chinese>
-			<Japanese>ユニット上限</Japanese>
-			<Portuguese>Limite da unidade</Portuguese>
-			<Czech>Limit Jednotky</Czech>
-		</Key>
 		<Key ID="STR_FUEL">
 			<Original>Fuel</Original>
 			<French>Carburant</French>
@@ -173,18 +125,6 @@
 			<Japanese>失血死まで %1 秒</Japanese>
 			<Portuguese>Sangramento em %1 segundos</Portuguese>
 			<Czech>Krvácení %1 sekund</Czech>
-		</Key>
-		<Key ID="STR_BLEEDOUT_STABILIZED">
-			<Original>Stabilized</Original>
-			<French>Stabilisé</French>
-			<German>Stabilisiert</German>
-			<Spanish>Estabilizado</Spanish>
-			<Russian>Стабильно</Russian>
-			<Chinesesimp>稳定</Chinesesimp>
-			<Chinese>穩定</Chinese>
-			<Japanese>安定</Japanese>
-			<Portuguese>Estabilizado</Portuguese>
-			<Czech>Stabilizovaný</Czech>
 		</Key>
 		<Key ID="STR_ROTATION">
 			<Original>Rotate</Original>
@@ -313,18 +253,6 @@
 			<Japanese>%1 個のオブジェクトがビルド予定物の %2 メートル内に存在します.</Japanese>
 			<Portuguese>ha %1 objecto(s) dentro de %2 metros da posicao do objecto.</Portuguese>
 			<Czech>existují %1 object(s) v rozmezí %2 metrů polohy objektu.</Czech>
-		</Key>
-		<Key ID="STR_PLACEMENT_POSSIBLE">
-			<Original>This position is valid.</Original>
-			<French>Cette position est valide.</French>
-			<German>Diese Position ist gültig.</German>
-			<Spanish>Esta posición es válida</Spanish>
-			<Russian>Это место подходит.</Russian>
-			<Chinesesimp>可安置于此处。</Chinesesimp>
-			<Chinese>可安置於此處。</Chinese>
-			<Japanese>ビルド可能です。</Japanese>
-			<Portuguese>Esta posição é válida.</Portuguese>
-			<Czech>Tato pozice je platná.</Czech>
 		</Key>
 		<Key ID="STR_ARSENAL_OPEN">
 			<Original>-- ARSENAL</Original>
@@ -469,11 +397,6 @@
 			<Portuguese>Não é possível posicionar um novo FOB aqui, você deve estar a pelo menos %1 metros de distância de cada zona capturável. A zona mais próxima fica a %2 metros de distância.</Portuguese>
 			<Czech>Zde nelze postavit nový FOB, musíte být alespoň %1 metrů od každé zachytitelné zóny. Nejbližší FOB je %2 metrů daleko.</Czech>
 		</Key>
-		<Key ID="STR_FOB_BUILDING_CAPTURE_SECTOR">
-			<Original>&lt;t align='center'&gt;Replace sector "%1" with a new FOB?&lt;br/&gt;This removes the sector from the campaign.&lt;/t&gt;</Original>
-			<Chinesesimp>&lt;t align='center'&gt;用新的 FOB 替换 "%1"&lt;br/&gt;该区域将被从游戏中删除！&lt;br/&gt;你确定吗？&lt;/t&gt;</Chinesesimp>
-			<Chinese>&lt;t align='center'&gt;用新的 FOB 替換 "%1"&lt;br/&gt;該區域將被從遊戲中删除！&lt;br/&gt;你確定嗎？&lt;/t&gt;</Chinese>
-		</Key>
 		<Key ID="STR_BUILD_ERROR_WATER">
 			<Original>Cannot build on water.</Original>
 			<French>Impossible de construire sur l'eau.</French>
@@ -573,30 +496,6 @@
 			<Portuguese>Caixa do Arsenal</Portuguese>
 			<Czech>Arzenál box</Czech>
 		</Key>
-		<Key ID="STR_DEPLOY_TITLE">
-			<Original>DEPLOYMENT</Original>
-			<French>DEPLOIEMENT</French>
-			<German>EINSATZ</German>
-			<Spanish>DESPLIEGUE</Spanish>
-			<Russian>ДИСЛОКАЦИЯ</Russian>
-			<Chinesesimp>部署</Chinesesimp>
-			<Chinese>部署</Chinese>
-			<Japanese>出撃</Japanese>
-			<Portuguese>POSIÇÃO</Portuguese>
-			<Czech>VÝSADEK</Czech>
-		</Key>
-		<Key ID="STR_DEPLOY_BUTTON">
-			<Original>Deploy</Original>
-			<French>Déploiment</French>
-			<German>Einsetzen</German>
-			<Spanish>Desplegar</Spanish>
-			<Russian>РАЗМЕСТИТЬ</Russian>
-			<Chinesesimp>部署</Chinesesimp>
-			<Chinese>部署</Chinese>
-			<Japanese>出撃</Japanese>
-			<Portuguese>Posicionar</Portuguese>
-			<Czech>Výsadek</Czech>
-		</Key>
 		<Key ID="STR_DEPLOY_ACTION">
 			<Original>-- REDEPLOY</Original>
 			<French>-- REDEPLOIEMENT</French>
@@ -608,18 +507,6 @@
 			<Japanese>-- 他基地に移動 --</Japanese>
 			<Portuguese>-- REPOSICIONAR</Portuguese>
 			<Czech>-- ZNOVUNASAZENÍ --</Czech>
-		</Key>
-		<Key ID="STR_BUILD_CREW">
-			<Original>Build with crew</Original>
-			<French>Construire (Equipage)</French>
-			<German>Bauen (Besatzung)</German>
-			<Spanish>Construir (Equipo)</Spanish>
-			<Russian>Создать (Экипаж)</Russian>
-			<Chinesesimp>建造 (附带乘员)</Chinesesimp>
-			<Chinese>建造 (附帶乘員)</Chinese>
-			<Japanese>ビルド（人員）</Japanese>
-			<Portuguese>Construir (Tripulação)</Portuguese>
-			<Czech>Stavět (Osádka)</Czech>
 		</Key>
 		<Key ID="STR_LIGHT_RIFLE_SQUAD">
 			<Original>Light Rifle Squad</Original>
@@ -669,18 +556,6 @@
 			<Portuguese>Esquadrão AA</Portuguese>
 			<Czech>AA Četa</Czech>
 		</Key>
-		<Key ID="STR_RECON_SQUAD">
-			<Original>Recon Squad</Original>
-			<French>Escouade Reco</French>
-			<German>Aufklaerungstrupp</German>
-			<Spanish>Escuadra de reconocimiento</Spanish>
-			<Russian>Отряд Разведчиков</Russian>
-			<Chinesesimp>侦察小队</Chinesesimp>
-			<Chinese>偵察小隊</Chinese>
-			<Japanese>偵察小隊</Japanese>
-			<Portuguese>Esquadrão de Reconhecimento</Portuguese>
-			<Czech>Průzkomní Četa</Czech>
-		</Key>
 		<Key ID="STR_MIXED_SQUAD">
 			<Original>Mixed anti-air/anti-armor squad</Original>
 			<French>Escouade Mixte AA/AC</French>
@@ -704,24 +579,6 @@
 			<Japanese>セーブデータ消去</Japanese>
 			<Portuguese>Limpe o jogo salvo</Portuguese>
 			<Czech>Vymazat rozehranou hru</Czech>
-		</Key>
-		<Key ID="STR_WIPE_TITLE_2">
-			<Original>Confirm campaign deletion</Original>
-			<French>Confirmer : Effacer la sauvegarde</French>
-			<German>Bestätige: Spielstand loeschen</German>
-			<Spanish>Confirmar : Borrar partida guardada</Spanish>
-			<Russian>Подтвердить : Удалить сохранённый прогресс</Russian>
-			<Chinesesimp>确认: 清除存档</Chinesesimp>
-			<Chinese>確認: 清除存檔</Chinese>
-			<Japanese>確認：セーブデータ消去</Japanese>
-			<Portuguese>Limpe o jogo salvo</Portuguese>
-			<Czech>Potvrdit: vymazat uloženou hru</Czech>
-		</Key>
-		<Key ID="STR_WIPE_TITLE_3">
-			<Original>Reset mission settings</Original>
-			<French>RAZ des paramètres de la mission</French>
-			<Chinesesimp>重置任务参数</Chinesesimp>
-			<Chinese>重置任务参数</Chinese>
 		</Key>
 		<Key ID="STR_WIPE_CONTEXT">
 			<Original>Reset player loadouts, squads, garages and arsenals</Original>
@@ -753,18 +610,6 @@
 			<Portuguese>!! O JOGO SALVO SERÁ EXCLUÍDO, NÃO HÁ RECUPERAÇÃO POSSÍVEL!!</Portuguese>
 			<Czech>!! ULOŽENÁ HRA BUDE VYMAZANÁ, NENÍ MOŽNÉ OBNOVENÍ !!</Czech>
 		</Key>
-		<Key ID="STR_UNFLIP">
-			<Original>-- UNFLIP</Original>
-			<French>-- RETOURNER</French>
-			<German>-- UMDREHEN</German>
-			<Spanish>-- RECOLOCAR VEHÍCULO</Spanish>
-			<Russian>-- ПЕРЕВЕРНУТЬ</Russian>
-			<Chinesesimp>-- 翻正 --</Chinesesimp>
-			<Chinese>-- 翻正 --</Chinese>
-			<Japanese>-- ひっくり返す --</Japanese>
-			<Portuguese>-- DESVIRAR</Portuguese>
-			<Czech>-- PŘEVRÁTIT</Czech>
-		</Key>
 		<Key ID="STR_GRID">
 			<Original>-- Grid mode</Original>
 			<French>-- Mode grille</French>
@@ -788,18 +633,6 @@
 			<Japanese>-- 捕らえる --</Japanese>
 			<Portuguese>-- CAPTURA</Portuguese>
 			<Czech>-- ZAJMOUNT</Czech>
-		</Key>
-		<Key ID="STR_SQUAD_MEMBER">
-			<Original>Squad member</Original>
-			<French>Membre d'escouade</French>
-			<German>Truppenmitglieder</German>
-			<Spanish>Miembro de escuadra</Spanish>
-			<Russian>Член отряда</Russian>
-			<Chinesesimp>班组成员</Chinesesimp>
-			<Chinese>班組成員</Chinese>
-			<Japanese>小隊員</Japanese>
-			<Portuguese>Membro do esquadrão</Portuguese>
-			<Czech>Člen čety</Czech>
 		</Key>
 		<Key ID="STR_SPAWN_NEAR">
 			<Original>Near</Original>
@@ -1684,18 +1517,6 @@
 			<Portuguese>== OPÇÕES DE MISSÃO ==</Portuguese>
 			<Czech>== MOŽNOSTI MISE ==</Czech>
 		</Key>
-		<Key ID="STR_PARAMS_TECHNICALOPTIONS">
-			<Original>== TECHNICAL OPTIONS ==</Original>
-			<French>== OPTIONS TECHNIQUES ==</French>
-			<German>== Technische Einstellungen</German>
-			<Spanish>== OPCIONES TÉCNICAS ==</Spanish>
-			<Russian>== ТЕХНИЧЕСКИЕ ОПЦИИ ==</Russian>
-			<Chinesesimp>== 难度选项 ==</Chinesesimp>
-			<Chinese>== 难度選項 ==</Chinese>
-			<Japanese>== テクニカルオプション ==</Japanese>
-			<Portuguese>== OPÇÕES DE MISSÃO ==</Portuguese>
-			<Czech>== TECHNICKÉ MOŽNOSTI ==</Czech>
-		</Key>
 		<Key ID="STR_PARAMS_DAYDURATION">
 			<Original>Daytime speed multiplier</Original>
 			<Russian>Продолжительность дня (множитель)</Russian>
@@ -1872,54 +1693,6 @@
 			<Portuguese>Energia</Portuguese>
 			<Czech>Výdrž</Czech>
 		</Key>
-		<Key ID="STR_PARAMS_FATIGUE1">
-			<Original>Reduced - 4 times more stamina</Original>
-			<French>Réduits - 4 fois plus d'endurance</French>
-			<German>Reduziert - 4-mal mehr Ausdauer</German>
-			<Spanish>Reducido - 4 veces más estamina</Spanish>
-			<Russian>Понизить - в 4 раза усталость</Russian>
-			<Chinesesimp>削弱 - 4倍体力</Chinesesimp>
-			<Chinese>削弱 - 4倍體力</Chinese>
-			<Japanese>削減 - 4倍スタミナ</Japanese>
-			<Portuguese>Reduzido - 4 vezes mais energia</Portuguese>
-			<Czech>Snížená - 4krát větší výdrž</Czech>
-		</Key>
-		<Key ID="STR_PARAMS_FATIGUE2">
-			<Original>Reduced - 3 times more stamina</Original>
-			<French>Réduits - 3 fois plus d'endurance</French>
-			<German>Reduziert - 3-mal mehr Ausdauer</German>
-			<Spanish>Reducido - 3 veces más estamina</Spanish>
-			<Russian>Понизить - в 3 раза усталость</Russian>
-			<Chinesesimp>削弱 - 3倍体力</Chinesesimp>
-			<Chinese>削弱 - 3倍體力</Chinese>
-			<Japanese>削減 - 3倍スタミナ</Japanese>
-			<Portuguese>Reduzido - 3 vezes mais energia</Portuguese>
-			<Czech>Snížená – 3x větší výdrž</Czech>
-		</Key>
-		<Key ID="STR_PARAMS_FATIGUE3">
-			<Original>Reduced - 2 times more stamina</Original>
-			<French>Réduits - 2 fois plus d'endurance</French>
-			<German>Reduziert - 2-mal mehr Ausdauer</German>
-			<Spanish>Reducido - 2 veces más estamina</Spanish>
-			<Russian>Понизить - в 2 раза усталость</Russian>
-			<Chinesesimp>削弱 - 2倍体力</Chinesesimp>
-			<Chinese>削弱 - 2倍體力</Chinese>
-			<Japanese>削減 - 2倍スタミナ</Japanese>
-			<Portuguese>Reduzido - 2 vezes mais energia</Portuguese>
-			<Czech>Snížená – 2x větší výdrž</Czech>
-		</Key>
-		<Key ID="STR_PARAMS_FATIGUE4">
-			<Original>Reduced - 1.5 times more stamina</Original>
-			<French>Réduits - 1,5 fois plus d'endurance</French>
-			<German>Reduziert - 1,5-mal mehr Ausdauer</German>
-			<Spanish>Reducido - 1,5 veces más estamina</Spanish>
-			<Russian>Понизить - в 1.5 раза усталость</Russian>
-			<Chinesesimp>削弱 - 1.5倍体力</Chinesesimp>
-			<Chinese>削弱 - 1.5倍體力</Chinese>
-			<Japanese>削減 - 1.5倍スタミナ</Japanese>
-			<Portuguese>Reduzido - 1.5 vezes mais energia</Portuguese>
-			<Czech>Snížená – 1,5krát větší výdrž</Czech>
-		</Key>
 		<Key ID="STR_PARAMS_PAR_REVIVE">
 			<Original>Revive rules</Original>
 		</Key>
@@ -2043,18 +1816,6 @@
 			<Chinesesimp>用户自定义</Chinesesimp>
 			<Chinese>用戶自定義</Chinese>
 		</Key>
-		<Key ID="STR_PARAMS_FIRSTFOB">
-			<Original>Start the campaign with the first FOB already built</Original>
-			<French>Commencer la campagne avec une FOB déjà construite</French>
-			<German>Starte die Kampagne mit einer bereits gebauten FOB</German>
-			<Spanish>Comenzar la campaña con la primera FOB ya construída</Spanish>
-			<Russian>Начать кампанию, когда первая FOB размещена</Russian>
-			<Chinesesimp>从第一个FOB已建立开始任务</Chinesesimp>
-			<Chinese>從第一個FOB已建立開始任務</Chinese>
-			<Japanese>FOBがすでに建設されている状態で開始</Japanese>
-			<Portuguese>Inicie a campanha com o primeiro FOB já construído</Portuguese>
-			<Czech>Začněte kampaň s již vytvořeným prvním FOB</Czech>
-		</Key>
 		<Key ID="STR_YES">
 			<Original>Yes</Original>
 			<French>Oui</French>
@@ -2151,40 +1912,6 @@
 		</Key>
 		<Key ID="STR_PARAMS_FACILITIES">
 			<Original>Shops and service facilities</Original>
-		</Key>
-		<Key ID="STR_PARAM_PATROL">
-			<Original>Enable the Patrol Manager</Original>
-			<Russian>Включить менеджер патрулей</Russian>
-			<French>Activer le Gestionnaire de Patrouilles</French>
-			<Chinesesimp>巡逻管理</Chinesesimp>
-			<Chinese>巡邏管理</Chinese>
-			<Japanese>敵の巡回</Japanese>
-			<Portuguese>Habilitar o Gerenciador de Patrulha</Portuguese>
-			<Czech>Povolte hlídky</Czech>
-		</Key>
-		<Key ID="STR_FRIENDLY_FIRE">
-			<Original>Warning: friendly fire</Original>
-			<French>Attention: tirs alliés</French>
-			<German>Achtung: Eigenbeschuss</German>
-			<Spanish>Atención: fuego amigo</Spanish>
-			<Russian>Предупреждение: дружественный огонь</Russian>
-			<Chinesesimp>警告：友军误击</Chinesesimp>
-			<Chinese>警告：友軍誤擊</Chinese>
-			<Japanese>警告: 友軍誤射</Japanese>
-			<Portuguese>Aviso: fogo amigo</Portuguese>
-			<Czech>Varování: friendly fire</Czech>
-		</Key>
-		<Key ID="STR_PARAM_ADAPT_TO_PLAYERCOUNT">
-			<Original>Hostile presence adapts to player count</Original>
-			<French>La présence hostile s'adapte au nombre de joueurs</French>
-			<German>Feindpräsenz passt sich der Spielerzahl an</German>
-			<Spanish>Adaptar presencia hostil según la cantidad de jugadores</Spanish>
-			<Russian>Вражеские силы адаптируются к количеству игроков</Russian>
-			<Chinesesimp>随玩家数量调整敌军活动</Chinesesimp>
-			<Chinese>隨玩家數量調整敵軍活動</Chinese>
-			<Japanese>プレイヤー数に合わせて敵兵の量を調節</Japanese>
-			<Portuguese>A presença hostil se adapta à contagem de jogadores</Portuguese>
-			<Czech>Nepřátelská přítomnost se přizpůsobuje počtu hráčů</Czech>
 		</Key>
 		<Key ID="STR_PARAM_SECTOR_RADIUS">
 			<Original>The size of a sector (radius)</Original>
@@ -2323,18 +2050,6 @@
 		<Key ID="STR_BUILD9">
 			<Original>Fortifications and barriers</Original>
 			<French>Tranchée / Mur de Sable</French>
-		</Key>
-		<Key ID="STR_ACTIVE_SECTORS">
-			<Original>Active Sectors:</Original>
-			<French>Secteurs Actifs :</French>
-			<German>Aktive Sektoren:</German>
-			<Spanish>Sectores activos:</Spanish>
-			<Russian>Активные Зоны:</Russian>
-			<Chinesesimp>活跃区域:</Chinesesimp>
-			<Chinese>活躍區域:</Chinese>
-			<Japanese>アクティブ区域:</Japanese>
-			<Portuguese>Setores Ativos:</Portuguese>
-			<Czech>Aktivní sektory:</Czech>
 		</Key>
 		<Key ID="STR_OVERLOAD_HINT">
 			<Original>The unitcap setting has been exceeded and further sector activation is temporarily halted. You can now see the list of currently active sectors where you shall concentrate your efforts.</Original>
@@ -2568,18 +2283,6 @@
 			<Portuguese>Passageiro</Portuguese>
 			<Czech>Pasažér</Czech>
 		</Key>
-		<Key ID="STR_SQUAD_DEPLOY">
-			<Original>Squad deploy</Original>
-			<French>Déploiement d'escouade</French>
-			<German>Gruppeneinsatz</German>
-			<Spanish>Despliegue de escuadra</Spanish>
-			<Russian>Мобилизовать отряд</Russian>
-			<Chinesesimp>小队部署</Chinesesimp>
-			<Chinese>小隊部署</Chinese>
-			<Japanese>分隊出撃</Japanese>
-			<Portuguese>Posição do esquadrão</Portuguese>
-			<Czech>Squad deploy</Czech>
-		</Key>
 		<Key ID="STR_REMOVE_OK">
 			<Original>You have deleted the selected squad member.</Original>
 			<French>Vous avez supprimé le membre de l'escouade sélectionné.</French>
@@ -2611,18 +2314,6 @@
 			<Japanese>ユニットは昇格できません、最大階級に達しています。</Japanese>
 			<Portuguese>A unidade não pode ser promovida, a classificação máxima foi atingida.</Portuguese>
 			<Czech>Jednotku nelze povýšit, bylo dosaženo maximální hodnosti.</Czech>
-		</Key>
-		<Key ID="STR_PERMISSIONS_TITLE">
-			<Original>PERMISSIONS MANAGEMENT</Original>
-			<French>GESTION DES PERMISSIONS</French>
-			<German>Rechteverwaltung</German>
-			<Spanish>GESTIÓN DE PERMISOS</Spanish>
-			<Russian>УПРАВЛЕНИЕ РАЗРЕШЕНИЯМИ</Russian>
-			<Chinesesimp>权限管理</Chinesesimp>
-			<Chinese>權限管理</Chinese>
-			<Japanese>権限管理</Japanese>
-			<Portuguese>GERENCIAMENTO DE PERMISSÕES</Portuguese>
-			<Czech>PERMISSIONS OPRÁVNĚNÍ</Czech>
 		</Key>
 		<Key ID="STR_PERMISSIONS_LIGHT">
 			<Original>Light vehicles</Original>
@@ -2828,18 +2519,6 @@
 			<Portuguese>-- PERMISSÕES</Portuguese>
 			<Czech>-- PERMISSIONS</Czech>
 		</Key>
-		<Key ID="STR_DUMP_FOB_TEMPLATE">
-			<Original>Export FOB template</Original>
-			<French>-- EXPORTER LE MODÈLE DE FOB</French>
-			<German>-- FOB-VORLAGE EXPORTIEREN</German>
-			<Spanish>-- EXPORTAR PLANTILLA FOB</Spanish>
-			<Russian>-- ВЫГРУЗИТЬ ШАБЛОН FOB</Russian>
-			<Chinesesimp>-- 导出 FOB 模板</Chinesesimp>
-			<Chinese>-- 匯出 FOB 模板</Chinese>
-			<Japanese>-- FOB テンプレートを出力</Japanese>
-			<Portuguese>-- EXPORTAR MODELO FOB</Portuguese>
-			<Czech>-- EXPORTOVAT ŠABLONU FOB</Czech>
-		</Key>
 		<Key ID="STR_SAVE_CHANGES">
 			<Original>Save and continue</Original>
 			<French>Enregistrer et continuer</French>
@@ -2863,66 +2542,6 @@
 			<Japanese>デフォルトにリセット</Japanese>
 			<Portuguese>Redefinir para o padrão</Portuguese>
 			<Czech>Obnovit na výchozí hodnoty</Czech>
-		</Key>
-		<Key ID="STR_PERMISSIONS_PARAM">
-			<Original>Permissions Management</Original>
-			<French>Gestion des Permissions</French>
-			<German>Rechteverwaltung</German>
-			<Spanish>Gestión de permisos</Spanish>
-			<Russian>Управление Разрешениями</Russian>
-			<Chinesesimp>权限管理</Chinesesimp>
-			<Chinese>權限管理</Chinese>
-			<Japanese>権限管理</Japanese>
-			<Portuguese>Gerenciamento de Permissões</Portuguese>
-			<Czech>Permissions Manažer</Czech>
-		</Key>
-		<Key ID="STR_PERMISSION_NO_LIGHT">
-			<Original>Your score is too LOW to use light vehicles.</Original>
-			<French>Votre score est trop BAS pour utiliser les véhicules légers.</French>
-			<German>Du hast keine Rechte zur Nutzung leichter Fahrzeuge.</German>
-			<Spanish>No tienes permiso del comandante para usar vehículos ligeros</Spanish>
-			<Russian>У тебя нет разрешения от командира использовать легкую технику.</Russian>
-			<Chinesesimp>你的军衔太低了，不能使用轻型车辆。</Chinesesimp>
-			<Chinese>你的軍銜太低了，不能使用輕型車輛。</Chinese>
-			<Japanese>貴方のスコアは軽車両を使うには低すぎます。</Japanese>
-			<Portuguese>Sua pontuação é muito BAIXA para usar veículos leves.</Portuguese>
-			<Czech>Vaše skóre je příliš NÍZKÉ na to, abyste mohli používat lehká vozidla.</Czech>
-		</Key>
-		<Key ID="STR_PERMISSION_NO_ARMOR">
-			<Original>Your score is too LOW to use armored vehicles.</Original>
-			<French>Votre score est trop BAS pour utiliser les véhicules blindés.</French>
-			<German>Du hast keine Rechte zur Nutzung gepanzerter Fahrzeuge</German>
-			<Spanish>No tienes permiso del comandante para usar vehículos blindados</Spanish>
-			<Russian>У тебя нет разрешения от командира использовать бронированную технику.</Russian>
-			<Chinesesimp>你的军衔太低了，不能使用装甲车辆。</Chinesesimp>
-			<Chinese>你的軍銜太低了，不能使用裝甲車輛。</Chinese>
-			<Japanese>貴方のスコアは装甲車両を使うには低すぎます。</Japanese>
-			<Portuguese>Sua pontuação é muito BAIXA para usar veículos blindados.</Portuguese>
-			<Czech>Vaše skóre je příliš NÍZKÉ na to, abyste mohli používat obrněná vozidla.</Czech>
-		</Key>
-		<Key ID="STR_PERMISSION_NO_AIR">
-			<Original>Your score is too LOW to use air vehicles.</Original>
-			<French>Votre score est trop BAS pour utiliser les véhicules aériens.</French>
-			<German>Du hast keine Rechte zur Nutzung von Luftfahrzeugen</German>
-			<Spanish>No tienes permiso del comandante para usar vehículos aéreos</Spanish>
-			<Russian>У тебя нет разрешения от командира использовать авиацию.</Russian>
-			<Chinesesimp>你的军衔太低了，不能使用飞行器。</Chinesesimp>
-			<Chinese>你的軍銜太低了，不能使用飛行器。</Chinese>
-			<Japanese>貴方のスコアは航空機を使うには低すぎます。</Japanese>
-			<Portuguese>Sua pontuação é muito BAIXA para usar veículos aéreos.</Portuguese>
-			<Czech>Vaše skóre je příliš NÍZKÉ na to, abyste mohli používat Letectvo.</Czech>
-		</Key>
-		<Key ID="STR_ARSENAL_TITLE">
-			<Original>ARSENAL</Original>
-			<French>ARSENAL</French>
-			<German>ARSENAL</German>
-			<Spanish>ARSENAL</Spanish>
-			<Russian>АРСЕНАЛ</Russian>
-			<Chinesesimp>军火库</Chinesesimp>
-			<Chinese>軍火庫</Chinese>
-			<Japanese>アーセナル</Japanese>
-			<Portuguese>ARSENAL</Portuguese>
-			<Czech>ARZENÁL</Czech>
 		</Key>
 		<Key ID="STR_EDIT_LOADOUT">
 			<Original>Edit loadout</Original>
@@ -3214,18 +2833,6 @@
 			<Portuguese>%1 hora(s)</Portuguese>
 			<Czech>%1 hodin(u/y)</Czech>
 		</Key>
-		<Key ID="STR_SORRY">
-			<Original>Sorry!</Original>
-			<French>Désolé !</French>
-			<German>Entschuldigung!</German>
-			<Spanish>Lo siento!</Spanish>
-			<Russian>Извини!</Russian>
-			<Chinesesimp>对不起！</Chinesesimp>
-			<Chinese>對不起！</Chinese>
-			<Japanese>すみません！</Japanese>
-			<Portuguese>Desculpe!</Portuguese>
-			<Czech>Pardon!</Czech>
-		</Key>
 		<Key ID="STR_NAME_PROHIBITED">
 			<Original>Your player name (%1) is not allowed on this server.\n\nChange your profile name and reconnect.</Original>
 			<French>Désolé, ce pseudo (%1) est interdit sur ce serveur !\n\nChangez de pseudo, paresseux, et rejoignez le jeu à nouveau !</French>
@@ -3306,18 +2913,6 @@
 			<Japanese>ロードアウト:</Japanese>
 			<Portuguese>Equipamento</Portuguese>
 			<Czech>Vybavení:</Czech>
-		</Key>
-		<Key ID="STR_SPAWN_POINT">
-			<Original>Deployment location:</Original>
-			<French>Lieu de déploiement :</French>
-			<German>Einsatzposition:</German>
-			<Spanish>Lugar para el despliegue:</Spanish>
-			<Russian>Позиция размешения:</Russian>
-			<Chinesesimp>投放地点:</Chinesesimp>
-			<Chinese>投放地點:</Chinese>
-			<Japanese>出撃先:</Japanese>
-			<Portuguese>Local das instalações:</Portuguese>
-			<Czech>Místo nasazení:</Czech>
 		</Key>
 		<Key ID="STR_WEATHER_PARAM">
 			<Original>Weather</Original>
@@ -3454,18 +3049,6 @@
 			<Japanese>-- セカンダリーミッション</Japanese>
 			<Portuguese>-- OBJETIVOS SECUNDÁRIOS</Portuguese>
 			<Czech>-- SEKUNDÁRNÍ CÍLE</Czech>
-		</Key>
-		<Key ID="STR_BOUNTY_MESSAGE">
-			<Original>Bounty of %1 Ammunition for a %2 destroyed by %3</Original>
-			<French>Prime de %1 Munitions pour un %2 détruit par %3</French>
-			<German>Kopfgeld von %1 Munition für die Zerstörung von %2 durch %3</German>
-			<Spanish>Premio de %1 Munición por un %2 destruido por %3</Spanish>
-			<Russian>+%1 Ammo за %2 уничтоженный игроком %3</Russian>
-			<Chinesesimp>%3 摧毁 %2 ，获得 %1 弹药奖励</Chinesesimp>
-			<Chinese>%3 摧毀 %2 ，獲得 %1 彈藥獎勵</Chinese>
-			<Japanese>%3 が %2 を破壊したので %1 弾薬バウンティを手に入れました。 </Japanese>
-			<Portuguese>Recompensa de %1 Munição por %2 destruído por %3</Portuguese>
-			<Czech>Odměna munice %1 za %2 zničenou %3</Czech>
 		</Key>
 		<Key ID="STR_SECONDARY_OBJECTIVES_TITLE">
 			<Original>SECONDARY OBJECTIVES</Original>
@@ -4300,17 +3883,6 @@
 			<Chinesesimp>你输掉了这场战争...</Chinesesimp>
 			<Chinese>你輸掉了這場戰爭...</Chinese>
 		</Key>
-		<Key ID="STR_PARAM_BLUFOR_DEFENDERS">
-			<Original>BLUFOR defenders in owned sectors</Original>
-			<French>Défenseurs BLUFOR dans les secteurs capturés</French>
-			<German>BLUFOR Verteidiger in besetzten Sektoren</German>
-			<Russian>BLUFOR защитники в захваченных зонах</Russian>
-			<Chinesesimp>BLUFOR所属地区的防守部队</Chinesesimp>
-			<Chinese>BLUFOR所屬地區的防守部隊</Chinese>
-			<Japanese>友軍の守備隊が解放した街に常駐</Japanese>
-			<Portuguese>Defensores do BLUFOR em setores próprios</Portuguese>
-			<Czech>Obránci ve vlastněných sektorech</Czech>
-		</Key>
 		<Key ID="STR_PARAM_FOBS_COUNT">
 			<Original>Maximum number of FOBs allowed</Original>
 			<French>Nombre maximal de FOBs autorisées</French>
@@ -4557,10 +4129,6 @@
 			<Chinesesimp>玩家重生过快时的冷却时间</Chinesesimp>
 			<Chinese>玩家重生過快時的冷卻時間</Chinese>
 		</Key>
-		<Key ID="STR_PARAM_SECTOR_DESPAWN">
-			<Original>Inactive battle timeout</Original>
-			<French>Durée d'activité d'un Secteur Attaqué</French>
-		</Key>
 		<Key ID="STR_REDEPLOY">
 			<Original>Allow Redeploy</Original>
 			<French>Autoriser Redéploiement</French>
@@ -4596,12 +4164,6 @@
 			<French>Vous êtes inactif depuis %1min, vous devez vous déplacer avant %2min ou vous serez expulsé.</French>
 			<Chinesesimp>您已挂机 %1 分钟，必须在 %2 分钟前活动，否则将被踢出服务器。</Chinesesimp>
 			<Chinese>您已掛機 %1 分鐘，必須在 %2 分鐘前活動，否則將被踢出服務器。</Chinese>
-		</Key>
-		<Key ID="STR_OPFORMARK">
-			<Original>Show Opfor Markers</Original>
-			<French>Affiche les marqueurs OPFOR</French>
-			<Chinesesimp>显示 Opfor 标记</Chinesesimp>
-			<Chinese>顯示 Opfor 標記</Chinese>
 		</Key>
 		<Key ID="STR_BLUFORMARK">
 			<Original>Show BLUFOR markers</Original>
@@ -4661,22 +4223,6 @@
 			<Chinesesimp>仅限白名单/黑名单</Chinesesimp>
 			<Chinese>僅白名單/黑名單</Chinese>
 		</Key>
-		<Key ID="STR_VEH_LOCK">
-			<Original>Permission: vehicles ownership</Original>
-			<Russian>Включить Владение Транспортом</Russian>
-			<French>Autorisation : propriété des véhicules</French>
-			<Chinesesimp>车辆所有权</Chinesesimp>
-			<Chinese>車輛所有權</Chinese>
-			<Japanese>乗り物の所有権</Japanese>
-			<Portuguese>Ativar propriedade de veículos</Portuguese>
-			<Czech>Povolit vlastnictví vozidel</Czech>
-		</Key>
-		<Key ID="STR_OPFOR_VEH_LOCK">
-			<Original>Enemy Vehicles can be captured</Original>
-			<French>Les Véhicules Enemies peuvent être capturés</French>
-			<Chinesesimp>可夺取敌军车辆</Chinesesimp>
-			<Chinese>可奪取敵軍車輛</Chinese>
-		</Key>
 		<Key ID="STR_FORCE_LOADOUT">
 			<Original>Force default equipment</Original>
 			<Russian>Принудительное стандартное снаряжение</Russian>
@@ -4716,46 +4262,6 @@
 		</Key>
 
 		<!-- Permissions -->
-		<Key ID="STR_PERMISSION_NO_VIP">
-			<Original>You are NOT allowed to use Special Vehicles.</Original>
-			<Russian>Вам НЕ разрешено использовать Специальные Транспортные средства.</Russian>
-			<French>Vous n'êtes PAS autorisé à utiliser des véhicules Spéciaux.</French>
-			<Chinesesimp>您无权使用特种车辆。</Chinesesimp>
-			<Chinese>您無權使用特種車輛。</Chinese>
-			<Japanese>あなたは特殊ビークルの使用を許可されていません。</Japanese>
-			<Portuguese>Você NÃO tem permissão para usar veículos especiais.</Portuguese>
-			<Czech>NESMÍTE používat speciální vozidla.</Czech>
-		</Key>
-		<Key ID="STR_PERMISSION_NO_SUP">
-			<Original>You are NOT allowed to use Support Vehicles.</Original>
-			<Russian>Вам НЕ разрешено использовать транспортные средства поддержки.</Russian>
-			<French>Vous n'êtes PAS autorisé à utiliser des véhicules d'Assistance.</French>
-			<Chinesesimp>您无权使用支援车辆。</Chinesesimp>
-			<Chinese>您無權使用支援車輛。</Chinese>
-			<Japanese>あなたは支援ビークルの使用を許可されていません。</Japanese>
-			<Portuguese>Você NÃO tem permissão para usar veículos de apoio.</Portuguese>
-			<Czech>NESMÍTE používat podpůrná vozidla.</Czech>
-		</Key>
-		<Key ID="STR_PERMISSION_NO_OWN">
-			<Original>Wrong Vehicle Owner.\nAccess is Denied!</Original>
-			<Russian>Неверный владелец транспортного средства.\nВ доступе отказано !!</Russian>
-			<French>Mauvais Propriétaire.\nAccès Refusé !!</French>
-			<Chinesesimp>错误的车主。\n拒绝访问 !!</Chinesesimp>
-			<Chinese>錯誤的車主。 \n拒絕訪問 !!</Chinese>
-			<Japanese>あなたはこの乗り物の所持者ではありません。\nアクセスは拒否されました！</Japanese>
-			<Portuguese>Proprietário do veículo errado.\nAcesso negado!!</Portuguese>
-			<Czech>Nejsi vlastník vozidla.\nPřístup odepřen!!</Czech>
-		</Key>
-		<Key ID="STR_PERMISSION_NO_PRI">
-			<Original>Prisoners cannot operate vehicles.</Original>
-			<Russian>Заключенным НЕ разрешается пользоваться транспортными средствами !!</Russian>
-			<French>Les prisonniers ne sont PAS autorisés à utiliser les véhicules !!</French>
-			<Chinesesimp>囚犯无权使用车辆 ！！！</Chinesesimp>
-			<Chinese>囚犯無權使用車輛 ！！！</Chinese>
-			<Japanese>捕虜はこの乗り物には乗れません！！</Japanese>
-			<Portuguese>Os prisioneiros NÃO estão autorizados a usar veículos !!</Portuguese>
-			<Czech>Vězni NESMÍ používat vozidla!!</Czech>
-		</Key>
 
 		<!-- Pay -->
 		<Key ID="STR_GRLIB_NOAMMO">
@@ -4871,16 +4377,6 @@
 			<Portuguese>Cuidar de si mesmo</Portuguese>
 			<Czech>Vyléčit se</Czech>
 		</Key>
-		<Key ID="STR_TAKE_LEADRSHIP">
-			<Original>-- TAKE LEADERSHIP</Original>
-			<Russian>-- ВЗЯТЬ ЛИДЕРСТВО</Russian>
-			<French>-- PRENDRE COMMANDEMANT</French>
-			<Japanese>-- 指揮権を執る</Japanese>
-			<Chinesesimp>-- 带队 --</Chinesesimp>
-			<Chinese>-- 帶隊 --</Chinese>
-			<Portuguese>-- ASSUMA A LIDERANÇA</Portuguese>
-			<Czech>-- TAKE LEADRSHIP</Czech>
-		</Key>
 		<Key ID="STR_AIR_SUPPORT">
 			<Original>-- AIR SUPPORT</Original>
 			<Russian>-- ПОДДЕРЖКА С ВОЗДУХА</Russian>
@@ -4931,12 +4427,6 @@
 			<Portuguese>-- OPÇÕES ESTENDIDAS</Portuguese>
 			<Czech>-- Rozšířené možnosti</Czech>
 		</Key>
-		<Key ID="STR_ADMIN_CONFIGURE">
-			<Original>-- CONFIGURE MISSION</Original>
-			<French>-- CONFIGURE MISSION</French>
-			<Chinesesimp>-- 配置任务</Chinesesimp>
-			<Chinese>-- 配寘任務</Chinese>
-		</Key>
 		<Key ID="STR_ADMIN_MENU_ACTION">
 			<Original>-- ADMIN MENU</Original>
 			<Russian>-- АДМИН МЕНЮ</Russian>
@@ -4946,16 +4436,6 @@
 			<Chinese>-- 管理員菜單 --</Chinese>
 			<Portuguese>-- MENU ADMIN</Portuguese>
 			<Czech>-- ADMIN MENU</Czech>
-		</Key>
-		<Key ID="STR_ADMIN_MENU_MISSION">
-			<Original>-- MISSION ADMIN MENU</Original>
-			<Russian>-- MISSION АДМИН МЕНЮ</Russian>
-			<French>-- MISSION MENU ADMIN</French>
-			<Japanese>-- MISSION 管理者メニュー</Japanese>
-			<Chinesesimp>-- MISSION 管理员菜单 --</Chinesesimp>
-			<Chinese>-- MISSION 管理員菜單 --</Chinese>
-			<Portuguese>-- MISSION MENU ADMIN</Portuguese>
-			<Czech>-- MISSION ADMIN MENU</Czech>
 		</Key>
 		<Key ID="STR_DESTROY_OUTPOST">
 			<Original>-- DESTROY OUTPOST</Original>
@@ -5963,18 +5443,6 @@
 			<Czech>Jde to, nic zvláštního...</Czech>
 		</Key>
 
-		<Key ID="STR_REPLY_TIRED">
-			<Original>I've been wounded %1 times today. I could use a rest.</Original>
-			<French>J'en ai marre... j'ai été blessé %1 fois aujourd'hui !</French>
-			<German>Ich hab genug... wurde heute schon %1 Mal verletzt!</German>
-			<Spanish>Estoy cansado de esto, me hirieron %1 veces hoy.</Spanish>
-			<Russian>Я устал... сегодня меня ранили уже %1 раз!</Russian>
-			<Chinesesimp>我已经受够了，今天我已经被击伤 %1 次！</Chinesesimp>
-			<Chinese>我已經受夠了，今天我已被擊傷 %1 次！</Chinese>
-			<Japanese>もう疲れた… 今日は%1回も負傷してる！</Japanese>
-			<Portuguese>Estou cansado disso tudo, fui ferido %1 vezes hoje!</Portuguese>
-			<Czech>Už toho mám dost, dnes jsem byl zraněn %1×!</Czech>
-		</Key>
 
 		<Key ID="STR_REPLY_BAD_NEED_MEDIC">
 			<Original>I'm wounded and need medical help.</Original>
@@ -6729,31 +6197,7 @@
 			<French>Reparation</French>
 		</Key>
 
-		<Key ID="STR_LOG_MARKER_CREATE">
-			<Original>%1, Create marker (%2) in channel %3 at position %4</Original>
-			<French>%1 a créé le marqueur (%2) sur le canal %3 à la position %4</French>
-			<German>%1 hat Marker (%2) im Kanal %3 bei Position %4 erstellt</German>
-			<Spanish>%1 creó el marcador (%2) en el canal %3 en la posición %4</Spanish>
-			<Russian>%1 создал маркер (%2) в канале %3 на позиции %4</Russian>
-			<Chinesesimp>%1 在频道 %3 的位置 %4 创建了标记 (%2)</Chinesesimp>
-			<Chinese>%1 在頻道 %3 的位置 %4 建立了標記 (%2)</Chinese>
-			<Japanese>%1 がチャンネル %3 の位置 %4 にマーカー (%2) を作成しました</Japanese>
-			<Portuguese>%1 criou o marcador (%2) no canal %3 na posição %4</Portuguese>
-			<Czech>%1 vytvořil značku (%2) v kanálu %3 na pozici %4</Czech>
-		</Key>
 
-		<Key ID="STR_LOG_MARKER_DELETE">
-			<Original>%1, Delete marker (%2) at position %3.</Original>
-			<French>%1 a supprimé le marqueur (%2) à la position %3.</French>
-			<German>%1 hat den Marker (%2) an Position %3 gelöscht.</German>
-			<Spanish>%1 eliminó el marcador (%2) en la posición %3.</Spanish>
-			<Russian>%1 удалил маркер (%2) на позиции %3.</Russian>
-			<Chinesesimp>%1 在位置 %3 删除了标记 (%2)。</Chinesesimp>
-			<Chinese>%1 在位置 %3 刪除了標記 (%2)。</Chinese>
-			<Japanese>%1 が位置 %3 のマーカー (%2) を削除しました。</Japanese>
-			<Portuguese>%1 removeu o marcador (%2) na posição %3.</Portuguese>
-			<Czech>%1 smazal značku (%2) na pozici %3.</Czech>
-		</Key>
 
 		<!--artillery_cooldown.sqf -->
 		<Key ID="STR_HINT_ARTILLERY_COOLDOWN">
@@ -7204,16 +6648,6 @@
 			<Chinese>狗狗在這裡發現了一枚地雷！！</Chinese>
 		</Key>
 		<!-- do_eject.sqf -->
-		<Key ID="STR_DO_EJECT">
-			<Original>Civilian ejected.\nScore penalty: 5 XP.</Original>
-			<Russian>Внимание !!\n -5 очков за Убийство Гражданского.</Russian>
-			<French>ATTENTION !!\n -5 pts Malus pour Civil Ejecté.</French>
-			<Japanese>警告！！ \n 民間人を引きずり出したので -5 ポイント</Japanese>
-			<Chinesesimp>警告！\n 驱逐平民 -5 军功点。</Chinesesimp>
-			<Chinese>警告！\n 驅逐平民 -5 軍功點。</Chinese>
-			<Portuguese>Aviso!!\n -5 pts Malus para Ejetar Civil.</Portuguese>
-			<Czech>Varování !!\n -5 bodů za zabití civilisty.</Czech>
-		</Key>
 
 		<!-- do_lock.sqf -->
 		<Key ID="STR_DO_LOCK">
@@ -7381,15 +6815,6 @@
 			<Portuguese>Olá estranho, compro a carga do seu veículo por um bom preço!</Portuguese>
 			<Czech>Dobrý den, cizinče, koupím náklad vašeho vozidla za výhodnou cenu!</Czech>
 		</Key>
-		<Key ID="STR_SELL_NO_VEH">
-			<Original>There is no vehicle nearby.</Original>
-			<Russian>Транспортного средства поблизости нет.</Russian>
-			<French>Il n'y a pas de véhicule à proximité.</French>
-			<Chinesesimp>附近没有车辆。</Chinesesimp>
-			<Chinese>附近沒有車輛。</Chinese>
-			<Portuguese>Não há nenhum veículo por perto.</Portuguese>
-			<Czech>V blízkosti není žádné vozidlo.</Czech>
-		</Key>
 		<Key ID="STR_NOTHING_TO_SELL">
 			<Original>There is nothing I can buy from this vehicle's cargo.</Original>
 			<Russian>Я ничего не могу купить из багажника вашего транспорта</Russian>
@@ -7507,16 +6932,6 @@
 			<Portuguese>-= DICAS =-</Portuguese>
 			<Czech>-= TIPY =-</Czech>
 		</Key>
-		<Key ID="STR_NEWS">
-			<Original>-=   NEWS   =-</Original>
-			<Chinesesimp>-=   新闻   =-</Chinesesimp>
-			<Chinese>-=   新聞   =-</Chinese>
-		</Key>
-		<Key ID="STR_NEWS_METEO">
-			<Original>-=   METEO   =-</Original>
-			<Chinesesimp>-=   天气预报   =-</Chinesesimp>
-			<Chinese>-=   天氣預報   =-</Chinese>
-		</Key>
 		<Key ID="STR_HALL_OF_FAME">
 			<Original>Hall of fame</Original>
 			<French>-= Temple de la renommée =-</French>
@@ -7528,21 +6943,6 @@
 			<Japanese>-= 殿堂入り =-</Japanese>
 			<Portuguese>-= Salão da Fama =-</Portuguese>
 			<Czech>-= Síň slávy =-</Czech>
-		</Key>
-		<Key ID="STR_NEWS_AMMO">
-			<Original>-=   The Rich   =-</Original>
-			<Chinesesimp>-=   财富榜   =-</Chinesesimp>
-			<Chinese>-=   財富榜   =-</Chinese>
-		</Key>
-		<Key ID="STR_NEWS_GOOD">
-			<Original>-=   The Good   =-</Original>
-			<Chinesesimp>-=   好人榜   =-</Chinesesimp>
-			<Chinese>-=   好人榜   =-</Chinese>
-		</Key>
-		<Key ID="STR_NEWS_BAD">
-			<Original>-=   The Bad   =-</Original>
-			<Chinesesimp>-=   混蛋榜   =-</Chinesesimp>
-			<Chinese>-=   混蛋榜   =-</Chinese>
 		</Key>
 		<Key ID="STR_SAVE_PLAYER">
 			<Original>-- SAVE PLAYER PROFILE</Original>
@@ -7587,16 +6987,6 @@
 			<Chinese>你的分數（%1）太低，無法保存。\n最低分數為：%2\n請繼續！</Chinese>
 		</Key>
 		<!-- virtual_garage.hpp -->
-		<Key ID="STR_VIRT_GARAGE">
-			<Original>Virtual garage</Original>
-			<Russian>-- ВИРТУАЛЬНЫЙ ГАРАЖ</Russian>
-			<French>-= Garage Virtuel =-</French>
-			<Japanese>-- バーチャルガレージ --</Japanese>
-			<Chinesesimp>-- 虚拟车库 --</Chinesesimp>
-			<Chinese>-- 虛擬車庫 --</Chinese>
-			<Portuguese>-- Garagem Virtual --</Portuguese>
-			<Czech>-- Virtuální garáž --</Czech>
-		</Key>
 		<Key ID="STR_GARAGE_LOAD">
 			<Original>Store vehicle</Original>
 			<Russian>-- ЗАГРУЗКА</Russian>
@@ -7638,16 +7028,6 @@
 			<Portuguese>A garagem está cheia !!\nMax %1 veículos.</Portuguese>
 			<Czech>Garáž je plná!!\nMaximálně %1 vozidel.</Czech>
 		</Key>
-		<Key ID="STR_CANT_PARKUAV">
-			<Original>Remove the crew before storing this vehicle.</Original>
-			<Russian>Машины с экипажем парковать нельзя!</Russian>
-			<French>Les véhicules avec Equipage ne peuvent rentrer dans le Garage Virt. !</French>
-			<Japanese>乗員が乗っている乗り物はガレージに入れられません！</Japanese>
-			<Chinesesimp>不能停放有乘员的载具！</Chinesesimp>
-			<Chinese>不能停放有乘員的載具！</Chinese>
-			<Portuguese>Veículos com tripulação não podem ser estacionados!</Portuguese>
-			<Czech>Vozidla s posádkou nelze zaparkovat!</Czech>
-		</Key>
 		<Key ID="STR_WARNING">
 			<Original>Warning!</Original>
 			<Russian>Внимание !</Russian>
@@ -7674,16 +7054,6 @@
 			<Original>-- VEHICLE PAINT and SHOP</Original>
 			<Chinesesimp>-- 车辆喷漆和商店</Chinesesimp>
 			<Chinese>-- 車輛噴漆和商店</Chinese>
-		</Key>
-		<Key ID="STR_SHOP_PAINT">
-			<Original>Paint</Original>
-			<Russian>Красить</Russian>
-			<French>Peindre</French>
-			<Japanese>ペイント</Japanese>
-			<Chinesesimp>喷漆</Chinesesimp>
-			<Chinese>噴漆</Chinese>
-			<Portuguese>Pintar</Portuguese>
-			<Czech>Přemalovat</Czech>
 		</Key>
 
 		<!-- liberation_airdrop.hpp -->
@@ -7783,16 +7153,6 @@
 			<Chinesesimp>炮火支援</Chinesesimp>
 			<Chinese>炮火支援</Chinese>
 		</Key>
-		<Key ID="STR_AIRDROP_MENU">
-			<Original>-- Air Support Menu --</Original>
-			<Russian>-- Меню Поддержки с воздуха</Russian>
-			<French>-- MENU Support Aéro --</French>
-			<Japanese>-- エアサポートメニュー --</Japanese>
-			<Chinesesimp>-- 空中支援菜单 --</Chinesesimp>
-			<Chinese>-- 空中支援菜單 --</Chinese>
-			<Portuguese>-- Menu de Apoio Aéreo --</Portuguese>
-			<Czech>-- Air Support Menu --</Czech>
-		</Key>
 		<Key ID="STR_CALL_HELITAXI">
 			<Original>Call Heli Taxi.\nCost: %1 Ammo</Original>
 			<Russian>Вызвать Вертолет.\nСтоимость: %1 Ammo</Russian>
@@ -7880,12 +7240,6 @@
 			<Chinese>呼叫炮火支援\n花费：%1 弹药</Chinese>
 		</Key>
 		<!-- liberation_send_resources.hpp -->
-		<Key ID="STR_SEND_MENU">
-			<Original>-- Send Resources --</Original>
-			<French>-- Envoyer Ressources --</French>
-			<Chinesesimp>-- 发送资源 --</Chinesesimp>
-			<Chinese>-- 發送資源 --</Chinese>
-		</Key>
 		<Key ID="STR_SEND_PLAYER">
 			<Original>Player:</Original>
 			<Russian>Игрок:</Russian>
@@ -8032,24 +7386,6 @@
 			<Chinese>無敵模式</Chinese>
 			<Portuguese>Modo Deus</Portuguese>
 			<Czech>Božský mód</Czech>
-		</Key>
-		<Key ID="STR_ADMIN_MENU_TITLE">
-			<Original>-- Admin Menu --</Original>
-			<Russian>-- Админ Меню --</Russian>
-			<Japanese>-- 管理者メニュー --</Japanese>
-			<Chinesesimp>-- 管理员菜单 --</Chinesesimp>
-			<Chinese>-- 管理員菜單 --</Chinese>
-			<Portuguese>-- Menu Admin --</Portuguese>
-			<Czech>-- Admin Menu --</Czech>
-		</Key>
-		<Key ID="STR_ADMIN_MENU_TITLE_A3W">
-			<Original>-- Side Mission Admin Menu --</Original>
-			<Russian>-- Side Mission Админ Меню --</Russian>
-			<Japanese>-- Side Mission 管理者メニュー --</Japanese>
-			<Chinesesimp>-- 支线任务管理菜单 --</Chinesesimp>
-			<Chinese>-- 支線任務管理員菜單 --</Chinese>
-			<Portuguese>-- Side Mission Menu Admin --</Portuguese>
-			<Czech>-- Side Mission Admin Menu --</Czech>
 		</Key>
 		<!-- liberation_notification.hpp -->
 		<Key ID="STR_SIDE_START">
@@ -8434,33 +7770,6 @@
 			<Chinese>自定義勝利條件</Chinese>
 			<Portuguese>Condição de vitória personalizada</Portuguese>
 			<Czech>Vlastní vítězná podmínka</Czech>
-		</Key>
-		<Key ID="STR_OPFORMARK_DESC">
-			<Original>Determines if enemy forces are fully visible or hidden in fog of war.</Original>
-			<Russian>Определяет, полностью ли видны вражеские силы или скрыты в тумане войны.</Russian>
-			<French>Détermine si les forces ennemies sont entièrement visibles ou cachées dans le brouillard de guerre.</French>
-			<Chinesesimp>确定敌军是在战争迷雾中完全可见还是被隐藏。</Chinesesimp>
-			<Chinese>確定敵軍是在戰爭迷霧中完全可見還是被隱藏。</Chinese>
-			<Portuguese>Determina se as forças inimigas são totalmente visíveis ou ocultas na névoa de guerra.</Portuguese>
-			<Czech>Určuje, zda jsou nepřátelské síly zcela viditelné, nebo skryté v mlze války.</Czech>
-		</Key>
-		<Key ID="STR_OPFORMARK_OPT0">
-			<Original>Always show all enemy forces</Original>
-			<Russian>Всегда показывать все вражеские силы</Russian>
-			<French>Toujours afficher toutes les forces ennemies</French>
-			<Chinesesimp>始终显示所有敌军</Chinesesimp>
-			<Chinese>始終顯示所有敵軍</Chinese>
-			<Portuguese>Sempre mostrar todas as forças inimigas</Portuguese>
-			<Czech>Vždy zobrazovat všechny nepřátelské síly</Czech>
-		</Key>
-		<Key ID="STR_OPFORMARK_OPT1">
-			<Original>Hide enemy forces under fog of war</Original>
-			<Russian>Скрывать вражеские силы под туманом войны</Russian>
-			<French>Masquer les forces ennemies sous le brouillard de guerre</French>
-			<Chinesesimp>将敌军隐藏在战争迷雾中</Chinesesimp>
-			<Chinese>將敵軍隱藏在戰爭迷霧中</Chinese>
-			<Portuguese>Ocultar forças inimigas na névoa de guerra</Portuguese>
-			<Czech>Skrýt nepřátelské síly v mlze války</Czech>
 		</Key>
 		<Key ID="STR_BLUFORMARK_DESC">
 			<Original>Sets the visibility options of friendly forces on the map.</Original>
@@ -10299,60 +9608,6 @@
 			<Portuguese>Usar plataforma offshore</Portuguese>
 			<Czech>Použít mořskou platformu</Czech>
 		</Key>
-		<Key ID="STR_VEH_LOCK_DESC">
-			<Original>Enables vehicle locking to prevent unauthorized use.</Original>
-			<Russian>Включает блокировку транспортных средств для предотвращения несанкционированного использования.</Russian>
-			<French>Active le verrouillage des véhicules pour empêcher toute utilisation non autorisée.</French>
-			<Chinesesimp>启用车辆锁定以防止未经授权的使用。</Chinesesimp>
-			<Chinese>啟用車輛鎖定以防止未經授權的使用。</Chinese>
-			<Portuguese>Ativa o bloqueio de veículos para impedir uso não autorizado.</Portuguese>
-			<Czech>Povoluje zamykání vozidel, aby se zabránilo neoprávněnému použití.</Czech>
-		</Key>
-		<Key ID="STR_VEH_LOCK_OPT0">
-			<Original>Disable vehicle lock</Original>
-			<Russian>Отключить блокировку транспортных средств</Russian>
-			<French>Désactiver le verrouillage des véhicules</French>
-			<Chinesesimp>禁用车辆锁定</Chinesesimp>
-			<Chinese>禁用車輛鎖定</Chinese>
-			<Portuguese>Desativar bloqueio de veículos</Portuguese>
-			<Czech>Zakázat zamykání vozidel</Czech>
-		</Key>
-		<Key ID="STR_VEH_LOCK_OPT1">
-			<Original>Enable vehicle lock</Original>
-			<Russian>Включить блокировку транспортных средств</Russian>
-			<French>Activer le verrouillage des véhicules</French>
-			<Chinesesimp>启用车辆锁定</Chinesesimp>
-			<Chinese>啟用車輛鎖定</Chinese>
-			<Portuguese>Ativar bloqueio de veículos</Portuguese>
-			<Czech>Povolit zamykání vozidel</Czech>
-		</Key>
-		<Key ID="STR_OPFOR_VEH_LOCK_DESC">
-			<Original>Prevents enemy forces from using locked vehicles when enabled.</Original>
-			<Russian>Предотвращает использование заблокированных транспортных средств силами противника при активации.</Russian>
-			<French>Empêche les forces ennemies d’utiliser des véhicules verrouillés lorsqu’elle est activée.</French>
-			<Chinesesimp>启用时阻止敌方使用锁定的车辆。</Chinesesimp>
-			<Chinese>啟用時阻止敵方使用鎖定的車輛。</Chinese>
-			<Portuguese>Impede que forças inimigas usem veículos bloqueados quando ativado.</Portuguese>
-			<Czech>Zabraňuje nepřátelským silám používat zamčená vozidla po povolení.</Czech>
-		</Key>
-		<Key ID="STR_OPFOR_VEH_LOCK_OPT0">
-			<Original>Disable enemy vehicle lock</Original>
-			<Russian>Отключить блокировку транспортных средств противника</Russian>
-			<French>Désactiver le verrouillage des véhicules ennemis</French>
-			<Chinesesimp>禁用敌方车辆锁定</Chinesesimp>
-			<Chinese>禁用敵方車輛鎖定</Chinese>
-			<Portuguese>Desativar bloqueio de veículos inimigos</Portuguese>
-			<Czech>Zakázat zamykání vozidel nepřítele</Czech>
-		</Key>
-		<Key ID="STR_OPFOR_VEH_LOCK_OPT1">
-			<Original>Enable enemy vehicle lock</Original>
-			<Russian>Включить блокировку транспортных средств противника</Russian>
-			<French>Activer le verrouillage des véhicules ennemis</French>
-			<Chinesesimp>启用敌方车辆锁定</Chinesesimp>
-			<Chinese>啟用敵方車輛鎖定</Chinese>
-			<Portuguese>Ativar bloqueio de veículos inimigos</Portuguese>
-			<Czech>Povolit zamykání vozidel nepřítele</Czech>
-		</Key>
 		<Key ID="STR_PARAMS_FUEL_CONSO_DESC">
 			<Original>Adjusts the fuel consumption rate for vehicles to simulate different levels of efficiency.</Original>
 			<Russian>Регулирует расход топлива транспортных средств для моделирования разных уровней эффективности.</Russian>
@@ -10409,15 +9664,6 @@
 		<Key ID="STR_PARAMS_ENABLE_DEFENSE_OPT2">
 			<Original>Countermeasures Enabled</Original>
 			<French>Contre-mesures Activé</French>
-		</Key>
-		<Key ID="STR_PARAMCAT_COMMANDER">
-			<Original>COMMANDER MODE</Original>
-			<Russian>РЕЖИМ КОМАНДИРА</Russian>
-			<French>MODE COMMANDANT</French>
-			<Chinesesimp>指挥官模式</Chinesesimp>
-			<Chinese>指揮官模式</Chinese>
-			<Portuguese>MODELO DO COMANDANTE</Portuguese>
-			<Czech>REŽIM KOMANDÉRA</Czech>
 		</Key>
 		<Key ID="STR_PARAMS_FUEL_CONSO_OPT3">
 			<Original>Medium fuel consumption rate</Original>
@@ -10635,26 +9881,6 @@
 			<Portuguese>Raio do setor: 2000 m</Portuguese>
 			<Czech>Poloměr sektoru: 2000 m</Czech>
 		</Key>
-		<Key ID="STR_PARAM_SECTOR_DESPAWN_DESC">
-			<Original>Defines the duration for which an Attacked Sector remains active when there are no more friendly units.</Original>
-			<French>Définit la durée pendant laquelle un Secteur Attaqué reste actif quand il n'y à plus d'unitées amies.</French>
-		</Key>
-		<Key ID="STR_PARAM_SECTOR_DESPAWN_OPT0">
-			<Original>Sector despawn after %1 minutes</Original>
-			<French>Disparition du secteur après %1 minutes</French>
-			<Russian>Исчезновение сектора через %1 минут</Russian>
-			<Portuguese>Desaparecimento do setor após %1 minutos</Portuguese>
-			<Czech>Zmizení sektoru po %1 minutt</Czech>
-		</Key>
-		<Key ID="STR_PARAM_SECTOR_DESPAWN_OPT1">
-			<Original>Sector despawn after 6 hours</Original>
-			<Russian>Исчезновение сектора через 6 часов</Russian>
-			<French>Disparition du secteur après 6 heures</French>
-			<Chinesesimp>扇区在 6 小时后消失</Chinesesimp>
-			<Chinese>扇區在 6 小時後消失</Chinese>
-			<Portuguese>Desaparecimento do setor após 6 horas</Portuguese>
-			<Czech>Zmizení sektoru po 6 hodinách</Czech>
-		</Key>
 		<Key ID="STR_PARAMS_BUILDING_RATIO_DESC">
 			<Original>Multiplier for how many units are placed in buildings</Original>
 			<Russian>Множитель количества юнитов, размещаемых в зданиях</Russian>
@@ -10781,33 +10007,6 @@
 			<Portuguese>Manter o contexto entre reinícios.</Portuguese>
 			<Czech>Zachovat kontext mezi restarty.</Czech>
 		</Key>
-		<Key ID="STR_PERMISSIONS_PARAM_DESC">
-			<Original>Enforces permission levels for certain player actions and commands.</Original>
-			<Russian>Применяет уровни разрешений для определённых действий и команд игроков.</Russian>
-			<French>Applique des niveaux d’autorisation pour certaines actions et commandes des joueurs.</French>
-			<Chinesesimp>强制执行某些玩家操作和命令的权限级别。</Chinesesimp>
-			<Chinese>強制執行某些玩家操作和命令的權限級別。</Chinese>
-			<Portuguese>Aplica níveis de permissão para certas ações e comandos do jogador.</Portuguese>
-			<Czech>Vynucuje úrovně oprávnění pro určité hráčovy akce a příkazy.</Czech>
-		</Key>
-		<Key ID="STR_PERMISSIONS_PARAM_OPT0">
-			<Original>Disable permission enforcement</Original>
-			<Russian>Отключить проверку разрешений</Russian>
-			<French>Désactiver la vérification des autorisations</French>
-			<Chinesesimp>禁用权限检查。</Chinesesimp>
-			<Chinese>禁用權限檢查。</Chinese>
-			<Portuguese>Desativar aplicação de permissões.</Portuguese>
-			<Czech>Zakázat vynucování oprávnění.</Czech>
-		</Key>
-		<Key ID="STR_PERMISSIONS_PARAM_OPT1">
-			<Original>Enable permission enforcement</Original>
-			<Russian>Включить проверку разрешений</Russian>
-			<French>Activer la vérification des autorisations</French>
-			<Chinesesimp>启用权限检查。</Chinesesimp>
-			<Chinese>啟用權限檢查。</Chinese>
-			<Portuguese>Ativar aplicação de permissões.</Portuguese>
-			<Czech>Povolit vynucování oprávnění.</Czech>
-		</Key>
 		<Key ID="STR_CLEANUP_PARAM_DESC">
 			<Original>Sets the delay (in seconds) before unused vehicles are removed from the mission.</Original>
 			<Russian>Устанавливает задержку (в секундах) до удаления неиспользуемых транспортных средств из миссии.</Russian>
@@ -10870,15 +10069,6 @@
 			<Chinese>每 %1 分鐘自動保存。</Chinese>
 			<Portuguese>Salvamento automático a cada %1 minutos.</Portuguese>
 			<Czech>Automaticky ukládat každých %1 minut.</Czech>
-		</Key>
-		<Key ID="STR_AUTO_SAVE_OPT2">
-			<Original>Autosave every %1 hour(s)</Original>
-			<French>Sauvegarde automatique toutes les %1 heure(s)</French>
-			<Russian>Автосохранение каждые %1 час(a)</Russian>
-			<Chinesesimp>每 %1 小时自动保存。</Chinesesimp>
-			<Chinese>每 %1 小時自動保存。</Chinese>
-			<Portuguese>Salvamento automático a cada %1 hora(s)</Portuguese>
-			<Czech>Automaticky ukládat každou %1 hodinu.</Czech>
 		</Key>
 		<Key ID="STR_PARAM_TFAR_RADIUS_DESC">
 			<Original>Sets the effective range of the TFAR radio for in‑game communications.</Original>
@@ -11118,33 +10308,6 @@
 			<Original>Enables the Civilian undercover mode.</Original>
 			<French>Active le mode civil sous couverture (undercover).</French>
 		</Key>
-		<Key ID="STR_COMMANDER_MODE_DESC">
-			<Original>Select objectives through the commander or a vote. Live loading progress and enemy clearance appear on the commander HUD.</Original>
-			<Russian>Включает режим командира для выбора секторов.</Russian>
-			<French>Active le mode commandant pour la sélection des secteurs.</French>
-			<Chinesesimp>启用指挥模式以选择扇区。</Chinesesimp>
-			<Chinese>啟用指揮模式以選擇扇區。</Chinese>
-			<Portuguese>Ativa o modo comandante para seleção de setores.</Portuguese>
-			<Czech>Povolit režim velitele pro výběr sektorů.</Czech>
-		</Key>
-		<Key ID="STR_COMMANDER_MODE_OPT0">
-			<Original>Disable commander mode - sectors will be activated by proximity</Original>
-			<Russian>Отключить режим командира - сектора будут активированы по близости</Russian>
-			<French>Désactiver le mode commandant : les secteurs seront activés par proximité</French>
-			<Chinesesimp>禁用指挥官模式 - 扇区将根据接近度激活</Chinesesimp>
-			<Chinese>禁用指揮官模式 - 扇區將根據接近度激活</Chinese>
-			<Portuguese>Desativar modo comandante - setores serão ativados por proximidade.</Portuguese>
-			<Czech>Zakázat režim velitele - sektory budou aktivovány podle blízkosti.</Czech>
-		</Key>
-		<Key ID="STR_COMMANDER_MODE_OPT1">
-			<Original>Enable commander mode: sectors will be activated by choosing the location on the map either by commander or vote</Original>
-			<Russian>Включить режим командира: сектора будут активированы выбором местоположения на карте либо командиром, либо голосованием</Russian>
-			<French>Activer le mode commandant : les secteurs seront activés en choisissant l’emplacement sur la carte, soit par le commandant, soit par vote</French>
-			<Chinesesimp>启用指挥官模式：扇区将通过指挥官或投票选择地图上的位置来激活。</Chinesesimp>
-			<Chinese>啟用指揮官模式：扇區將通過指揮官或投票選擇地圖上的位置來激活。</Chinese>
-			<Portuguese>Ativar modo comandante: setores serão ativados escolhendo a localização no mapa, seja pelo comandante ou por votação.</Portuguese>
-			<Czech>Povolit režim velitele: sektory budou aktivovány výběrem polohy na mapě buď velitelem, nebo hlasováním.</Czech>
-		</Key>
 		<Key ID="STR_COMMANDER_MODE_RADIUS_DESC">
 			<Original>Radius in meters for activating nearby objectives when Battle Scope includes nearby sectors.</Original>
 			<Russian>Когда командир выбирает сектор для атаки, близлежащие вражеские сектора в этом диапазоне будут защищаться.</Russian>
@@ -11238,24 +10401,6 @@
 			<Chinese>指揮模式：附近扇區防禦激活範圍</Chinese>
 			<Portuguese>Modo comandante: alcance de ativação de defesa de setores próximos</Portuguese>
 			<Czech>Režim velitele: rozsah aktivace obrany blízkých sektorů</Czech>
-		</Key>
-		<Key ID="STR_ALL">
-			<Original>All</Original>
-			<Russian>Все</Russian>
-			<French>Tout</French>
-			<Chinesesimp>全部</Chinesesimp>
-			<Chinese>全部</Chinese>
-			<Portuguese>Todos</Portuguese>
-			<Czech>Všechno</Czech>
-		</Key>
-		<Key ID="STR_FOG_OF_WAR">
-			<Original>Fog of War</Original>
-			<Russian>Туман войны</Russian>
-			<French>Brouillard de guerre</French>
-			<Chinesesimp>战争迷雾</Chinesesimp>
-			<Chinese>戰爭迷霧</Chinese>
-			<Portuguese>Névoa de guerra</Portuguese>
-			<Czech>Mlha války</Czech>
 		</Key>
 		<Key ID="STR_PLAYER_ONLY">
 			<Original>Player only</Original>
@@ -11804,20 +10949,6 @@
 			<Chinesesimp>小镇叛乱</Chinesesimp>
 			<Chinese>小鎮叛亂</Chinese>
 		</Key>
-		<Key ID="STR_INSURGENCY_MESSAGE1">
-			<Original>The people of&lt;br/&gt;&lt;t size='1.25' color='%1'&gt;%2&lt;/t&gt;&lt;br/&gt;&lt;br/&gt;are furious at how they have been treated.&lt;br/&gt;They have taken up arms and reject your &lt;t color='%1'&gt;authority&lt;/t&gt;.&lt;br/&gt;Calm the situation and restore peace!</Original>
-			<Russian>Местное население &lt;br/&gt;&lt;t size='1.25' color='%1'&gt;%2&lt;/t&gt;&lt;br/&gt;&lt;br/&gt; в ярости из-за ваших действий!&lt;br/&gt;Они берут оружие и отказываются от вашего &lt;t color='%1'&gt;влияния&lt;/t&gt;.&lt;br/&gt;Постарайтесь успокоить ситуацию и вернуть Мир!</Russian>
-			<Czech>Místní obyvatelstvo &lt;br/&gt;&lt;t size='1.25' color='%1'&gt;%2&lt;/t&gt;&lt;br/&gt;&lt;br/&gt; zuří a nemají ohleduplnost!&lt;br/&gt;Vezmou zbraně a odmítnou vaši &lt;t color='%1'&gt;Autoritu.&lt;/t&gt;.&lt;br/&gt;Pokuste se uklidnit situaci a vrátit mír!</Czech>
-			<Chinesesimp>&lt;br/&gt;&lt;t size='1.25' color='%1'&gt;%2&lt;/t&gt;&lt;br/&gt;&lt;br/&gt; 的当地居民对你的暴力统治感到愤怒！&lt;br/&gt;他们拿起武器，对抗你的 &lt;t color='%1'&gt;权威&lt;/t&gt;.&lt;br/&gt;努力平息局势并恢复和平！</Chinesesimp>
-			<Chinese>&lt;br/&gt;&lt;t size='1.25' color='%1'&gt;%2&lt;/t&gt;&lt;br/&gt;&lt;br/&gt; 的當地居民對你的暴力統治感到憤怒！&lt;br/&gt;他們拿起武器，對抗你的 &lt;t color='%1'&gt;權威&lt;/t&gt;.&lt;br/&gt;努力平息局勢並恢復和平！</Chinese>
-		</Key>
-		<Key ID="STR_INSURGENCY_MESSAGE2">
-			<Original>Nice work!&lt;br/&gt;&lt;br/&gt;&lt;t color='%1'&gt;%2&lt;/t&gt;&lt;br/&gt;is a safe place again!&lt;br/&gt;Their belongings are now yours to take!</Original>
-			<Russian>Отличная работа!&lt;br/&gt;&lt;br/&gt;&lt;t color='%1'&gt;%2&lt;/t&gt;&lt;br/&gt;безопасно снова!&lt;br/&gt;Их вещи теперь ваши!</Russian>
-			<Czech>Pěkná práce!&lt;br/&gt;&lt;br/&gt;&lt;t color='%1'&gt;%2&lt;/t&gt;&lt;br/&gt;je opět bezpečné místo!&lt;br/&gt;Jejich věci jsou nyní vaše!</Czech>
-			<Chinesesimp>干得漂亮！&lt;br/&gt;&lt;br/&gt;&lt;t color='%1'&gt;%2&lt;/t&gt;&lt;br/&gt;再一次回归和平！&lt;br/&gt;他们的财产现在归你们了！</Chinesesimp>
-			<Chinese>幹得漂亮！&lt;br/&gt;&lt;br/&gt;&lt;t color='%1'&gt;%2&lt;/t&gt;&lt;br/&gt;再一次回歸和平！&lt;br/&gt;他們的財產現在歸你們了！</Chinese>
-		</Key>
 
 		<!-- mission_VehicleCapture.sqf -->
 		<Key ID="STR_VEHICLECAP">
@@ -12250,18 +11381,6 @@
 
 		<!-- init_client.sqf -->
 		<!-- 加载提示 -->
-		<Key ID="STR_TITLE_LOADING">
-			<Original>... Loading ...</Original>
-			<French>... Chargement ...</French>
-			<German>... Lade ...</German>
-			<Spanish>... Cargando ...</Spanish>
-			<Russian>... Загрузка ...</Russian>
-			<Chinesesimp>……正在加载……</Chinesesimp>
-			<Chinese>……正在載入……</Chinese>
-			<Japanese>… 読み込み中 …</Japanese>
-			<Portuguese>... Carregando ...</Portuguese>
-			<Czech>... Načítání ...</Czech>
-		</Key>
 
 		<Key ID="STR_TITLE_PLEASE_WAIT">
 			<Original>... Please Wait ...</Original>
@@ -12403,30 +11522,6 @@
 			<Portuguese>Você removeu os tampões de ouvido!</Portuguese>
 			<Czech>Vyjmuli jste špunty do uší!</Czech>
 		</Key>
-		<Key ID="STR_NREEP_IN_ACTION">
-			<Original>Insert earplugs</Original>
-			<French>Mettre les bouchons anti-bruit</French>
-			<Russian>Вставить беруши</Russian>
-			<German>Ohrstoepsel einstecken</German>
-			<Spanish>Ponerte los tapones</Spanish>
-			<Chinesesimp>戴上耳塞</Chinesesimp>
-			<Chinese>戴上耳塞</Chinese>
-			<Japanese>耳栓を使用</Japanese>
-			<Portuguese>Inserir tampões de ouvido</Portuguese>
-			<Czech>Vložte špunty do uší</Czech>
-		</Key>
-		<Key ID="STR_NREEP_OUT_ACTION">
-			<Original>Remove earplugs</Original>
-			<French>Enlever les bouchons anti-bruit</French>
-			<Russian>Вытащить беруши!</Russian>
-			<German>Ohrstoepsel rausnehmen</German>
-			<Spanish>Quitarte los tapones</Spanish>
-			<Chinesesimp>摘下耳塞</Chinesesimp>
-			<Chinese>摘下耳塞</Chinese>
-			<Japanese>耳栓の取り外し</Japanese>
-			<Portuguese>Remover tampões de ouvido</Portuguese>
-			<Czech>Odstraňte špunty do uší</Czech>
-		</Key>
 	</Package>
 
 	<!-- pSiKO LRX FOB -->
@@ -12466,30 +11561,6 @@
 			<Japanese>%1 が FOB %4 に %2（全%3個のオブジェクト）を建設しました</Japanese>
 			<Portuguese>%1 construiu %2 (com %3 itens) na base avançada %4</Portuguese>
 			<Czech>%1 postavil %2 (celkem %3 objektů) na základně FOB %4</Czech>
-		</Key>
-		<Key ID="STR_FOB_DEFENSE_TEMPLATE_INFO">
-			<Original>Defense layout: %1\nCreated by: %2</Original>
-			<French>Modèle de défense : %1\nCréé par : %2\nMerci à lui !!</French>
-			<German>Verteidigungsvorlage: %1\nErstellt von: %2\nVielen Dank an ihn!!</German>
-			<Spanish>Plantilla de defensa: %1\nCreada por: %2\n¡Gracias a él!</Spanish>
-			<Russian>Шаблон обороны: %1\nСоздан: %2\nСпасибо ему!!</Russian>
-			<Chinesesimp>防御模板：%1\n创建者：%2\n感谢他的贡献！</Chinesesimp>
-			<Chinese>防禦模板：%1\n創建者：%2\n感謝他的貢獻！</Chinese>
-			<Japanese>防衛テンプレート: %1\n作成者: %2\n彼に感謝！！</Japanese>
-			<Portuguese>Modelo de defesa: %1\nCriado por: %2\nObrigado a ele!!</Portuguese>
-			<Czech>Obranná šablona: %1\nVytvořil: %2\nDíky němu!!</Czech>
-		</Key>
-		<Key ID="STR_FOB_CONSTRUCTION_IN_PROGRESS">
-			<Original>Construction in progress, %1 objects left...</Original>
-			<French>Construction en cours, il reste %1 objets...</French>
-			<German>Bau läuft, noch %1 Objekte übrig...</German>
-			<Spanish>Construcción en curso, quedan %1 objetos...</Spanish>
-			<Russian>Идёт строительство, осталось %1 объектов...</Russian>
-			<Chinesesimp>建造进行中，剩余 %1 个部件...</Chinesesimp>
-			<Chinese>建造進行中，剩餘 %1 個部件...</Chinese>
-			<Japanese>建設中、残り %1 個のオブジェクト...</Japanese>
-			<Portuguese>Construção em andamento, faltam %1 objetos...</Portuguese>
-			<Czech>Stavba probíhá, zbývá %1 objektů...</Czech>
 		</Key>
 		<Key ID="STR_FOB_DEFENSE_TEMPLATE_REJECTED">
 			<Original>Defense Template: %1 - Rejected item: %2</Original>
@@ -12611,21 +11682,6 @@
 			<Portuguese>Defesas removidas...</Portuguese>
 			<Czech>Obrana odstraněna...</Czech>
 		</Key>
-		<Key ID="STR_FOB_INITIALIZED">
-			<Original>-------- FOB Defenses Initialized --------</Original>
-		</Key>
-		<Key ID="STR_FOB_DEFENSE_NAME">
-			<Original>DEFENSE NAME</Original>
-			<French>Nom de la défense</French>
-			<German>Verteidigungsname</German>
-			<Spanish>Nombre de defensa</Spanish>
-			<Russian>Название обороны</Russian>
-			<Chinesesimp>防御名称</Chinesesimp>
-			<Chinese>防禦名稱</Chinese>
-			<Japanese>防衛名</Japanese>
-			<Portuguese>Nome da defesa</Portuguese>
-			<Czech>Název obrany</Czech>
-		</Key>
 		<Key ID="STR_FOB_BUILD">
 			<Original>Build</Original>
 			<French>CONSTRUIRE</French>
@@ -12661,18 +11717,6 @@
 			<Japanese>キャンセル</Japanese>
 			<Portuguese>Cancelar</Portuguese>
 			<Czech>Zrušit</Czech>
-		</Key>
-		<Key ID="STR_FOB_SECTORS_LIST">
-			<Original>SECTORS LIST</Original>
-			<French>LISTE DES SECTEURS</French>
-			<German>Sektor-Liste</German>
-			<Spanish>Lista de sectores</Spanish>
-			<Russian>Список секторов</Russian>
-			<Chinesesimp>区域列表</Chinesesimp>
-			<Chinese>區域列表</Chinese>
-			<Japanese>セクター一覧</Japanese>
-			<Portuguese>Lista de Setores</Portuguese>
-			<Czech>Seznam sektorů</Czech>
 		</Key>
 		<Key ID="STR_FOB_OFF">
 			<Original>Off</Original>
@@ -12783,14 +11827,6 @@
 		<Key ID="STR_JKB_RANDOM">
 			<Original>Random</Original>
 		</Key>
-		<Key ID="STR_JKB_MENU">
-			<Original>-- Jukebox --</Original>
-			<Russian>-- Музыка</Russian>
-			<Chinesesimp>-- 音乐播放器 --</Chinesesimp>
-			<Chinese>-- 音樂播放器 --</Chinese>
-			<Portuguese>-- Juke Box --</Portuguese>
-			<Czech>-- Juke Box --</Czech>
-		</Key>
 		<Key ID="STR_JKB_ACTION">
 			<Original>Jukebox</Original>
 			<Russian>Открыть Музыку</Russian>
@@ -12866,18 +11902,6 @@
 			<Czech>Klávesová zkratka: %1</Czech>
 		</Key>
 
-		<Key ID="STR_MGR_ABOUT_TITLE">
-			<Original>Mag Repack: About</Original>
-			<French>Mag Repack : À propos</French>
-			<German>Mag Repack: Über</German>
-			<Spanish>Mag Repack: Acerca de</Spanish>
-			<Russian>Mag Repack: О моде</Russian>
-			<Chinesesimp>Mag Repack：关于</Chinesesimp>
-			<Chinese>Mag Repack：關於</Chinese>
-			<Japanese>Mag Repack：情報</Japanese>
-			<Portuguese>Mag Repack: Sobre</Portuguese>
-			<Czech>Mag Repack: O doplňku</Czech>
-		</Key>
 		<Key ID="STR_MGR_OK">
 			<Original>OK</Original>
 			<French>OK</French>
@@ -12956,18 +11980,6 @@
 			<Czech>Kopírovat</Czech>
 		</Key>
 
-		<Key ID="STR_MGR_KEYBINDINGS_TITLE">
-			<Original>Mag Repack: Keybindings</Original>
-			<French>Mag Repack : Raccourcis</French>
-			<German>Mag Repack: Tastenbelegung</German>
-			<Spanish>Mag Repack: Teclas rápidas</Spanish>
-			<Russian>Mag Repack: Назначение клавиш</Russian>
-			<Chinesesimp>Mag Repack：快捷键</Chinesesimp>
-			<Chinese>Mag Repack：快捷鍵</Chinese>
-			<Japanese>Mag Repack：キー設定</Japanese>
-			<Portuguese>Mag Repack: Atalhos</Portuguese>
-			<Czech>Mag Repack: Klávesy</Czech>
-		</Key>
 
 		<Key ID="STR_MGR_CANCEL">
 			<Original>Cancel</Original>
@@ -12995,161 +12007,17 @@
 			<Czech>Použít</Czech>
 		</Key>
 
-		<Key ID="STR_MGR_KEYBINDING_LABEL">
-			<Original>Keybinding:</Original>
-			<French>Raccourci clavier :</French>
-			<German>Tastenkombination:</German>
-			<Spanish>Tecla asignada:</Spanish>
-			<Russian>Назначение клавиши:</Russian>
-			<Chinesesimp>快捷键：</Chinesesimp>
-			<Chinese>快捷鍵：</Chinese>
-			<Japanese>キー割り当て：</Japanese>
-			<Portuguese>Atalho:</Portuguese>
-			<Czech>Klávesová zkratka:</Czech>
-		</Key>
 
-		<Key ID="STR_MGR_MODIFIERS_LABEL">
-			<Original>Modifiers:</Original>
-			<French>Modificateurs :</French>
-			<German>Modifikatoren:</German>
-			<Spanish>Modificadores:</Spanish>
-			<Russian>Модификаторы:</Russian>
-			<Chinesesimp>组合键：</Chinesesimp>
-			<Chinese>組合鍵：</Chinese>
-			<Japanese>修飾キー：</Japanese>
-			<Portuguese>Modificadores:</Portuguese>
-			<Czech>Modifikátory:</Czech>
-		</Key>
 
-		<Key ID="STR_MGR_TITLE">
-			<Original>Mag Repack</Original>
-			<French>Mag Repack</French>
-			<German>Mag Repack</German>
-			<Spanish>Mag Repack</Spanish>
-			<Russian>Mag Repack</Russian>
-			<Chinesesimp>弹匣整理</Chinesesimp>
-			<Chinese>彈匣整理</Chinese>
-			<Japanese>Mag Repack</Japanese>
-			<Portuguese>Mag Repack</Portuguese>
-			<Czech>Mag Repack</Czech>
-		</Key>
 
-		<Key ID="STR_MGR_ALL_MAGAZINES">
-			<Original>All Magazines</Original>
-			<French>Tous les chargeurs</French>
-			<German>Alle Magazine</German>
-			<Spanish>Todos los cargadores</Spanish>
-			<Russian>Все магазины</Russian>
-			<Chinesesimp>所有弹匣</Chinesesimp>
-			<Chinese>所有彈匣</Chinese>
-			<Japanese>すべてのマガジン</Japanese>
-			<Portuguese>Todos os pentes</Portuguese>
-			<Czech>Všechny zásobníky</Czech>
-		</Key>
 
-		<Key ID="STR_MGR_SOURCE">
-			<Original>Source</Original>
-			<French>Source</French>
-			<German>Quelle</German>
-			<Spanish>Origen</Spanish>
-			<Russian>Источник</Russian>
-			<Chinesesimp>来源</Chinesesimp>
-			<Chinese>來源</Chinese>
-			<Japanese>ソース</Japanese>
-			<Portuguese>Fonte</Portuguese>
-			<Czech>Zdroj</Czech>
-		</Key>
 
-		<Key ID="STR_MGR_TARGET">
-			<Original>Target</Original>
-			<French>Cible</French>
-			<German>Ziel</German>
-			<Spanish>Destino</Spanish>
-			<Russian>Цель</Russian>
-			<Chinesesimp>目标</Chinesesimp>
-			<Chinese>目標</Chinese>
-			<Japanese>ターゲット</Japanese>
-			<Portuguese>Alvo</Portuguese>
-			<Czech>Cíl</Czech>
-		</Key>
 
-		<Key ID="STR_MGR_OPTIONS">
-			<Original>Options</Original>
-			<French>Options</French>
-			<German>Optionen</German>
-			<Spanish>Opciones</Spanish>
-			<Russian>Настройки</Russian>
-			<Chinesesimp>选项</Chinesesimp>
-			<Chinese>選項</Chinese>
-			<Japanese>オプション</Japanese>
-			<Portuguese>Opções</Portuguese>
-			<Czech>Možnosti</Czech>
-		</Key>
 
-		<Key ID="STR_MGR_DEBUG_MODE">
-			<Original>Debug Mode</Original>
-			<French>Mode Debug</French>
-			<German>Debug-Modus</German>
-			<Spanish>Modo de depuración</Spanish>
-			<Russian>Режим отладки</Russian>
-			<Chinesesimp>调试模式</Chinesesimp>
-			<Chinese>調試模式</Chinese>
-			<Japanese>デバッグモード</Japanese>
-			<Portuguese>Modo de depuração</Portuguese>
-			<Czech>Ladicí režim</Czech>
-		</Key>
 
-		<Key ID="STR_MGR_SHOW_FULL">
-			<Original>Show Full</Original>
-			<French>Afficher tout</French>
-			<German>Vollständig anzeigen</German>
-			<Spanish>Mostrar todo</Spanish>
-			<Russian>Показать полностью</Russian>
-			<Chinesesimp>显示完整</Chinesesimp>
-			<Chinese>顯示完整</Chinese>
-			<Japanese>全て表示</Japanese>
-			<Portuguese>Mostrar completo</Portuguese>
-			<Czech>Zobrazit vše</Czech>
-		</Key>
 
-		<Key ID="STR_MGR_KEYBINDINGS">
-			<Original>Keybindings</Original>
-			<French>Raccourcis</French>
-			<German>Tastenbelegung</German>
-			<Spanish>Teclas rápidas</Spanish>
-			<Russian>Назначение клавиш</Russian>
-			<Chinesesimp>快捷键</Chinesesimp>
-			<Chinese>快捷鍵</Chinese>
-			<Japanese>キー設定</Japanese>
-			<Portuguese>Atalhos</Portuguese>
-			<Czech>Klávesy</Czech>
-		</Key>
 
-		<Key ID="STR_MGR_ABOUT">
-			<Original>About</Original>
-			<French>À propos</French>
-			<German>Über</German>
-			<Spanish>Acerca de</Spanish>
-			<Russian>О моде</Russian>
-			<Chinesesimp>关于</Chinesesimp>
-			<Chinese>關於</Chinese>
-			<Japanese>情報</Japanese>
-			<Portuguese>Sobre</Portuguese>
-			<Czech>O doplňku</Czech>
-		</Key>
 
-		<Key ID="STR_MGR_HIDE">
-			<Original>Hide</Original>
-			<French>Masquer</French>
-			<German>Ausblenden</German>
-			<Spanish>Ocultar</Spanish>
-			<Russian>Скрыть</Russian>
-			<Chinesesimp>隐藏</Chinesesimp>
-			<Chinese>隱藏</Chinese>
-			<Japanese>非表示</Japanese>
-			<Portuguese>Ocultar</Portuguese>
-			<Czech>Skrýt</Czech>
-		</Key>
 
 		<Key ID="STR_MGR_KEYBINDING_RESET">
 			<Original>Mag Repack keybinding has been reset to </Original>
@@ -13282,54 +12150,6 @@
 			<Portuguese>%1 foi promovido ao posto de %2!</Portuguese>
 			<Czech>%1 byl povýšen na hodnost %2!</Czech>
 		</Key>
-		<Key ID="STR_PAR_REVIVE_RESTORED">
-			<Original>%1 revive restored (%2)!</Original>
-			<French>Réanimer %1 restauré (%2) !!</French>
-			<German>%1 Wiederbelebung wiederhergestellt (%2) !!</German>
-			<Spanish>¡Reanimación de %1 restaurada (%2)!</Spanish>
-			<Russian>Возрождение %1 восстановлено (%2) !!</Russian>
-			<Chinesesimp>%1 的复活已恢复（%2 次）！！</Chinesesimp>
-			<Chinese>%1 的復活已恢復（%2 次）！！</Chinese>
-			<Japanese>%1 の蘇生が復元されました（%2）！！</Japanese>
-			<Portuguese>Reanimação de %1 restaurada (%2) !!</Portuguese>
-			<Czech>Oživení %1 obnoveno (%2) !!</Czech>
-		</Key>
-		<Key ID="STR_PAR_HEALING_FASTER">
-			<Original>%1 is Healing faster...</Original>
-			<French>%1 se soigne plus rapidement...</French>
-			<German>%1 heilt schneller...</German>
-			<Spanish>%1 se está curando más rápido...</Spanish>
-			<Russian>%1 лечится быстрее...</Russian>
-			<Chinesesimp>%1 正在加速治疗……</Chinesesimp>
-			<Chinese>%1 正在加速治療……</Chinese>
-			<Japanese>%1 はより早く回復中…</Japanese>
-			<Portuguese>%1 está se curando mais rápido...</Portuguese>
-			<Czech>%1 se léčí rychleji...</Czech>
-		</Key>
-		<Key ID="STR_PAR_NEED_MEDICAL_SUPPORT">
-			<Original>WARNING: %1 need Medical Support Now!</Original>
-			<French>ATTENTION : %1 a besoin d'un soutien médical !!</French>
-			<German>WARNUNG: %1 benötigt sofort medizinische Hilfe !!</German>
-			<Spanish>¡ADVERTENCIA: %1 necesita ayuda médica ahora!</Spanish>
-			<Russian>ВНИМАНИЕ: %1 срочно нуждается в медпомощи !!</Russian>
-			<Chinesesimp>警告：%1 现在需要医疗支援！！</Chinesesimp>
-			<Chinese>警告：%1 現在需要醫療支援！！</Chinese>
-			<Japanese>警告：%1 は今すぐ医療支援が必要です！！</Japanese>
-			<Portuguese>AVISO: %1 precisa de ajuda médica agora !!</Portuguese>
-			<Czech>VAROVÁNÍ: %1 potřebuje lékařskou pomoc !!</Czech>
-		</Key>
-		<Key ID="STR_PAR_CRITICAL_NO_REVIVE">
-			<Original>CRITICAL: %1 will NOT Revive anymore!</Original>
-			<French>CRITIQUE : %1 ne pourra plus être réanimé !!</French>
-			<German>KRITISCH: %1 kann nicht mehr wiederbelebt werden !!</German>
-			<Spanish>CRÍTICO: ¡%1 ya no podrá reanimarse!</Spanish>
-			<Russian>КРИТИЧНО: %1 больше не сможет быть возрождён !!</Russian>
-			<Chinesesimp>致命：%1 将无法再复活！！</Chinesesimp>
-			<Chinese>致命：%1 將無法再復活！！</Chinese>
-			<Japanese>致命：%1 はもう蘇生できません！！</Japanese>
-			<Portuguese>CRÍTICO: %1 não poderá mais ser reanimado !!</Portuguese>
-			<Czech>KRITICKÉ: %1 už nebude možné oživit !!</Czech>
-		</Key>
 		<Key ID="STR_PAR_VEHICLE_STATUS_HINT">
 			<Original>Owner: %1\nDamage: %2%%\nFuel: %3%%\nAmmo: %4%%\nCargo: %5/%6</Original>
 			<French>Proprietaire: %1\nDommages: %2%%\nCarburant: %3%%\nMunitions: %4%%\nCargaison: %5/%6</French>
@@ -13353,16 +12173,6 @@
 			<Japanese>お待ちください %1、 %2 (距離: %3m/%4)、 が向かっています...</Japanese>
 			<Portuguese>Aguarde %1, %2 (dist: %3m/%4), está a caminho...</Portuguese>
 			<Czech>Čekejte prosím %1, %2 (vzdálenost: %3m/%4), je na cestě...</Czech>
-		</Key>
-		<Key ID="STR_PAR_CW_01">
-			<Original>I'm going to heal %1!</Original>
-			<Russian>Я собираюсь вылечить %1!</Russian>
-			<French>Je vais guérir %1 !</French>
-			<Chinesesimp>我前去救 %1 ！</Chinesesimp>
-			<Chinese>我前去救 %1 ！</Chinese>
-			<Japanese>私は %1 を治療に向かう！</Japanese>
-			<Portuguese>Eu vou curar% 1!</Portuguese>
-			<Czech>Chystám se vyléčit %1!</Czech>
 		</Key>
 		<Key ID="STR_PAR_MD_01">
 			<Original>%1, no available medic could be found nearby.</Original>
@@ -13503,12 +12313,6 @@
 			<Japanese>-- キャンセル</Japanese>
 			<Portuguese>-- TÁXI Cancelar</Portuguese>
 			<Czech>-- TAXI Zrušit</Czech>
-		</Key>
-		<Key ID="STR_TAXI_ACTION3">
-			<Original>-- TAXI Ejection</Original>
-			<French>-- TAXI Éjection</French>
-			<Chinesesimp>-- TAXI 弹射</Chinesesimp>
-			<Chinese>-- TAXI 彈射</Chinese>
 		</Key>
 		<Key ID="STR_TAXI_TOO_CLOSE">
 			<Original>You are too close to headquarters to call an air taxi.</Original>
@@ -13739,14 +12543,6 @@
 
 	<!-- pSiKO LRX SELL Shop -->
 	<Package name="LRX_SELL">
-		<Key ID="STR_SELL_NAME">
-			<Original>-- Sell Shop --</Original>
-			<Russian>-- Продавец --</Russian>
-			<Chinesesimp>-- 当铺 --</Chinesesimp>
-			<Chinese>-- 當鋪 --</Chinese>
-			<Portuguese>-- Loja de Venda --</Portuguese>
-			<Czech>-- Obchod --</Czech>
-		</Key>
 	</Package>
 
 	<!-- pSiKO LRX Sticky Bomb -->
@@ -13760,9 +12556,6 @@
 		<Key ID="STR_STICKY_NO_CHARGE">
 			<Original>You have no suitable explosives.</Original>
 		</Key>
-		<Key ID="STR_STICKY_LIMIT_CHARGE">
-			<Original>Too many charges are already attached to %1.</Original>
-		</Key>
 		<Key ID="STR_STICKY_MSG_WIRE">
 			<Original>Wiring bomb to %1...</Original>
 		</Key>
@@ -13774,14 +12567,6 @@
 
 	<!-- pSiKO LRX Traders Shop -->
 	<Package name="LRX_SHOP">
-		<Key ID="STR_SHOP_NAME">
-			<Original>-- Traders Shop --</Original>
-			<Russian>-- Торговец --</Russian>
-			<Chinesesimp>-- 贸易商店 --</Chinesesimp>
-			<Chinese>-- 貿易商店 --</Chinese>
-			<Portuguese>-- Loja de Comerciantes --</Portuguese>
-			<Czech>-- Traders Shop --</Czech>
-		</Key>
 		<Key ID="STR_SHOP_ENTER">
 			<Original>-- ENTER SHOP</Original>
 			<Russian>-- ВОЙТИ В МАГАЗИН</Russian>
@@ -13848,12 +12633,6 @@
 
 	<!-- LRX Warehouse-->
 	<Package name="LRX_WAREHOUSE">
-		<Key ID="STR_WAREHOUSE_SHOP">
-			<Original>Warehouse</Original>
-			<French>-- Entrepôt --</French>
-			<Chinesesimp>-- 仓库 --</Chinesesimp>
-			<Chinese>-- 倉庫 --</Chinese>
-		</Key>
 		<Key ID="STR_WAREHOUSE_ENTER">
 			<Original>-- ENTER WAREHOUSE</Original>
 			<Chinesesimp>-- 进入仓库</Chinesesimp>
@@ -14064,11 +12843,6 @@
 			<Chinesesimp>-------- 车辆配置管理器已初始化 --------</Chinesesimp>
 			<Chinese>-------- 車輛配寘管理器已初始化 --------</Chinese>
 		</Key>
-		<Key ID="STR_VAM_MAIN_MENU_NAME">
-			<Original>--- PAINT and SHOP ---</Original>
-			<Chinesesimp>--- 喷漆和购物 --</Chinesesimp>
-			<Chinese>--- 噴漆和購物 --</Chinese>
-		</Key>
 		<Key ID="STR_VAM_RESET_VEHICLE">
 			<Original>Reset</Original>
 			<Russian>Сбросить</Russian>
@@ -14097,14 +12871,6 @@
 			<Original>Free Space :</Original>
 			<Chinesesimp>剩余空间：</Chinesesimp>
 			<Chinese>剩餘空間：</Chinese>
-		</Key>
-		<Key ID="STR_VAM_FOB_CONDITION_CHECK_FAILED">
-			<Original>You must be within %1 m of a FOB.</Original>
-			<Russian>Вы должны быть в %1м от FOB.</Russian>
-			<Korean>FOB에서 %1m 안에 있어야 합니다.</Korean>
-			<Czech>Měli byste být %1m od FOB.</Czech>
-			<Chinesesimp>你应该距离 FOB %1m 内。</Chinesesimp>
-			<Chinese>你應該距離 FOB %1m 內。</Chinese>
 		</Key>
 		<Key ID="STR_VAM_COMPLETE_RESET">
 			<Original>Reset complete</Original>
@@ -14146,11 +12912,6 @@
 			<Chinesesimp>没有任何部件</Chinesesimp>
 			<Chinese>沒有任何部件</Chinese>
 		</Key>
-		<Key ID="STR_VAM_NO_ARSENAL">
-			<Original>There are no items available.</Original>
-			<Chinesesimp>没有任何物品</Chinesesimp>
-			<Chinese>沒有任何物品</Chinese>
-		</Key>
 		<Key ID="STR_VAM_ARSENAL">
 			<Original>Arsenal Items</Original>
 			<Chinesesimp>武器库物品</Chinesesimp>
@@ -14161,56 +12922,8 @@
 			<Chinesesimp>装入库存</Chinesesimp>
 			<Chinese>裝入庫存</Chinese>
 		</Key>
-		<Key ID="STR_VAM_MARID_V1_NOTICE">
-			<Original>Your Marid is outdated one.\nVehicle component setup may not be loaded next time.\nPlease contact with your server admin.</Original>
-			<Russian>Ваш Marid устарел.\nНастройка компонентов автомобиля может не загрузиться в следующий раз.\nПожалуйста, свяжитесь с администратором вашего сервера.</Russian>
-			<Korean>당신의 마리드는 오래된 것입니다.\n다음 번에 차량 구성품 설정을 불러올 수 없을 것입니다.\n해당 서버 관리자와 연락을 취해보십시오.</Korean>
-			<Czech>Váš Marid je zastaralý.\nNastavení Komponent vozidla se nemusí příště načíst.\nKontaktujte prosím svého správce serveru.</Czech>
-			<Chinesesimp>下次可能无法加载车辆组件设置，\n请联系服务器管理员。</Chinesesimp>
-			<Chinese>下次可能無法加載車輛組件設定，\n請聯系服務器管理員。</Chinese>
-		</Key>
 
 		<!-- Camouflage/위장 -->
-		<Key ID="STR_VAM_BLUFOR_CAMO">
-			<Original>BLUFOR</Original>
-			<Russian>Синий</Russian>
-			<Korean>청군</Korean>
-			<Czech>Modrý</Czech>
-			<Chinesesimp>北约</Chinesesimp>
-			<Chinese>北約</Chinese>
-		</Key>
-		<Key ID="STR_VAM_GREEN_CAMO">
-			<Original>Green</Original>
-			<Russian>Зеленый</Russian>
-			<Korean>녹색</Korean>
-			<Czech>Zelený</Czech>
-			<Chinesesimp>绿色</Chinesesimp>
-			<Chinese>綠色</Chinese>
-		</Key>
-		<Key ID="STR_VAM_BLACK_CAMO">
-			<Original>Black</Original>
-			<Russian>Черный</Russian>
-			<Korean>검정색</Korean>
-			<Czech>Černý</Czech>
-			<Chinesesimp>纯黑</Chinesesimp>
-			<Chinese>純黑</Chinese>
-		</Key>
-		<Key ID="STR_VAM_AAF_CAMO">
-			<Original>AAF</Original>
-			<Russian>AAF</Russian>
-			<Korean>AAF</Korean>
-			<Czech>AAF</Czech>
-			<Chinesesimp>AAF</Chinesesimp>
-			<Chinese>AAF</Chinese>
-		</Key>
-		<Key ID="STR_VAM_DARK_GREEN_CAMO">
-			<Original>Dark Green</Original>
-			<Russian>Темно зеленый</Russian>
-			<Korean>어두운 녹색</Korean>
-			<Czech>Tmavozelený</Czech>
-			<Chinesesimp>墨绿</Chinesesimp>
-			<Chinese>墨綠</Chinese>
-		</Key>
 	</Package>
 
 </Project>

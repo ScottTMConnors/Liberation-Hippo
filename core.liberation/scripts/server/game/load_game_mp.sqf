@@ -96,7 +96,7 @@ if (GRLIB_param_wipe_context == 0) then {
 	};
 } else {
 	// Wipe Context
-	diag_log format ["--- LRX Player Context Erased!", GRLIB_save_key];
+	diag_log format ["--- LRX Player Context %1 Erased!", GRLIB_save_key];
 };
 
 // Wipe Savegame
@@ -145,12 +145,12 @@ if (!isNil "_lrx_liberation_savegame") then {
 	buildings_to_load = _lrx_liberation_savegame select 2;
 	time_of_day = _lrx_liberation_savegame select 3;
 	combat_readiness = _lrx_liberation_savegame select 4;
-	_sector_defense = _lrx_liberation_savegame select 5;
-	//_unused = _lrx_liberation_savegame select 6;
+	private _sector_defense = _lrx_liberation_savegame select 5;
+	// slot 6 holds the save version (read above)
 	_side_west = _lrx_liberation_savegame select 7;
 	_side_east = _lrx_liberation_savegame select 8;
-	_warehouse = _lrx_liberation_savegame select 9;
-	_stats = _lrx_liberation_savegame param [10, [], [[]]];
+	private _warehouse = _lrx_liberation_savegame select 9;
+	private _stats = _lrx_liberation_savegame param [10, [], [[]]];
 		stats_opfor_soldiers_killed = _stats param [0, 0];
 		stats_opfor_killed_by_players = _stats param [1, 0];
 		stats_blufor_soldiers_killed = _stats param [2, 0];
@@ -179,7 +179,7 @@ if (!isNil "_lrx_liberation_savegame") then {
 		stats_fobs_built = _stats param [25, 0];
 		stats_fobs_lost = _stats param [26, 0];
 		stats_readiness_earned = _stats param [27, 0];
-	_weights = _lrx_liberation_savegame param [11, [], [[]]];
+	private _weights = _lrx_liberation_savegame param [11, [], [[]]];
 		infantry_weight = _weights param [0, 33];
 		armor_weight = _weights param [1, 33];
 		air_weight = _weights param [2, 33];

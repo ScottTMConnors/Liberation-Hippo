@@ -224,3 +224,5 @@ HPC_fnc_nearOf = compileFinal preprocessFileLineNumbers "scripts\shared\function
 HPC_fnc_nearRegister = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_nearRegister.sqf"; // register a near-scan handler (HPC_nearScan.sqf)
 HPC_nearHandlers = [];
 HPC_nearKindCache = createHashMap;
+HPC_nearKeys = createHashMap;
+HPC_nearClasses = [];

@@ -119,6 +119,7 @@ class par_respawn {
 		idc = 677;
 		x = PAR_X + PAR_PAD; y = PAR_Y + PAR_H - 3.9 * HPC_GY; w = 17 * HPC_GX; h = 2.9 * HPC_GY;
 		text = "Respawn";
+		tooltip = "Give up and respawn at a spawn point (available when the timer allows it).";
 		action = "closeDialog 0; if (GRLIB_ACE_medical_enabled) then {[player] call ace_medical_statemachine_fnc_enteredStateDeath} else {player setDamage 1}";
 		colorDisabled[] = {1,1,1,0.75};
 		colorBackgroundActive[] = HPC_C_DANGER;
@@ -131,6 +132,7 @@ class par_respawn {
 		idc = 679;
 		x = PAR_X + PAR_W - PAR_PAD - 17 * HPC_GX; y = PAR_Y + PAR_H - 3.9 * HPC_GY; w = 17 * HPC_GX; h = 2.9 * HPC_GY;
 		text = "Call Medic";
+		tooltip = "Ask the nearest medic in your squad to come and revive you.";
 		action = "[] spawn PAR_fn_medicRecall";
 		colorDisabled[] = {0.03,0.06,0.06,0.6};
 		colorBackgroundDisabled[] = {0.20,0.42,0.38,0.5};

@@ -92,6 +92,6 @@ fob_attack_in_progress = fob_attack_in_progress - [_fob_pos];
 publicVariable "fob_attack_in_progress";
 
 [] call manage_sectors_commander;
-if (count (units _grp) > 0) then {_grp spawn {sleep 60; {deleteVehicle _x} foreach (units _this); deleteGroup _this}};
+if (count (units _grp) > 0) then {_grp spawn {sleep 60; {[_x] call HPC_fnc_deleteUnit} foreach (units _this); deleteGroup _this}};
 
 diag_log format ["End Attack FOB %1 at %2", _fob_pos, time];

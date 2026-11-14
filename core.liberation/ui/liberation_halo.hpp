@@ -87,11 +87,13 @@ class liberation_halo {
 		idc = 202;
 		x = HAL_X + HAL_PAD; y = HAL_Y + HAL_H - 4.4 * HPC_GY; w = HAL_W - 2 * HAL_PAD; h = 3.2 * HPC_GY;
 		text = $STR_HALO_PARAM;
+		tooltip = "Jump from the aircraft over the point marked on the map.";
 		action = "dojump = 1;";
 	};
 	class CancelButton : HPC_Button {
 		x = HAL_X + HAL_PAD; y = HAL_Y + HAL_H - 7.6 * HPC_GY; w = HAL_W - 2 * HAL_PAD; h = 2.8 * HPC_GY;
 		text = $STR_RECYCLING_CANCEL;
+		tooltip = "Close without jumping.";
 		action = "closeDialog 0;";
 	};
 	class DeployMap : kndr_MapControl {

@@ -102,6 +102,9 @@ if (abort_loading) exitWith {
 		publicVariable "GRLIB_init_server";
 		publicVariable "abort_loading";
 		publicVariable "abort_loading_msg";
+		// release clients and headless clients waiting for the parameters, so they show the error
+		GRLIB_LRX_server_params_loaded = true;
+		publicVariable "GRLIB_LRX_server_params_loaded";
 	};
 	diag_log "--- LRX Startup Error ---";
 	diag_log abort_loading_msg;
@@ -131,6 +134,9 @@ if (abort_loading) exitWith {
 		publicVariable "GRLIB_init_server";
 		publicVariable "abort_loading";
 		publicVariable "abort_loading_msg";
+		// release clients and headless clients waiting for the parameters, so they show the error
+		GRLIB_LRX_server_params_loaded = true;
+		publicVariable "GRLIB_LRX_server_params_loaded";
 	};
 	diag_log "--- LRX Startup Error ---";
 	diag_log abort_loading_msg;

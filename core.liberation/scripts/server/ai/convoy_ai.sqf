@@ -123,7 +123,9 @@ if (_convoy_attacked) then {
 			if (!alive _vehicle) exitWith {};
 			if (_vehicle isKindOf "Air") then {
 				_vehicle land "LAND";
-				waitUntil { sleep 0.1; round (getPos _vehicle select 2) <= 4 };
+				// give up after 90 s (shot down above the trees, nowhere to land)
+				private _until = time + 90;
+				waitUntil { sleep 1; !alive _vehicle || {time > _until} || {round (getPos _vehicle select 2) <= 4} };
 			} else {
 				doStop (driver _vehicle);
 				sleep 2;
@@ -142,7 +144,8 @@ if (_convoy_attacked) then {
 	(units _grp) allowGetIn false;
 	(units _grp) orderGetIn false;
 
-	waitUntil { sleep 1; ({ !(isNull objectParent _x) } count (units _grp) == 0) };
+	private _until = time + 120;
+	waitUntil { sleep 1; time > _until || {({ alive _x && {!(isNull objectParent _x)} } count (units _grp) == 0)} };
 
 	// Group Behaviour
 	_grp setBehaviourStrong "AWARE";

@@ -69,7 +69,9 @@ _successExec = {
 	// Mission completed
 	[_vehicle] spawn {
 		params ["_veh"];
-		waitUntil {	sleep 1; (round (getPos _veh select 2) <= 6) };
+		private _until = time + 60;	// a wreck caught in trees or on a roof never comes down
+		waitUntil {	sleep 1; isNull _veh || {time > _until} || {round (getPos _veh select 2) <= 6} };
+		if (isNull _veh) exitWith {};
 		sleep 2;
 		private _sea_deep = round ((getPosATL _veh select 2) - (getPosASL _veh select 2));
 		if (_sea_deep <= 20) then {

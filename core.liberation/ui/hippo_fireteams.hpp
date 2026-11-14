@@ -210,7 +210,8 @@ class HPC_Fireteams {
         };
         class MoveTarget : HPC_Combo {
             idc = 2633;
-            x = FT_RIGHT_X + FT_RET_W + FT_GAP; y = FT_BTN_Y + 0.3 * HPC_GY; w = FT_COMBO_W; h = 2.0 * HPC_GY;
+            x = FT_RIGHT_X + FT_RET_W + FT_GAP; y = FT_BTN_Y + 0.3 * HPC_GY; w = FT_COMBO_W; h = FT_BTN_H - 0.6 * HPC_GY;
+            sizeEx = 0.9 * HPC_GY;
             tooltip = "The on-foot fireteam to move the selected members to.";
         };
         class Move : HPC_Button {
