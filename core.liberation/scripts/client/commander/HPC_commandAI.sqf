@@ -138,7 +138,7 @@ for "_i" from 0 to (floor (_listH / _rowHeight) - 1) do {
     }];
     _checks pushBack _check;
 };
-private _slotKeys = ["Assault 1", "Assault 2", "Armor 1", "Armor 2", "Armor 3", "Armor 4", "Armor 5"];
+private _slotKeys = ["Assault 1", "Assault 2", "Assault 3", "Assault 4", "Armor 1", "Armor 2", "Armor 3", "Armor 4", "Armor 5"];
 private _prices = missionNamespace getVariable ["HPC_armorPrices", createHashMap];
 private _tankPrice = _prices getOrDefault ["tank", 35];
 private _apcPrice = _prices getOrDefault ["apc", 15];
@@ -194,7 +194,7 @@ while {!isNull _display} do {
             call _fillDestinations;
         };
 
-        // One row per warfare slot (Assault 1-2, Armor 1-5): its live group, or its respawn state.
+        // One row per warfare slot (Assault 1-4, Armor 1-5): its live group, or its respawn state.
         private _live = (call HPC_fnc_mapForceGroups) select {(_x getVariable ["HPC_warfareRole", ""]) in ["infantry", "light", "heavy"]};
         private _rows = [];
         {
@@ -232,9 +232,13 @@ while {!isNull _display} do {
             if (isNull _group) then {
                 _slot params [["_state", "waiting"], ["_readyAt", -1]];
                 private _left = round ((_readyAt - serverTime) max 0);
-                private _right = if (_state == "respawning") then {
-                    if (_left > 0) then {format ["Respawn %1:%2", floor (_left / 60), [_left mod 60, 2] call _pad]} else {"Respawning..."}
-                } else {"Waiting for battle"};
+                private _right = switch (_state) do {
+                    case "respawning": {
+                        if (_left > 0) then {format ["Respawn %1:%2", floor (_left / 60), [_left mod 60, 2] call _pad]} else {"Respawning..."}
+                    };
+                    case "locked": {format ["Unlocks at %1 sectors (%2 held)", _readyAt, count blufor_sectors]};
+                    default {"Waiting for battle"};
+                };
                 _groupsList lbSetText [_row, _key + (["", "  -  " + _pointsText] select (_pointsText != ""))];
                 _groupsList lbSetTextRight [_row, _right];
                 _groupsList lbSetPicture [_row, [["b_inf", "b_armor"] select (_key find "Armor" == 0)] call HPC_fnc_mapIcon];

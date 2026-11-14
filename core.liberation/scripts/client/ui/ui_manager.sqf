@@ -79,6 +79,15 @@ while {true} do {
 			(_overlay displayCtrl 104) ctrlSetText str (round _reputation);
 			(_overlay displayCtrl 105) ctrlSetText format ["%1%2", round combat_readiness, "%"];
 			(_overlay displayCtrl 106) ctrlSetText str (round resources_intel);
+			// a value too long for its column shrinks to fit instead of being cut off
+			{
+				private _ctrl = _overlay displayCtrl _x;
+				private _full = safezoneH / 54;
+				_ctrl ctrlSetFontHeight _full;
+				private _room = (ctrlPosition _ctrl) select 2;
+				private _width = ctrlTextWidth _ctrl;
+				if (_width > _room) then { _ctrl ctrlSetFontHeight (_full * ((_room / _width) max 0.6)) };
+			} forEach [107, 102, 103, 101, 104, 105, 106];
 
 			// Rank strip: insignia, rank name, XP toward the next rank.
 			private _xp = player getVariable ["GREUH_score_count", 0];

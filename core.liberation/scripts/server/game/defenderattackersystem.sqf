@@ -80,10 +80,28 @@ HPC_fnc_warfareGo = compileFinal {
 };
 // Status of each friendly warfare slot for the commander window, which also lists slots
 // whose squad or vehicle is waiting to respawn: HPC_warfareSlot_<key> = [state, readyAt]
-// with state "waiting" (no battle), "active" or "respawning" (readyAt in serverTime).
+// with state "waiting" (no battle), "active", "respawning" (readyAt in serverTime) or
+// "locked" (second value: sectors needed to unlock it).
 HPC_fnc_warfareSlot = compileFinal {
     params ["_key", "_state", ["_delay", 0]];
-    missionNamespace setVariable ["HPC_warfareSlot_" + _key, [_state, [-1, serverTime + _delay] select (_state == "respawning")], true];
+    missionNamespace setVariable ["HPC_warfareSlot_" + _key, [_state, switch (_state) do {
+        case "respawning": {serverTime + _delay};
+        case "locked": {_delay};
+        default {-1};
+    }], true];
+};
+// The friendly force grows with the campaign: one assault squad and one armor crew to start,
+// one more of each for every 2 sectors held (up to 4 assault squads and 5 armor crews).
+// Slot N needs 2 * (N - 1) sectors. A squad already out keeps fighting if sectors are lost;
+// the slot just does not respawn until the count is back.
+HPC_fnc_warfareSectorsFor = compileFinal { params ["_number"]; 2 * (_number - 1) };
+HPC_fnc_warfareUnlockWait = compileFinal {
+    params ["_key", "_number"];
+    private _needed = [_number] call HPC_fnc_warfareSectorsFor;
+    if (count blufor_sectors >= _needed) exitWith {};
+    [_key, "locked", _needed] call HPC_fnc_warfareSlot;
+    waitUntil {sleep 5; !(call HPC_fnc_warfareActive) || {count blufor_sectors >= _needed}};
+    if (call HPC_fnc_warfareActive) then {[_key, "waiting"] call HPC_fnc_warfareSlot};
 };
 // Public tags read by the map overlay and the commander window.
 HPC_fnc_warfareTag = compileFinal {
@@ -101,6 +119,7 @@ HPC_fnc_warfareInfantry = compileFinal {
     private _slot = format ["Assault %1", _number];
     if (!_enemy) then {[_slot, "waiting"] call HPC_fnc_warfareSlot};
     while {call HPC_fnc_warfareActive} do {
+        if (!_enemy) then {[_slot, _number] call HPC_fnc_warfareUnlockWait};
         waitUntil {sleep 2; !(call HPC_fnc_warfareActive) || {count GRLIB_all_fobs > 0 && count active_sectors > 0}};
         if !(call HPC_fnc_warfareActive) exitWith {};
         private _origin = if (_enemy) then {markerPos (selectRandom active_sectors)} else {+(selectRandom GRLIB_all_fobs)};
@@ -162,6 +181,7 @@ HPC_fnc_warfareVehicle = compileFinal {
     private _typeNames = createHashMapFromArray [["tank", "Tank"], ["apc", "APC"], ["mrap", "MRAP"]];
     [_key, "waiting"] call HPC_fnc_warfareSlot;
     while {call HPC_fnc_warfareActive} do {
+        [_key, _number] call HPC_fnc_warfareUnlockWait;
         waitUntil {sleep 2; !(call HPC_fnc_warfareActive) || {count GRLIB_all_fobs > 0 && count active_sectors > 0}};
         if !(call HPC_fnc_warfareActive) exitWith {};
         private _pools = [] call HPC_fnc_armorPools;
@@ -279,7 +299,7 @@ if !(call HPC_fnc_warfareActive) exitWith {HPC_warfareRunning = false};
 };
 waitUntil {sleep 1; !(call HPC_fnc_warfareActive) || {count active_sectors > 0}};
 if !(call HPC_fnc_warfareActive) exitWith {HPC_warfareRunning = false};
-for "_i" from 1 to 2 do {[false, _i] spawn HPC_fnc_warfareInfantry; sleep 6};
+for "_i" from 1 to 4 do {[false, _i] spawn HPC_fnc_warfareInfantry; sleep 6};
 for "_i" from 1 to 2 do {[true, _i] spawn HPC_fnc_warfareInfantry; sleep 6};
 for "_i" from 1 to 5 do {[_i] spawn HPC_fnc_warfareVehicle; sleep 6};
 waitUntil {sleep 5; !(call HPC_fnc_warfareActive)};

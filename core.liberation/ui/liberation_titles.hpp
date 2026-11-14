@@ -196,7 +196,7 @@ class RscTitles
    };
 
    // Right-hand HUD: one compact translucent column (resources, alert, operations).
-   #define HUD_W (15 * HPC_GX)
+   #define HUD_W (18 * HPC_GX)
    #define HUD_X (HPC_RIGHT - 0.8 * HPC_GX - HUD_W)
    #define HUD_Y (safezoneY + 0.46 * safezoneH)
    #define HUD_CELL (HUD_W / 4)
@@ -228,26 +228,26 @@ class RscTitles
 			colorText[] = {0.92,0.94,0.95,0.9};
 		};
 		class HudValue : HPC_Text {
-			style = ST_LEFT;
-			w = HUD_CELL - 1.7 * HPC_GX; h = 1.25 * HPC_GY;
+			style = ST_RIGHT;	// numbers line up on the right edge of each column
+			w = HUD_CELL - 2.1 * HPC_GX; h = 1.25 * HPC_GY;
 			font = "PuristaSemibold";
 			sizeEx = 1.0 * HPC_GY;
 			shadow = 1;
 		};
 		class PictureScore : HudIcon { x = HUD_X + 0.4 * HPC_GX; y = HUD_ROW1; text = "res\ui_arsenal.paa"; tooltip = "Score"; };
-		class LabelScore : HudValue { idc = 107; x = HUD_X + 1.8 * HPC_GX; y = HUD_ROW1; };
+		class LabelScore : HudValue { idc = 107; x = HUD_X + 1.7 * HPC_GX; y = HUD_ROW1; };
 		class PictureAmmo : HudIcon { x = HUD_X + HUD_CELL + 0.4 * HPC_GX; y = HUD_ROW1; text = "res\ui_ammo.paa"; colorText[] = {0.95,0.45,0.42,1}; };
-		class LabelAmmo : HudValue { idc = 102; x = HUD_X + HUD_CELL + 1.8 * HPC_GX; y = HUD_ROW1; colorText[] = {0.98,0.62,0.58,1}; };
+		class LabelAmmo : HudValue { idc = 102; x = HUD_X + HUD_CELL + 1.7 * HPC_GX; y = HUD_ROW1; colorText[] = {0.98,0.62,0.58,1}; };
 		class PictureFuel : HudIcon { x = HUD_X + 2 * HUD_CELL + 0.4 * HPC_GX; y = HUD_ROW1; text = "res\ui_fuel.paa"; colorText[] = {0.95,0.82,0.40,1}; };
-		class LabelFuel : HudValue { idc = 103; x = HUD_X + 2 * HUD_CELL + 1.8 * HPC_GX; y = HUD_ROW1; colorText[] = {0.98,0.88,0.55,1}; };
+		class LabelFuel : HudValue { idc = 103; x = HUD_X + 2 * HUD_CELL + 1.7 * HPC_GX; y = HUD_ROW1; colorText[] = {0.98,0.88,0.55,1}; };
 		class PictureManpower : HudIcon { x = HUD_X + 3 * HUD_CELL + 0.4 * HPC_GX; y = HUD_ROW1; text = "res\ui_manpo.paa"; colorText[] = {0.50,0.86,0.55,1}; };
-		class LabelManpower : HudValue { idc = 101; x = HUD_X + 3 * HUD_CELL + 1.8 * HPC_GX; y = HUD_ROW1; colorText[] = {0.66,0.93,0.70,1}; };
+		class LabelManpower : HudValue { idc = 101; x = HUD_X + 3 * HUD_CELL + 1.7 * HPC_GX; y = HUD_ROW1; colorText[] = {0.66,0.93,0.70,1}; };
 		class PictureCap : HudIcon { idc = 1041; x = HUD_X + 0.4 * HPC_GX; y = HUD_ROW2; text = "res\rep\rep3.paa"; };
-		class LabelCap : HudValue { idc = 104; x = HUD_X + 1.8 * HPC_GX; y = HUD_ROW2; };
+		class LabelCap : HudValue { idc = 104; x = HUD_X + 1.7 * HPC_GX; y = HUD_ROW2; };
 		class PictureCombatReadiness : HudIcon { idc = 135; x = HUD_X + HUD_CELL + 0.4 * HPC_GX; y = HUD_ROW2; text = "\A3\ui_f\data\map\markers\handdrawn\warning_CA.paa"; };
-		class LabelCombatReadiness : HudValue { idc = 105; x = HUD_X + HUD_CELL + 1.8 * HPC_GX; y = HUD_ROW2; };
+		class LabelCombatReadiness : HudValue { idc = 105; x = HUD_X + HUD_CELL + 1.7 * HPC_GX; y = HUD_ROW2; };
 		class PictureIntel : HudIcon { x = HUD_X + 2 * HUD_CELL + 0.4 * HPC_GX; y = HUD_ROW2; text = "\A3\Ui_f\data\GUI\Cfg\Ranks\general_gs.paa"; colorText[] = {0.45,0.70,1,1}; };
-		class LabelIntel : HudValue { idc = 106; x = HUD_X + 2 * HUD_CELL + 1.8 * HPC_GX; y = HUD_ROW2; colorText[] = {0.62,0.80,1,1}; };
+		class LabelIntel : HudValue { idc = 106; x = HUD_X + 2 * HUD_CELL + 1.7 * HPC_GX; y = HUD_ROW2; colorText[] = {0.62,0.80,1,1}; };
 
 		class AlertBGPicture : HPC_Text {
 			idc = 401;
