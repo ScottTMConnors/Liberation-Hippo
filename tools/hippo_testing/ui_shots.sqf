@@ -367,6 +367,81 @@ if (_buildOk) then {
 diag_log ["HPC_UISHOT_CREW",_buildOk,_crewShown];
 ["uishots.crewCheckbox",_buildOk && _crewShown] call _assert;
 [] call _closeDialogs;
+
+// Build menu: the team's faction is preselected in the faction dropdown (no "Mission faction" row),
+// and Reset filters returns to it.
+buildtype = GRLIB_CombatVehicleBuildType;
+[player,player,0,false] execVM "scripts\client\build\open_build_menu.sqf";
+private _factionOk = false;
+private _factionInfo = [];
+if ([5501,10] call _waitDisplay) then {
+    uiSleep 1.5;
+    private _combo = (findDisplay 5501) displayCtrl 1702;
+    private _rows = [];
+    for "_r" from 0 to (lbSize _combo - 1) do {_rows pushBack (_combo lbText _r)};
+    private _selected = _combo lbData (lbCurSel _combo);
+    _combo lbSetCurSel 0;
+    uiSleep 0.3;
+    ((findDisplay 5501) displayCtrl 1708) ctrlActivate true;
+    uiSleep 0.5;
+    private _afterReset = _combo lbData (lbCurSel _combo);
+    _factionInfo = [HPC_teamFaction, _selected, _afterReset, _rows];
+    _factionOk = HPC_teamFaction != "" && {_selected == HPC_teamFaction} && {_afterReset == HPC_teamFaction} && {!("Mission faction" in _rows)};
+    ["08d_build_team_faction",0.5] call HPC_uiShot;
+};
+diag_log ["HPC_UISHOT_TEAM_FACTION",_factionInfo];
+["uishots.buildTeamFaction",_factionOk] call _assert;
+[] call _closeDialogs;
+
+// Arsenal filter: an item the filter removes is reported by F_blockedItems.
+private _blockedClass = "";
+{
+    if (_blockedClass == "" && {isClass (configFile >> "CfgWeapons" >> _x)} && {getNumber (configFile >> "CfgWeapons" >> _x >> "type") == 1}) then {_blockedClass = _x};
+} forEach GRLIB_blacklisted_from_arsenal;
+private _probe = "B_Soldier_VR_F" createVehicleLocal [0,0,0];
+removeAllWeapons _probe;
+if (_blockedClass != "") then {_probe addWeapon _blockedClass};
+private _blockedNames = [_probe] call F_blockedItems;
+deleteVehicle _probe;
+diag_log ["HPC_UISHOT_BLOCKED",GRLIB_filter_arsenal,_blockedClass,_blockedNames];
+["uishots.blockedItems",GRLIB_filter_arsenal == 0 || {_blockedClass == ""} || {(getText (configFile >> "CfgWeapons" >> _blockedClass >> "displayName")) in _blockedNames}] call _assert;
+
+// Loadouts panel: a loadout with blocked items shows Blocked, cannot be loaded and says why.
+private _savedLoadouts = GRLIB_saved_loadouts;
+GRLIB_saved_loadouts = [["Rifleman",0,"",[]],["Marksman (CSAT gear)",0,"",["CSAR Fatigues","Carrier GL Rig","MX 6.5 mm"]],["Heavy AT",999999,"",[]]];
+[] execVM "scripts\client\actions\open_arsenal.sqf";
+private _arsenalOk = false;
+private _arsenalInfo = [];
+if ([5251,10] call _waitDisplay) then {
+    uiSleep 0.5;
+    lbSetCurSel [201, 1];
+    uiSleep 0.6;
+    _arsenalInfo = [lnbText [201,[1,1]], ctrlEnabled 202, ctrlText 206];
+    _arsenalOk = (_arsenalInfo select 0) == "Blocked" && {!(_arsenalInfo select 1)} && {(ctrlText 206) find "Can't load" == 0};
+    ["38b_arsenal_blocked",0.5] call HPC_uiShot;
+    lbSetCurSel [201, 0];
+    uiSleep 0.6;
+    _arsenalOk = _arsenalOk && {ctrlEnabled 202};
+};
+diag_log ["HPC_UISHOT_ARSENAL",_arsenalInfo];
+["uishots.arsenalBlocked",_arsenalOk] call _assert;
+[] call _closeDialogs;
+waitUntil {uiSleep 0.1; !GRLIB_arsenal_open};
+GRLIB_saved_loadouts = _savedLoadouts;
+
+// Options: with view distance disabled the "Disabled on this server" panel covers its controls.
+private _vdAllowed = GREUH_allow_viewdistance;
+GREUH_allow_viewdistance = false;
+[] execVM "GREUH\scripts\GREUH_dialog.sqf";
+private _optionsOk = false;
+if ([5565,10] call _waitDisplay) then {
+    uiSleep 1;
+    _optionsOk = ctrlShown ((findDisplay 5565) displayCtrl 701) && {!ctrlShown ((findDisplay 5565) displayCtrl 712)};
+    ["11b_options_disabled",0.5] call HPC_uiShot;
+};
+GREUH_allow_viewdistance = _vdAllowed;
+["uishots.optionsDisabledZone",_optionsOk] call _assert;
+[] call _closeDialogs;
 // A non-commander can tick it on an affordable, unlocked vehicle.
 private _oldAmmo = player getVariable ["GREUH_ammo_count",0];
 private _oldFuel = player getVariable ["GREUH_fuel_count",0];

@@ -35,8 +35,9 @@ if (count GRLIB_saved_loadouts > 0) then {
 			((findDisplay 5251) displayCtrl (201)) lnbSetColor  [[((lnbSize 201) select 0) - 1, 0], [1,1,1,1]];
 			((findDisplay 5251) displayCtrl (201)) lnbSetColor  [[((lnbSize 201) select 0) - 1, 1], [1,1,1,1]];
 		} else {
-			((findDisplay 5251) displayCtrl (201)) lnbSetColor  [[((lnbSize 201) select 0) - 1, 0], [0.4,0.4,0.4,1]];
-			((findDisplay 5251) displayCtrl (201)) lnbSetColor  [[((lnbSize 201) select 0) - 1, 1], [0.4,0.4,0.4,1]];
+			// Greyed but readable on the selection bar; Blocked in the danger colour.
+			((findDisplay 5251) displayCtrl (201)) lnbSetColor  [[((lnbSize 201) select 0) - 1, 0], [0.66,0.68,0.69,1]];
+			((findDisplay 5251) displayCtrl (201)) lnbSetColor  [[((lnbSize 201) select 0) - 1, 1], [[0.66,0.68,0.69,1], [0.90,0.40,0.36,1]] select (count _blocked > 0)];
 		};
 
 	} foreach GRLIB_saved_loadouts;

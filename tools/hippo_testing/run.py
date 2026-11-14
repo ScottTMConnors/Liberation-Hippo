@@ -315,7 +315,7 @@ addMissionEventHandler ["MPEnded",{
     if args.rejoin: client_cases=['rejoin.cooldown']
     if args.load_error: client_cases=['loading.failFast']
     if args.visual: client_cases=['startup.client','visual.objectivePanel','visual.civilianMovement','visual.commanderPost']
-    if args.ui_shots: client_cases=['uishots.spawned','uishots.dialogs','uishots.tutorialKey','uishots.inputFree','uishots.adminTabs','uishots.missionAdminStays','uishots.crewCheckbox','uishots.crewEnabledNonCommander','uishots.killFeed','uishots.killFeedXP','uishots.fuelEconomy']
+    if args.ui_shots: client_cases=['uishots.spawned','uishots.dialogs','uishots.tutorialKey','uishots.inputFree','uishots.adminTabs','uishots.missionAdminStays','uishots.crewCheckbox','uishots.buildTeamFaction','uishots.blockedItems','uishots.arsenalBlocked','uishots.optionsDisabledZone','uishots.crewEnabledNonCommander','uishots.killFeed','uishots.killFeedXP','uishots.fuelEconomy']
     shots_taken=set(); wheels_sent=set(); keys_sent=set()
     manifest={'run_id':run_id,'map':args.map,'source_head':subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT).decode().strip(),'source_sha256':source_hash.hexdigest(),'baseline':args.baseline,'variant':args.variant,'control':args.control,'cases':cases,'client_cases':client_cases,'scripts':scripts,'package_sha256':sha(pbo),'argv':argv,'roles':roles,'port':port}
     (out/'manifest.json').write_text(json.dumps(manifest,indent=2),encoding='utf-8')
