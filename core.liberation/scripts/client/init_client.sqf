@@ -158,8 +158,6 @@ GRLIB_BuildTypeDirect = 90;
 
 if (typeOf player == "VirtualSpectator_F") exitWith {
 	[] execVM "scripts\client\markers\HPC_mapWorld.sqf";
-	[] execVM "scripts\client\markers\vehicles_marker.sqf";
-	[] execVM "scripts\client\markers\hostile_groups.sqf";
 	[] execVM "scripts\client\markers\HPC_mapOverlay.sqf";
 	[] execVM "scripts\client\ui\ui_manager.sqf";
 };
@@ -258,7 +256,6 @@ waitUntil {uiSleep 0.1; (GRLIB_player_configured && GRLIB_action_player_ready &&
 [] execVM "scripts\client\actions\dog_manager.sqf";
 [] execVM "scripts\client\actions\man_manager.sqf";
 [] execVM "scripts\client\misc\HPC_fireteamManager.sqf";
-//[] execVM "scripts\client\misc\shoot_walls.sqf";
 
 // LRX client scripts
 [] execVM "GREUH\scripts\GREUH_activate.sqf";
@@ -266,14 +263,12 @@ waitUntil {uiSleep 0.1; (GRLIB_player_configured && GRLIB_action_player_ready &&
 [] execVM "scripts\client\build\build_overlay.sqf";
 
 // Markers (the map layer HPC_mapWorld.sqf starts before the intro)
-[] execVM "scripts\client\markers\vehicles_marker.sqf";
-[] execVM "scripts\client\markers\hostile_groups.sqf";
 [] execVM "scripts\client\markers\HPC_mapOverlay.sqf";
 [] execVM "scripts\shared\HPC_shotRelay.sqf";
-//[] execVM "scripts\client\markers\logs_markers.sqf";
 
 // Local Manager
 [] execVM "scripts\client\manager\box_manager.sqf";
+[] execVM "scripts\client\actions\HPC_nearScan.sqf";	// shared near search for the action managers above
 [] execVM "scripts\client\manager\manage_manpower.sqf";
 [] execVM "scripts\client\manager\support_manager.sqf";
 [] execVM "scripts\client\manager\vehicle_fuel_manager.sqf";

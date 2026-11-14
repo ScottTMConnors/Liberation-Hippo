@@ -12,7 +12,6 @@ GRLIB_difficulty_modifier = [GRLIB_PARAM_Difficulty] call lrx_getParamValue;
 GRLIB_enable_arsenal = [GRLIB_PARAM_EnableArsenal] call lrx_getParamValue;
 GRLIB_enable_drones = [GRLIB_PARAM_Drones] call lrx_getParamValue;
 GRLIB_Facilities = [GRLIB_PARAM_Facilities] call lrx_getParamValue;
-GRLIB_fancy_info = [GRLIB_PARAM_FancyInfo] call lrx_getParamValue;
 GRLIB_filter_arsenal = [GRLIB_PARAM_FilterArsenal] call lrx_getParamValue;
 GRLIB_fob_type = [GRLIB_PARAM_FobType] call lrx_getParamValue;
 GRLIB_force_english = [GRLIB_PARAM_ForceEnglish] call lrx_getParamValue;
@@ -70,7 +69,6 @@ switch (GRLIB_naval_type) do {
 };
 
 // Transfom true/false Param
-if ( GRLIB_ACE_enabled ) then { GRLIB_fancy_info = 0 };		// Disable Fancy if ACE present
 
 GRLIB_Facilities = (GRLIB_Facilities == 1);
 GRLIB_free_loadout = (GRLIB_free_loadout == 1);

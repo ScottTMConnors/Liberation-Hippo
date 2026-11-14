@@ -15,6 +15,19 @@ while {true} do {
         units _x findIf {alive _x && {GRLIB_side_friendly knowsAbout vehicle _x >= HPC_intelThreshold}} >= 0
     };
     if (isServer) then {
+        // Radio towers we hold reveal enemy groups within their range (side-mission
+        // groups excepted): they join the intel layer like spotted groups.
+        if (!isNil "sectors_tower" && {!isNil "opfor_sectors"}) then {
+            private _towers = (sectors_tower - opfor_sectors) apply {markerPos _x};
+            if (_towers isNotEqualTo []) then {
+                {
+                    private _leader = leader _x;
+                    if (alive _leader && {!(_leader getVariable ["GRLIB_mission_AI", false])} && {_towers findIf {_x distance2D _leader <= GRLIB_radiotower_size} >= 0}) then {
+                        _known pushBackUnique _x;
+                    };
+                } forEach (groups GRLIB_side_enemy);
+            };
+        };
         HPC_intelReports set ["server", [_known, diag_tickTime]];
         private _merged = [];
         {
@@ -22,18 +35,18 @@ while {true} do {
             if (diag_tickTime - _at < 15) then {_merged append _groups};
         } forEach HPC_intelReports;
         _merged = (_merged arrayIntersect _merged) select {!isNull _x && {units _x findIf {alive _x} >= 0}};
-        // Only broadcast when the list changes.
-        if (!(_merged isEqualTo HPC_intelGroups) || {count _merged != count HPC_intelGroups}) then {
+        // Only broadcast when the set of groups changes (report order does not matter).
+        if ((_merged - HPC_intelGroups) isNotEqualTo [] || {(HPC_intelGroups - _merged) isNotEqualTo []}) then {
             HPC_intelGroups = _merged;
             publicVariable "HPC_intelGroups";
         };
     } else {
         // Headless client: report changes at once, otherwise every 10 seconds.
-        if (!(_known isEqualTo _lastSent) || {diag_tickTime - _lastSentAt > 10}) then {
+        if ((_known - _lastSent) isNotEqualTo [] || {(_lastSent - _known) isNotEqualTo []} || {diag_tickTime - _lastSentAt > 10}) then {
             [player, _known] remoteExecCall ["HPC_fnc_intelReport", 2];
             _lastSent = _known;
             _lastSentAt = diag_tickTime;
         };
     };
-    sleep 2;
+    sleep 3;
 };

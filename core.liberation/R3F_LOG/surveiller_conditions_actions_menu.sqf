@@ -27,6 +27,10 @@ private ["_objet_deverrouille", "_objet_pointe_autre_que_deplace", "_objet_point
 
 sleep 2;
 
+// The config conditions are code strings: compile them once, not on every pass.
+private _cond_logistics = compile R3F_LOG_CFG_string_condition_allow_logistics_on_this_client;
+private _cond_factory = compile R3F_LOG_CFG_string_condition_allow_creation_factory_on_this_client;
+
 while {true} do
 {
 	_joueur = player;
@@ -35,7 +39,7 @@ while {true} do
 	_cursorTarget_distance = call R3F_LOG_FNCT_3D_cursorTarget_distance_bbox;
 	_objet_pointe = _cursorTarget_distance select 0;
 
-	if (call compile R3F_LOG_CFG_string_condition_allow_logistics_on_this_client &&
+	if (call _cond_logistics &&
 		!R3F_LOG_mutex_local_verrou && _vehicule_joueur == _joueur && !isNull _objet_pointe && _cursorTarget_distance select 1 < 3.75
 	) then
 	{
@@ -48,7 +52,7 @@ while {true} do
 
 		_isUav = (getNumber (configOf _objet_pointe >> "isUav") == 1);
 
-		_usine_autorisee_client = call compile R3F_LOG_CFG_string_condition_allow_creation_factory_on_this_client;
+		_usine_autorisee_client = call _cond_factory;
 
 		// L'objet est-il d�verrouill�
 		_objet_deverrouille = !([_objet_pointe, _joueur] call R3F_LOG_FNCT_objet_est_verrouille);
@@ -134,7 +138,7 @@ while {true} do
 							// L'arri�re du remorqueur est proche de l'avant de l'objet point�
 							abs (_delta_pos select 0) < 3 && abs (_delta_pos select 1) < 5
 						}
-					} count (_objet_pointe nearEntities [["All"], 30]) != 0
+					} count (_objet_pointe nearEntities [["LandVehicle", "Air", "Ship"], 30]) != 0
 				};
 
 			// Condition action detacher
@@ -230,7 +234,7 @@ while {true} do
 	};
 
 	// Si le joueur est pilote dans un h�liporteur
-	if (call compile R3F_LOG_CFG_string_condition_allow_logistics_on_this_client &&
+	if (call _cond_logistics &&
 		!R3F_LOG_mutex_local_verrou && _vehicule_joueur != _joueur && (currentPilot _vehicule_joueur) == _joueur && {_vehicule_joueur getVariable ["R3F_LOG_fonctionnalites", R3F_LOG_CST_zero_log] select __can_lift}
 	) then
 	{
@@ -238,16 +242,8 @@ while {true} do
 
 		// Note : pas de restriction li�e � R3F_LOG_proprietaire_verrou pour l'h�liportage
 
-		// A partir des versions > 1.32, on interdit le lift si le hook de BIS est utilis�
-		if (productVersion select 2 > 132) then
-		{
-			// Call compile car la commande getSlingLoad n'existe pas en 1.32
-			_pas_de_hook = _vehicule_joueur call compile format ["isNull getSlingLoad _this"];
-		}
-		else
-		{
-			_pas_de_hook = true;
-		};
+		// the BIS sling hook and R3F lift are exclusive
+		_pas_de_hook = isNull getSlingLoad _vehicule_joueur;
 
 		// Condition action heliporter
 		R3F_LOG_action_heliporter_valide = ([] call R3F_LOG_FNCT_heliporteur_detect_objet);

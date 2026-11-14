@@ -77,6 +77,16 @@ HPC_fnc_zeusRefresh = compileFinal {
 	_cur setVariable ["HPC_zeusAreas", count _picked];
 };
 
+// A player's limited Zeus (editable units, camera areas) is refreshed while their Zeus
+// screen is open: zeus_limited_client.sqf asks every few seconds. The slow loop below
+// assigns curators to new players and is a fallback refresh.
+HPC_fnc_zeusRefreshFor = compileFinal {
+	params ["_player"];
+	if (isNull _player || {isRemoteExecuted && {remoteExecutedOwner != owner _player}}) exitWith {};
+	private _cur = getAssignedCuratorLogic _player;
+	if (!isNull _cur && {_cur getVariable ["HPC_zeusLimited", false]}) then { [_player, _cur] call HPC_fnc_zeusRefresh };
+};
+
 while {true} do {
 	{
 		private _player = _x;
@@ -87,5 +97,5 @@ while {true} do {
 			if (_cur getVariable ["HPC_zeusLimited", false]) then { [_player, _cur] call HPC_fnc_zeusRefresh };
 		};
 	} forEach (allPlayers - entities "HeadlessClient_F");
-	sleep 3;
+	sleep 30;
 };

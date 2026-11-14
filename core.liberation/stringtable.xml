@@ -4518,16 +4518,6 @@
 		</Key>
 
 		<!-- Added in v0.928 -->
-		<Key ID="STR_FANCY">
-			<Original>World information overlays</Original>
-			<Russian>Всплывающая информация</Russian>
-			<French>Information Colorée</French>
-			<Chinesesimp>花式信息</Chinesesimp>
-			<Chinese>花式資訊</Chinese>
-			<Japanese>分かりやすい情報</Japanese>
-			<Portuguese>Informações extravagantes</Portuguese>
-			<Czech>Zajímavé informace</Czech>
-		</Key>
 		<Key ID="STR_GUI_PLATOON">
 			<Original>UI - Show Platoon Overlay</Original>
 			<Chinesesimp>UI - 显示全排覆盖</Chinesesimp>
@@ -10308,42 +10298,6 @@
 			<Chinese>使用海上平台</Chinese>
 			<Portuguese>Usar plataforma offshore</Portuguese>
 			<Czech>Použít mořskou platformu</Czech>
-		</Key>
-		<Key ID="STR_FANCY_DESC">
-			<Original>Enables additional in‑game information overlay when enabled.</Original>
-			<Russian>Включает дополнительный информационный оверлей в игре при активации.</Russian>
-			<French>Active une superposition d’informations supplémentaire en jeu lorsqu’elle est activée.</French>
-			<Chinesesimp>启用时显示额外的游戏信息覆盖。</Chinesesimp>
-			<Chinese>啟用時顯示額外的遊戲信息覆蓋。</Chinese>
-			<Portuguese>Ativa sobreposição de informações adicionais no jogo quando ativado.</Portuguese>
-			<Czech>Umožňuje další informační překryv ve hře po povolení.</Czech>
-		</Key>
-		<Key ID="STR_FANCY_OPT0">
-			<Original>Disable fancy info overlay</Original>
-			<Russian>Отключить дополнительный информационный оверлей</Russian>
-			<French>Désactiver la superposition d’informations avancée</French>
-			<Chinesesimp>禁用额外信息覆盖</Chinesesimp>
-			<Chinese>禁用額外信息覆蓋</Chinese>
-			<Portuguese>Desativar sobreposição de informações avançada</Portuguese>
-			<Czech>Zakázat pokročilý informační překryv</Czech>
-		</Key>
-		<Key ID="STR_FANCY_OPT1">
-			<Original>Show basic info overlay</Original>
-			<Russian>Показать базовый информационный оверлей</Russian>
-			<French>Afficher la superposition d’informations de base</French>
-			<Chinesesimp>显示基本信息覆盖</Chinesesimp>
-			<Chinese>顯示基本信息覆蓋</Chinese>
-			<Portuguese>Mostrar sobreposição de informações básicas</Portuguese>
-			<Czech>Zobrazit základní informační překryv</Czech>
-		</Key>
-		<Key ID="STR_FANCY_OPT2">
-			<Original>Show full fancy info overlay</Original>
-			<Russian>Показать полный дополнительный информационный оверлей</Russian>
-			<French>Afficher la superposition d’informations complète</French>
-			<Chinesesimp>显示完整的额外信息覆盖</Chinesesimp>
-			<Chinese>顯示完整的額外信息覆蓋</Chinese>
-			<Portuguese>Mostrar sobreposição de informações completa</Portuguese>
-			<Czech>Zobrazit kompletní pokročilý informační překryv</Czech>
 		</Key>
 		<Key ID="STR_VEH_LOCK_DESC">
 			<Original>Enables vehicle locking to prevent unauthorized use.</Original>

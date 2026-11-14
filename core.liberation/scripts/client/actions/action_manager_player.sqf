@@ -4,23 +4,25 @@ GRLIB_player_fob_actions = [];
 GRLIB_activated_sectors = [];
 GRLIB_activated_radius = GRLIB_sector_size * 1.4;
 
-private ["_near_spawn", "_near_spawn_tent", "_next_sector"];
+// Player state cache read by the scroll-menu action conditions (which run every frame),
+// so those conditions stay cheap. Refreshed every 0.5 s; FOB, rank and sector state every 1 s.
+private ["_near_spawn", "_near_spawn_tent", "_next_sector", "_dist_sector"];
 
 private _ticks = 0;
 while {true} do {
 	GRLIB_player_is_menuok = [] call is_menuok;
 
-	if (_ticks % 2 == 0) then {
-		GRLIB_player_near_arsenal = ([player, "ARSENAL", GRLIB_ActionDist_5] call F_check_near);
-		GRLIB_player_near_fuel = ([player, "FUEL", GRLIB_ActionDist_10, false] call F_check_near);
-		GRLIB_player_near_fuelbarrel = ([player, "REFUEL_DISP", GRLIB_ActionDist_10, false] call F_check_near);
-		GRLIB_player_near_repair = ([player, "REPAIR", GRLIB_ActionDist_10, false] call F_check_near);
-		GRLIB_player_near_repairbox = ([player, "REPAIR_BOX", GRLIB_ActionDist_5, false] call F_check_near);
-		GRLIB_player_near_reammo = ([player, "REAMMO", 30] call F_check_near);
-		GRLIB_player_near_repaint = ([player, "REPAINT", 30] call F_check_near);
-	};
+	// the nearest FOB is measured once and shared by the supply checks that count a FOB as a source
+	private _fob_dist = player distance2D ([player] call F_getNearestFob);
+	GRLIB_player_near_arsenal = (_fob_dist <= GRLIB_ActionDist_5) || {[player, "ARSENAL", GRLIB_ActionDist_5, false] call F_check_near};
+	GRLIB_player_near_fuel = ([player, "FUEL", GRLIB_ActionDist_10, false] call F_check_near);
+	GRLIB_player_near_fuelbarrel = ([player, "REFUEL_DISP", GRLIB_ActionDist_10, false] call F_check_near);
+	GRLIB_player_near_repair = ([player, "REPAIR", GRLIB_ActionDist_10, false] call F_check_near);
+	GRLIB_player_near_repairbox = ([player, "REPAIR_BOX", GRLIB_ActionDist_5, false] call F_check_near);
+	GRLIB_player_near_reammo = (_fob_dist <= 30) || {[player, "REAMMO", 30, false] call F_check_near};
+	GRLIB_player_near_repaint = (_fob_dist <= 30) || {[player, "REPAINT", 30, false] call F_check_near};
 
-	if (_ticks % 4 == 0) then {
+	if (_ticks % 2 == 0) then {
 		GRLIB_player_nearest_fob = ([player] call F_getNearestFob);
 		GRLIB_player_fobdistance = (player distance2D GRLIB_player_nearest_fob);
 		GRLIB_player_near_fob = (GRLIB_player_fobdistance <= GRLIB_fob_range);
@@ -81,7 +83,7 @@ while {true} do {
 	};
 
 	_ticks = _ticks + 1;
-	if (_ticks == 4) then { GRLIB_action_player_ready = true };
+	if (_ticks == 2) then { GRLIB_action_player_ready = true };
 	if (_ticks >= 65535) then { _ticks = 0 };
-	sleep 0.25;
+	sleep 0.5;
 };

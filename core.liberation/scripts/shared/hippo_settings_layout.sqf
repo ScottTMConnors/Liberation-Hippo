@@ -130,7 +130,6 @@ private _layout = [
 // INTERFACE AND PRESENTATION
 ["Introduction", _interface, "Intro titles", "Show the title cards before the start menu."],
 ["DeploymentCinematic", _interface, "Deploy camera", "Swoop the camera down onto your soldier after deploying. Disabled drops you straight in."],
-["FancyInfo", _interface, "World labels", "How much information is drawn over vehicles, crates and places in the world. Not available with ACE."],
 ["ShowBlufor", _interface, "Friendly forces on the map", "Which friendly units appear on the map: none, players only, or everyone."],
 ["MapMarkers", _interface, "Squad map markers", "Let each player choose, or force squad markers on or off for everyone."],
 ["NameTags", _interface, "Name tags", "Let each player choose, or force player name tags on or off for everyone."],

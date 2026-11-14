@@ -1,20 +1,3 @@
-private	["_vehicle", "_class", "_unit"];
-
-private _searchradius = 25;
-private _nearveh = [];
-private _nearruins = [];
-private _nearwreck = [];
-private _neargrave = [];
-private _nearboxes = [];
-private _nearcargo = [];
-private _neardead = [];
-private _nearstatics = [];
-private _nearsign = [];
-private _nearmoney = [];
-private _nearfobbox = [];
-private _nearpersobox = [];
-private _neartent = [];
-
 private _wreck_class = [
 	"Air",
 	"Ship_F",
@@ -32,13 +15,23 @@ private _wreck_class = [
 
 if (!(player diarySubjectExists str(parseText GRLIB_r3))) exitWith {};
 
-while {true} do {
-	waitUntil {sleep 1; GRLIB_player_spawned};
+// Vehicle, wreck, body, static, FOB sign, money, crate and tent actions on things near
+// the player. Runs from the shared near scan (HPC_nearScan.sqf) every 2 seconds.
+private _no_veh_actions = createHashMap;
+{ _no_veh_actions set [_x, true] } forEach (list_static_weapons + static_vehicles_AI);
+HPC_vehActionSkip = compileFinal _no_veh_actions;
+HPC_vehWreckClasses = _wreck_class;
+
+[{
+	params ["_objs"];
+	private ["_vehicle", "_class", "_unit"];
+	private _searchradius = 25;
 	// Vehicles actions
-	_nearveh = (player nearEntities [["LandVehicle","Air","Ship_F"], _searchradius]) select {
-		isNil {_x getVariable "GRLIB_vehicle_action"} &&
-		(_x distance2D lhd > GRLIB_fob_range) &&
-		!(typeOf _x in (list_static_weapons + static_vehicles_AI))
+	private _nearveh = ([_objs, "vehact", ["LandVehicle","Air","Ship_F"], _searchradius] call HPC_fnc_nearOf) select {
+		alive _x &&
+		{isNil {_x getVariable "GRLIB_vehicle_action"}} &&
+		{_x distance2D lhd > GRLIB_fob_range} &&
+		{!(typeOf _x in HPC_vehActionSkip)}
 	};
 
 	{
@@ -94,9 +87,9 @@ while {true} do {
 	} forEach _nearveh;
 
 	// Salvage Wreck & Ruins
-	_nearruins = (nearestObjects [player, ["Ruins_F"], _searchradius]) select {(getObjectType _x >= 8) && ([_x, "FOB", GRLIB_sector_size] call F_check_near) && isNil {_x getVariable "GRLIB_salvage_action"}};
-	_nearwreck = (nearestObjects [player, _wreck_class, _searchradius]) select {(getObjectType _x >= 8) && !([_x, "LHD", GRLIB_sector_size, false] call F_check_near) && !(alive _x) && isNil {_x getVariable "GRLIB_salvage_action"}};
-	_neargrave = (nearestObjects [player, PAR_graves, _searchradius]) select { (getObjectType _x >= 8) && (_x getVariable ["GRLIB_vehicle_owner", ""] == PAR_Grp_ID) && count (attachedObjects _x) == 0 && isNil {_x getVariable "GRLIB_salvage_action"} };
+	private _nearruins = ([_objs, "ruins", ["Ruins_F"], _searchradius] call HPC_fnc_nearOf) select {isNil {_x getVariable "GRLIB_salvage_action"} && {getObjectType _x >= 8} && {[_x, "FOB", GRLIB_sector_size] call F_check_near}};
+	private _nearwreck = ([_objs, "wreck", HPC_vehWreckClasses, _searchradius] call HPC_fnc_nearOf) select {!(alive _x) && {isNil {_x getVariable "GRLIB_salvage_action"}} && {getObjectType _x >= 8} && {!([_x, "LHD", GRLIB_sector_size, false] call F_check_near)}};
+	private _neargrave = ([_objs, "grave", PAR_graves, _searchradius] call HPC_fnc_nearOf) select { isNil {_x getVariable "GRLIB_salvage_action"} && {getObjectType _x >= 8} && {_x getVariable ["GRLIB_vehicle_owner", ""] == PAR_Grp_ID} && {count (attachedObjects _x) == 0} };
 	{
 		_vehicle = _x;
 		_vehicle addAction [([localize "STR_SALVAGE", "res\ui_recycle.paa", "build"] call HPC_fnc_actionTitle),"scripts\client\actions\do_wreck.sqf","",-900,true,true,"","[_target, _this] call GRLIB_checkAction_Wreck", (GRLIB_ActionDist_10 + 5)];
@@ -104,7 +97,7 @@ while {true} do {
 	} forEach _nearwreck + _nearruins + _neargrave;
 
 	// Dead Men
-	_neardead = allDeadMen select {!([_x, "LHD", GRLIB_sector_size, false] call F_check_near) && (_x distance2D player < _searchradius) && isNil {_x getVariable "GRLIB_dead_action"}};
+	private _neardead = allDeadMen select {(_x distance2D player < _searchradius) && {isNil {_x getVariable "GRLIB_dead_action"}} && {!([_x, "LHD", GRLIB_sector_size, false] call F_check_near)}};
 	{
 		_unit = _x;
 		_unit addAction [([localize "STR_REMOVE_BODY", "", "info"] call HPC_fnc_actionTitle),{ [_this select 0] remoteExec ["hideBody", _this select 0]},"",100,false,true,"","", GRLIB_ActionDist_3];
@@ -113,7 +106,7 @@ while {true} do {
 	} forEach _neardead;
 
 	// Neutralize Static
-	_nearstatics = (player nearEntities ["StaticWeapon", _searchradius]) select { _x getVariable ["GRLIB_vehicle_owner", ""] == "server" && isNil {_x getVariable "GRLIB_static_action"} };
+	private _nearstatics = ([_objs, "static", ["StaticWeapon"], _searchradius] call HPC_fnc_nearOf) select { alive _x && {isNil {_x getVariable "GRLIB_static_action"}} && {_x getVariable ["GRLIB_vehicle_owner", ""] == "server"} };
 	{
 		_unit = _x;
 		[
@@ -137,7 +130,7 @@ while {true} do {
 	} forEach _nearstatics;
 
 	// FOB Sign Actions
-	_nearsign = (nearestObjects [player, [FOB_sign], _searchradius]) select { (GRLIB_player_near_lhd || GRLIB_player_near_fob) && isNil {_x getVariable "GRLIB_sign_action"} };
+	private _nearsign = ([_objs, "sign", [FOB_sign], _searchradius] call HPC_fnc_nearOf) select { (GRLIB_player_near_lhd || GRLIB_player_near_fob) && {isNil {_x getVariable "GRLIB_sign_action"}} };
 	{
 		_unit = _x;
 		_unit addAction [([localize "STR_BUILD_FORTIFICATION", "res\ui_build.paa", "accent"] call HPC_fnc_actionTitle),"addons\FOB\do_build_def.sqf","",897,false,true,"","[_target] call GRLIB_checkBuildDef", 5];
@@ -149,7 +142,7 @@ while {true} do {
 	} foreach _nearsign;
 
 	// Land Money
-	_nearmoney = (nearestObjects [player, [money_typename], _searchradius]) select { isNil {_x getVariable "GRLIB_money_action"} };
+	private _nearmoney = ([_objs, "money", [money_typename], _searchradius] call HPC_fnc_nearOf) select { isNil {_x getVariable "GRLIB_money_action"} };
 	{
 		_unit = _x;
 		_unit addAction [([localize "STR_TAKE_MONEY", "", "accent"] call HPC_fnc_actionTitle),"scripts\client\actions\do_recycle.sqf","",102,true,true,"","GRLIB_player_is_menuok", 3];
@@ -157,7 +150,7 @@ while {true} do {
 	} foreach _nearmoney;
 
 	// FOB Box
-	_nearfobbox = (nearestObjects [player, [FOB_box_typename, FOB_box_outpost, "Cargo_base_F", "Slingload_base_F"], _searchradius]) select { isNil {_x getVariable "GRLIB_fobbox_action"} };
+	private _nearfobbox = ([_objs, "fobbox", [FOB_box_typename, FOB_box_outpost, "Cargo_base_F", "Slingload_base_F"], _searchradius] call HPC_fnc_nearOf) select { isNil {_x getVariable "GRLIB_fobbox_action"} };
 	{
 		_unit = _x;
 		if (_unit isKindOf "Cargo_base_F" || _unit isKindOf "Slingload_base_F") then {
@@ -173,7 +166,7 @@ while {true} do {
 	} foreach _nearfobbox;
 
 	// Personal Ammobox
-	_nearpersobox = (nearestObjects [player, [playerbox_typename], _searchradius]) select { isNil {_x getVariable "GRLIB_personalbox_action"} };
+	private _nearpersobox = ([_objs, "persobox", [playerbox_typename], _searchradius] call HPC_fnc_nearOf) select { isNil {_x getVariable "GRLIB_personalbox_action"} };
 	{
 		_unit = _x;
 		_unit addAction [([localize "STR_ARSENAL_PICKUP", "res\ui_arsenal.paa", "info"] call HPC_fnc_actionTitle),"scripts\client\actions\do_loot_veh.sqf","",-504,false,true,"","[_target, _this] call GRLIB_checkAction_Pickup_Weapons", GRLIB_ActionDist_5];
@@ -195,13 +188,11 @@ while {true} do {
 	} foreach _nearpersobox;
 
 	// Tent Respawn
-	_neartent = (GRLIB_mobile_respawn) select { typeOf _x == mobile_respawn && (_x distance2D player < _searchradius) && isNil {_x getVariable "GRLIB_tent_action"} };
+	private _neartent = GRLIB_mobile_respawn select { (_x distance2D player < _searchradius) && {typeOf _x == mobile_respawn} && {isNil {_x getVariable "GRLIB_tent_action"}} };
 	{
 		_unit = _x;
 		// Pack Beacon
 		_unit addAction [([localize "STR_PACK_BEACON", "res\ui_deployfob.paa", "build"] call HPC_fnc_actionTitle),"scripts\client\actions\do_beacon_pack.sqf","",-981,false,true,"","[_target, _this] call GRLIB_checkPackBeacon", GRLIB_ActionDist_3];
 		_unit setVariable ["GRLIB_tent_action", true];
 	} forEach _neartent;
-
-	sleep 2;
-};
+}] call HPC_fnc_nearRegister;

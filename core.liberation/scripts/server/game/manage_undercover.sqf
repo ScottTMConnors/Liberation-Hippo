@@ -1,49 +1,38 @@
+// Undercover mode: tracks how much nearby enemy groups know about each undercover
+// (civilian-side) player and warns the player once they are spotted. knowsAbout only
+// covers AI local to the asking machine, so headless clients send their own reports
+// (HPC_undercoverScan.sqf) and they are merged here.
 if (GRLIB_Undercover_mode == 0) exitWith {};
 sleep 60;
 
-private ["_opfor_grp","_unit","_undercover_units","_current","_awareness","_msg"];
-
 while {true} do {
-    _undercover_units = (units GRLIB_side_civilian) select { !(captive _x) && !(isNil {_x getVariable "GRLIB_unit_detected"}) };
-    {
-        _msg = "";
-        _unit = _x;
-        _current = 0;
-        _opfor_groups = (groups GRLIB_side_enemy) select { (alive (leader _x) && (leader _x) distance2D _unit <= GRLIB_capture_size) };
+    private _undercover_units = (units GRLIB_side_civilian) select { !(captive _x) && {!isNil {_x getVariable "GRLIB_unit_detected"}} };
+    if (_undercover_units isNotEqualTo []) then {
+        private _local_groups = (groups GRLIB_side_enemy) select { local _x && {alive leader _x} };
         {
-            _opfor_grp = _x;
-            if (local _opfor_grp) then {
-                _awareness = _opfor_grp knowsAbout _unit;
-                _current = (_current max _awareness);
-                _stored = _unit getVariable ["GRLIB_unit_detected", 0];
-                if (_current >= 1.5 && _stored < _current) then {
-                    _msg = format ["%1 has been detected by group %2 (%3)", name _unit, _opfor_grp, _awareness];
+            private _unit = _x;
+            private _current = 0;
+            {
+                if ((leader _x) distance2D _unit <= GRLIB_capture_size) then {
+                    _current = _current max (_x knowsAbout _unit);
                 };
-            };
-            sleep 0.1;
-        } forEach _opfor_groups;
-        // enemy AI on headless clients (local groups only are visible to knowsAbout here)
-        if (!isNil "HPC_undercoverReports") then {
+            } forEach _local_groups;
+            // enemy AI on headless clients
             {
                 _y params ["_report", "_at"];
                 if (diag_tickTime - _at < 10) then {
                     { if ((_x select 0) == _unit) then { _current = _current max (_x select 1) } } forEach _report;
                 };
-            } forEach HPC_undercoverReports;
-            _stored = _unit getVariable ["GRLIB_unit_detected", 0];
-            if (_msg == "" && {_current >= 1.5 && _stored < _current}) then {
-                _msg = format ["%1 has been detected by the enemy (%2)", name _unit, _current];
+            } forEach (missionNamespace getVariable ["HPC_undercoverReports", createHashMap]);
+            private _stored = _unit getVariable ["GRLIB_unit_detected", 0];
+            if (_current != _stored) then {
+                // public: only when the value changes
+                _unit setVariable ["GRLIB_unit_detected", _current, true];
+                if (_current >= 1.5 && {_stored < 1.5}) then {
+                    [format ["%1 has been spotted by the enemy", name _unit]] remoteExec ["HPC_fnc_info", owner _unit];
+                };
             };
-        };
-        // public: only when the value changes
-        if (_current != (_unit getVariable ["GRLIB_unit_detected", 0])) then {
-            _unit setVariable ["GRLIB_unit_detected", _current, true];
-        };
-        if (_msg != "") then {
-            [_msg] remoteExec ["HPC_fnc_info", owner _unit];
-        };
-
-        sleep 0.1;
-    } forEach _undercover_units;
+        } forEach _undercover_units;
+    };
     sleep 3;
 };

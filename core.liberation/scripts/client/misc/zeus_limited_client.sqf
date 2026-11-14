@@ -98,5 +98,9 @@ while {true} do {
 		_cur addEventHandler ["CuratorObjectRegistered", { (_this select 1) apply { [false, 0] } }];
 		_cur addEventHandler ["CuratorObjectDoubleClicked", { [_this select 1] spawn HPC_fnc_zeusRemote }];
 	};
-	sleep 2;
+	// keep the editable units and camera areas current while the Zeus screen is open
+	if (!isNull findDisplay 312 && {!isNull _cur} && {_cur getVariable ["HPC_zeusLimited", false]}) then {
+		[player] remoteExecCall ["HPC_fnc_zeusRefreshFor", 2];
+	};
+	sleep 3;
 };

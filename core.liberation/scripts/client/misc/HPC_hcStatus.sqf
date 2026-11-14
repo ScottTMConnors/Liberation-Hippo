@@ -67,6 +67,7 @@ private _playerSegment = [0.09,0.683,0,0.019,[0.48,0.51,0.55,1]] call _rect;
 [0.09,0.71,0.82,0.025,"FPS HISTORY  |  last 6 minutes  |  fixed 0-50 scale  |  gaps fill as samples arrive",0.014,_muted] call _text;
 [0.09,0.89,0.82,0.025,"Live samples every 10 seconds. Counts show ownership, not CPU cost. Close or Escape returns to the mission.",0.014,_muted] call _text;
 private _lastStamp = -1;
+[true] remoteExecCall ["HPC_fnc_aiLoadSubscribe", 2];
 while {!isNull _display} do {
     if !([] call is_admin) exitWith {_display closeDisplay 2};
     private _paused = uiNamespace getVariable ["HPC_AILoadPaused",false];
@@ -134,3 +135,4 @@ while {!isNull _display} do {
     };
     uiSleep 1;
 };
+[false] remoteExecCall ["HPC_fnc_aiLoadSubscribe", 2];

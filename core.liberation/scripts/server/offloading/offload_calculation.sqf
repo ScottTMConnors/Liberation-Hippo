@@ -1,4 +1,12 @@
 if (!isServer) exitWith {};
+// Telemetry for the admin AI-load panel. It is sent only to machines that have the
+// panel open (they subscribe on open and leave on close), not broadcast to everyone.
+HPC_aiLoadSubscribers = [];
+HPC_fnc_aiLoadSubscribe = compileFinal {
+    params [["_on", false]];
+    private _id = [remoteExecutedOwner, 2] select (remoteExecutedOwner == 0);
+    if (_on) then { HPC_aiLoadSubscribers pushBackUnique _id } else { HPC_aiLoadSubscribers = HPC_aiLoadSubscribers - [_id] };
+};
 waitUntil {sleep 1; missionNamespace getVariable ["GRLIB_init_server",false]};
 private _history = createHashMap;
 private _nextLog = 0;
@@ -71,9 +79,6 @@ while {GRLIB_endgame == 0} do {
         };
     } forEach allUsers;
     HPC_netPing = (keys _net) apply {[parseNumber _x] + (_net get _x)};
-    publicVariable "HPC_netPing";
-    group_owners = _machines apply {_x + ((_counts get str (_x select 2)) select [0,3])};
-    publicVariable "group_owners";
     // Status reports AI counts, never player names or account identifiers.
     private _server = _counts get "2";
     // First five columns remain compatible with the previous status reader.
@@ -88,9 +93,7 @@ while {GRLIB_endgame == 0} do {
         if (_label == "") then {_label = format ["HC %1",_id]};
         HPC_hcStatus pushBack [_label,_id,_heartbeat select 2,_row select 3,_row select 4,_row select 5,(_row select 4)-(_row select 5),_row select 6,_heartbeat param [3,0],_heartbeat param [4,0],(diag_tickTime-(_heartbeat select 1)) max 0,(_net getOrDefault [str _id,[-1]]) select 0];
     } forEach _readyClients;
-    publicVariable "HPC_hcStatus";
     HPC_hcTelemetryStamp = serverTime;
-    publicVariable "HPC_hcTelemetryStamp";
     private _playerAI = 0;
     {
         private _unit = _x select 0;
@@ -99,7 +102,6 @@ while {GRLIB_endgame == 0} do {
         };
     } forEach (_machines select [1]);
     HPC_hcSummary = [_totalAI,_totalGroups,_eligibleAI,_playerAI,_serverUnmarked,_serverProtected,count _readyClients,_serverAmbient,_unmarkedKinds];
-    publicVariable "HPC_hcSummary";
     private _keys = HPC_hcStatus apply {str (_x select 1)};
     {if !(_x in _keys) then {_history deleteAt _x}} forEach (keys _history);
     {
@@ -110,7 +112,14 @@ while {GRLIB_endgame == 0} do {
         _history set [_key,_points];
     } forEach HPC_hcStatus;
     HPC_hcHistory = HPC_hcStatus apply {[_x select 1,+(_history get str (_x select 1))]};
-    publicVariable "HPC_hcHistory";
+    private _connected = allPlayers apply {owner _x};
+    HPC_aiLoadSubscribers = HPC_aiLoadSubscribers select {_x in _connected};
+    {
+        private _id = _x;
+        if (_id != 2) then {
+            { _id publicVariableClient _x } forEach ["HPC_netPing","HPC_hcStatus","HPC_hcSummary","HPC_hcHistory","HPC_hcTelemetryStamp"];
+        };
+    } forEach HPC_aiLoadSubscribers;
     if (diag_tickTime >= _nextLog) then {
         diag_log ["HPC_PERF",HPC_hcStatus,HPC_hcSummary];
         _nextLog = diag_tickTime + 30;

@@ -1,17 +1,9 @@
-private  ["_vehicle"];
-private ["_near_intel"];
-private _distvehclose = 5;
-private _searchradius = 20;
-
-sleep 15;
-
-while {true} do {
-	waitUntil {sleep 1; GRLIB_player_spawned};
-
-	// Intel
-	_near_intel = nearestObjects [player, GRLIB_intel_items + GRLIB_ide_traps, _searchradius];
+// Search action on intel items and IED traps that are ready to be searched.
+// Runs from the shared near scan (HPC_nearScan.sqf).
+[{
+	params ["_objs"];
 	{
-		if (!(_x getVariable ["GRLIB_intel_action", false]) && (_x getVariable ["GRLIB_intel_search", false])) then {
+		if (!(_x getVariable ["GRLIB_intel_action", false]) && {_x getVariable ["GRLIB_intel_search", false]}) then {
 			_x setVariable ["GRLIB_intel_action", true];
 			removeAllActions _x;
 			[
@@ -32,6 +24,5 @@ while {true} do {
 				false
 			] call BIS_fnc_holdActionAdd;
 		};
-	} forEach _near_intel;
-	sleep 10;
-};
+	} forEach ([_objs, "intel", GRLIB_intel_items + GRLIB_ide_traps, 20] call HPC_fnc_nearOf);
+}] call HPC_fnc_nearRegister;

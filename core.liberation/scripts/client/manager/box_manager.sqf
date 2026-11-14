@@ -47,42 +47,35 @@ GRLIB_checkAction_UnloadLastBox = compileFinal {
 	(GRLIB_player_is_menuok && _ready && _owned && _loaded)
 };
 
-private _searchradius = 50;
-private ["_nearboxes", "_transport_vehicles", "_vehicle"];
-
-while {true} do {
-	waitUntil {sleep 1; GRLIB_player_spawned};
-
+// Transport, storage and crate actions. Runs from the shared near scan (HPC_nearScan.sqf).
+[{
+	params ["_objs"];
 	// Transport
-	_transport_vehicles = (player nearEntities [transport_vehicles, _searchradius]) select {
-		(!(_x getVariable ["R3F_LOG_disabled", false]) || typeOf _x == cargo_sling_typename) &&
-		([player, _x] call is_owner || [_x] call is_public)
+	private _transport_vehicles = ([_objs, "transport", transport_vehicles, 50] call HPC_fnc_nearOf) select {
+		alive _x &&
+		{isNil {_x getVariable "GRLIB_vehicle_transport"}} &&
+		{!(_x getVariable ["R3F_LOG_disabled", false]) || typeOf _x == cargo_sling_typename} &&
+		{[player, _x] call is_owner || [_x] call is_public}
 	};
 
 	// Storage
 	if (GRLIB_player_near_fob) then {
-		_transport_vehicles append (nearestObjects [player, [storage_medium_typename,storage_large_typename], _searchradius]);
+		_transport_vehicles append (([_objs, "storage", [storage_medium_typename, storage_large_typename], 50] call HPC_fnc_nearOf) select {isNil {_x getVariable "GRLIB_vehicle_transport"}});
 	};
 
 	{
-		_vehicle = _x;
-		if (isNil {_vehicle getVariable "GRLIB_vehicle_transport"}) then {
-			if (typeOf _vehicle == cargo_sling_typename) then {
-				_vehicle addAction [([localize "STR_ABANDON", "res\ui_veh.paa", "danger"] call HPC_fnc_actionTitle),"scripts\client\actions\do_abandon.sqf","",-499,false,true,"","[_target, _this] call GRLIB_checkAction_AbandonBox", GRLIB_ActionDist_5];
-			};
-			_vehicle addAction [([localize "STR_ACTION_UNLOAD_BOX", "res\ui_unload.paa", "build"] call HPC_fnc_actionTitle),"scripts\client\actions\do_unload_truck.sqf","all",-500,false,true,"","[_target, _this] call GRLIB_checkAction_UnloadBox", GRLIB_ActionDist_10];
-			_vehicle addAction [([localize "STR_ACTION_UNLOAD_ONE_BOX", "res\ui_unload.paa", "build"] call HPC_fnc_actionTitle),"scripts\client\actions\do_unload_truck.sqf","one",-501,false,true,"","[_target, _this] call GRLIB_checkAction_UnloadLastBox", GRLIB_ActionDist_10];
-			_vehicle setVariable ["GRLIB_vehicle_transport", true];
+		private _vehicle = _x;
+		if (typeOf _vehicle == cargo_sling_typename) then {
+			_vehicle addAction [([localize "STR_ABANDON", "res\ui_veh.paa", "danger"] call HPC_fnc_actionTitle),"scripts\client\actions\do_abandon.sqf","",-499,false,true,"","[_target, _this] call GRLIB_checkAction_AbandonBox", GRLIB_ActionDist_5];
 		};
+		_vehicle addAction [([localize "STR_ACTION_UNLOAD_BOX", "res\ui_unload.paa", "build"] call HPC_fnc_actionTitle),"scripts\client\actions\do_unload_truck.sqf","all",-500,false,true,"","[_target, _this] call GRLIB_checkAction_UnloadBox", GRLIB_ActionDist_10];
+		_vehicle addAction [([localize "STR_ACTION_UNLOAD_ONE_BOX", "res\ui_unload.paa", "build"] call HPC_fnc_actionTitle),"scripts\client\actions\do_unload_truck.sqf","one",-501,false,true,"","[_target, _this] call GRLIB_checkAction_UnloadLastBox", GRLIB_ActionDist_10];
+		_vehicle setVariable ["GRLIB_vehicle_transport", true];
 	} forEach _transport_vehicles;
 
 	// Box
-	_nearboxes = (player nearEntities [box_transport_loadable, _searchradius]) select { isNil {_x getVariable "GRLIB_boxes_action"} };
 	{
-		_vehicle = _x;
-		_vehicle addAction [([localize "STR_ACTION_LOAD_BOX", "res\ui_load.paa", "build"] call HPC_fnc_actionTitle),"scripts\client\actions\do_load_box.sqf","",-400,true,true,"","[_target, _this] call GRLIB_checkAction_LoadBox", GRLIB_ActionDist_5];
-		_vehicle setVariable ["GRLIB_boxes_action", true];
-	} forEach _nearboxes;
-
-	sleep 4;
-};
+		_x addAction [([localize "STR_ACTION_LOAD_BOX", "res\ui_load.paa", "build"] call HPC_fnc_actionTitle),"scripts\client\actions\do_load_box.sqf","",-400,true,true,"","[_target, _this] call GRLIB_checkAction_LoadBox", GRLIB_ActionDist_5];
+		_x setVariable ["GRLIB_boxes_action", true];
+	} forEach (([_objs, "boxload", box_transport_loadable, 50] call HPC_fnc_nearOf) select { alive _x && {isNil {_x getVariable "GRLIB_boxes_action"}} });
+}] call HPC_fnc_nearRegister;

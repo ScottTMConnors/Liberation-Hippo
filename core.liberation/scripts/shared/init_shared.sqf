@@ -42,13 +42,21 @@ RPT_fnc_TextureVehicle = compileFinal preprocessFileLineNumbers "addons\VAM\fn_t
 fnc_VAM_common_camo = compileFinal preprocessFileLineNumbers "addons\VAM\vehicles\fnc_VAM_common_camo.sqf";
 fnc_VAM_common_comp = compileFinal preprocessFileLineNumbers "addons\VAM\vehicles\fnc_VAM_common_comp.sqf";
 
-// Apply on each machine only to AI owned by that machine, including headless clients.
+// Easy AI: applied on each machine only to the AI it owns (headless clients included).
+// The setting is fixed for the session, so nothing runs when it is off. New units are
+// caught on creation (spawn paths that skip HPC_fnc_applyEasyAI); a slow sweep covers
+// units whose locality moved to this machine.
 [] spawn {
     waitUntil { sleep 1; !isNil "HPC_EasyAI" && !isNil "GRLIB_init_server" };
-    private _previous = false;
+    if (!HPC_EasyAI) exitWith {};
+    addMissionEventHandler ["EntityCreated", {
+        params ["_entity"];
+        if (_entity isKindOf "CAManBase") then {
+            [_entity] spawn { sleep 2; _this call HPC_fnc_applyEasyAI };
+        };
+    }];
     while {true} do {
-        if (HPC_EasyAI || _previous) then {{ [_x] call HPC_fnc_applyEasyAI } forEach allUnits};
-        _previous = HPC_EasyAI;
-        sleep 5;
+        { [_x] call HPC_fnc_applyEasyAI } forEach (allUnits select { local _x && {(_x getVariable ["HPC_originalSkills", []]) isEqualTo []} });
+        sleep 60;
     };
 };

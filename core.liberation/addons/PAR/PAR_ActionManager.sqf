@@ -3,14 +3,12 @@
 if (PAR_revive == 0) exitWith {};
 
 // Grave Name
-// the per-frame handler only draws; a slow loop finds the nearest grave
+// the per-frame handler only draws; the shared near scan finds the nearest grave
 HPC_PAR_nearGrave = objNull;
-[] spawn {
-	while {true} do {
-		HPC_PAR_nearGrave = (nearestObjects [player, PAR_graves, 2]) param [0, objNull];
-		sleep 0.5;
-	};
-};
+[{
+	params ["_objs"];
+	HPC_PAR_nearGrave = ([_objs, "grave", PAR_graves, 2.5] call HPC_fnc_nearOf) param [0, objNull];
+}] call HPC_fnc_nearRegister;
 addMissionEventHandler ["Draw3D",{
 	if (!isNull HPC_PAR_nearGrave) then {
 		private _grave = HPC_PAR_nearGrave;

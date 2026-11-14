@@ -5,13 +5,16 @@ waitUntil {sleep 1; !isNil "GRLIB_all_fobs"};
 
 private _defense = [];   // point ids
 private _buildings = []; // point ids
-private _defenseCount = -1;
+private _defenseState = [];  // last drawn [sector, level] pairs
+private _nextBuildingSweep = 0;
 GRLIB_redraw_marker_fob = true;
 
 sleep 2;
 while {true} do {
-	// Defended sectors
-	if (count GRLIB_sector_defense != _defenseCount || GRLIB_redraw_marker_fob) then {
+	// Defended sectors: redrawn when any sector's defence level changes, not only the count
+	private _state = GRLIB_sector_defense toArray false;
+	_state sort true;
+	if (_state isNotEqualTo _defenseState || GRLIB_redraw_marker_fob) then {
 		private _ids = [];
 		{
 			private _sector = _x;
@@ -36,11 +39,12 @@ while {true} do {
 		} forEach (keys GRLIB_sector_defense);
 		{ [_x, []] call HPC_fnc_mapPoint } forEach (_defense - _ids);
 		_defense = _ids;
-		_defenseCount = count GRLIB_sector_defense;
+		_defenseState = _state;
 	};
 
-	// Facility buildings at FOBs
-	if ((round time) % 600 == 0 || GRLIB_redraw_marker_fob) then {
+	// Facility buildings at FOBs: on build, recycle or FOB change, else every 10 minutes
+	if (time >= _nextBuildingSweep || GRLIB_redraw_marker_fob) then {
+		_nextBuildingSweep = time + 600;
 		private _ids = [];
 		{
 			private _fob_pos = _x;
@@ -71,7 +75,6 @@ while {true} do {
 
 	if (GRLIB_redraw_marker_fob) then {
 		GRLIB_redraw_marker_fob = false;
-		publicVariable "GRLIB_redraw_marker_fob";
 	};
 	sleep 3;
 };

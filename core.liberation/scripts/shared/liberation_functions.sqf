@@ -220,3 +220,7 @@ HPC_fnc_patrolSlot = compileFinal preprocessFileLineNumbers "scripts\shared\func
 HPC_fnc_undercoverReport = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_undercoverReport.sqf";
 HPC_fnc_kickPlayer = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_kickPlayer.sqf";
 HPC_fnc_contactName = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_contactName.sqf"; // random side-mission contact
+HPC_fnc_nearOf = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_nearOf.sqf"; // shared near-scan filter (HPC_nearScan.sqf)
+HPC_fnc_nearRegister = compileFinal preprocessFileLineNumbers "scripts\shared\functions\HPC_nearRegister.sqf"; // register a near-scan handler (HPC_nearScan.sqf)
+HPC_nearHandlers = [];
+HPC_nearKindCache = createHashMap;

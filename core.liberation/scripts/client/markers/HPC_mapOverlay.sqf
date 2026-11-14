@@ -727,6 +727,19 @@ private _summary = {
 private _drawnMap = controlNull;
 private _subscribed = false;
 private _nextRefresh = 0;
+// Supplies and assets (formerly vehicles_marker.sqf): taxis, supply crates and barrels,
+// friendly static weapons and mobile respawns, drawn as local map points.
+private _assetStyle = createHashMap;	// class -> [icon, colour, size]
+{ _assetStyle set [_x, ["mil_box", "ColorGUER", 24]] } forEach [ammobox_b_typename, ammobox_o_typename, ammobox_i_typename];
+{ _assetStyle set [_x, ["mil_triangle", "ColorGrey", 24]] } forEach [waterbarrel_typename, fuelbarrel_typename, foodbarrel_typename];
+_assetStyle set [money_typename, ["", "ColorGreen", 24]];
+_assetStyle set [repairbox_typename, ["loc_repair", "ColorWEST", 34]];
+_assetStyle set [canister_fuel_typename, ["loc_refuel", "Color1_FD_F", 34]];
+_assetStyle set [playerbox_typename, ["loc_rearm", "ColorCIV", 34]];
+{ _assetStyle set [_x, ["loc_Rifle", "ColorOrange", 34]] } forEach ai_resupply_sources;
+private _assetStatics = createHashMap;
+{ _assetStatics set [_x, true] } forEach list_static_weapons;
+private _assetPoints = [];
 private _previousIntel = []; // [group, position, icon, label, size]
 private _tooltipKey = [];
 private _tooltipAt = 0;
@@ -848,6 +861,46 @@ while {true} do {
             {(_x isKindOf "LandVehicle") || {_x isKindOf "Air"} || {_x isKindOf "Ship"}}
         });
         HPC_mapVehicles = _vehicles;
+
+        // supplies and assets
+        private _points = [];
+        private _respawns = if (GRLIB_allow_redeploy > 0) then {[] call F_getMobileRespawns} else {[]};
+        {
+            private _obj = _x;
+            private _type = typeOf _obj;
+            private _id = format ["asset_%1", _obj call BIS_fnc_netId];
+            private _data = switch (true) do {
+                case (_obj in _respawns): {
+                    [_obj, "mil_end", "ColorYellow", format ["%1 - %2", [_obj] call F_getLRXName, mapGridPosition _obj], 24, 0, "respawn"]
+                };
+                case ((_obj getVariable ["GRLIB_taxi_owner", ""]) != ""): {
+                    private _caller = (_obj getVariable ["GRLIB_taxi_owner", ""]) call BIS_fnc_getUnitByUID;
+                    [_obj, "loc_heli", "ColorGUER", format ["Taxi - %1", [_caller] call get_player_name], 20, 0, "taxi"]
+                };
+                case (_type in _assetStatics): {
+                    if (side _obj == GRLIB_side_enemy || {_obj getVariable ["R3F_LOG_disabled", false] && {side _obj != GRLIB_side_friendly}}) then {[]} else {
+                        private _crewed = (crew _obj) findIf {alive _x} >= 0;
+                        [_obj, "mil_dot", [GRLIB_color_friendly, "ColorKhaki"] select (!_crewed && {(_obj getVariable ["GRLIB_vehicle_owner", ""]) in ["", "public"]}), [_type] call F_getLRXName, 18, 0, "static"]
+                    }
+                };
+                case (_type in _assetStyle && {!(_obj getVariable ["R3F_LOG_disabled", false])} && {(_obj getVariable ["GRLIB_vehicle_owner", ""]) != "server"}): {
+                    (_assetStyle get _type) params ["_icon", "_color", "_size"];
+                    [_obj, _icon, _color, ["", "$"] select (_type == money_typename), _size, 0, "supply"]
+                };
+                default {[]};
+            };
+            if (_data isNotEqualTo []) then {
+                [_id, _data, false] call HPC_fnc_mapPoint;
+                _points pushBack _id;
+            };
+        } forEach (vehicles select {
+            alive _x && {!isObjectHidden _x} && {isNull attachedTo _x} &&
+            {isNull (_x getVariable ["R3F_LOG_est_transporte_par", objNull])} &&
+            {isNil {_x getVariable "GRLIB_vehicle_init"}} && {isNil {_x getVariable "GRLIB_mission_AI"}} &&
+            {_x distance2D lhd > GRLIB_fob_range}
+        });
+        { [_x, [], false] call HPC_fnc_mapPoint } forEach (_assetPoints - _points);
+        _assetPoints = _points;
 
         // Enemy intel: the server's merged list plus what the player's own group knows.
         private _known = +(missionNamespace getVariable ["HPC_intelGroups", []]);
