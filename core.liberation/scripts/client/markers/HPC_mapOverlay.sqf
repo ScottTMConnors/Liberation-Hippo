@@ -595,7 +595,7 @@ private _createPanel = {
         ["HPC_MapPanelBg", _bgIdc], ["HPC_MapPanelAccent", 77906], ["HPC_MapPanelTitle", 77931],
         ["HPC_MapPanelSubtitle", 77932], ["HPC_MapPanelDivider", 77933], ["HPC_MapPanelBody", _bodyIdc]
     ];
-    private _gx = safezoneH * 0.75 / 54;
+    private _gx = 0.8 * safezoneH * 0.75 / 54; // panel grid (hippo_map.hpp HMP_GX)
     {
         _x params ["_idc", "_column", "_tooltip", "_code"];
         private _button = _display ctrlCreate ["HPC_MapToggle", _idc];
@@ -886,7 +886,7 @@ while {true} do {
 
         if (visibleMap) then {
             if (isNull (_display displayCtrl _bodyIdc)) then {[_display] call _createPanel};
-            private _gy = safezoneH / 54;
+            private _gy = 0.8 * safezoneH / 54; // panel grid (hippo_map.hpp HMP_GY)
             private _body = _display displayCtrl _bodyIdc;
             _body ctrlSetStructuredText parseText (call _summary);
             // Fit the body to its text, the Command button below it and the backing around both.
@@ -913,7 +913,7 @@ while {true} do {
                 // Toggles: lit teal when the layer is shown, dim with muted text when hidden.
                 private _button = _display displayCtrl _idc;
                 _button ctrlSetText (_label + (["  OFF", ""] select _on));
-                [_button, [[0.16, 0.20, 0.21, 0.95], [0.20, 0.42, 0.38, 0.95]] select _on, [[0.62, 0.69, 0.72, 1], [0.92, 0.94, 0.95, 1]] select _on, _display displayCtrl 51] call HPC_fnc_buttonColor;
+                [_button, [[0.16, 0.20, 0.21, 0.8], [0.20, 0.42, 0.38, 0.85]] select _on, [[0.62, 0.69, 0.72, 1], [0.92, 0.94, 0.95, 1]] select _on, _display displayCtrl 51] call HPC_fnc_buttonColor;
             } forEach [[77902, HPC_mapShowForces, "FORCES"], [77905, HPC_mapShowIntel, "INTEL"], [77903, HPC_mapShowTracers, "SHOTS"]];
         };
     };

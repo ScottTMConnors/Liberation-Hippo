@@ -2,44 +2,47 @@
 // map, display 12, with ctrlCreate) and the kill feed rows shown on the map
 // (HPC_killFeedWorker). HPC_MapOverlayPreview only exists for tools/map_render.py:
 // it lays every control out at once so the overlay can be rendered offline.
-#define HMP_W (21 * HPC_GX)
+// The panel is drawn at 80% of the menu grid so it covers less of the map.
+#define HMP_GX (0.8 * HPC_GX)
+#define HMP_GY (0.8 * HPC_GY)
+#define HMP_W (21 * HMP_GX)
 #define HMP_X (HPC_RIGHT - 16.6 * HPC_GX - HMP_W)
 #define HMP_Y (safezoneY + 4.6 * HPC_GY)
-#define HMP_PAD (0.9 * HPC_GX)
+#define HMP_PAD (0.9 * HMP_GX)
 #define HMP_IW (HMP_W - 2 * HMP_PAD)
-#define HMP_TW ((HMP_IW - 0.8 * HPC_GX) / 3)
-#define HMP_BODY_Y (HMP_Y + 7.9 * HPC_GY)
+#define HMP_TW ((HMP_IW - 0.8 * HMP_GX) / 3)
+#define HMP_BODY_Y (HMP_Y + 7.9 * HMP_GY)
 #define HMP_TIP_W (15 * HPC_GX)
 #define HMF_X (safezoneX + 1.2 * HPC_GX)
 #define HMF_Y (safezoneY + 0.44 * safezoneH)
 #define HMF_ROW (1.85 * HPC_GY)
 
 class HPC_MapPanelBg : HPC_Text {
-	x = HMP_X; y = HMP_Y; w = HMP_W; h = 30 * HPC_GY;
-	colorBackground[] = {0.035,0.045,0.05,0.92};
+	x = HMP_X; y = HMP_Y; w = HMP_W; h = 30 * HMP_GY;
+	colorBackground[] = {0.035,0.045,0.05,0.72};
 };
 class HPC_MapPanelAccent : HPC_Text {
-	x = HMP_X; y = HMP_Y; w = 0.28 * HPC_GX; h = 4.2 * HPC_GY;
+	x = HMP_X; y = HMP_Y; w = 0.28 * HMP_GX; h = 4.2 * HMP_GY;
 	colorBackground[] = HPC_C_ACCENT;
 };
 class HPC_MapPanelTitle : HPC_Heading {
-	x = HMP_X + HMP_PAD; y = HMP_Y + 0.5 * HPC_GY; w = HMP_IW; h = 2.0 * HPC_GY;
-	sizeEx = 1.3 * HPC_GY;
+	x = HMP_X + HMP_PAD; y = HMP_Y + 0.5 * HMP_GY; w = HMP_IW; h = 2.0 * HMP_GY;
+	sizeEx = 1.3 * HMP_GY;
 	text = "MAP INTEL";
 };
 class HPC_MapPanelSubtitle : HPC_Label {
-	x = HMP_X + HMP_PAD; y = HMP_Y + 2.4 * HPC_GY; w = HMP_IW; h = 1.4 * HPC_GY;
+	x = HMP_X + HMP_PAD; y = HMP_Y + 2.4 * HMP_GY; w = HMP_IW; h = 1.4 * HMP_GY;
 	font = "PuristaMedium";
-	sizeEx = 0.9 * HPC_GY;
+	sizeEx = 0.9 * HMP_GY;
 	text = "Hover a marker for details. Drag here to move.";
 };
 class HPC_MapPanelDivider : HPC_Text {
-	x = HMP_X + HMP_PAD; y = HMP_Y + 4.4 * HPC_GY; w = HMP_IW; h = 0.1 * HPC_GY;
+	x = HMP_X + HMP_PAD; y = HMP_Y + 4.4 * HMP_GY; w = HMP_IW; h = 0.1 * HMP_GY;
 	colorBackground[] = HPC_C_LINE;
 };
 // transparent drag handle over the panel header (drag to move, double-click to reset)
 class HPC_MapPanelHandle : HPC_Button {
-	x = HMP_X; y = HMP_Y; w = HMP_W; h = 4.4 * HPC_GY;
+	x = HMP_X; y = HMP_Y; w = HMP_W; h = 4.4 * HMP_GY;
 	tooltip = "Drag to move this panel. Double-click to put it back.";
 	colorBackground[] = {0,0,0,0};
 	colorBackgroundActive[] = {1,1,1,0.03};
@@ -50,11 +53,12 @@ class HPC_MapPanelHandle : HPC_Button {
 	soundClick[] = {"",0,1};
 };
 class HPC_MapToggle : HPC_Button {
-	x = HMP_X + HMP_PAD; y = HMP_Y + 5.0 * HPC_GY; w = HMP_TW; h = 2.2 * HPC_GY;
+	x = HMP_X + HMP_PAD; y = HMP_Y + 5.0 * HMP_GY; w = HMP_TW; h = 2.2 * HMP_GY;
+	sizeEx = 0.9 * HMP_GY;
 };
 class HPC_MapPanelBody : HPC_StructuredText {
-	x = HMP_X + HMP_PAD; y = HMP_BODY_Y; w = HMP_IW; h = 18 * HPC_GY;
-	size = 0.95 * HPC_GY;
+	x = HMP_X + HMP_PAD; y = HMP_BODY_Y; w = HMP_IW; h = 18 * HMP_GY;
+	size = 0.95 * HMP_GY;
 	class Attributes {
 		font = "PuristaMedium";
 		color = "#EBEFF1";
@@ -64,8 +68,9 @@ class HPC_MapPanelBody : HPC_StructuredText {
 	};
 };
 class HPC_MapCommandButton : HPC_ButtonAccent {
-	x = HMP_X + HMP_PAD; y = HMP_BODY_Y + 18.4 * HPC_GY; w = HMP_IW; h = 2.6 * HPC_GY;
+	x = HMP_X + HMP_PAD; y = HMP_BODY_Y + 18.4 * HMP_GY; w = HMP_IW; h = 2.6 * HMP_GY;
 	text = "Command AI forces";
+	sizeEx = 0.9 * HMP_GY;
 };
 class HPC_MapTooltipBg : HPC_Text {
 	x = 0; y = 0; w = HMP_TIP_W + 1.4 * HPC_GX; h = 7 * HPC_GY;
@@ -108,8 +113,8 @@ class HPC_MapOverlayPreview {
 		class Subtitle : HPC_MapPanelSubtitle { idc = 77932; };
 		class Divider : HPC_MapPanelDivider { idc = 77933; };
 		class Forces : HPC_MapToggle { idc = 77902; text = "Forces"; };
-		class Intel : HPC_MapToggle { idc = 77905; text = "Intel"; x = HMP_X + HMP_PAD + HMP_TW + 0.4 * HPC_GX; };
-		class Shots : HPC_MapToggle { idc = 77903; text = "Shots"; x = HMP_X + HMP_PAD + 2 * (HMP_TW + 0.4 * HPC_GX); };
+		class Intel : HPC_MapToggle { idc = 77905; text = "Intel"; x = HMP_X + HMP_PAD + HMP_TW + 0.4 * HMP_GX; };
+		class Shots : HPC_MapToggle { idc = 77903; text = "Shots"; x = HMP_X + HMP_PAD + 2 * (HMP_TW + 0.4 * HMP_GX); };
 		class Body : HPC_MapPanelBody { idc = 77901; };
 		class Command : HPC_MapCommandButton { idc = 77904; };
 		class TooltipBg : HPC_MapTooltipBg { idc = 77922; };
