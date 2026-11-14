@@ -2,7 +2,7 @@ params ["_sector"];
 
 sleep 30;
 private _sector_pos = markerpos _sector;
-private _ownership = [_sector_pos] call F_sectorOwnership;
+private _ownership = [_sector_pos, GRLIB_capture_size, 0.5] call F_sectorOwnership;
 if ( _ownership != GRLIB_side_enemy ) exitWith {};
 if ( GRLIB_endgame == 1 || GRLIB_global_stop == 1 ) exitWith {};
 
@@ -41,18 +41,18 @@ if (_defense_type > 0 && !_defenders_cooldown) then {
 };
 
 if (_ownership == GRLIB_side_enemy) then {
-	sector_timer = round (serverTime + GRLIB_vulnerability_timer);
+	private _timer = round (serverTime + GRLIB_vulnerability_timer);
 	if (_sector in sectors_bigtown) then {
-		sector_timer = sector_timer + (10 * 60);
+		_timer = _timer + (10 * 60);
 	};
-	publicVariable "sector_timer";
+	["set", _sector, _sector_pos, _timer, false] call HPC_fnc_attackTimer;
 	[_sector, 1] remoteExec ["remote_call_sector", 0];
 	_sector setMarkerAlpha 0;
 	sleep 5;
 
 	private _activeplayers = 0;
-	while { (serverTime < sector_timer || _activeplayers > 0) && _ownership == GRLIB_side_enemy } do {
-		_ownership = [_sector_pos, GRLIB_capture_size] call F_sectorOwnership;
+	while { (serverTime < _timer || _activeplayers > 0) && _ownership == GRLIB_side_enemy } do {
+		_ownership = [_sector_pos, GRLIB_capture_size, 0.5] call F_sectorOwnership;
 		_activeplayers = { alive _x && (_x distance2D _sector_pos) < GRLIB_sector_size && {isNil {_x getVariable "HPC_ambientKind"}} } count (units GRLIB_side_friendly);
 		sleep 3;
 	};
@@ -104,7 +104,7 @@ if (_ownership == GRLIB_side_enemy) then {
 				};
 			};
 
-			if ((sector_timer - serverTime) <= 300) then {
+			if ((_timer - serverTime) <= 300) then {
 				private _rwd_xp = round (15 + random 10);
 				private _text = format ["Glory to the Defenders! +%1 XP", _rwd_xp];
 				{
@@ -119,8 +119,7 @@ if (_ownership == GRLIB_side_enemy) then {
 	};
 
 	sleep 5;
-	sector_timer = 0;
-	publicVariable "sector_timer";
+	["clear", _sector] call HPC_fnc_attackTimer;
 };
 
 sleep 10;

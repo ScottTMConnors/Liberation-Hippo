@@ -22,7 +22,7 @@ HPC_mapSectorFriendly = [0.38, 0.64, 0.96, 1];
 HPC_mapGold = [1, 0.82, 0.3, 1];
 HPC_mapTeal = [0.46, 0.8, 0.72, 1];
 if (isNil "HPC_mapSelect") then { HPC_mapSelect = [] };   // [position, text] while picking a spot
-if (isNil "HPC_attackAlert") then { HPC_attackAlert = [] }; // [position, text] while a sector/FOB is attacked
+if (isNil "HPC_attackAlert") then { HPC_attackAlert = [] }; // [[position, text], ...] one per sector/FOB under attack (ui_manager.sqf)
 HPC_mapPlayers = [];     // [unit, icon, colour, text, size, wounded]
 HPC_mapSectorHover = "";
 
@@ -240,12 +240,12 @@ HPC_fnc_mapWorldDraw = compileFinal toString {
 	} forEach HPC_mapPlayers;
 
 	// "under attack" alert and the spot being picked
-	if (HPC_attackAlert isNotEqualTo []) then {
-		HPC_attackAlert params ["_pos", ["_text", ""]];
+	{
+		_x params ["_pos", ["_text", ""]];
 		private _ring = 40 + 20 * _pulse;
 		[_tex get "ring_soft", [1, 0.3, 0.2, 1 - 0.6 * _pulse], _pos, _ring, _ring, 0] call _dI;
 		[["mil_warning"] call HPC_fnc_mapTexture, [1, 0.35, 0.25, 1], _pos, 24, _text] call _mark;
-	};
+	} forEach HPC_attackAlert;
 	if (HPC_mapSelect isNotEqualTo []) then {
 		HPC_mapSelect params ["_pos", ["_text", ""]];
 		[_tex get "brackets", [HPC_mapTeal select 0, HPC_mapTeal select 1, HPC_mapTeal select 2, 0.7 + 0.3 * _pulse], _pos, 40, 40, 0] call _dI;

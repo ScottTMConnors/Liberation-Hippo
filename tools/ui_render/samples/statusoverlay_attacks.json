@@ -1,0 +1,86 @@
+{
+ "107": {
+  "text": "12840"
+ },
+ "102": {
+  "text": "24500"
+ },
+ "103": {
+  "text": "9870"
+ },
+ "101": {
+  "text": "145/150"
+ },
+ "104": {
+  "text": "-35"
+ },
+ "105": {
+  "text": "100%"
+ },
+ "106": {
+  "text": "1250"
+ },
+ "532": {
+  "text": "SERGEANT"
+ },
+ "533": {
+  "text": "12840 / 15000 XP"
+ },
+ "_class": "statusoverlay",
+ "show": [
+  401,
+  402,
+  404
+ ],
+ "401": {
+  "pos": [
+   "safezoneX+safezoneW-18.8*(safezoneH*0.75/54)",
+   "safezoneY+0.46*safezoneH+4.2*(safezoneH/54)",
+   "18*(safezoneH*0.75/54)",
+   "6.119999999999999*(safezoneH/54)"
+  ]
+ },
+ "404": {
+  "pos": [
+   "safezoneX+safezoneW-18.8*(safezoneH*0.75/54)",
+   "safezoneY+0.46*safezoneH+4.2*(safezoneH/54)",
+   "0.25*(safezoneH*0.75/54)",
+   "6.119999999999999*(safezoneH/54)"
+  ]
+ },
+ "402": {
+  "text": "<t font='PuristaSemibold' color='#FF8A80' size='0.75'>UNDER ATTACK</t><br/><t font='PuristaSemibold' color='#FFE3E0'>LE PORT</t><t align='right' font='PuristaSemibold' color='#FFFFFF'>04:12</t><br/><t font='PuristaSemibold' color='#FFE3E0'>FOB BRAVO</t><t align='right' font='PuristaSemibold' color='#FFFFFF'>07:45</t><br/><t font='PuristaSemibold' color='#FFE3E0'>LA PESSAGNE</t><t align='right' font='PuristaSemibold' color='#FFFFFF'><t color='#FF8A80'>VULNERABLE</t></t><br/><t color='#D9A9A3' size='0.85'>+1 more on the map</t><br/>",
+  "pos": [
+   "safezoneX+safezoneW-18.8*(safezoneH*0.75/54)+0.8*(safezoneH*0.75/54)",
+   "safezoneY+0.46*safezoneH+4.2*(safezoneH/54)+0.2*(safezoneH/54)",
+   "16.6*(safezoneH*0.75/54)",
+   "5.419999999999999*(safezoneH/54)"
+  ]
+ },
+ "hide": [],
+ "521": {
+  "pos": [
+   "safezoneX+safezoneW-18.8*(safezoneH*0.75/54)",
+   "safezoneY+0.46*safezoneH+10.620000000000001*(safezoneH/54)",
+   "18*(safezoneH*0.75/54)",
+   "3*(safezoneH/54)"
+  ]
+ },
+ "519": {
+  "pos": [
+   "safezoneX+safezoneW-18.8*(safezoneH*0.75/54)",
+   "safezoneY+0.46*safezoneH+10.620000000000001*(safezoneH/54)",
+   "0.25*(safezoneH*0.75/54)",
+   "3*(safezoneH/54)"
+  ]
+ },
+ "518": {
+  "text": "<t font='PuristaSemibold' color='#9EE3D3' size='0.85'>OPERATIONS</t><br/><t color='#B5C2C7'>Standing by for orders</t>",
+  "pos": [
+   "safezoneX+safezoneW-18.8*(safezoneH*0.75/54)+0.75*(safezoneH*0.75/54)",
+   "safezoneY+0.46*safezoneH+10.620000000000001*(safezoneH/54)+0.3*(safezoneH/54)",
+   "16.9*(safezoneH*0.75/54)",
+   "2.7*(safezoneH/54)"
+  ]
+ }
+}

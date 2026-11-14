@@ -801,7 +801,18 @@ GRLIB_virtual_garage = [];
 player setVariable ["GRLIB_virtual_garage", [], true];
 player setVariable ["HPC_cargo_home", [[], []], true];
 call compile preprocessFileLineNumbers "hippo_tests\client_fireteams.sqf";
-["RUN_DONE|56"] call _emit;
+// two attacks at once: the HUD lists both, soonest to fall first, and the map marks both
+private _aPos1 = player getPos [800, 0];
+private _aPos2 = player getPos [900, 180];
+HPC_attackTimers = [["t1", _aPos1, serverTime + 600, false], ["t2", _aPos2, serverTime + 120, true]];
+sleep 2;
+private _aAlert = +HPC_attackAlert;
+HPC_attackTimers = [];
+sleep 1;
+diag_log ["HPC_ATTACK_HUD", _aAlert];
+["hud.concurrent_attacks", count _aAlert == 2 && {((_aAlert select 0) select 0) isEqualTo _aPos2} && {((_aAlert select 1) select 0) isEqualTo _aPos1} && {HPC_attackAlert isEqualTo []}] call _assert;
+
+["RUN_DONE|57"] call _emit;
 // --hold only: a staged firefight for visual inspection of the map overlay and command window.
 if (missionNamespace getVariable ["HPC_testHold", false]) then {
     player allowDamage false;

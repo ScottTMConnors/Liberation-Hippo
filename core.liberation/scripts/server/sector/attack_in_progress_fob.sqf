@@ -1,7 +1,7 @@
 params ["_fob_pos"];
 
 sleep 30;
-private _ownership = [_fob_pos] call F_sectorOwnership;
+private _ownership = [_fob_pos, GRLIB_capture_size, 0.5] call F_sectorOwnership;
 if (_ownership != GRLIB_side_enemy) exitWith {};
 if (GRLIB_endgame == 1 || GRLIB_global_stop == 1) exitWith {};
 
@@ -22,10 +22,10 @@ publicVariable "fob_attack_in_progress";
 GRLIB_AvailAttackSectors = [];
 publicVariable "GRLIB_AvailAttackSectors";
 sleep 10;
-_ownership = [_fob_pos] call F_sectorOwnership;
+_ownership = [_fob_pos, GRLIB_capture_size, 0.5] call F_sectorOwnership;
 if (_ownership == GRLIB_side_enemy) then {
-	sector_timer = round (serverTime + GRLIB_vulnerability_timer + (5 * 60));
-	publicVariable "sector_timer";
+	private _timer = round (serverTime + GRLIB_vulnerability_timer + (5 * 60));
+	["set", str _fob_pos, _fob_pos, _timer, true] call HPC_fnc_attackTimer;
 
 	[_fob_pos, 1] remoteExec ["remote_call_fob", 0];
 	if (GRLIB_alarms_enabled) then {
@@ -33,7 +33,7 @@ if (_ownership == GRLIB_side_enemy) then {
 			params ["_pos"];
 			sleep 60;
 			private _sound = "A3\Sounds_F\sfx\alarm_blufor.wss";
-			while { ([_pos] call F_sectorOwnership) == GRLIB_side_enemy && _pos in GRLIB_all_fobs } do {
+			while { ([_pos, GRLIB_capture_size, 0.5] call F_sectorOwnership) == GRLIB_side_enemy && _pos in GRLIB_all_fobs } do {
 				[_pos, 1] remoteExec ["remote_call_fob", 0];
 				[_sound, objNull, false, ATLToASL _pos, 5, 1, 1000] call F_playSound;
 				sleep (60 + (floor(random 4) * 45));
@@ -45,8 +45,8 @@ if (_ownership == GRLIB_side_enemy) then {
 	private _near_outpost = (_fob_pos in GRLIB_all_outposts);
 	private _activeplayers = 0;
 
-	while { (serverTime < sector_timer || _activeplayers > 0) && _ownership == GRLIB_side_enemy } do {
-		_ownership = [_fob_pos, GRLIB_capture_size] call F_sectorOwnership;
+	while { (serverTime < _timer || _activeplayers > 0) && _ownership == GRLIB_side_enemy } do {
+		_ownership = [_fob_pos, GRLIB_capture_size, 0.5] call F_sectorOwnership;
 		_activeplayers = count (allPlayers select { alive _x && (_x distance2D _fob_pos) < GRLIB_sector_size });
 		if (round serverTime % 60 == 0 && !_near_outpost && _activeplayers == 0) then {
 			[_fob_pos, 4] remoteExec ["remote_call_fob", 0];
@@ -69,7 +69,7 @@ if (_ownership == GRLIB_side_enemy) then {
 			[_fob_pos, 3] remoteExec ["remote_call_fob", 0];
 			[_fob_pos, _max_prisoners] call spawn_prisoners;
 
-			if (round(sector_timer - serverTime) <= 300) then {
+			if (round(_timer - serverTime) <= 300) then {
 				private _rwd_xp = round (15 + random 10);
 				private _text = format ["Glory to the Defenders! +%1 XP", _rwd_xp];
 				{
@@ -83,8 +83,7 @@ if (_ownership == GRLIB_side_enemy) then {
 	};
 
 	sleep 5;
-	sector_timer = 0;
-	publicVariable "sector_timer";
+	["clear", str _fob_pos] call HPC_fnc_attackTimer;
 };
 
 sleep 10;

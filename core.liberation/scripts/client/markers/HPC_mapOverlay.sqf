@@ -242,8 +242,7 @@ HPC_fnc_mapPlaceTooltip = compileFinal toString {
     };
     private _defenses = missionNamespace getVariable ["GRLIB_sector_defense", createHashMap];
     private _alerted = {
-        private _alert = missionNamespace getVariable ["HPC_attackAlert", []];
-        (_alert param [0, []]) isNotEqualTo [] && {((_alert select 0) distance2D _pos) < 300}
+        ((missionNamespace getVariable ["HPC_attackAlert", []]) findIf {((_x select 0) distance2D _pos) < 300}) >= 0
     };
     if (_kind == "fob") exitWith {
         private _index = GRLIB_all_fobs findIf {_x distance2D _pos < 5};

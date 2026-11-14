@@ -64,6 +64,14 @@ final_situaton = compileFinal preprocessFileLineNumbers "scripts\server\secondar
 // Sector
 attack_in_progress_fob = compileFinal preprocessFileLineNumbers "scripts\server\sector\attack_in_progress_fob.sqf";
 attack_in_progress_sector = compileFinal preprocessFileLineNumbers "scripts\server\sector\attack_in_progress_sector.sqf";
+// Each counter-attack has its own countdown in HPC_attackTimers: [[key, position, end serverTime, is FOB], ...]
+HPC_fnc_attackTimer = compileFinal toString {
+	params ["_mode", "_key", ["_pos", []], ["_end", 0], ["_fob", false]];
+	private _list = (missionNamespace getVariable ["HPC_attackTimers", []]) select {(_x select 0) != _key};
+	if (_mode == "set") then { _list pushBack [_key, _pos, _end, _fob] };
+	HPC_attackTimers = _list;
+	publicVariable "HPC_attackTimers";
+};
 ied_manager = compileFinal preprocessFileLineNumbers "scripts\server\sector\ied_manager.sqf";
 ied_trap_manager = compileFinal preprocessFileLineNumbers "scripts\server\sector\ied_trap_manager.sqf";
 spawn_static = compileFinal preprocessFileLineNumbers "scripts\server\sector\spawn_static.sqf";

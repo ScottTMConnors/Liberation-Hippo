@@ -16,7 +16,6 @@ if (_status == 0) then {
 
 if (_status == 1) then {
 	["lib_sector_attacked", [_location_name]] call HPC_fnc_notify;
-	HPC_attackAlert = [_marker_pos, ""];
 };
 
 if (_status == 2) then {

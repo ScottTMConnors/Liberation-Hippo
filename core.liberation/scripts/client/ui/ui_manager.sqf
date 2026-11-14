@@ -1,8 +1,8 @@
 disableSerialization;
 private [
-	"_overlay", "_hide_HUD", "_attacked_string", "_fob_sector",
+	"_overlay", "_hide_HUD", "_fob_sector",
 	"_color_readiness", "_color_reput", "_reput_icon", "_nearest_active_sector",
-	"_server_overloaded", "_zone_size", "_colorzone", "_reputation", "_sector_timer"
+	"_server_overloaded", "_zone_size", "_colorzone", "_reputation"
 ];
 private _overlayshown = false;
 private _indicator = [245,246,247];
@@ -15,7 +15,6 @@ GRLIB_ui_notif = "";
 waituntil {sleep 1; GRLIB_player_spawned};
 waituntil {sleep 1; !isNil "resources_infantry"};
 waituntil {sleep 1; !isNil "infantry_cap"};
-waitUntil {sleep 1; !isNil "sector_timer"};
 
 if (isNil "cinematic_camera_started") then { cinematic_camera_started = false };
 if (isNil "halojumping") then { halojumping = false };
@@ -46,27 +45,49 @@ while {true} do {
 		_overlayshown = false;
 	};
 
-	if (sector_timer == 0) then {
-		HPC_attackAlert = [];
+	// Sectors and FOBs under attack, each with its own countdown (HPC_fnc_attackTimer on the server).
+	// The HUD strip lists the most urgent three; the map marks every one (HPC_mapWorld.sqf).
+	private _timers = missionNamespace getVariable ["HPC_attackTimers", []];
+	private _order = [];
+	{ _order pushBack [_x select 2, _forEachIndex] } forEach _timers;
+	_order sort true;	// soonest to fall first
+	private _attacks = _order apply { _timers select (_x select 1) };
+	HPC_attackAlert = _attacks apply {
+		_x params ["", "_pos", "_end"];
+		private _left = round (_end - serverTime);
+		private _name = [_pos] call F_getLocationName;
+		[_pos, format ["%1 - %2", _name, ["VULNERABLE", [_left] call F_secondsToTimer] select (_left > 0)], _name, _left]
 	};
-
-	// Sector under attack: red strip under the resources, alert drawn on the map (HPC_mapWorld.sqf).
-	_alert_shown = (missionNamespace getVariable ["HPC_attackAlert", []]) isNotEqualTo [];
-	if (_alert_shown) then {
-		private _alertPos = HPC_attackAlert select 0;
-		_attacked_string = [_alertPos] call F_getLocationName;
-		_sector_timer = round (sector_timer - serverTime);
-		private _attacked_timer = "VULNERABLE";
-		if (_sector_timer > 0) then { _attacked_timer = [_sector_timer] call F_secondsToTimer };
-		HPC_attackAlert = [_alertPos, format ["%1 - %2", _attacked_string, _attacked_timer]];
-		if (_overlayshown) then {
-			(_overlay displayCtrl 402) ctrlSetText format ["UNDER ATTACK  %1", toUpper _attacked_string];
-			(_overlay displayCtrl 403) ctrlSetText _attacked_timer;
+	_alert_shown = HPC_attackAlert isNotEqualTo [];
+	private _alert_rows = 0;
+	if (_alert_shown && _overlayshown) then {
+		private _text = "<t font='PuristaSemibold' color='#FF8A80' size='0.75'>UNDER ATTACK</t><br/>";
+		{
+			_x params ["", "", "_name", "_left"];
+			private _timer = ["<t color='#FF8A80'>VULNERABLE</t>", [_left] call F_secondsToTimer] select (_left > 0);
+			_text = _text + format [
+				"<t font='PuristaSemibold' color='#FFE3E0'>%1</t><t align='right' font='PuristaSemibold' color='#FFFFFF'>%2</t><br/>",
+				toUpper _name, _timer
+			];
+		} forEach (HPC_attackAlert select [0, 3]);
+		_alert_rows = (count HPC_attackAlert) min 3;
+		if (count HPC_attackAlert > 3) then {
+			_text = _text + format ["<t color='#D9A9A3' size='0.85'>+%1 more on the map</t><br/>", count HPC_attackAlert - 3];
+			_alert_rows = _alert_rows + 0.8;
 		};
+		private _h = (_alert_rows * 1.15 + 1.75) * _gy;
+		(_overlay displayCtrl 402) ctrlSetStructuredText parseText _text;
+		{
+			private _ctrl = _overlay displayCtrl _x;
+			private _pos = ctrlPosition _ctrl;
+			private _pad = [0, 0.35 * _gy] select (_x == 402);
+			_ctrl ctrlSetPosition [_pos select 0, _pos select 1, _pos select 2, _h - 2 * _pad];
+			_ctrl ctrlCommit 0;
+		} forEach [401, 404, 402];
 	};
 
 	if (_overlayshown) then {
-		{ (_overlay displayCtrl _x) ctrlShow _alert_shown } forEach [401, 402, 403, 404];
+		{ (_overlay displayCtrl _x) ctrlShow _alert_shown } forEach [401, 402, 404];
 		(_overlay displayCtrl 266) ctrlSetText GRLIB_ui_notif;
 		(_overlay displayCtrl 267) ctrlSetText GRLIB_ui_notif;
 
@@ -181,7 +202,7 @@ while {true} do {
 		};
 		_panel ctrlSetStructuredText parseText _body;
 		private _pos = ctrlPosition _panel;
-		private _top = (ctrlPosition (_overlay displayCtrl 520) select 1) + 4.2 * _gy + ([0, 2.5 * _gy] select _alert_shown);
+		private _top = (ctrlPosition (_overlay displayCtrl 520) select 1) + 4.2 * _gy + ([0, (_alert_rows * 1.15 + 2.05) * _gy] select _alert_shown);
 		private _h = (((ctrlTextHeight _panel) + 0.5 * _gy) max (2.6 * _gy)) min (0.38 * safezoneH);
 		_panel ctrlSetPosition [_pos select 0, _top + 0.3 * _gy, _pos select 2, _h - 0.3 * _gy];
 		_panel ctrlCommit 0;

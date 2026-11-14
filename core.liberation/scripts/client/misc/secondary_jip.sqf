@@ -18,10 +18,6 @@ if (GRLIB_secondary_in_progress == 2) then {
 	[6] spawn remote_call_intel;
 };
 
-if (count sector_attack_in_progress > 0) then {
-	[(sector_attack_in_progress select 0), 1] spawn remote_call_sector;
-};
+{ [_x, 1] spawn remote_call_sector } forEach sector_attack_in_progress;
 
-if (count fob_attack_in_progress > 0) then {
-	[(fob_attack_in_progress select 0), 1] spawn remote_call_fob;
-};
+{ [_x, 1] spawn remote_call_fob } forEach fob_attack_in_progress;

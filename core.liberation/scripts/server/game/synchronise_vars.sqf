@@ -8,6 +8,8 @@ publicVariable "active_sectors";
 
 sector_timer = 0;
 publicVariable "sector_timer";
+HPC_attackTimers = [];
+publicVariable "HPC_attackTimers";
 
 private _loop = ([] call F_getValid);
 while { _loop } do {

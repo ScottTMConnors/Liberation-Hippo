@@ -214,7 +214,7 @@ class RscTitles
 		controls[] = {
 			ResourcesBG, PictureScore, LabelScore, PictureAmmo, LabelAmmo, PictureFuel, LabelFuel, PictureManpower, LabelManpower,
 			PictureCap, LabelCap, PictureCombatReadiness, LabelCombatReadiness, PictureIntel, LabelIntel,
-			AlertBGPicture, AlertAccent, AlertLabel, AlertTimer, ObjectiveBG, ObjectivePanel, ObjectiveAccent,
+			AlertBGPicture, AlertAccent, AlertLabel, ObjectiveBG, ObjectivePanel, ObjectiveAccent,
 			RankBG, RankIcon, RankName, RankXP, RankBarBG, RankBar,
 			DetectionLabel, DetectionFrame, DetectionLevel, ActiveSectors, CentralShadow, CentralLabel
 		};
@@ -259,20 +259,11 @@ class RscTitles
 			x = HUD_X; y = HUD_Y + 4.2 * HPC_GY; w = 0.25 * HPC_GX; h = 2.2 * HPC_GY;
 			colorBackground[] = HPC_C_DANGER;
 		};
-		class AlertLabel : HPC_Text {
+		class AlertLabel : HPC_StructuredText {
 			idc = 402;
-			x = HUD_X + 0.8 * HPC_GX; y = HUD_Y + 4.2 * HPC_GY; w = HUD_W - 5.5 * HPC_GX; h = 2.2 * HPC_GY;
-			font = "PuristaSemibold";
-			sizeEx = 0.95 * HPC_GY;
-			colorText[] = {1,0.82,0.80,1};
-		};
-		class AlertTimer : AlertLabel {
-			idc = 403;
-			style = ST_RIGHT;
-			x = HUD_X + HUD_W - 4.8 * HPC_GX; w = 4.2 * HPC_GX;
-			font = "PuristaSemibold";
-			sizeEx = 1.05 * HPC_GY;
-			colorText[] = {1,1,1,1};
+			// one line per sector/FOB under attack: name left, countdown right (ui_manager.sqf)
+			x = HUD_X + 0.8 * HPC_GX; y = HUD_Y + 4.4 * HPC_GY; w = HUD_W - 1.4 * HPC_GX; h = 2 * HPC_GY;
+			size = 1.15 * HPC_GY;
 		};
 		class ObjectiveBG : HPC_Text {
 			idc = 521;

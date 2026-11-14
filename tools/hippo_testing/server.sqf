@@ -305,9 +305,38 @@ GRLIB_player_scores = GRLIB_player_scores select {(_x select 0) != _gUid};
 GRLIB_player_context = GRLIB_player_context select {(_x select 0) != _gUid};
 blufor_sectors = _gOldSectors;
 sector_attack_in_progress = _gOldAttack;
+// defending holds on a tie and counts FOB guards; capturing still needs 85%
+private _oPos = [2000, 2000, 0];
+private _oF = createGroup [GRLIB_side_friendly, true];
+private _oE = createGroup [GRLIB_side_enemy, true];
+for "_i" from 1 to 5 do {
+    private _u = _oF createUnit ["B_Soldier_F", _oPos, [], 5, "NONE"]; _u disableAI "ALL"; _u allowDamage false; _u setVariable ["HPC_warfare", true];	// an FOB guard: counts when defending only
+    _u = _oE createUnit ["O_Soldier_F", _oPos, [], 5, "NONE"]; _u disableAI "ALL"; _u allowDamage false;
+};
+sleep 1;
+private _oCapture = [_oPos, GRLIB_capture_size] call F_sectorOwnership;
+private _oDefend = [_oPos, GRLIB_capture_size, 0.5] call F_sectorOwnership;
+deleteVehicle (units _oE select 0);
+private _oDefendUp = [_oPos, GRLIB_capture_size, 0.5] call F_sectorOwnership;
+deleteVehicle (units _oF select 0); deleteVehicle (units _oF select 1);
+private _oDefendDown = [_oPos, GRLIB_capture_size, 0.5] call F_sectorOwnership;
+{ deleteVehicle _x } forEach (units _oF + units _oE);
+diag_log ["HPC_OWNERSHIP", _oCapture, _oDefend, _oDefendUp, _oDefendDown];
+["attack.defenderTie", _oCapture == GRLIB_side_enemy && {_oDefend == GRLIB_side_friendly} && {_oDefendUp == GRLIB_side_friendly} && {_oDefendDown == GRLIB_side_enemy}] call _assert;
+// each counter-attack has its own timer; clearing one leaves the other running
+private _tOld = +HPC_attackTimers;
+["set", "testA", [100,100,0], serverTime + 600, false] call HPC_fnc_attackTimer;
+["set", "testB", [200,200,0], serverTime + 300, true] call HPC_fnc_attackTimer;
+["set", "testA", [100,100,0], serverTime + 500, false] call HPC_fnc_attackTimer;
+private _tBoth = +HPC_attackTimers;
+["clear", "testA"] call HPC_fnc_attackTimer;
+private _tOne = +HPC_attackTimers;
+["clear", "testB"] call HPC_fnc_attackTimer;
+diag_log ["HPC_ATTACK_TIMERS", _tBoth, _tOne];
+["attack.own_timers", count _tBoth == count _tOld + 2 && {count _tOne == count _tOld + 1} && {(_tOne findIf {(_x select 0) == "testB"}) >= 0} && {HPC_attackTimers isEqualTo _tOld}] call _assert;
 if (HPC_testScenario) then {call compile preprocessFileLineNumbers "hippo_tests\scenario.sqf"};
 call compile preprocessFileLineNumbers "hippo_tests\review.sqf";
 call compile preprocessFileLineNumbers "hippo_tests\features.sqf";
 if (HPC_testCommander) then {call compile preprocessFileLineNumbers "hippo_tests\commander.sqf"};
 if (missionNamespace getVariable ["HPC_testHeadless",false]) then {call compile preprocessFileLineNumbers "hippo_tests\headless.sqf"};
-[format ["RUN_DONE|%1", 33 + (if (HPC_testScenario) then {4} else {0}) + (if (HPC_testCommander) then {8} else {0}) + (if (missionNamespace getVariable ["HPC_testHeadless",false]) then {12} else {0})]] call _emit;
+[format ["RUN_DONE|%1", 35 + (if (HPC_testScenario) then {4} else {0}) + (if (HPC_testCommander) then {8} else {0}) + (if (missionNamespace getVariable ["HPC_testHeadless",false]) then {12} else {0})]] call _emit;
