@@ -37,6 +37,10 @@ python tools/hippo_testing/run.py --game-directory "$ARMA3_DIR" --timeout 240
 Results land in `mybuild/hippo_tests/<run_id>/` (manifest JSON + RPTs). Other
 modes: `--clients 1` (needs the virtual display), `--headless 2`,
 `--scenario`, `--commander`, `--attribution --headless 2`, `--variant expanded`.
+`--clients 2` runs both clients on the same Steam account, so they share one
+player UID: ownership cases (Zeus owned set, fireteam reward owner, garage,
+loot) collide between the clients. Judge ownership with `--clients 1`; use two
+clients for locality, sync and script errors, comparing with a `--source-ref` baseline.
 
 UI work: `--clients 1 --ui-shots --timeout 600 --client-size 1600x900` drives
 `tools/hippo_testing/ui_shots.sqf` (start menu, pause menu, redeploy, HUD,

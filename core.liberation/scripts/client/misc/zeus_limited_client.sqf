@@ -7,6 +7,7 @@ HPC_fnc_zeusOwned = compileFinal {
 	private _grp = group _unit;
 	(_grp isEqualTo group player) ||
 	{(_grp getVariable ["HPC_fireteamOwner", ""]) == PAR_Grp_ID} ||
+	{(_unit getVariable ["PAR_Grp_ID", ""]) == format ["Bros_%1", PAR_Grp_ID]} ||	// squadmates outside the group, as the server counts them
 	{(vehicle _unit) getVariable ["GRLIB_vehicle_owner", ""] == PAR_Grp_ID}
 };
 

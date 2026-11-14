@@ -323,6 +323,7 @@ private _zinfo = missionNamespace getVariable ["HPC_testZeus", [[], -1, 0, 0, 0,
 _zinfo params ["_zobjs", "_zaddons", "_zareas", "_zplace", "_zedit", "_zdelete"];
 private _zowned = _zobjs findIf { !([_x] call HPC_fnc_zeusOwned) } < 0;
 diag_log ["HPC_ZEUS_INFO", count _zobjs, _zowned, _zaddons, _zareas, _zplace, _zedit, _zdelete, (units group player) - _zobjs];
+diag_log ["HPC_ZEUS_NOT_OWNED", (_zobjs select { !([_x] call HPC_fnc_zeusOwned) }) apply { [typeOf _x, group _x, _x getVariable ["PAR_Grp_ID", ""], (vehicle _x) getVariable ["GRLIB_vehicle_owner", ""], isPlayer _x] }];
 ["zeus.owned_only", count _zobjs > 0 && _zowned && {player in _zobjs} && {(units group player) - _zobjs isEqualTo []} && {_zareas > 0}] call _assert;
 ["zeus.no_cheats", _zaddons == 0 && {_zplace < -1e6} && {_zedit < -1e6} && {_zdelete < -1e6}] call _assert;
 
