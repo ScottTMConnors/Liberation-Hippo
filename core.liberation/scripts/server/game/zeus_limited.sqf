@@ -39,6 +39,8 @@ HPC_fnc_zeusAssign = compileFinal {
 	uiSleep 0.1;
 	_player assignCurator _target;
 	_player setVariable ["HPC_zeusSwapping", nil];
+	// fill the new limited curator at once (units, vehicles, camera areas)
+	if (!_master) then { [_player, _target] call HPC_fnc_zeusRefresh };
 };
 
 HPC_fnc_zeusRefresh = compileFinal {
@@ -87,15 +89,20 @@ HPC_fnc_zeusRefreshFor = compileFinal {
 	if (!isNull _cur && {_cur getVariable ["HPC_zeusLimited", false]}) then { [_player, _cur] call HPC_fnc_zeusRefresh };
 };
 
+// New players get their curator within 5 s; owned units and camera areas are refreshed
+// every 30 s as a fallback (the client asks every few seconds while its Zeus is open).
+private _tick = 0;
 while {true} do {
+	private _refresh = _tick % 6 == 0;
 	{
 		private _player = _x;
 		private _cur = getAssignedCuratorLogic _player;
 		if (isNull _cur) then {
 			if (alive _player && {!(_player getVariable ["HPC_zeusSwapping", false])}) then { [_player, false] call HPC_fnc_zeusAssign };
 		} else {
-			if (_cur getVariable ["HPC_zeusLimited", false]) then { [_player, _cur] call HPC_fnc_zeusRefresh };
+			if (_refresh && {_cur getVariable ["HPC_zeusLimited", false]}) then { [_player, _cur] call HPC_fnc_zeusRefresh };
 		};
 	} forEach (allPlayers - entities "HeadlessClient_F");
-	sleep 30;
+	_tick = _tick + 1;
+	sleep 5;
 };
