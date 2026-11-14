@@ -157,7 +157,7 @@ HPC_fnc_mapWorldDraw = compileFinal toString {
 			};
 		};
 		if (_choosing && {_sector in _avail}) then {
-			private _count = { _y == _sector } count _votes;
+			private _count = { _x == _sector } count (values _votes);
 			private _mine = _sector == _myVote;
 			[_tex get "ring_dash", [[1, 0.82, 0.3, 0.95], [0.4, 0.9, 0.45, 1]] select _mine, _pos, _size * 1.9, _size * 1.9, (_now * 30) mod 360] call _dI;
 			_text = _name + (if (_count > 0) then {format ["  (%1 vote%2)", _count, ["s", ""] select (_count == 1)]} else {""});
