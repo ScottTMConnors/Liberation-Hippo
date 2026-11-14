@@ -29,6 +29,7 @@ HPC_mapForces = [];   // [group, icon, color, label, size, target, ordered, kind
 HPC_mapIntel = [];    // [group, icon, color, label, size]
 HPC_mapLastKnown = []; // [group, position, icon, label, size, lost at, expires, destroyed?, card text]
 HPC_mapHoverGhost = []; // the HPC_mapLastKnown entry under the mouse
+HPC_mapHoverPlace = []; // ["sector", marker, position] or ["fob", position, position] under the mouse
 HPC_mapShots = [];    // [start, direction, created, color, angle]
 HPC_mapSelected = []; // groups highlighted by the Command AI window
 HPC_mapHover = grpNull;
@@ -231,6 +232,93 @@ HPC_fnc_mapVehicleTooltip = compileFinal toString {
     ] joinString ""
 };
 
+// Info card of a sector or FOB: _place is ["sector", marker, position] or ["fob", position, position].
+HPC_fnc_mapPlaceTooltip = compileFinal toString {
+    params ["_place"];
+    _place params ["_kind", "_key", "_pos"];
+    private _distance = player distance2D _pos;
+    private _away = if (_distance < 1000) then {format ["%1 m away", round (_distance / 10) * 10]} else {format ["%1 km away", (round (_distance / 100)) / 10]};
+    private _defenseText = {
+        params ["_level"];
+        if (_level <= 0) then {"<t size='0.85' color='#74838A'>No defenses built</t><br/>"} else {format ["<t size='0.85' color='#9DC6F0'>Defenses: level %1 of 3</t><br/>", _level]}
+    };
+    private _defenses = missionNamespace getVariable ["GRLIB_sector_defense", createHashMap];
+    private _alerted = {
+        private _alert = missionNamespace getVariable ["HPC_attackAlert", []];
+        (_alert param [0, []]) isNotEqualTo [] && {((_alert select 0) distance2D _pos) < 300}
+    };
+    if (_kind == "fob") exitWith {
+        private _index = GRLIB_all_fobs findIf {_x distance2D _pos < 5};
+        private _name = [_pos] call F_getFobName;
+        private _outpost = _pos in (missionNamespace getVariable ["GRLIB_all_outposts", []]);
+        private _owner = [_pos] call F_getFobOwner;
+        private _ownerText = switch (true) do {
+            case (_owner == PAR_Grp_ID): {"Built by you"};
+            case (_owner in ["", "server", "public", "lrx"]): {"Shared by the team"};
+            default {"Built by " + ([_owner] call HPC_fnc_mapOwnerName)};
+        };
+        private _guards = HPC_mapForces select {(_x select 7) == "guard" && {(leader (_x select 0)) distance2D _pos < GRLIB_fob_range}};
+        private _guardMen = 0;
+        {_guardMen = _guardMen + ({alive _x} count units (_x select 0))} forEach _guards;
+        private _players = {alive _x && {_x distance2D _pos < GRLIB_fob_range}} count allPlayers;
+        private _attacked = call _alerted;
+        [
+            format ["<t font='PuristaSemibold' size='1' color='#FFD04D'>%1 %2</t><t align='right' size='0.85' color='%3'>%4</t><br/>",
+                ["FOB", "OUTPOST"] select _outpost, toUpper _name, ["#FFD04D", "#FF8C59"] select _attacked, ["FRIENDLY", "UNDER ATTACK"] select _attacked],
+            format ["<t size='0.85' color='#C9D4DE'>%1</t><br/>", _ownerText],
+            format ["<t size='0.85' color='#C9D4DE'>%1 player%2 here</t><br/>", _players, ["s", ""] select (_players == 1)],
+            if (_guards isEqualTo []) then {""} else {format ["<t size='0.85' color='#66D1FF'>Guard squad: %1 alive</t><br/>", _guardMen]},
+            [_defenses getOrDefault [[_pos] call F_getFobMarker, 0]] call _defenseText,
+            format ["<t size='0.8' color='#8FA3B4'>%1. Respawn and build point.</t>", _away]
+        ] joinString ""
+    };
+    private _ours = _key in blufor_sectors;
+    private _active = _key in active_sectors;
+    private _state = missionNamespace getVariable ["HPC_sectorState_" + _key, []];
+    _state params [["_phase", ""], ["_progress", 0], ["_remaining", -1], ["_initial", -1]];
+    private _type = switch (true) do {
+        case (_key in sectors_bigtown): {"City"};
+        case (_key in sectors_military): {"Military base"};
+        case (_key in sectors_factory): {"Factory"};
+        case (_key in sectors_tower): {"Radio tower"};
+        default {"Town"};
+    };
+    private _attacked = _ours && {call _alerted};
+    private _status = switch (true) do {
+        case _active: {["ACTIVE", "#FF8C59"]};
+        case _attacked: {["UNDER ATTACK", "#FF8C59"]};
+        case _ours: {["FRIENDLY", "#66B3FF"]};
+        default {["ENEMY", "#FF5A47"]};
+    };
+    private _lines = [
+        format ["<t font='PuristaSemibold' size='1' color='%1'>%2</t><t align='right' size='0.85' color='%1'>%3</t><br/>",
+            _status select 1, toUpper ([_key] call HPC_fnc_sectorName), _status select 0],
+        format ["<t size='0.85' color='#C9D4DE'>%1</t><br/>", _type]
+    ];
+    if (_active) then {
+        _lines pushBack (switch (_phase) do {
+            case "loading": {format ["<t size='0.85' color='#FF8C59'>Enemy forces arriving: %1%2</t><br/>", round _progress, "%"]};
+            case "active": {
+                format ["<t size='0.85' color='#FF8C59'>Captured %1%2</t>%3<br/>", round _progress, "%",
+                    if (_remaining >= 0 && {_initial > 0}) then {format ["<t size='0.85' color='#C9D4DE'>   Enemies left %1 of %2</t>", _remaining, _initial]} else {""}]
+            };
+            default {"<t size='0.85' color='#FF8C59'>Attack in progress</t><br/>"};
+        });
+    };
+    if (_ours) then {
+        _lines pushBack ([_defenses getOrDefault [_key, 0]] call _defenseText);
+    } else {
+        private _avail = missionNamespace getVariable ["GRLIB_AvailAttackSectors", []];
+        if (!_active && {_key in _avail}) then {
+            private _votes = {_x == _key} count values (missionNamespace getVariable ["GRLIB_Sector_Votes", createHashMap]);
+            _lines pushBack format ["<t size='0.85' color='#FFD04D'>Can be attacked next%1</t><br/>", if (_votes > 0) then {format [" (%1 vote%2)", _votes, ["s", ""] select (_votes == 1)]} else {""}];
+        };
+        if (!_active) then {_lines pushBack "<t size='0.85' color='#C9D4DE'>Held by the enemy</t><br/>"};
+    };
+    _lines pushBack format ["<t size='0.8' color='#8FA3B4'>%1</t>", _away];
+    _lines joinString ""
+};
+
 // Marker style (tools/map_render.py mirrors it, keep both in step):
 // - every group/vehicle icon sits on a dark soft halo (1.75x) so it reads on any terrain,
 //   labels are PuristaSemibold 0.032 with an outline (shadow 2)
@@ -359,10 +447,26 @@ HPC_fnc_mapDraw = compileFinal toString {
             };
         } forEach HPC_mapIntel;
     };
+    // sectors and FOBs get a card too, when no unit or vehicle is under the mouse
+    private _place = [];
+    if (_mainMap && {isNull _hover} && {_hoverGhost isEqualTo []}) then {
+        private _best = 0.025;
+        {
+            _x params ["_sector", "_pos"];
+            private _distance = _pos call _mouseDistance;
+            if (_distance < _best) then {_best = _distance; _place = ["sector", _sector, _pos]};
+        } forEach (missionNamespace getVariable ["HPC_mapSectors", []]);
+        {
+            private _distance = _x call _mouseDistance;
+            if (_distance < _best) then {_best = _distance; _place = ["fob", _x, _x]};
+        } forEach GRLIB_all_fobs;
+    };
     if (_mainMap) then {
         HPC_mapHover = _hover;
         HPC_mapHoverGhost = _hoverGhost;
+        HPC_mapHoverPlace = _place;
         private _at = switch (true) do {
+            case (!(_place isEqualTo [])): {_place select 2};
             case (!(_hoverGhost isEqualTo [])): {_hoverGhost select 1};
             case (isNull _hover): {[]};
             case (_hover isEqualType grpNull): {getPosASLVisual leader _hover};
@@ -649,6 +753,7 @@ while {true} do {
         if !(HPC_mapShots isEqualTo []) then {HPC_mapShots = []};
         HPC_mapHover = grpNull;
         HPC_mapHoverGhost = [];
+        HPC_mapHoverPlace = [];
         uiSleep 0.5;
         continue;
     };
@@ -826,13 +931,16 @@ while {true} do {
     if (!isNull _tooltip) then {
         private _target = HPC_mapHover;
         private _ghost = HPC_mapHoverGhost;
-        private _isGhost = !(_ghost isEqualTo []);
+        private _place = HPC_mapHoverPlace;
+        private _isPlace = !(_place isEqualTo []);
+        private _isGhost = !_isPlace && {!(_ghost isEqualTo [])};
         private _isGroup = _target isEqualType grpNull;
-        private _live = !_isGhost && {!isNull _target} && {alive (if (_isGroup) then {leader _target} else {_target})};
-        if (visibleMap && {_isGhost || _live}) then {
-            private _key = [_target, _ghost select [0, 1], _ghost param [7, false]];
+        private _live = !_isPlace && {!_isGhost} && {!isNull _target} && {alive (if (_isGroup) then {leader _target} else {_target})};
+        if (visibleMap && {_isPlace || _isGhost || _live}) then {
+            private _key = [_target, _ghost select [0, 1], _ghost param [7, false], _place select [0, 2]];
             if (!(_key isEqualTo _tooltipKey) || {_now - _tooltipAt > 1}) then {
                 private _text = switch (true) do {
+                    case (_isPlace): {[_place] call HPC_fnc_mapPlaceTooltip};
                     case (_isGhost && {_ghost select 7}): {
                         format ["<t font='PuristaSemibold' size='1' color='#B5BEC3'>ENEMY GROUP</t><t align='right' size='0.85' color='#B5BEC3'>DESTROYED</t><br/><t size='0.85' color='#8FA3B4'>Wiped out %1 ago. The marker clears in %2.</t>",
                             (_now - (_ghost select 5)) call HPC_fnc_mapAgo, ((_ghost select 6) - _now) call HPC_fnc_mapAgo]
@@ -849,6 +957,14 @@ while {true} do {
                 _tooltipAt = _now;
                 // accent bar: grey destroyed, red enemy, green yours, purple other players', blue AI
                 private _side = switch (true) do {
+                    case (_isPlace): {
+                        switch (true) do {
+                            case ((_place select 0) == "fob"): {[1, 0.82, 0.3, 1]};
+                            case ((_place select 1) in active_sectors): {[1, 0.55, 0.35, 1]};
+                            case ((_place select 1) in blufor_sectors): {[0.38, 0.64, 0.96, 1]};
+                            default {[0.84, 0.36, 0.32, 1]};
+                        }
+                    };
                     case (_isGhost && {_ghost select 7}): {[0.6, 0.63, 0.65, 1]};
                     case (_isGhost): {[0.95, 0.42, 0.36, 1]};
                     case (_isGroup && {side _target != GRLIB_side_friendly}): {[0.92, 0.2, 0.16, 1]};
