@@ -35,7 +35,7 @@
 class liberation_build {
 	idd = 5501;
 	movingEnable = false;
-	controlsBackground[] = {"Panel", "DetailsBG", "ListBG", "Stripe1", "Stripe2", "Stripe3", "Stripe4", "Stripe5", "Stripe6", "Stripe7", "Stripe8"};
+	controlsBackground[] = {"Panel", "DetailsBG", "ListBG"};
 
 	controls[] = {"Accent", "Header", "Subtitle", "ButtonClose", "Divider",
 	"BuildInfantryButton","BuildTransportVehicleButton",
@@ -231,18 +231,9 @@ class liberation_build {
 		colorBackground[] = HPC_C_PANEL_LIGHT;
 		x = BLD_IX; y = BLD_COL_Y; w = BLD_LIST_W; h = BLD_LIST_Y + BLD_LIST_H - BLD_COL_Y;
 	};
-	// Every other row of BuildList (rowHeight BLD_ROW_H) gets a faint band; the list is transparent.
-	class Stripe1 : HPC_Text {
-		x = BLD_IX; y = BLD_LIST_Y + 1 * BLD_ROW_H; w = BLD_LIST_W; h = BLD_ROW_H;
-		colorBackground[] = {1,1,1,0.045};
-	};
-	class Stripe2 : Stripe1 { y = BLD_LIST_Y + 3 * BLD_ROW_H; };
-	class Stripe3 : Stripe1 { y = BLD_LIST_Y + 5 * BLD_ROW_H; };
-	class Stripe4 : Stripe1 { y = BLD_LIST_Y + 7 * BLD_ROW_H; };
-	class Stripe5 : Stripe1 { y = BLD_LIST_Y + 9 * BLD_ROW_H; };
-	class Stripe6 : Stripe1 { y = BLD_LIST_Y + 11 * BLD_ROW_H; };
-	class Stripe7 : Stripe1 { y = BLD_LIST_Y + 13 * BLD_ROW_H; };
-	class Stripe8 : Stripe1 { y = BLD_LIST_Y + 15 * BLD_ROW_H; };
+	// No row bands: the engine spaces rows slightly differently from rowHeight (it varies with
+	// resolution), so fixed or scripted bands drift off their rows down a long list.
+
 	class PageLabel : HPC_Heading {
 		idc = 151;
 		x = BLD_IX; y = BLD_HDR_Y; w = 11 * HPC_GX; h = 2 * HPC_GY;

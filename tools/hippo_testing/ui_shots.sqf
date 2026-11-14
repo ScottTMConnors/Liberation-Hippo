@@ -363,6 +363,27 @@ if (_buildOk) then {
     uiSleep 1;
     _crewShown = ctrlShown ((findDisplay 5501) displayCtrl 121) && {(ctrlText 122) find "Spawn with crew" == 0};
     ["08b_build_vehicles",0.5] call HPC_uiShot;
+    // Longest page, scrolled near the end: row bands and the selection bar stay on their rows
+    // and stop at the scrollbar.
+    private _best = [buildtype, 0];
+    for "_t" from 1 to 8 do {
+        buildtype = _t; uiSleep 1;
+        private _n = lnbSize _list select 0;
+        if (_n > (_best select 1)) then {_best = [_t, _n]};
+    };
+    buildtype = _best select 0; uiSleep 1;
+    private _n = lnbSize _list select 0;
+    _list lnbSetCurSelRow (_n - 3 max 0);
+    uiSleep 1;
+    diag_log ["HPC_UISHOT_BUILD_SCROLL", _best, ctrlScrollValues _list, lnbCurSelRow _list];
+    ["08e_build_scrolled",0.5] call HPC_uiShot;
+    uiSleep 4;
+    ["08e2_build_scrolled_settled",0.5] call HPC_uiShot;
+    _list lnbSetCurSelRow (round (_n / 2));
+    uiSleep 1;
+    ["08f_build_scrolled_mid",0.5] call HPC_uiShot;
+    uiSleep 4;
+    ["08f2_build_scrolled_mid_settled",0.5] call HPC_uiShot;
 };
 diag_log ["HPC_UISHOT_CREW",_buildOk,_crewShown];
 ["uishots.crewCheckbox",_buildOk && _crewShown] call _assert;
